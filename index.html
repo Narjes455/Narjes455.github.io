@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>نرجس العمري | معرض أعمال</title>
+<meta name="description" content="معرض أعمال نرجس العمري: أمن الشبكات، أنظمة للشركات، أدوات ويب، ومشاريع قيد البناء.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Handjet:wght,ELGR,ELSH@100..900,1..2,0..16&family=IBM+Plex+Sans+Arabic:wght@300;400;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#150E0D">
+<style>
+:root{
+  color-scheme:dark;
+  --paper:#150E0D;   /* dark wool */
+  --panel:#1F1614; --ink:#F1E4CF; --muted:#BBA88F; --line:#3D2C27;
+  --blue:#E4513F;    /* Sadu madder red */
+  --hazard:#F2A93B;  /* saffron */
+  --indigo:#7D8CE0;  /* indigo thread */
+  --grid:rgba(242,169,59,.045);
+  --display:"Handjet","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  /* Sadu band: rows of triangles */
+  --sadu:
+    conic-gradient(from 135deg at 50% 0,var(--blue) 90deg,transparent 0) 0 0/16px 8px repeat-x,
+    conic-gradient(from -45deg at 50% 100%,var(--hazard) 90deg,transparent 0) 8px 100%/16px 8px repeat-x,
+    linear-gradient(var(--ink),var(--ink)) 0 50%/100% 2px no-repeat;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  font-family:var(--body);color:var(--ink);background:var(--paper);
+  background-image:repeating-linear-gradient(45deg,var(--grid) 0 1px,transparent 1px 14px),repeating-linear-gradient(-45deg,var(--grid) 0 1px,transparent 1px 14px);line-height:1.8;font-size:1.05rem;
+}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--hazard);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.5rem}
+
+/* Hero: the name drawn like a title block on a plan */
+.hero{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden;padding:4rem 0}
+#net{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;
+  -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,.18) 0%,#000 60%),linear-gradient(#000 70%,transparent);
+  -webkit-mask-composite:source-in;mask-image:linear-gradient(to left,rgba(0,0,0,.18) 0%,#000 60%),linear-gradient(#000 70%,transparent);mask-composite:intersect}
+.hero-in{position:relative;pointer-events:none;width:100%}
+.hero-in a,.hero-in .btn{pointer-events:auto}
+.online{display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;color:var(--muted);background:var(--panel);border:1px solid var(--line);padding:.2rem .8rem;border-radius:20px;margin-bottom:1.2rem;animation:up .7s both}
+.online i{width:8px;height:8px;border-radius:50%;background:#2BAA6E;box-shadow:0 0 0 0 rgba(43,170,110,.6);animation:ping 2s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 9px rgba(43,170,110,0)}100%{box-shadow:0 0 0 0 rgba(43,170,110,0)}}
+.name{animation:wipe 1s cubic-bezier(.6,0,.2,1) .15s both,morph 7s ease-in-out 1.3s infinite alternate;
+  font-variation-settings:"ELSH" 2,"ELGR" 1;font-weight:700;color:var(--ink)}
+.name:hover{animation-play-state:running,paused;font-variation-settings:"ELSH" 16,"ELGR" 2;transition:font-variation-settings .6s}
+@keyframes morph{
+  0%{font-variation-settings:"ELSH" 2,"ELGR" 1}
+  35%{font-variation-settings:"ELSH" 8,"ELGR" 1}
+  70%{font-variation-settings:"ELSH" 13,"ELGR" 2}
+  100%{font-variation-settings:"ELSH" 16,"ELGR" 1.4}}
+@keyframes wipe{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
+.role{animation:up .7s .5s both}.links{animation:up .7s .65s both}
+.hint{margin-top:2.2rem;font-size:.82rem;color:var(--muted);animation:up .7s 1.1s both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* network cable scroll-nav */
+.cable{position:fixed;top:50%;right:22px;transform:translateY(-50%);height:min(60vh,420px);width:14px;z-index:10;display:none;flex-direction:column;justify-content:space-between;align-items:center}
+.cable .wire{position:absolute;top:0;bottom:0;width:2px;background:var(--line);border-radius:2px}
+.cable .fill{position:absolute;top:0;left:0;width:100%;height:0;background:var(--blue)}
+.cable .packet{position:absolute;left:50%;top:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:2px;background:var(--hazard);box-shadow:0 0 10px var(--hazard);transform:rotate(45deg)}
+.cable a{position:relative;width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--line);transition:border-color .3s,background .3s,transform .3s}
+.cable a.on{border-color:var(--blue);background:var(--blue);transform:scale(1.15)}
+.cable a b{position:absolute;right:24px;top:50%;transform:translateY(-50%) translateX(6px);white-space:nowrap;font-size:.8rem;background:var(--ink);color:var(--paper);padding:.1rem .55rem;border-radius:4px;opacity:0;pointer-events:none;transition:.2s}
+.cable a:hover b,.cable a:focus-visible b,.cable a.on b{opacity:1;transform:translateY(-50%)}
+.cable a.on b{opacity:.9}
+@media (min-width:1180px){.cable{display:flex}}
+
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+/* security scan sweep on hover */
+.card,.ora{position:relative;overflow:hidden}
+.card::after,.ora::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(100deg,transparent 40%,color-mix(in srgb,var(--blue) 14%,transparent) 50%,transparent 60%);
+  transform:translateX(110%)}
+.card:hover::after,.ora:hover::after{transition:transform .9s ease;transform:translateX(-110%)}
+.card{transition:transform .25s,box-shadow .25s,border-color .25s}
+.card:hover{transform:translate(-5px,-5px);box-shadow:5px 5px 0 var(--blue);border-color:var(--hazard)}
+
+/* data flowing into the database in the ora diagram */
+.arch path{animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.arch rect:first-of-type{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{stroke:var(--hazard)}}
+.name{
+  font-family:var(--display);line-height:.95;
+  font-size:clamp(4rem,14vw,10rem);
+  text-shadow:4px 4px 0 var(--blue),8px 8px 0 color-mix(in srgb,var(--hazard) 55%,transparent);
+}
+/* the underline is a woven Sadu band */
+.name .measure{
+  display:block;height:18px;margin-top:1.8rem;background:var(--sadu);
+  transform-origin:right;animation:draw 1.2s cubic-bezier(.6,0,.2,1) .4s both,slide 9s linear 1.6s infinite;
+}
+@keyframes slide{to{background-position:-160px 0,-152px 100%,0 50%}}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.role{font-size:clamp(1.1rem,2.6vw,1.4rem);color:var(--muted);margin-top:1.2rem;max-width:34ch}
+.links{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.8rem}
+.btn{
+  display:inline-block;padding:.6rem 1.2rem;border:2px solid var(--ink);color:var(--ink);
+  text-decoration:none;font-weight:600;border-radius:6px;background:var(--panel)
+}
+.btn{border-radius:2px;transition:transform .2s,box-shadow .2s}
+.btn.solid{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn:hover{border-color:var(--hazard);transform:translate(-3px,-3px);box-shadow:3px 3px 0 var(--hazard)}
+
+section{padding:3rem 0}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,6vw,3.4rem);line-height:1.1;margin-bottom:1.6rem;
+  font-variation-settings:"ELSH" 6;transition:font-variation-settings .5s}
+section:hover h2{font-variation-settings:"ELSH" 14}
+h2::after{content:"";display:block;width:96px;height:12px;margin-top:.6rem;background:var(--sadu);background-size:12px 6px,12px 6px,100% 2px}
+
+/* About */
+.about{display:grid;grid-template-columns:1.4fr 1fr;gap:2.5rem;align-items:start}
+.about p{max-width:60ch;margin-bottom:1rem}
+.interests{list-style:none;border-inline-start:4px solid var(--hazard);padding-inline-start:1.2rem}
+.interests li{padding:.45rem 0;border-bottom:1px dashed var(--line)}
+.interests li:last-child{border-bottom:0}
+
+/* Published: large sheets */
+.sheets{display:grid;gap:1.6rem}
+.sheet{
+  background:var(--panel);border:2px solid var(--ink);border-radius:10px;
+  display:grid;grid-template-columns:200px 1fr;overflow:hidden
+}
+.sheet .art{
+  background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:4rem;min-height:180px
+}
+.sheet .art.green{background:#0F6E4E}
+.sheet .body{padding:1.6rem 1.8rem}
+.sheet h3{font-family:var(--display);font-size:1.6rem;margin-bottom:.3rem}
+.sheet p{color:var(--muted);max-width:58ch}
+.tags{display:flex;gap:.4rem;flex-wrap:wrap;margin:.9rem 0}
+.tags span{font-size:.82rem;padding:.15rem .6rem;border:1px solid var(--line);border-radius:20px}
+.sheet .actions{display:flex;gap:1.2rem;flex-wrap:wrap;font-weight:600}
+
+/* Workshop: in progress */
+.workshop-note{color:var(--muted);margin:-.6rem 0 1.4rem;max-width:60ch}
+.bench{border-top:2px solid var(--ink)}
+.item{display:grid;grid-template-columns:1fr auto;gap:.3rem 1.5rem;padding:1.3rem 0;border-bottom:1px solid var(--line)}
+.item h3{font-size:1.2rem;font-weight:600}
+.item p{grid-column:1/-1;color:var(--muted);max-width:68ch}
+.status{
+  align-self:start;font-size:.8rem;font-weight:600;padding:.2rem .7rem;border-radius:4px;
+  background:repeating-linear-gradient(-45deg,var(--hazard) 0 8px,#1b1b1b 8px 16px);color:#1b1b1b;
+  position:relative;white-space:nowrap
+}
+.status b{background:var(--hazard);padding:0 .4rem;border-radius:3px}
+
+/* ora case study */
+.ora{display:grid;grid-template-columns:1.2fr 1fr;gap:2rem;align-items:center;
+  background:var(--panel);border:2px solid var(--ink);border-radius:2px;padding:2rem}
+.ora .lead{font-size:1.2rem;font-weight:600;margin-bottom:.8rem;max-width:52ch}
+.ora p{max-width:58ch}
+.private-note{margin-top:.6rem;font-size:.92rem;color:var(--muted);border-inline-start:3px solid var(--hazard);padding-inline-start:.8rem}
+.arch{color:var(--blue)}
+.arch svg{width:100%;height:auto;display:block}
+.ora-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:2rem}
+.ora-grid h3{font-family:var(--display);font-size:1.9rem;margin-bottom:.7rem}
+.roles,.feats{list-style:none}
+.roles li{display:flex;flex-direction:column;padding:.55rem 0;border-bottom:1px dashed var(--line);color:var(--muted)}
+.roles b{color:var(--ink)}
+.feats li{padding:.45rem 1.2rem .45rem 0;position:relative}
+.feats li::before{content:"";position:absolute;right:0;top:1.05em;width:8px;height:8px;background:var(--hazard)}
+@media (max-width:760px){.ora,.ora-grid{grid-template-columns:1fr}.ora{padding:1.4rem}}
+
+.sheet .art.amber{background:#B9791A}
+.demo{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1.2rem}
+.cred{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;font-size:.9rem;color:var(--muted)}
+.cred code{font-family:var(--body);direction:ltr;background:var(--paper);border:1px solid var(--line);padding:.15rem .6rem;border-radius:4px;color:var(--ink);user-select:all}
+
+footer{padding:3rem 0 4rem;color:var(--muted);border-top:1px solid var(--line);margin-top:2rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+@media (max-width:760px){
+  .hero{min-height:78vh;padding:3rem 0}
+  .about{grid-template-columns:1fr}
+  .sheet{grid-template-columns:1fr}
+  .sheet .art{min-height:110px;font-size:3rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .name .measure,.name,.role,.links,.online,.online i,.hint,.arch path,.arch rect{animation:none!important}
+  .rv{opacity:1;transform:none;transition:none}
+  .card:hover{transform:none}.card::after,.ora::after{display:none}
+  html{scroll-behavior:auto}
+}
+
+/* project groups */
+.group{font-family:var(--display);font-size:2rem;margin:2.4rem 0 1rem;display:flex;align-items:center;gap:.7rem}
+.group:first-of-type{margin-top:.5rem}
+.group span{font-family:var(--body);font-size:.85rem;color:var(--blue);border:2px solid var(--blue);padding:0 .5rem;border-radius:4px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:1.4rem;display:flex;flex-direction:column}
+.card.feature{border:2px solid var(--ink);grid-column:span 2}
+.card .ico{font-size:2rem;line-height:1;margin-bottom:.7rem}
+.card h4{font-family:var(--display);font-size:1.75rem;line-height:1.15;margin-bottom:.3rem}
+.card.feature h4{font-size:2.2rem}
+.card p{color:var(--muted);font-size:.97rem}
+.card .tags{margin:.8rem 0}
+.card .actions{margin-top:auto;display:flex;gap:1.1rem;flex-wrap:wrap;font-weight:600}
+.soon{font-size:.85rem;color:var(--muted);border:1px dashed var(--line);padding:0 .6rem;border-radius:4px}
+@media (max-width:620px){.card.feature{grid-column:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<canvas id="net" aria-hidden="true"></canvas>
+<div class="wrap hero-in">
+  <p class="online"><i aria-hidden="true"></i> متصلة من المدينة المنورة</p>
+  <h1 class="name">نرجس العمري<span class="measure" aria-hidden="true"></span></h1>
+  <p class="role">خريجة أنظمة شبكات، مهتمة بالأمن السيبراني والبنية التحتية، وأبني أنظمة وأدوات عملية تخدم الشركات الصغيرة.</p>
+  <div class="links">
+    <a class="btn solid" href="https://github.com/Narjes455" target="_blank" rel="noopener">GitHub</a>
+    <a class="btn" href="https://www.linkedin.com/in/%D9%86%D8%B1%D8%AC%D8%B3-%D8%A7%D9%84%D8%B9%D9%85%D8%B1%D9%8A-757b68273" target="_blank" rel="noopener">LinkedIn</a>
+    <a class="btn" href="#work">شوف المشاريع</a>
+  </div>
+  <p class="hint" aria-hidden="true">حرّك المؤشر على الشبكة، أو اضغط عشان ترسل حزمة</p>
+</div>
+</header>
+
+<nav class="cable" aria-label="أقسام الصفحة">
+  <span class="wire"><span class="fill"></span><span class="packet"></span></span>
+  <a href="#about" data-sec="about"><b>عني</b></a>
+  <a href="#work" data-sec="work"><b>المشاريع</b></a>
+  <a href="#ora" data-sec="ora"><b>أورا</b></a>
+  <a href="#workshop" data-sec="workshop"><b>الورشة</b></a>
+</nav>
+
+<main>
+  <section class="wrap" id="about" aria-labelledby="about-h">
+    <div class="about">
+      <div>
+        <h2 id="about-h">عنّي</h2>
+        <p>أنا نرجس، من المدينة المنورة. درست دبلوم أنظمة الشبكات في الكلية التطبيقية بجامعة طيبة، وكان مشروع تخرجي جدار حماية ذكي يكشف الهجمات بتعلّم الآلة.</p>
+        <p>أشتغل حالياً مطوّرة ومسؤولة أنظمة في شركة مقاولات، وهناك تعلّمت إن أفضل برنامج هو اللي يحل مشكلة حقيقية يواجهها الموظف كل يوم. أكتب أغلب مشاريعي بـ Python، من أدوات الأتمتة وتحليل البيانات إلى أنظمة كاملة بقواعد بيانات وصلاحيات. وجنب الشغل الجاد، أستمتع بصفحات الويب التفاعلية والألعاب.</p>
+      </div>
+      <div>
+        <h2>اهتماماتي</h2>
+        <ul class="interests">
+          <li>الأمن السيبراني وحماية الشبكات</li>
+          <li>الذكاء الاصطناعي في كشف التهديدات</li>
+          <li>البنية التحتية والشبكات للمنشآت الصغيرة</li>
+          <li>أنظمة إدارة الشركات وأتمتة الأعمال</li>
+          <li>تحليل البيانات وتطبيقات الويب</li>
+          <li>المشاريع اللي تجمع البرمجة بالقطع الإلكترونية</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="work" aria-labelledby="work-h">
+    <h2 id="work-h">مشاريع منشورة</h2>
+
+    <h3 class="group"><span>01</span> الأمن والشبكات</h3>
+    <div class="cards">
+      <article class="card feature">
+        <div class="ico" aria-hidden="true">🛡️</div>
+        <h4>جدار الحماية الذكي</h4>
+        <p>مشروع التخرج مع فريق من أربع طالبات: يحوّل حركة الشبكة الملتقطة إلى بيانات، ويصنّفها بنموذج تعلّم آلة، ويتخذ قرار الحظر أو السماح.</p>
+        <div class="tags"><span>Python</span><span>Machine Learning</span><span>PCAP</span><span>مشروع تخرج</span></div>
+        <div class="actions"><a href="https://github.com/Narjes455/AI-Driven_Smart_Firewall" target="_blank" rel="noopener">الكود</a></div>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true">🧱</div>
+        <h4>سياج</h4>
+        <p>جدار حماية لتطبيقات الذكاء الاصطناعي، يكشف محاولات حقن الأوامر (Prompt Injection) ويمنع تسريب البيانات الحساسة.</p>
+        <div class="tags"><span>Python</span><span>أمن الذكاء الاصطناعي</span></div>
+        <div class="actions"><a href="https://github.com/Narjes455/siyaj-ai-firewall" target="_blank" rel="noopener">الكود</a></div>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true">🔐</div>
+        <h4>شبكة آمنة بقوائم ACL</h4>
+        <p>شبكة بثلاثة أقسام (المدراء، الموظفين، الزوار) متصلة بسيرفرات ويب وبريد وDNS، مع سياسات وصول تمنع أي دخول غير مصرّح.</p>
+        <div class="tags"><span>Cisco</span><span>ACL</span><span>Packet Tracer</span></div>
+        <div class="actions"><a href="https://github.com/Narjes455/ACL-Security-Network" target="_blank" rel="noopener">المشروع</a></div>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true">🖧</div>
+        <h4>شبكة LAN أساسية</h4>
+        <p>تصميم شبكة محلية من الصفر وضبط أجهزتها على Cisco Packet Tracer.</p>
+        <div class="tags"><span>Cisco</span><span>LAN</span></div>
+        <div class="actions"><a href="https://github.com/Narjes455/packet-tracer-lan-project" target="_blank" rel="noopener">المشروع</a></div>
+      </article>
+    </div>
+
+    <h3 class="group"><span>02</span> أنظمة وأدوات</h3>
+    <div class="cards">
+      <article class="card feature">
+        <div class="ico" aria-hidden="true">🎫</div>
+        <h4>نظام تذاكر الدعم الفني</h4>
+        <p>نظام Helpdesk يستقبل طلبات الدعم ويرتبها بالأولوية والحالة، مع سجل للإجراءات وتقارير أداء. شغّال أونلاين وتقدر تجربه.</p>
+        <div class="tags"><span>Python</span><span>Streamlit</span><span>قواعد بيانات</span></div>
+        <div class="actions">
+          <a href="https://appdesk-system-el43e8yznwznmunougxrwt.streamlit.app" target="_blank" rel="noopener">جرّب النظام</a>
+          <a href="https://narjes455.github.io/helpdesk-system" target="_blank" rel="noopener">صفحة المشروع</a>
+          <a href="https://github.com/Narjes455/helpdesk-system" target="_blank" rel="noopener">الكود</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true">📄</div>
+        <h4>PDF Merger</h4>
+        <p>أداة ويب تدمج عدة ملفات PDF في ملف واحد مباشرة من المتصفح بدون تثبيت أي برنامج.</p>
+        <div class="tags"><span>Python</span><span>Streamlit</span></div>
+        <div class="actions">
+          <a data-link="pdfApp" target="_blank" rel="noopener">جرّب الأداة</a>
+          <a href="https://github.com/Narjes455/pdf-merger" target="_blank" rel="noopener">الكود</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true">📊</div>
+        <h4>تحليل بيانات المبيعات</h4>
+        <p>يقرأ بيانات مبيعات متجر من Excel ويطلع تقارير ورسوم بيانية حسب المنتج والمنطقة.</p>
+        <div class="tags"><span>Pandas</span><span>Matplotlib</span><span>Seaborn</span></div>
+        <div class="actions"><a href="https://github.com/Narjes455/sales-analysis-project" target="_blank" rel="noopener">الكود</a></div>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true">🤖</div>
+        <h4>أتمتة المتصفح</h4>
+        <p>أول تجربة لي في أتمتة المتصفحات: روبوت يفتح Chrome ويتنقل تلقائياً، كبداية لسحب البيانات من المواقع.</p>
+        <div class="tags"><span>Python</span><span>Selenium</span></div>
+        <div class="actions"><a href="https://github.com/Narjes455/real-estate-scraper" target="_blank" rel="noopener">الكود</a></div>
+      </article>
+    </div>
+
+    <h3 class="group"><span>03</span> ويب وألعاب</h3>
+    <div class="cards">
+      <article class="card">
+        <div class="ico" aria-hidden="true">🇸🇦</div>
+        <h4>صفحة اليوم الوطني</h4>
+        <p>صفحة ويب متحركة احتفاءً باليوم الوطني السعودي، تشتغل على الجوال والكمبيوتر.</p>
+        <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+        <div class="actions">
+          <a href="https://narjes455.github.io/saudi-national-day" target="_blank" rel="noopener">شوف الصفحة</a>
+          <a href="https://github.com/Narjes455/saudi-national-day" target="_blank" rel="noopener">الكود</a>
+        </div>
+      </article>
+      <article class="card feature">
+        <div class="ico" aria-hidden="true">🎲</div>
+        <h4>ألعاب بسيطة بالعربي</h4>
+        <p>مجموعة ألعاب عربية تنلعب من المتصفح بدون سيرفر، بهوية مستوحاة من نقوش السدو. أول لعبة «خمّن الكلمة»: كلمة من خمسة حروف في ست محاولات. تنضاف للشاشة الرئيسية كتطبيق وتشتغل بدون نت، والألعاب الجاية: خمّن شخصيتي، الذاكرة، وإكس أو.</p>
+        <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>PWA</span></div>
+        <div class="actions">
+          <a href="https://narjes455.github.io/mini-games/" target="_blank" rel="noopener">العب الحين</a>
+          <a href="https://github.com/Narjes455/mini-games" target="_blank" rel="noopener">الكود</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap" id="ora" aria-labelledby="ora-h">
+    <h2 id="ora-h">أورا: نظام إدارة المنشآت</h2>
+    <div class="ora">
+      <div class="ora-intro">
+        <p class="lead">نظام متكامل بنيته من الصفر لإدارة منشأة كاملة: الموظفين، العقود، الفواتير، الحسابات، العمالة، والحضور. يستخدمه فريق عمل حقيقي بشكل يومي.</p>
+        <p>كل موظف يدخل بحسابه، ويشوف بس الأقسام اللي تخص دوره. البيانات كلها في قاعدة بيانات سحابية واحدة، فالمحاسب والموارد البشرية والإدارة يشتغلون على نفس الأرقام في نفس اللحظة.</p>
+        <div class="tags"><span>Python</span><span>CustomTkinter</span><span>PostgreSQL</span><span>Flask</span><span>تطبيق سطح مكتب</span><span>ويب للجوال</span></div>
+        <div class="demo" data-needs="oraDemo">
+          <a class="btn solid" data-link="oraDemo" target="_blank" rel="noopener">جرّب أورا</a>
+          <div class="cred" data-needs="oraUser">
+            <span>حساب التجربة</span>
+            <code data-text="oraUser"></code>
+            <code data-text="oraPass"></code>
+          </div>
+        </div>
+        <p class="private-note">النسخة التجريبية منفصلة تماماً وكل بياناتها وهمية. الكود خاص لأن النسخة الأصلية تعمل على بيانات حقيقية.</p>
+      </div>
+
+      <figure class="arch">
+        <svg viewBox="0 0 460 300" role="img" aria-labelledby="arch-t">
+          <title id="arch-t">مخطط عام: تطبيق سطح المكتب وعرض الإدارة ولوحة التحكم متصلة بقاعدة بيانات سحابية واحدة</title>
+          <g fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="160" y="115" width="140" height="70" rx="8"/>
+            <rect x="10" y="20" width="140" height="56" rx="8"/>
+            <rect x="310" y="20" width="140" height="56" rx="8"/>
+            <rect x="10" y="224" width="140" height="56" rx="8"/>
+            <rect x="310" y="224" width="140" height="56" rx="8"/>
+            <path d="M150 60 L195 115 M310 60 L265 115 M150 240 L195 185 M310 240 L265 185" stroke-dasharray="5 4"/>
+          </g>
+          <g font-family="Readex Pro, sans-serif" font-size="14" fill="currentColor" text-anchor="middle">
+            <text x="230" y="146" font-weight="600">قاعدة بيانات</text>
+            <text x="230" y="166">سحابية مشتركة</text>
+            <text x="80" y="44" font-weight="600">تطبيق سطح المكتب</text>
+            <text x="80" y="64" font-size="12">الحضور يتسجل مع فتحه</text>
+            <text x="380" y="44" font-weight="600">لوحة التحكم</text>
+            <text x="380" y="64" font-size="12">نسخة مستقلة لكل منشأة</text>
+            <text x="80" y="248" font-weight="600">عرض الإدارة</text>
+            <text x="80" y="268" font-size="12">للقراءة فقط</text>
+            <text x="380" y="248" font-weight="600">تحديثات تلقائية</text>
+            <text x="380" y="268" font-size="12">لكل الأجهزة</text>
+          </g>
+        </svg>
+      </figure>
+    </div>
+
+    <div class="ora-grid">
+      <div>
+        <h3>الأدوار والصلاحيات</h3>
+        <ul class="roles">
+          <li><b>الإدارة التنفيذية</b> صلاحيات تشغيلية كاملة</li>
+          <li><b>الموارد البشرية</b> الموظفين والحضور والمستندات</li>
+          <li><b>المحاسبة</b> الفواتير والمدفوعات والكشوفات</li>
+          <li><b>إدخال البيانات</b> العقود وتفاصيلها</li>
+          <li><b>العمالة</b> سجلات فقط بدون دخول للنظام</li>
+        </ul>
+      </div>
+      <div>
+        <h3>أبرز ما بنيته</h3>
+        <ul class="feats">
+          <li>صلاحيات مبنية على الدور، كل شاشة تنفتح حسب الحساب</li>
+          <li>حضور وانصراف تلقائي: يتسجل الحضور مع فتح النظام، والانصراف مع إغلاقه</li>
+          <li>واجهة جوال للإدارة تعرض الأرقام والعقود والكشوفات للقراءة فقط</li>
+          <li>كشوف حساب للعملاء والمقاولين</li>
+          <li>توزيع التحديثات على أجهزة الموظفين تلقائياً بدون تدخل منهم</li>
+          <li>لوحة تحكم منفصلة تجهّز نسخة مستقلة لكل منشأة، بقاعدة بيانات وهوية خاصة فيها</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="workshop" aria-labelledby="shop-h">
+    <h2 id="shop-h">في الورشة</h2>
+    <p class="workshop-note">مشاريع أشتغل عليها الحين، وبتنضاف لقائمة المنشورة أول ما تجهز.</p>
+    <div class="bench">
+      <div class="item">
+        <h3>تطبيق المهام والتذكيرات</h3>
+        <span class="status"><b>قيد التطوير</b></span>
+        <p>تطبيق جوال لتنظيم المهام اليومية مع تذكيرات، يشتغل على أندرويد وآيفون. Flutter</p>
+      </div>
+      <div class="item">
+        <h3>SmallBiz IT Toolkit</h3>
+        <span class="status"><b>قيد التخطيط</b></span>
+        <p>أدوات ودليل لتجهيز الشبكات والسيرفرات للمنشآت الصغيرة اللي تبدأ من الصفر.</p>
+      </div>
+      <div class="item">
+        <h3>فوتو بوث</h3>
+        <span class="status"><b>قيد التخطيط</b></span>
+        <p>صندوق تصوير أبنيه بنفسي: كاميرا وشاشة وزر تصوير، مع عدّ تنازلي وشريط صور يطلع للزوار.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>نرجس العمري، المدينة المنورة</span>
+    <a href="https://github.com/Narjes455" target="_blank" rel="noopener">github.com/Narjes455</a>
+  </div>
+</footer>
+
+<script>
+/* ======== عدّلي الروابط هنا فقط ========
+   أي رابط تتركينه فاضي، الزر أو القسم حقه يختفي تلقائياً */
+const LINKS = {
+  oraDemo:   "https://narjes455.github.io/ora-demo/",   // رابط نسخة أورا التجريبية
+  oraUser:   "",   // اسم مستخدم حساب التجربة
+  oraPass:   "",   // كلمة مرور حساب التجربة
+  pdfApp:    ""    // رابط تطبيق PDF Merger على Streamlit
+};
+/* ======================================= */
+
+document.querySelectorAll("[data-link]").forEach(a => {
+  const v = LINKS[a.dataset.link];
+  if (v) a.href = v; else a.remove();
+});
+document.querySelectorAll("[data-text]").forEach(el => {
+  el.textContent = LINKS[el.dataset.text] || "";
+  if (!el.textContent) el.remove();
+});
+document.querySelectorAll("[data-soon]").forEach(el => {
+  if (LINKS[el.dataset.soon]) el.remove();
+});
+document.querySelectorAll("[data-needs]").forEach(el => {
+  if (!LINKS[el.dataset.needs]) el.remove();
+});
+
+if (matchMedia('(pointer: coarse)').matches) document.querySelector('.hint').textContent = 'المس الشبكة عشان ترسل حزمة';
+/* ===== reveal on scroll ===== */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('section h2, .group, .about > div, .card, .ora, .ora-grid > div, .item').forEach(el => el.classList.add('rv'));
+document.querySelectorAll('.cards').forEach(g => [...g.children].forEach((c,i) => c.style.transitionDelay = (i*90)+'ms'));
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
+document.querySelectorAll('.rv').forEach(el => reduce ? el.classList.add('in') : io.observe(el));
+
+/* ===== cable scroll-nav: packet travels with scroll ===== */
+const secs = [...document.querySelectorAll('.cable a')].map(a => [a, document.getElementById(a.dataset.sec)]);
+const wire = document.querySelector('.cable .wire'), fill = document.querySelector('.cable .fill'), pkt = document.querySelector('.cable .packet');
+function onScroll(){
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const p = max > 0 ? Math.min(1, scrollY / max) : 0;
+  const h = wire.offsetHeight;
+  pkt.style.top = (p*h)+'px'; fill.style.height = (p*h)+'px';
+  let cur = null;
+  secs.forEach(([a,s]) => { if (s.getBoundingClientRect().top < innerHeight*.45) cur = a; });
+  secs.forEach(([a]) => a.classList.toggle('on', a === cur));
+}
+addEventListener('scroll', onScroll, {passive:true}); addEventListener('resize', onScroll); onScroll();
+
+/* ===== hero network ===== */
+(() => {
+  const cv = document.getElementById('net'), ctx = cv.getContext('2d');
+  let running = false;
+  let W, H, dpr, nodes = [], packets = [], pulses = [], mouse = null, col = {};
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const readCols = () => { col = {line:css('--blue'), hot:css('--hazard'), node:css('--ink'), ind:css('--indigo')}; };
+  const LINK = 140;
+  function size(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const n = Math.round(Math.min(70, W*H/16000));
+    nodes = Array.from({length:n}, () => ({x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.25, vy:(Math.random()-.5)*.25, r:Math.random()<.15?3.2:1.8}));
+  }
+  const near = (a,b) => Math.hypot(a.x-b.x, a.y-b.y);
+  function send(from, to){ packets.push({a:from, b:to, t:0, sp:.012 + Math.random()*.01}); }
+  function step(){
+    ctx.clearRect(0,0,W,H);
+    for (const n of nodes){
+      n.x += n.vx; n.y += n.vy;
+      if (n.x<0||n.x>W) n.vx*=-1; if (n.y<0||n.y>H) n.vy*=-1;
+    }
+    ctx.lineWidth = 1;
+    for (let i=0;i<nodes.length;i++) for (let j=i+1;j<nodes.length;j++){
+      const d = near(nodes[i],nodes[j]);
+      if (d < LINK){ ctx.strokeStyle = [col.line,col.hot,col.ind][(i+j)%3]; ctx.globalAlpha = (1-d/LINK)*.55; ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke(); }
+    }
+    if (mouse){
+      for (const n of nodes){ const d = near(n,mouse); if (d < LINK*1.3){ ctx.strokeStyle = col.hot; ctx.globalAlpha = (1-d/(LINK*1.3))*.9; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(mouse.x,mouse.y); ctx.stroke(); } }
+      ctx.globalAlpha = 1; ctx.fillStyle = col.hot; ctx.beginPath(); ctx.arc(mouse.x,mouse.y,4,0,7); ctx.fill();
+    }
+    for (const n of nodes){ ctx.globalAlpha = .7; ctx.fillStyle = n.r>3 ? col.hot : col.node; const k = n.r*1.6; ctx.beginPath(); ctx.moveTo(n.x,n.y-k); ctx.lineTo(n.x+k,n.y); ctx.lineTo(n.x,n.y+k); ctx.lineTo(n.x-k,n.y); ctx.closePath(); ctx.fill(); }
+    // random traffic
+    if (Math.random() < .05 && packets.length < 18){
+      const a = nodes[Math.random()*nodes.length|0];
+      const nb = nodes.filter(b => b!==a && near(a,b) < LINK);
+      if (nb.length) send(a, nb[Math.random()*nb.length|0]);
+    }
+    packets = packets.filter(p => {
+      p.t += p.sp; if (p.t >= 1) return false;
+      const x = p.a.x + (p.b.x-p.a.x)*p.t, y = p.a.y + (p.b.y-p.a.y)*p.t;
+      ctx.globalAlpha = 1; ctx.fillStyle = p.hotPkt ? col.hot : col.line;
+      const ang = Math.atan2(p.b.y-p.a.y, p.b.x-p.a.x); ctx.save(); ctx.translate(x,y); ctx.rotate(ang); ctx.beginPath(); ctx.moveTo(5,0); ctx.lineTo(-4,-4); ctx.lineTo(-4,4); ctx.closePath(); ctx.fill(); ctx.restore(); return true;
+    });
+    pulses = pulses.filter(u => {
+      u.r += 3; const a = 1 - u.r/160; if (a <= 0) return false;
+      ctx.globalAlpha = a; ctx.strokeStyle = col.hot; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(u.x,u.y,u.r,0,7); ctx.stroke(); return true;
+    });
+    ctx.globalAlpha = 1;
+    if (!reduce && running) requestAnimationFrame(step);
+  }
+  const pos = e => { const r = cv.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
+  cv.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') mouse = pos(e); });
+  cv.addEventListener('pointerleave', () => mouse = null);
+  cv.addEventListener('pointerdown', e => {
+    const m = pos(e); pulses.push({x:m.x, y:m.y, r:4});
+    const src = {x:m.x, y:m.y};
+    nodes.filter(n => near(n,m) < LINK*1.6).slice(0,10).forEach(n => packets.push({a:src, b:n, t:0, sp:.02, hotPkt:true}));
+    if (reduce) step();
+  });
+  readCols(); size();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readCols);
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(size, 150); });
+  // pause drawing when hero is off-screen
+  new IntersectionObserver(([e]) => { if (e.isIntersecting && !running && !reduce){ running = true; step(); } else if (!e.isIntersecting) running = false; }).observe(cv);
+  if (reduce) step();
+})();
+</script>
+</body>
+</html>
