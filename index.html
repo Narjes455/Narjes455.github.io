@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Handjet:wght,ELGR,ELSH@100..900,1..2,0..16&family=IBM+Plex+Sans+Arabic:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#150E0D">
 <style>
 :root{
@@ -19,8 +19,9 @@
   --hazard:#F2A93B;  /* saffron */
   --indigo:#7D8CE0;  /* indigo thread */
   --grid:rgba(242,169,59,.045);
-  --display:"Handjet","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --display:"Lalezar","IBM Plex Sans Arabic",Tahoma,sans-serif;
   --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --head:"IBM Plex Sans Arabic",Tahoma,sans-serif;
   /* Sadu band: rows of triangles */
   --sadu:
     conic-gradient(from 135deg at 50% 0,var(--blue) 90deg,transparent 0) 0 0/16px 8px repeat-x,
@@ -48,14 +49,12 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--hazard);outline-off
 .online{display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;color:var(--muted);background:var(--panel);border:1px solid var(--line);padding:.2rem .8rem;border-radius:20px;margin-bottom:1.2rem;animation:up .7s both}
 .online i{width:8px;height:8px;border-radius:50%;background:#2BAA6E;box-shadow:0 0 0 0 rgba(43,170,110,.6);animation:ping 2s infinite}
 @keyframes ping{70%{box-shadow:0 0 0 9px rgba(43,170,110,0)}100%{box-shadow:0 0 0 0 rgba(43,170,110,0)}}
-.name{animation:wipe 1s cubic-bezier(.6,0,.2,1) .15s both,morph 7s ease-in-out 1.3s infinite alternate;
-  font-variation-settings:"ELSH" 2,"ELGR" 1;font-weight:700;color:var(--ink)}
-.name:hover{animation-play-state:running,paused;font-variation-settings:"ELSH" 16,"ELGR" 2;transition:font-variation-settings .6s}
-@keyframes morph{
-  0%{font-variation-settings:"ELSH" 2,"ELGR" 1}
-  35%{font-variation-settings:"ELSH" 8,"ELGR" 1}
-  70%{font-variation-settings:"ELSH" 13,"ELGR" 2}
-  100%{font-variation-settings:"ELSH" 16,"ELGR" 1.4}}
+.name{animation:wipe 1s cubic-bezier(.6,0,.2,1) .15s both,thread 5s ease-in-out 1.3s infinite alternate;font-weight:400;color:var(--ink)}
+/* the colored shadow drifts like a loose thread */
+@keyframes thread{
+  0%{text-shadow:.045em .045em 0 var(--blue),.09em .09em 0 transparent}
+  50%{text-shadow:.045em .045em 0 var(--blue),.09em .09em 0 color-mix(in srgb,var(--hazard) 70%,transparent)}
+  100%{text-shadow:-.045em .045em 0 var(--blue),-.09em .09em 0 color-mix(in srgb,var(--hazard) 70%,transparent)}}
 @keyframes wipe{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
 .role{animation:up .7s .5s both}.links{animation:up .7s .65s both}
 .hint{margin-top:2.2rem;font-size:.82rem;color:var(--muted);animation:up .7s 1.1s both}
@@ -92,9 +91,9 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--hazard);outline-off
 .arch rect:first-of-type{animation:glow 2.4s ease-in-out infinite}
 @keyframes glow{50%{stroke:var(--hazard)}}
 .name{
-  font-family:var(--display);line-height:.95;
+  font-family:var(--display);line-height:1.25;
   font-size:clamp(4rem,14vw,10rem);
-  text-shadow:4px 4px 0 var(--blue),8px 8px 0 color-mix(in srgb,var(--hazard) 55%,transparent);
+  text-shadow:.045em .045em 0 var(--blue);
 }
 /* the underline is a woven Sadu band */
 .name .measure{
@@ -114,9 +113,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--hazard);outline-off
 .btn:hover{border-color:var(--hazard);transform:translate(-3px,-3px);box-shadow:3px 3px 0 var(--hazard)}
 
 section{padding:3rem 0}
-h2{font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,6vw,3.4rem);line-height:1.1;margin-bottom:1.6rem;
-  font-variation-settings:"ELSH" 6;transition:font-variation-settings .5s}
-section:hover h2{font-variation-settings:"ELSH" 14}
+h2{font-family:var(--head);font-weight:700;font-size:clamp(1.9rem,5vw,2.6rem);line-height:1.3;margin-bottom:1.6rem}
 h2::after{content:"";display:block;width:96px;height:12px;margin-top:.6rem;background:var(--sadu);background-size:12px 6px,12px 6px,100% 2px}
 
 /* About */
@@ -138,7 +135,7 @@ h2::after{content:"";display:block;width:96px;height:12px;margin-top:.6rem;backg
 }
 .sheet .art.green{background:#0F6E4E}
 .sheet .body{padding:1.6rem 1.8rem}
-.sheet h3{font-family:var(--display);font-size:1.6rem;margin-bottom:.3rem}
+.sheet h3{font-family:var(--head);font-weight:700;font-size:1.6rem;margin-bottom:.3rem}
 .sheet p{color:var(--muted);max-width:58ch}
 .tags{display:flex;gap:.4rem;flex-wrap:wrap;margin:.9rem 0}
 .tags span{font-size:.82rem;padding:.15rem .6rem;border:1px solid var(--line);border-radius:20px}
@@ -166,7 +163,7 @@ h2::after{content:"";display:block;width:96px;height:12px;margin-top:.6rem;backg
 .arch{color:var(--blue)}
 .arch svg{width:100%;height:auto;display:block}
 .ora-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:2rem}
-.ora-grid h3{font-family:var(--display);font-size:1.9rem;margin-bottom:.7rem}
+.ora-grid h3{font-family:var(--head);font-weight:700;font-size:1.25rem;margin-bottom:.7rem}
 .roles,.feats{list-style:none}
 .roles li{display:flex;flex-direction:column;padding:.55rem 0;border-bottom:1px dashed var(--line);color:var(--muted)}
 .roles b{color:var(--ink)}
@@ -196,15 +193,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 }
 
 /* project groups */
-.group{font-family:var(--display);font-size:2rem;margin:2.4rem 0 1rem;display:flex;align-items:center;gap:.7rem}
+.group{font-family:var(--head);font-weight:700;font-size:1.35rem;margin:2.4rem 0 1rem;display:flex;align-items:center;gap:.7rem}
 .group:first-of-type{margin-top:.5rem}
 .group span{font-family:var(--body);font-size:.85rem;color:var(--blue);border:2px solid var(--blue);padding:0 .5rem;border-radius:4px}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:1.4rem;display:flex;flex-direction:column}
 .card.feature{border:2px solid var(--ink);grid-column:span 2}
 .card .ico{font-size:2rem;line-height:1;margin-bottom:.7rem}
-.card h4{font-family:var(--display);font-size:1.75rem;line-height:1.15;margin-bottom:.3rem}
-.card.feature h4{font-size:2.2rem}
+.card h4{font-family:var(--head);font-weight:700;font-size:1.2rem;line-height:1.15;margin-bottom:.3rem}
+.card.feature h4{font-size:1.45rem}
 .card p{color:var(--muted);font-size:.97rem}
 .card .tags{margin:.8rem 0}
 .card .actions{margin-top:auto;display:flex;gap:1.1rem;flex-wrap:wrap;font-weight:600}
