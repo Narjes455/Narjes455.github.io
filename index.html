@@ -1,575 +1,468 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>نرجس العمري | معرض أعمال</title>
-<meta name="description" content="معرض أعمال نرجس العمري: أمن الشبكات، أنظمة للشركات، أدوات ويب، ومشاريع قيد البناء.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+<title>Narjesnet — نرجس العمري</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
-<meta name="theme-color" content="#150E0D">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
+/* Layout: a network-operations console. Hero = live topology canvas; every project is a "node" with its own address. */
 :root{
-  color-scheme:dark;
-  --paper:#150E0D;   /* dark wool */
-  --panel:#1F1614; --ink:#F1E4CF; --muted:#BBA88F; --line:#3D2C27;
-  --blue:#E4513F;    /* Sadu madder red */
-  --hazard:#F2A93B;  /* saffron */
-  --indigo:#7D8CE0;  /* indigo thread */
-  --grid:rgba(242,169,59,.045);
-  --display:"Lalezar","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --bg:#0b1620; --surface:#11212c; --surface-2:#163040; --line:#21404f;
+  --fg:#e7eff3; --muted:#8ea7b5; --accent:#3ccfc6; --signal:#ff8b5c; --ok:#5fd68a;
+  --display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
   --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
-  --head:"IBM Plex Sans Arabic",Tahoma,sans-serif;
-  /* Sadu band: rows of triangles */
-  --sadu:
-    conic-gradient(from 135deg at 50% 0,var(--blue) 90deg,transparent 0) 0 0/16px 8px repeat-x,
-    conic-gradient(from -45deg at 50% 100%,var(--hazard) 90deg,transparent 0) 8px 100%/16px 8px repeat-x,
-    linear-gradient(var(--ink),var(--ink)) 0 50%/100% 2px no-repeat;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
-body{
-  font-family:var(--body);color:var(--ink);background:var(--paper);
-  background-image:repeating-linear-gradient(45deg,var(--grid) 0 1px,transparent 1px 14px),repeating-linear-gradient(-45deg,var(--grid) 0 1px,transparent 1px 14px);line-height:1.8;font-size:1.05rem;
-}
-a{color:var(--blue)}
-a:focus-visible,button:focus-visible{outline:3px solid var(--hazard);outline-offset:3px;border-radius:4px}
-.wrap{max-width:1040px;margin:0 auto;padding:0 1.5rem}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#f2f6f7; --surface:#ffffff; --surface-2:#e6eff2; --line:#cfdde3;
+  --fg:#0e2230; --muted:#4c6573; --accent:#078c86; --signal:#d4521f; --ok:#1f9a52; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#f2f6f7; --surface:#ffffff; --surface-2:#e6eff2; --line:#cfdde3;
+  --fg:#0e2230; --muted:#4c6573; --accent:#078c86; --signal:#d4521f; --ok:#1f9a52; color-scheme:light}
 
-/* Hero: the name drawn like a title block on a plan */
-.hero{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden;padding:4rem 0}
-#net{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;
-  -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,.18) 0%,#000 60%),linear-gradient(#000 70%,transparent);
-  -webkit-mask-composite:source-in;mask-image:linear-gradient(to left,rgba(0,0,0,.18) 0%,#000 60%),linear-gradient(#000 70%,transparent);mask-composite:intersect}
-.hero-in{position:relative;pointer-events:none;width:100%}
-.hero-in a,.hero-in .btn{pointer-events:auto}
-.online{display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;color:var(--muted);background:var(--panel);border:1px solid var(--line);padding:.2rem .8rem;border-radius:20px;margin-bottom:1.2rem;animation:up .7s both}
-.online i{width:8px;height:8px;border-radius:50%;background:#2BAA6E;box-shadow:0 0 0 0 rgba(43,170,110,.6);animation:ping 2s infinite}
-@keyframes ping{70%{box-shadow:0 0 0 9px rgba(43,170,110,0)}100%{box-shadow:0 0 0 0 rgba(43,170,110,0)}}
-.name{animation:wipe 1s cubic-bezier(.6,0,.2,1) .15s both,thread 5s ease-in-out 1.3s infinite alternate;font-weight:400;color:var(--ink)}
-/* the colored shadow drifts like a loose thread */
-@keyframes thread{
-  0%{text-shadow:.045em .045em 0 var(--blue),.09em .09em 0 transparent}
-  50%{text-shadow:.045em .045em 0 var(--blue),.09em .09em 0 color-mix(in srgb,var(--hazard) 70%,transparent)}
-  100%{text-shadow:-.045em .045em 0 var(--blue),-.09em .09em 0 color-mix(in srgb,var(--hazard) 70%,transparent)}}
-@keyframes wipe{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
-.role{animation:up .7s .5s both}.links{animation:up .7s .65s both}
-.hint{margin-top:2.2rem;font-size:.82rem;color:var(--muted);animation:up .7s 1.1s both}
-@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.75}
+.wrap{max-width:1120px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.3}
+.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 
-/* network cable scroll-nav */
-.cable{position:fixed;top:50%;right:22px;transform:translateY(-50%);height:min(60vh,420px);width:14px;z-index:10;display:none;flex-direction:column;justify-content:space-between;align-items:center}
-.cable .wire{position:absolute;top:0;bottom:0;width:2px;background:var(--line);border-radius:2px}
-.cable .fill{position:absolute;top:0;left:0;width:100%;height:0;background:var(--blue)}
-.cable .packet{position:absolute;left:50%;top:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:2px;background:var(--hazard);box-shadow:0 0 10px var(--hazard);transform:rotate(45deg)}
-.cable a{position:relative;width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--line);transition:border-color .3s,background .3s,transform .3s}
-.cable a.on{border-color:var(--blue);background:var(--blue);transform:scale(1.15)}
-.cable a b{position:absolute;right:24px;top:50%;transform:translateY(-50%) translateX(6px);white-space:nowrap;font-size:.8rem;background:var(--ink);color:var(--paper);padding:.1rem .55rem;border-radius:4px;opacity:0;pointer-events:none;transition:.2s}
-.cable a:hover b,.cable a:focus-visible b,.cable a.on b{opacity:1;transform:translateY(-50%)}
-.cable a.on b{opacity:.9}
-@media (min-width:1180px){.cable{display:flex}}
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:8px;direction:ltr}
+.logo .dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 60%,transparent)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.nav{display:flex;gap:20px;font-size:14px}
+.nav a{text-decoration:none;color:var(--muted);transition:color .2s}
+.nav a:hover{color:var(--accent)}
+@media (max-width:640px){.nav{display:none}}
 
-/* scroll reveal */
-.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
-.rv.in{opacity:1;transform:none}
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+#net{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to left,var(--bg) 30%,color-mix(in srgb,var(--bg) 40%,transparent) 70%,transparent);pointer-events:none}
+@media (max-width:760px){.hero::after{background:color-mix(in srgb,var(--bg) 72%,transparent)}}
+.hero .wrap{position:relative;z-index:2;padding-block:72px 64px}
+.hello{font-family:var(--mono);color:var(--accent);font-size:14px;letter-spacing:.04em;direction:ltr;text-align:right;margin:0 0 14px}
+.hero h1{font-size:clamp(2.6rem,7vw,4.6rem);font-weight:700;letter-spacing:0}
+.hero h1 span{color:var(--accent)}
+.role{font-size:clamp(1.05rem,2.4vw,1.35rem);color:var(--fg);margin:10px 0 0;max-width:34ch}
+.role b{color:var(--signal);font-weight:600}
+.cli{margin-top:26px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;max-width:520px;font-family:var(--mono);font-size:14px;direction:ltr;text-align:left;min-height:52px}
+.cli .p{color:var(--ok)}
+.cli .caret{display:inline-block;width:8px;height:1.1em;background:var(--accent);vertical-align:-3px;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid var(--line);background:var(--surface);transition:transform .2s,border-color .2s,background .2s}
+.btn:hover{transform:translateY(-2px);border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn svg{width:18px;height:18px}
+.loc{margin-top:22px;font-size:14px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
 
-/* security scan sweep on hover */
-.card,.ora{position:relative;overflow:hidden}
-.card::after,.ora::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(100deg,transparent 40%,color-mix(in srgb,var(--blue) 14%,transparent) 50%,transparent 60%);
-  transform:translateX(110%)}
-.card:hover::after,.ora:hover::after{transition:transform .9s ease;transform:translateX(-110%)}
-.card{transition:transform .25s,box-shadow .25s,border-color .25s}
-.card:hover{transform:translate(-5px,-5px);box-shadow:5px 5px 0 var(--blue);border-color:var(--hazard)}
+/* sections */
+section{padding-block:72px}
+.eyebrow{font-family:var(--mono);font-size:13px;color:var(--signal);letter-spacing:.06em;direction:ltr;text-align:right;margin:0 0 8px}
+.sec-h{font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:12px}
+.lead{color:var(--muted);max-width:62ch;margin:0}
 
-/* data flowing into the database in the ora diagram */
-.arch path{animation:flow 1.2s linear infinite}
-@keyframes flow{to{stroke-dashoffset:-18}}
-.arch rect:first-of-type{animation:glow 2.4s ease-in-out infinite}
-@keyframes glow{50%{stroke:var(--hazard)}}
-.name{
-  font-family:var(--display);line-height:1.25;
-  font-size:clamp(4rem,14vw,10rem);
-  text-shadow:.045em .045em 0 var(--blue);
-}
-/* the underline is a woven Sadu band */
-.name .measure{
-  display:block;height:18px;margin-top:1.8rem;background:var(--sadu);
-  transform-origin:right;animation:draw 1.2s cubic-bezier(.6,0,.2,1) .4s both,slide 9s linear 1.6s infinite;
-}
-@keyframes slide{to{background-position:-160px 0,-152px 100%,0 50%}}
-@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-.role{font-size:clamp(1.1rem,2.6vw,1.4rem);color:var(--muted);margin-top:1.2rem;max-width:34ch}
-.links{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.8rem}
-.btn{
-  display:inline-block;padding:.6rem 1.2rem;border:2px solid var(--ink);color:var(--ink);
-  text-decoration:none;font-weight:600;border-radius:6px;background:var(--panel)
-}
-.btn{border-radius:2px;transition:transform .2s,box-shadow .2s}
-.btn.solid{background:var(--blue);border-color:var(--blue);color:#fff}
-.btn:hover{border-color:var(--hazard);transform:translate(-3px,-3px);box-shadow:3px 3px 0 var(--hazard)}
+/* about */
+.about{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:start}
+@media (max-width:820px){.about{grid-template-columns:1fr}}
+.about p{max-width:62ch;margin:0 0 14px}
+.facts{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.fact{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);font-size:15px}
+.fact:last-child{border-bottom:0}
+.fact dt{color:var(--muted);font-size:13px;padding-top:2px}
+.fact dd{margin:0;min-width:0}
 
-section{padding:3rem 0}
-h2{font-family:var(--head);font-weight:700;font-size:clamp(1.9rem,5vw,2.6rem);line-height:1.3;margin-bottom:1.6rem}
-h2::after{content:"";display:block;width:96px;height:12px;margin-top:.6rem;background:var(--sadu);background-size:12px 6px,12px 6px,100% 2px}
+/* layers (skills) */
+.layers{display:grid;gap:12px;margin-top:32px}
+.layer{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center;padding:18px 22px;border:1px solid var(--line);border-radius:12px;background:var(--surface);transition:transform .25s,border-color .25s}
+.layer:hover{transform:translateX(-6px);border-color:var(--accent)}
+.layer .ln{font-family:var(--mono);font-size:12px;color:var(--muted);direction:ltr;text-align:right}
+.layer h3{font-size:1.15rem;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:13px;padding:5px 12px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line)}
+@media (max-width:640px){.layer{grid-template-columns:1fr;gap:10px}}
 
-/* About */
-.about{display:grid;grid-template-columns:1.4fr 1fr;gap:2.5rem;align-items:start}
-.about p{max-width:60ch;margin-bottom:1rem}
-.interests{list-style:none;border-inline-start:4px solid var(--hazard);padding-inline-start:1.2rem}
-.interests li{padding:.45rem 0;border-bottom:1px dashed var(--line)}
-.interests li:last-child{border-bottom:0}
+/* projects */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 24px}
+.filters button{font:inherit;font-size:14px;color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 16px;cursor:pointer;transition:all .2s}
+.filters button:hover{border-color:var(--accent)}
+.filters .n{font-family:var(--mono);font-size:12px;opacity:.7;margin-inline-start:4px}
+.filters button[aria-pressed="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+@media (max-width:400px){.grid{grid-template-columns:1fr}}
+.card{position:relative;display:flex;flex-direction:column;gap:10px;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--surface);min-width:0;transition:transform .25s,border-color .25s,opacity .3s}
+.card:hover{transform:translateY(-4px);border-color:var(--accent)}
+.card[hidden]{display:none}
+.card .top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;color:var(--muted);direction:ltr}
+.status{display:inline-flex;align-items:center;gap:6px;color:var(--ok)}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.dev{color:var(--signal)}
+.card h3{font-size:1.2rem}
+.card .en{font-family:var(--mono);font-size:12.5px;color:var(--accent);direction:ltr;text-align:right;overflow-wrap:anywhere}
+.card p{margin:0;color:var(--muted);font-size:15px;flex:1}
+.card .chips .chip{font-size:12px;padding:3px 10px}
+.links{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;font-weight:600;padding-top:6px;border-top:1px dashed var(--line)}
+.links a{text-decoration:none;color:var(--accent)}
+.links a:hover{text-decoration:underline}
 
-/* Published: large sheets */
-.sheets{display:grid;gap:1.6rem}
-.sheet{
-  background:var(--panel);border:2px solid var(--ink);border-radius:10px;
-  display:grid;grid-template-columns:200px 1fr;overflow:hidden
-}
-.sheet .art{
-  background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;
-  font-size:4rem;min-height:180px
-}
-.sheet .art.green{background:#0F6E4E}
-.sheet .body{padding:1.6rem 1.8rem}
-.sheet h3{font-family:var(--head);font-weight:700;font-size:1.6rem;margin-bottom:.3rem}
-.sheet p{color:var(--muted);max-width:58ch}
-.tags{display:flex;gap:.4rem;flex-wrap:wrap;margin:.9rem 0}
-.tags span{font-size:.82rem;padding:.15rem .6rem;border:1px solid var(--line);border-radius:20px}
-.sheet .actions{display:flex;gap:1.2rem;flex-wrap:wrap;font-weight:600}
+/* timeline */
+.tl{display:grid;gap:0;margin-top:32px;border-right:2px solid var(--line);padding-right:24px}
+.tl-item{position:relative;padding-bottom:28px}
+.tl-item::before{content:"";position:absolute;right:-31px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.tl-item h3{font-size:1.1rem}
+.tl-item .when{font-size:13px;color:var(--signal);font-family:var(--mono)}
+.tl-item p{margin:4px 0 0;color:var(--muted);max-width:62ch}
 
-/* Workshop: in progress */
-.workshop-note{color:var(--muted);margin:-.6rem 0 1.4rem;max-width:60ch}
-.bench{border-top:2px solid var(--ink)}
-.item{display:grid;grid-template-columns:1fr auto;gap:.3rem 1.5rem;padding:1.3rem 0;border-bottom:1px solid var(--line)}
-.item h3{font-size:1.2rem;font-weight:600}
-.item p{grid-column:1/-1;color:var(--muted);max-width:68ch}
-.status{
-  align-self:start;font-size:.8rem;font-weight:600;padding:.2rem .7rem;border-radius:4px;
-  background:repeating-linear-gradient(-45deg,var(--hazard) 0 8px,#1b1b1b 8px 16px);color:#1b1b1b;
-  position:relative;white-space:nowrap
-}
-.status b{background:var(--hazard);padding:0 .4rem;border-radius:3px}
+/* contact */
+.contact{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:40px 28px;text-align:center;position:relative;overflow:hidden}
+.contact h2{font-size:clamp(1.6rem,4vw,2.3rem)}
+.contact p{color:var(--muted);margin:10px auto 24px;max-width:46ch}
+.contact .cta{justify-content:center}
+footer{padding-block:28px;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--line)}
 
-/* ora case study */
-.ora{display:grid;grid-template-columns:1.2fr 1fr;gap:2rem;align-items:center;
-  background:var(--panel);border:2px solid var(--ink);border-radius:2px;padding:2rem}
-.ora .lead{font-size:1.2rem;font-weight:600;margin-bottom:.8rem;max-width:52ch}
-.ora p{max-width:58ch}
-.private-note{margin-top:.6rem;font-size:.92rem;color:var(--muted);border-inline-start:3px solid var(--hazard);padding-inline-start:.8rem}
-.arch{color:var(--blue)}
-.arch svg{width:100%;height:auto;display:block}
-.ora-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:2rem}
-.ora-grid h3{font-family:var(--head);font-weight:700;font-size:1.25rem;margin-bottom:.7rem}
-.roles,.feats{list-style:none}
-.roles li{display:flex;flex-direction:column;padding:.55rem 0;border-bottom:1px dashed var(--line);color:var(--muted)}
-.roles b{color:var(--ink)}
-.feats li{padding:.45rem 1.2rem .45rem 0;position:relative}
-.feats li::before{content:"";position:absolute;right:0;top:1.05em;width:8px;height:8px;background:var(--hazard)}
-@media (max-width:760px){.ora,.ora-grid{grid-template-columns:1fr}.ora{padding:1.4rem}}
-
-.sheet .art.amber{background:#B9791A}
-.demo{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1.2rem}
-.cred{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;font-size:.9rem;color:var(--muted)}
-.cred code{font-family:var(--body);direction:ltr;background:var(--paper);border:1px solid var(--line);padding:.15rem .6rem;border-radius:4px;color:var(--ink);user-select:all}
-
-footer{padding:3rem 0 4rem;color:var(--muted);border-top:1px solid var(--line);margin-top:2rem}
-footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
-
-@media (max-width:760px){
-  .hero{min-height:78vh;padding:3rem 0}
-  .about{grid-template-columns:1fr}
-  .sheet{grid-template-columns:1fr}
-  .sheet .art{min-height:110px;font-size:3rem}
-}
-@media (prefers-reduced-motion:reduce){
-  .name .measure,.name,.role,.links,.online,.online i,.hint,.arch path,.arch rect{animation:none!important}
-  .rv{opacity:1;transform:none;transition:none}
-  .card:hover{transform:none}.card::after,.ora::after{display:none}
-  html{scroll-behavior:auto}
-}
-
-/* project groups */
-.group{font-family:var(--head);font-weight:700;font-size:1.35rem;margin:2.4rem 0 1rem;display:flex;align-items:center;gap:.7rem}
-.group:first-of-type{margin-top:.5rem}
-.group span{font-family:var(--body);font-size:.85rem;color:var(--blue);border:2px solid var(--blue);padding:0 .5rem;border-radius:4px}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:1.4rem;display:flex;flex-direction:column}
-.card.feature{border:2px solid var(--ink);grid-column:span 2}
-.card .ico{font-size:2rem;line-height:1;margin-bottom:.7rem}
-.card h4{font-family:var(--head);font-weight:700;font-size:1.2rem;line-height:1.15;margin-bottom:.3rem}
-.card.feature h4{font-size:1.45rem}
-.card p{color:var(--muted);font-size:.97rem}
-.card .tags{margin:.8rem 0}
-.card .actions{margin-top:auto;display:flex;gap:1.1rem;flex-wrap:wrap;font-weight:600}
-.soon{font-size:.85rem;color:var(--muted);border:1px dashed var(--line);padding:0 .6rem;border-radius:4px}
-@media (max-width:620px){.card.feature{grid-column:auto}}
+/* reveal */
+.rv{transition:transform .7s cubic-bezier(.2,.7,.2,1),opacity .7s}
+.js .rv.pre{transform:translateY(18px);opacity:.25}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.js .rv.pre{transform:none;opacity:1}}
 </style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
 
-<header class="hero">
-<canvas id="net" aria-hidden="true"></canvas>
-<div class="wrap hero-in">
-  <p class="online"><i aria-hidden="true"></i> متصلة من المدينة المنورة</p>
-  <h1 class="name">نرجس العمري<span class="measure" aria-hidden="true"></span></h1>
-  <p class="role">خريجة أنظمة شبكات، مهتمة بالأمن السيبراني والبنية التحتية، وأبني أنظمة وأدوات عملية تخدم الشركات الصغيرة.</p>
-  <div class="links">
-    <a class="btn solid" href="https://github.com/Narjes455" target="_blank" rel="noopener">GitHub</a>
-    <a class="btn" href="https://www.linkedin.com/in/%D9%86%D8%B1%D8%AC%D8%B3-%D8%A7%D9%84%D8%B9%D9%85%D8%B1%D9%8A-757b68273" target="_blank" rel="noopener">LinkedIn</a>
-    <a class="btn" href="#work">شوف المشاريع</a>
+<div dir="rtl" lang="ar">
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="dot"></span>Narjesnet<span style="color:var(--muted)">:~$</span></a>
+    <nav class="nav" aria-label="الأقسام">
+      <a href="#about">عني</a><a href="#skills">مهاراتي</a><a href="#projects">مشاريعي</a><a href="#journey">مسيرتي</a><a href="#contact">تواصل</a>
+    </nav>
   </div>
-  <p class="hint" aria-hidden="true">حرّك المؤشر على الشبكة، أو اضغط عشان ترسل حزمة</p>
-</div>
 </header>
 
-<nav class="cable" aria-label="أقسام الصفحة">
-  <span class="wire"><span class="fill"></span><span class="packet"></span></span>
-  <a href="#about" data-sec="about"><b>عني</b></a>
-  <a href="#work" data-sec="work"><b>المشاريع</b></a>
-  <a href="#ora" data-sec="ora"><b>أورا</b></a>
-  <a href="#workshop" data-sec="workshop"><b>الورشة</b></a>
-</nav>
+<main id="top">
+<section class="hero" style="padding-block:0">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="hello">// hello, world — connection established</p>
+    <h1>نرجس <span>العمري</span></h1>
+    <p class="role">خريجة دبلوم <b>أنظمة الشبكات</b>، شغوفة بالأمن السيبراني والبنية التحتية، وأحوّل الأفكار إلى أنظمة وأدوات وألعاب تعليمية تشتغل فعلاً.</p>
+    <div class="cli" id="cli" aria-label="سطر أوامر متحرك"><span class="p">narjes@net</span>:~$ <span id="typed"></span><span class="caret"></span></div>
+    <div class="cta">
+      <a class="btn primary" href="#projects">استعرض مشاريعي</a>
+      <a class="btn" href="https://github.com/Narjes455" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>GitHub</a>
+      <a class="btn" href="https://www.linkedin.com/in/%D9%86%D8%B1%D8%AC%D8%B3-%D8%A7%D9%84%D8%B9%D9%85%D8%B1%D9%8A-757b68273/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>LinkedIn</a>
+    </div>
+    <div class="loc"><span>📍 المدينة المنورة، السعودية</span><span class="mono">UTC+03:00</span></div>
+  </div>
+</section>
 
-<main>
-  <section class="wrap" id="about" aria-labelledby="about-h">
-    <div class="about">
-      <div>
-        <h2 id="about-h">عنّي</h2>
-        <p>أنا نرجس، من المدينة المنورة. درست دبلوم أنظمة الشبكات في الكلية التطبيقية بجامعة طيبة، وكان مشروع تخرجي جدار حماية ذكي يكشف الهجمات بتعلّم الآلة.</p>
-        <p>أشتغل حالياً مطوّرة ومسؤولة أنظمة في شركة مقاولات، وهناك تعلّمت إن أفضل برنامج هو اللي يحل مشكلة حقيقية يواجهها الموظف كل يوم. أكتب أغلب مشاريعي بـ Python، من أدوات الأتمتة وتحليل البيانات إلى أنظمة كاملة بقواعد بيانات وصلاحيات. وجنب الشغل الجاد، أستمتع بصفحات الويب التفاعلية والألعاب.</p>
-      </div>
-      <div>
-        <h2>اهتماماتي</h2>
-        <ul class="interests">
-          <li>الأمن السيبراني وحماية الشبكات</li>
-          <li>الذكاء الاصطناعي في كشف التهديدات</li>
-          <li>البنية التحتية والشبكات للمنشآت الصغيرة</li>
-          <li>أنظمة إدارة الشركات وأتمتة الأعمال</li>
-          <li>تحليل البيانات وتطبيقات الويب</li>
-          <li>المشاريع اللي تجمع البرمجة بالقطع الإلكترونية</li>
-        </ul>
+<section id="about">
+  <div class="wrap about">
+    <div class="rv">
+      <p class="eyebrow">01 · whoami</p>
+      <h2 class="sec-h">عنّي</h2>
+      <p>أنا نرجس، متخصصة في أنظمة الشبكات وأعمل مطوّرة ومسؤولة أنظمة تقنية. أحب أفهم كيف تمشي البيانات من جهاز لجهاز، وكيف نحميها من أي وصول غير مصرّح.</p>
+      <p>بدأت من تصميم الشبكات على Packet Tracer وتطبيق سياسات الحماية بالـ ACL، ثم انتقلت إلى بناء جدران حماية ذكية تعتمد على الذكاء الاصطناعي، وأدوات Python تحل مشاكل حقيقية في بيئة العمل.</p>
+      <p>وبجانب التقنية عندي شغف بالتعليم: أصمّم ألعاباً تعليمية تفاعلية تخلّي المفاهيم الصعبة ممتعة وسهلة للطلاب.</p>
+    </div>
+    <dl class="facts rv">
+      <div class="fact"><dt>التخصص</dt><dd>دبلوم أنظمة الشبكات</dd></div>
+      <div class="fact"><dt>الجهة</dt><dd>الكلية التطبيقية – جامعة طيبة</dd></div>
+      <div class="fact"><dt>الشغف</dt><dd>الأمن السيبراني والبنية التحتية</dd></div>
+      <div class="fact"><dt>العمل الحالي</dt><dd>تطوير وإدارة الأنظمة التقنية</dd></div>
+      <div class="fact"><dt>المشاريع</dt><dd><span class="mono" id="repoCount">21</span> مشروعاً منشوراً على GitHub</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="skills" style="background:color-mix(in srgb,var(--surface) 45%,var(--bg));border-block:1px solid var(--line)">
+  <div class="wrap">
+    <p class="eyebrow">02 · show skills</p>
+    <h2 class="sec-h rv">مهاراتي، طبقة فوق طبقة</h2>
+    <p class="lead rv">مثل نموذج الشبكات: كل طبقة تبني على اللي تحتها.</p>
+    <div class="layers">
+      <div class="layer rv"><div><div class="ln">LAYER 1 · NETWORK</div><h3>الشبكات والبنية التحتية</h3></div><div class="chips"><span class="chip">Cisco Packet Tracer</span><span class="chip">تصميم LAN</span><span class="chip">VLAN</span><span class="chip">Routing</span><span class="chip">Network Automation · SSH</span><span class="chip">مراقبة الشبكة</span><span class="chip">Web · Mail · DNS Servers</span><span class="chip">صيانة وتركيب الأجهزة</span></div></div>
+      <div class="layer rv"><div><div class="ln">LAYER 2 · SECURITY</div><h3>الأمن السيبراني</h3></div><div class="chips"><span class="chip">ACL Policies</span><span class="chip">Firewalls</span><span class="chip">AI-Driven Detection</span><span class="chip">Prompt Injection Defense</span><span class="chip">Data Leakage Prevention</span></div></div>
+      <div class="layer rv"><div><div class="ln">LAYER 3 · CODE</div><h3>البرمجة والبيانات</h3></div><div class="chips"><span class="chip">Python</span><span class="chip">Streamlit</span><span class="chip">Flask</span><span class="chip">Tkinter</span><span class="chip">Selenium</span><span class="chip">تحليل البيانات</span><span class="chip">قواعد بيانات سحابية</span><span class="chip">Flutter</span></div></div>
+      <div class="layer rv"><div><div class="ln">LAYER 4 · CREATE</div><h3>الويب والألعاب التعليمية</h3></div><div class="chips"><span class="chip">HTML · CSS · JavaScript</span><span class="chip">GitHub Pages</span><span class="chip">تصميم ألعاب تعليمية</span><span class="chip">Arduino</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <p class="eyebrow">03 · ls ~/projects</p>
+    <h2 class="sec-h rv">مشاريعي</h2>
+    <p class="lead rv">كل مشروع عقدة في شبكتي. يمكن تصفية المشاريع حسب التصنيف وفتح أي مشروع لزيارته.</p>
+    <div class="filters" role="group" aria-label="تصفية المشاريع">
+      <button id="f-all" data-f="all" aria-pressed="true">الكل <span class="n">21</span></button>
+      <button id="f-sec" data-f="sec" aria-pressed="false">شبكات وأمن <span class="n">6</span></button>
+      <button id="f-py" data-f="py" aria-pressed="false">أنظمة وPython <span class="n">7</span></button>
+      <button id="f-game" data-f="game" aria-pressed="false">ألعاب تعليمية <span class="n">6</span></button>
+      <button id="f-web" data-f="web" aria-pressed="false">صفحات وطنية <span class="n">2</span></button>
+    </div>
+    <div class="grid" id="grid">
+      <article class="card rv" data-c="sec">
+        <div class="top"><span>10.0.1.1</span><span class="status">UP</span></div>
+        <h3>جدار الحماية الذكي</h3><div class="en">AI-Driven_Smart_Firewall</div>
+        <p>جدار حماية يعتمد على الذكاء الاصطناعي لكشف الحركة المشبوهة في الشبكة. مشروع ضمن الكلية التطبيقية بجامعة طيبة.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">AI</span><span class="chip">Security</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/AI-Driven_Smart_Firewall" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="sec">
+        <div class="top"><span>10.0.1.2</span><span class="status">UP</span></div>
+        <h3>سياج</h3><div class="en">siyaj-ai-firewall</div>
+        <p>جدار حماية لأنظمة الذكاء الاصطناعي يكشف هجمات Prompt Injection ويمنع تسريب البيانات الحساسة.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">LLM Security</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/siyaj-ai-firewall" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="sec">
+        <div class="top"><span>10.0.1.3</span><span class="status">UP</span></div>
+        <h3>أتمتة أجهزة الشبكة</h3><div class="en">network-automation-sim</div>
+        <p>أداة تتصل بأجهزة Cisco عبر SSH لأخذ نسخ احتياطية من الإعدادات، وكشف التغييرات، وإرسال التنبيهات، مع لوحة تحكم ويب.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Flask</span><span class="chip">Netmiko</span><span class="chip">SSH</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/network-automation-sim" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="sec">
+        <div class="top"><span>10.0.1.4</span><span class="status">UP</span></div>
+        <h3>مراقب الشبكة</h3><div class="en">network-monitor</div>
+        <p>برنامج يفحص اتصال الإنترنت والراوتر دورياً، ويسجّل زمن الاستجابة مع التوقيت في ملف Excel.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Tkinter</span><span class="chip">Ping</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/network-monitor" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="sec">
+        <div class="top"><span>10.0.1.5</span><span class="status">UP</span></div>
+        <h3>شبكة آمنة بسياسات ACL</h3><div class="en">ACL-Security-Network</div>
+        <p>شبكة بثلاثة أقسام (مدراء، موظفين، زوار) متصلة بسيرفرات Web وMail وDNS، مع سياسات ACL صارمة تمنع الوصول غير المصرّح.</p>
+        <div class="chips"><span class="chip">Packet Tracer</span><span class="chip">ACL</span><span class="chip">Servers</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/ACL-Security-Network" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="sec">
+        <div class="top"><span>10.0.1.6</span><span class="status">UP</span></div>
+        <h3>شبكة LAN أساسية</h3><div class="en">packet-tracer-lan-project</div>
+        <p>تصميم طوبولوجيا شبكة محلية متكاملة على Cisco Packet Tracer، من توصيل الأجهزة إلى ضبط العناوين.</p>
+        <div class="chips"><span class="chip">Packet Tracer</span><span class="chip">LAN</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/packet-tracer-lan-project" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="py">
+        <div class="top"><span>10.0.2.1</span><span class="status">LIVE</span></div>
+        <h3>نظام تذاكر الدعم الفني</h3><div class="en">helpdesk-system</div>
+        <p>نظام يستقبل مشاكل الموظفين التقنية ويوزّعها على الفنيين، ويتابع كل تذكرة حسب أولويتها ومهلة حلّها، مع تقارير أداء للفريق.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Streamlit</span><span class="chip">SQLite</span></div>
+        <div class="links"><a href="https://narjes455.github.io/helpdesk-system/" target="_blank" rel="noopener">فتح الصفحة ↗</a><a href="https://github.com/Narjes455/helpdesk-system" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="py">
+        <div class="top"><span>10.0.2.2</span><span class="status">LIVE</span></div>
+        <h3>نظام أورا لإدارة المنشآت</h3><div class="en">ora-demo</div>
+        <p>نسخة تجريبية تفاعلية من نظام لإدارة الموظفين والعمال والحضور والعقود والفواتير. النسخة الكاملة تطبيق Python بقاعدة بيانات سحابية.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Cloud DB</span><span class="chip">Demo</span></div>
+        <div class="links"><a href="https://narjes455.github.io/ora-demo/" target="_blank" rel="noopener">تجربة النظام ↗</a><a href="https://github.com/Narjes455/ora-demo" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="py">
+        <div class="top"><span>10.0.2.3</span><span class="status">LIVE</span></div>
+        <h3>دمج ملفات PDF</h3><div class="en">pdf-merger</div>
+        <p>تطبيق ويب يجمع عدة ملفات PDF في ملف واحد بخطوات بسيطة، ويشتغل مباشرة من المتصفح.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Streamlit</span></div>
+        <div class="links"><a href="https://narjes-pdf-merger.streamlit.app/" target="_blank" rel="noopener">تجربة التطبيق ↗</a><a href="https://github.com/Narjes455/pdf-merger" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="py">
+        <div class="top"><span>10.0.2.4</span><span class="status">UP</span></div>
+        <h3>برنامج المحاسبة</h3><div class="en">accounting-app</div>
+        <p>برنامج سطح مكتب للمحلات الصغيرة يسجّل المبيعات والمصروفات، ويعرض تقريراً مالياً، ويحفظ البيانات في Excel.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Tkinter</span><span class="chip">Pandas</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/accounting-app" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="py">
+        <div class="top"><span>10.0.2.5</span><span class="status">UP</span></div>
+        <h3>تحليل المبيعات</h3><div class="en">sales-analysis-project</div>
+        <p>تحليل بيانات مبيعات متجر إلكتروني، مع تقارير ورسوم بيانية لأداء المنتجات والمناطق.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Pandas</span><span class="chip">Matplotlib</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/sales-analysis-project" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="py">
+        <div class="top"><span>10.0.2.6</span><span class="status">UP</span></div>
+        <h3>الإذاعة المدرسية لليوم الوطني</h3><div class="en">national_day_radio</div>
+        <p>مولّد لنص إذاعة مدرسية لليوم الوطني 96، يصدّرها كصفحة وملقّن وملف Word، ويقدر يصنع فيديو بشخصيات كرتونية متحركة.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">TTS</span><span class="chip">Video</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/national_day_radio" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="py">
+        <div class="top"><span>10.0.2.7</span><span class="status">UP</span></div>
+        <h3>أتمتة المتصفح</h3><div class="en">real-estate-scraper</div>
+        <p>مشروع أتمتة يفتح المتصفح ويتنقّل بين الصفحات تلقائياً، كبداية لجمع بيانات العقارات من الويب.</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Selenium</span></div>
+        <div class="links"><a href="https://github.com/Narjes455/real-estate-scraper" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="game">
+        <div class="top"><span>10.0.3.1</span><span class="status">LIVE</span></div>
+        <h3>مختبر الشبكات</h3><div class="en">Network-lab</div>
+        <p>لعبة بالعربي والإنجليزي تعلّم أساسيات الشبكات عبر خمس مهمات: نموذج OSI، توصيل RJ45، تقسيم الشبكات، الأجهزة، ومنافذ البروتوكولات.</p>
+        <div class="chips"><span class="chip">JavaScript</span><span class="chip">Networking</span><span class="chip">AR · EN</span></div>
+        <div class="links"><a href="https://narjes455.github.io/network-lab/" target="_blank" rel="noopener">تجربة اللعبة ↗</a><a href="https://github.com/Narjes455/Network-lab" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="game">
+        <div class="top"><span>10.0.3.2</span><span class="status">LIVE</span></div>
+        <h3>أكاديمية الشبكات</h3><div class="en">network-game</div>
+        <p>لعبة تدريبية بمراحل، في كل مرحلة تبني شبكة كاملة من الصفر ثم تتحقق إذا كانت تشتغل.</p>
+        <div class="chips"><span class="chip">JavaScript</span><span class="chip">Networking</span></div>
+        <div class="links"><a href="https://narjes455.github.io/network-game/" target="_blank" rel="noopener">تجربة اللعبة ↗</a><a href="https://github.com/Narjes455/network-game" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="game">
+        <div class="top"><span>10.0.3.3</span><span class="status">LIVE</span></div>
+        <h3>جزيرة الإحصاء</h3><div class="en">stats-island</div>
+        <p>لعبة تعليمية بأسلوب روبلوكس تشرح المتوسط الحسابي والوسيط والمنوال عبر مغامرة ممتعة.</p>
+        <div class="chips"><span class="chip">JavaScript</span><span class="chip">رياضيات</span></div>
+        <div class="links"><a href="https://narjes455.github.io/stats-island/" target="_blank" rel="noopener">تجربة اللعبة ↗</a><a href="https://github.com/Narjes455/stats-island" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="game">
+        <div class="top"><span>10.0.3.4</span><span class="status">LIVE</span></div>
+        <h3>تحدي جدول الضرب</h3><div class="en">multiplication-game_1</div>
+        <p>لعبة ويب لتعليم جدول الضرب مع تحدٍّ يومي وسلسلة إنجازات.</p>
+        <div class="chips"><span class="chip">JavaScript</span><span class="chip">رياضيات</span></div>
+        <div class="links"><a href="https://multiplication-game-1.onrender.com" target="_blank" rel="noopener">تجربة اللعبة ↗</a><a href="https://github.com/Narjes455/multiplication-game_1" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="game">
+        <div class="top"><span>10.0.3.5</span><span class="status">LIVE</span></div>
+        <h3>العب وتعلّم</h3><div class="en">first-grade-games</div>
+        <p>ألعاب لطلاب الصف الأول في الحروف والأرقام ومهارات التفكير، مع قراءة صوتية للأسئلة.</p>
+        <div class="chips"><span class="chip">JavaScript</span><span class="chip">Web Speech API</span></div>
+        <div class="links"><a href="https://narjes455.github.io/first-grade-games/" target="_blank" rel="noopener">تجربة الألعاب ↗</a><a href="https://github.com/Narjes455/first-grade-games" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="game">
+        <div class="top"><span>10.0.3.6</span><span class="status">LIVE</span></div>
+        <h3>ألعاب نرجس</h3><div class="en">mini-games</div>
+        <p>مجموعة ألعاب عربية خفيفة: «خمّن الكلمة» ولعبة الذاكرة، وألعاب جديدة في الطريق.</p>
+        <div class="chips"><span class="chip">HTML</span><span class="chip">JavaScript</span></div>
+        <div class="links"><a href="https://narjes455.github.io/mini-games/" target="_blank" rel="noopener">تجربة الألعاب ↗</a><a href="https://github.com/Narjes455/mini-games" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="web">
+        <div class="top"><span>10.0.4.1</span><span class="status">LIVE</span></div>
+        <h3>اليوم الوطني السعودي</h3><div class="en">saudi-national-day</div>
+        <p>صفحة احتفالية متحركة بمناسبة اليوم الوطني السعودي، بتأثيرات وألوان مستوحاة من العلم.</p>
+        <div class="chips"><span class="chip">HTML</span><span class="chip">CSS Animation</span></div>
+        <div class="links"><a href="https://narjes455.github.io/saudi-national-day/" target="_blank" rel="noopener">عرض الصفحة ↗</a><a href="https://github.com/Narjes455/saudi-national-day" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+      <article class="card rv" data-c="web">
+        <div class="top"><span>10.0.4.2</span><span class="status">LIVE</span></div>
+        <h3>السعودية خط أحمر</h3><div class="en">saudi-red-line</div>
+        <p>شاشة عرض بشرائح متتابعة عن الولاء والأمن الوطني والوحدة والاستخدام المسؤول للإعلام الرقمي.</p>
+        <div class="chips"><span class="chip">HTML</span><span class="chip">Slideshow</span></div>
+        <div class="links"><a href="https://narjes455.github.io/saudi-red-line/redline-screen.html" target="_blank" rel="noopener">عرض الصفحة ↗</a><a href="https://github.com/Narjes455/saudi-red-line" target="_blank" rel="noopener">الكود ↗</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="journey" style="background:color-mix(in srgb,var(--surface) 45%,var(--bg));border-block:1px solid var(--line)">
+  <div class="wrap">
+    <p class="eyebrow">04 · traceroute</p>
+    <h2 class="sec-h rv">مسيرتي</h2>
+    <p class="lead rv">كل محطة قفزة جديدة في الطريق.</p>
+    <div class="tl">
+      <div class="tl-item rv"><div class="when">hop 1</div><h3>دبلوم أنظمة الشبكات</h3><p>الكلية التطبيقية بجامعة طيبة. تصميم الشبكات، السيرفرات، وسياسات الحماية، وختمتها بمشروع جدار حماية ذكي.</p></div>
+      <div class="tl-item rv"><div class="when">hop 2</div><h3>مطوّرة ومسؤولة أنظمة تقنية</h3><p>بناء نظام إدارة متكامل لشركة مقاولات، وإدارة البنية التقنية والموقع الإلكتروني ولوحة تحكمه.</p></div>
+      <div class="tl-item rv"><div class="when">hop 3</div><h3>أمن الذكاء الاصطناعي</h3><p>مشروع «سياج» لحماية أنظمة الذكاء الاصطناعي من هجمات حقن الأوامر وتسريب البيانات.</p></div>
+      <div class="tl-item rv"><div class="when">hop 4 · now</div><h3>ابتكار وتعليم</h3><p>ألعاب تعليمية تفاعلية للطلاب، وأفكار ابتكارية بالأردوينو تخدم الزراعة والسلامة.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact rv">
+      <p class="eyebrow" style="text-align:center">05 · ping narjes</p>
+      <h2>لنتواصل</h2>
+      <p>مشروع شبكات، نظام تقني، أو فكرة لعبة تعليمية؟ يسعدني التواصل والتعاون.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://www.linkedin.com/in/%D9%86%D8%B1%D8%AC%D8%B3-%D8%A7%D9%84%D8%B9%D9%85%D8%B1%D9%8A-757b68273/" target="_blank" rel="noopener">تواصل عبر LinkedIn</a>
+        <a class="btn" href="https://github.com/Narjes455" target="_blank" rel="noopener">المتابعة على GitHub</a>
       </div>
     </div>
-  </section>
-
-  <section class="wrap" id="work" aria-labelledby="work-h">
-    <h2 id="work-h">مشاريع منشورة</h2>
-
-    <h3 class="group"><span>01</span> الأمن والشبكات</h3>
-    <div class="cards">
-      <article class="card feature">
-        <div class="ico" aria-hidden="true">🛡️</div>
-        <h4>جدار الحماية الذكي</h4>
-        <p>مشروع التخرج مع فريق من أربع طالبات: يحوّل حركة الشبكة الملتقطة إلى بيانات، ويصنّفها بنموذج تعلّم آلة، ويتخذ قرار الحظر أو السماح.</p>
-        <div class="tags"><span>Python</span><span>Machine Learning</span><span>PCAP</span><span>مشروع تخرج</span></div>
-        <div class="actions"><a href="https://github.com/Narjes455/AI-Driven_Smart_Firewall" target="_blank" rel="noopener">الكود</a></div>
-      </article>
-      <article class="card">
-        <div class="ico" aria-hidden="true">🧱</div>
-        <h4>سياج</h4>
-        <p>جدار حماية لتطبيقات الذكاء الاصطناعي، يكشف محاولات حقن الأوامر (Prompt Injection) ويمنع تسريب البيانات الحساسة.</p>
-        <div class="tags"><span>Python</span><span>أمن الذكاء الاصطناعي</span></div>
-        <div class="actions"><a href="https://github.com/Narjes455/siyaj-ai-firewall" target="_blank" rel="noopener">الكود</a></div>
-      </article>
-      <article class="card">
-        <div class="ico" aria-hidden="true">🔐</div>
-        <h4>شبكة آمنة بقوائم ACL</h4>
-        <p>شبكة بثلاثة أقسام (المدراء، الموظفين، الزوار) متصلة بسيرفرات ويب وبريد وDNS، مع سياسات وصول تمنع أي دخول غير مصرّح.</p>
-        <div class="tags"><span>Cisco</span><span>ACL</span><span>Packet Tracer</span></div>
-        <div class="actions"><a href="https://github.com/Narjes455/ACL-Security-Network" target="_blank" rel="noopener">المشروع</a></div>
-      </article>
-      <article class="card">
-        <div class="ico" aria-hidden="true">🖧</div>
-        <h4>شبكة LAN أساسية</h4>
-        <p>تصميم شبكة محلية من الصفر وضبط أجهزتها على Cisco Packet Tracer.</p>
-        <div class="tags"><span>Cisco</span><span>LAN</span></div>
-        <div class="actions"><a href="https://github.com/Narjes455/packet-tracer-lan-project" target="_blank" rel="noopener">المشروع</a></div>
-      </article>
-    </div>
-
-    <h3 class="group"><span>02</span> أنظمة وأدوات</h3>
-    <div class="cards">
-      <article class="card feature">
-        <div class="ico" aria-hidden="true">🎫</div>
-        <h4>نظام تذاكر الدعم الفني</h4>
-        <p>نظام Helpdesk يستقبل طلبات الدعم ويرتبها بالأولوية والحالة، مع سجل للإجراءات وتقارير أداء. شغّال أونلاين وتقدر تجربه.</p>
-        <div class="tags"><span>Python</span><span>Streamlit</span><span>قواعد بيانات</span></div>
-        <div class="actions">
-          <a href="https://appdesk-system-el43e8yznwznmunougxrwt.streamlit.app" target="_blank" rel="noopener">جرّب النظام</a>
-          <a href="https://narjes455.github.io/helpdesk-system" target="_blank" rel="noopener">صفحة المشروع</a>
-          <a href="https://github.com/Narjes455/helpdesk-system" target="_blank" rel="noopener">الكود</a>
-        </div>
-      </article>
-      <article class="card">
-        <div class="ico" aria-hidden="true">📄</div>
-        <h4>PDF Merger</h4>
-        <p>أداة ويب تدمج عدة ملفات PDF في ملف واحد مباشرة من المتصفح بدون تثبيت أي برنامج.</p>
-        <div class="tags"><span>Python</span><span>Streamlit</span></div>
-        <div class="actions">
-          <a data-link="pdfApp" target="_blank" rel="noopener">جرّب الأداة</a>
-          <a href="https://github.com/Narjes455/pdf-merger" target="_blank" rel="noopener">الكود</a>
-        </div>
-      </article>
-      <article class="card">
-        <div class="ico" aria-hidden="true">📊</div>
-        <h4>تحليل بيانات المبيعات</h4>
-        <p>يقرأ بيانات مبيعات متجر من Excel ويطلع تقارير ورسوم بيانية حسب المنتج والمنطقة.</p>
-        <div class="tags"><span>Pandas</span><span>Matplotlib</span><span>Seaborn</span></div>
-        <div class="actions"><a href="https://github.com/Narjes455/sales-analysis-project" target="_blank" rel="noopener">الكود</a></div>
-      </article>
-      <article class="card">
-        <div class="ico" aria-hidden="true">🤖</div>
-        <h4>أتمتة المتصفح</h4>
-        <p>أول تجربة لي في أتمتة المتصفحات: روبوت يفتح Chrome ويتنقل تلقائياً، كبداية لسحب البيانات من المواقع.</p>
-        <div class="tags"><span>Python</span><span>Selenium</span></div>
-        <div class="actions"><a href="https://github.com/Narjes455/real-estate-scraper" target="_blank" rel="noopener">الكود</a></div>
-      </article>
-    </div>
-
-    <h3 class="group"><span>03</span> ويب وألعاب</h3>
-    <div class="cards">
-      <article class="card">
-        <div class="ico" aria-hidden="true">🇸🇦</div>
-        <h4>صفحة اليوم الوطني</h4>
-        <p>صفحة ويب متحركة احتفاءً باليوم الوطني السعودي، تشتغل على الجوال والكمبيوتر.</p>
-        <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
-        <div class="actions">
-          <a href="https://narjes455.github.io/saudi-national-day" target="_blank" rel="noopener">شوف الصفحة</a>
-          <a href="https://github.com/Narjes455/saudi-national-day" target="_blank" rel="noopener">الكود</a>
-        </div>
-      </article>
-      <article class="card feature">
-        <div class="ico" aria-hidden="true">🎲</div>
-        <h4>ألعاب بسيطة بالعربي</h4>
-        <p>مجموعة ألعاب عربية تنلعب من المتصفح بدون سيرفر، بهوية مستوحاة من نقوش السدو. أول لعبة «خمّن الكلمة»: كلمة من خمسة حروف في ست محاولات. تنضاف للشاشة الرئيسية كتطبيق وتشتغل بدون نت، والألعاب الجاية: خمّن شخصيتي، الذاكرة، وإكس أو.</p>
-        <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>PWA</span></div>
-        <div class="actions">
-          <a href="https://narjes455.github.io/mini-games/" target="_blank" rel="noopener">العب الحين</a>
-          <a href="https://github.com/Narjes455/mini-games" target="_blank" rel="noopener">الكود</a>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="wrap" id="ora" aria-labelledby="ora-h">
-    <h2 id="ora-h">أورا: نظام إدارة المنشآت</h2>
-    <div class="ora">
-      <div class="ora-intro">
-        <p class="lead">نظام متكامل بنيته من الصفر لإدارة منشأة كاملة: الموظفين، العقود، الفواتير، الحسابات، العمالة، والحضور. يستخدمه فريق عمل حقيقي بشكل يومي.</p>
-        <p>كل موظف يدخل بحسابه، ويشوف بس الأقسام اللي تخص دوره. البيانات كلها في قاعدة بيانات سحابية واحدة، فالمحاسب والموارد البشرية والإدارة يشتغلون على نفس الأرقام في نفس اللحظة.</p>
-        <div class="tags"><span>Python</span><span>CustomTkinter</span><span>PostgreSQL</span><span>Flask</span><span>تطبيق سطح مكتب</span><span>ويب للجوال</span></div>
-        <div class="demo" data-needs="oraDemo">
-          <a class="btn solid" data-link="oraDemo" target="_blank" rel="noopener">جرّب أورا</a>
-          <div class="cred" data-needs="oraUser">
-            <span>حساب التجربة</span>
-            <code data-text="oraUser"></code>
-            <code data-text="oraPass"></code>
-          </div>
-        </div>
-        <p class="private-note">النسخة التجريبية منفصلة تماماً وكل بياناتها وهمية. الكود خاص لأن النسخة الأصلية تعمل على بيانات حقيقية.</p>
-      </div>
-
-      <figure class="arch">
-        <svg viewBox="0 0 460 300" role="img" aria-labelledby="arch-t">
-          <title id="arch-t">مخطط عام: تطبيق سطح المكتب وعرض الإدارة ولوحة التحكم متصلة بقاعدة بيانات سحابية واحدة</title>
-          <g fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="160" y="115" width="140" height="70" rx="8"/>
-            <rect x="10" y="20" width="140" height="56" rx="8"/>
-            <rect x="310" y="20" width="140" height="56" rx="8"/>
-            <rect x="10" y="224" width="140" height="56" rx="8"/>
-            <rect x="310" y="224" width="140" height="56" rx="8"/>
-            <path d="M150 60 L195 115 M310 60 L265 115 M150 240 L195 185 M310 240 L265 185" stroke-dasharray="5 4"/>
-          </g>
-          <g font-family="Readex Pro, sans-serif" font-size="14" fill="currentColor" text-anchor="middle">
-            <text x="230" y="146" font-weight="600">قاعدة بيانات</text>
-            <text x="230" y="166">سحابية مشتركة</text>
-            <text x="80" y="44" font-weight="600">تطبيق سطح المكتب</text>
-            <text x="80" y="64" font-size="12">الحضور يتسجل مع فتحه</text>
-            <text x="380" y="44" font-weight="600">لوحة التحكم</text>
-            <text x="380" y="64" font-size="12">نسخة مستقلة لكل منشأة</text>
-            <text x="80" y="248" font-weight="600">عرض الإدارة</text>
-            <text x="80" y="268" font-size="12">للقراءة فقط</text>
-            <text x="380" y="248" font-weight="600">تحديثات تلقائية</text>
-            <text x="380" y="268" font-size="12">لكل الأجهزة</text>
-          </g>
-        </svg>
-      </figure>
-    </div>
-
-    <div class="ora-grid">
-      <div>
-        <h3>الأدوار والصلاحيات</h3>
-        <ul class="roles">
-          <li><b>الإدارة التنفيذية</b> صلاحيات تشغيلية كاملة</li>
-          <li><b>الموارد البشرية</b> الموظفين والحضور والمستندات</li>
-          <li><b>المحاسبة</b> الفواتير والمدفوعات والكشوفات</li>
-          <li><b>إدخال البيانات</b> العقود وتفاصيلها</li>
-          <li><b>العمالة</b> سجلات فقط بدون دخول للنظام</li>
-        </ul>
-      </div>
-      <div>
-        <h3>أبرز ما بنيته</h3>
-        <ul class="feats">
-          <li>صلاحيات مبنية على الدور، كل شاشة تنفتح حسب الحساب</li>
-          <li>حضور وانصراف تلقائي: يتسجل الحضور مع فتح النظام، والانصراف مع إغلاقه</li>
-          <li>واجهة جوال للإدارة تعرض الأرقام والعقود والكشوفات للقراءة فقط</li>
-          <li>كشوف حساب للعملاء والمقاولين</li>
-          <li>توزيع التحديثات على أجهزة الموظفين تلقائياً بدون تدخل منهم</li>
-          <li>لوحة تحكم منفصلة تجهّز نسخة مستقلة لكل منشأة، بقاعدة بيانات وهوية خاصة فيها</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="wrap" id="workshop" aria-labelledby="shop-h">
-    <h2 id="shop-h">في الورشة</h2>
-    <p class="workshop-note">مشاريع أشتغل عليها الحين، وبتنضاف لقائمة المنشورة أول ما تجهز.</p>
-    <div class="bench">
-      <div class="item">
-        <h3>تطبيق المهام والتذكيرات</h3>
-        <span class="status"><b>قيد التطوير</b></span>
-        <p>تطبيق جوال لتنظيم المهام اليومية مع تذكيرات، يشتغل على أندرويد وآيفون. Flutter</p>
-      </div>
-      <div class="item">
-        <h3>SmallBiz IT Toolkit</h3>
-        <span class="status"><b>قيد التخطيط</b></span>
-        <p>أدوات ودليل لتجهيز الشبكات والسيرفرات للمنشآت الصغيرة اللي تبدأ من الصفر.</p>
-      </div>
-      <div class="item">
-        <h3>فوتو بوث</h3>
-        <span class="status"><b>قيد التخطيط</b></span>
-        <p>صندوق تصوير أبنيه بنفسي: كاميرا وشاشة وزر تصوير، مع عدّ تنازلي وشريط صور يطلع للزوار.</p>
-      </div>
-    </div>
-  </section>
+  </div>
+</section>
 </main>
 
-<footer>
-  <div class="wrap">
-    <span>نرجس العمري، المدينة المنورة</span>
-    <a href="https://github.com/Narjes455" target="_blank" rel="noopener">github.com/Narjes455</a>
-  </div>
-</footer>
+<footer><div class="wrap">© <span id="yr">2026</span> نرجس العمري · <span class="mono">Narjesnet</span> · صُنع بشغف في المدينة المنورة</div></footer>
+</div>
 
 <script>
-/* ======== عدّلي الروابط هنا فقط ========
-   أي رابط تتركينه فاضي، الزر أو القسم حقه يختفي تلقائياً */
-const LINKS = {
-  oraDemo:   "https://narjes455.github.io/ora-demo/",   // رابط نسخة أورا التجريبية
-  oraUser:   "",   // اسم مستخدم حساب التجربة
-  oraPass:   "",   // كلمة مرور حساب التجربة
-  pdfApp:    ""    // رابط تطبيق PDF Merger على Streamlit
-};
-/* ======================================= */
+document.documentElement.classList.add('js');
+document.documentElement.lang='ar';
+document.getElementById('yr').textContent=new Date().getFullYear();
+var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-document.querySelectorAll("[data-link]").forEach(a => {
-  const v = LINKS[a.dataset.link];
-  if (v) a.href = v; else a.remove();
-});
-document.querySelectorAll("[data-text]").forEach(el => {
-  el.textContent = LINKS[el.dataset.text] || "";
-  if (!el.textContent) el.remove();
-});
-document.querySelectorAll("[data-soon]").forEach(el => {
-  if (LINKS[el.dataset.soon]) el.remove();
-});
-document.querySelectorAll("[data-needs]").forEach(el => {
-  if (!LINKS[el.dataset.needs]) el.remove();
-});
-
-if (matchMedia('(pointer: coarse)').matches) document.querySelector('.hint').textContent = 'المس الشبكة عشان ترسل حزمة';
-/* ===== reveal on scroll ===== */
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-document.querySelectorAll('section h2, .group, .about > div, .card, .ora, .ora-grid > div, .item').forEach(el => el.classList.add('rv'));
-document.querySelectorAll('.cards').forEach(g => [...g.children].forEach((c,i) => c.style.transitionDelay = (i*90)+'ms'));
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
-document.querySelectorAll('.rv').forEach(el => reduce ? el.classList.add('in') : io.observe(el));
-
-/* ===== cable scroll-nav: packet travels with scroll ===== */
-const secs = [...document.querySelectorAll('.cable a')].map(a => [a, document.getElementById(a.dataset.sec)]);
-const wire = document.querySelector('.cable .wire'), fill = document.querySelector('.cable .fill'), pkt = document.querySelector('.cable .packet');
-function onScroll(){
-  const max = document.documentElement.scrollHeight - innerHeight;
-  const p = max > 0 ? Math.min(1, scrollY / max) : 0;
-  const h = wire.offsetHeight;
-  pkt.style.top = (p*h)+'px'; fill.style.height = (p*h)+'px';
-  let cur = null;
-  secs.forEach(([a,s]) => { if (s.getBoundingClientRect().top < innerHeight*.45) cur = a; });
-  secs.forEach(([a]) => a.classList.toggle('on', a === cur));
-}
-addEventListener('scroll', onScroll, {passive:true}); addEventListener('resize', onScroll); onScroll();
-
-/* ===== hero network ===== */
-(() => {
-  const cv = document.getElementById('net'), ctx = cv.getContext('2d');
-  let running = false;
-  let W, H, dpr, nodes = [], packets = [], pulses = [], mouse = null, col = {};
-  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-  const readCols = () => { col = {line:css('--blue'), hot:css('--hazard'), node:css('--ink'), ind:css('--indigo')}; };
-  const LINK = 140;
-  function size(){
-    dpr = Math.min(devicePixelRatio || 1, 2);
-    W = cv.clientWidth; H = cv.clientHeight;
-    cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-    const n = Math.round(Math.min(70, W*H/16000));
-    nodes = Array.from({length:n}, () => ({x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.25, vy:(Math.random()-.5)*.25, r:Math.random()<.15?3.2:1.8}));
+/* typing CLI */
+(function(){
+  var lines=['ping cybersecurity  ✓ 0% packet loss','show interfaces passion  → UP','python3 build_ideas.py','traceroute future.sa  → 4 hops'];
+  var el=document.getElementById('typed'),li=0,ci=0,del=false;
+  if(reduce){el.textContent=lines[0];return}
+  function tick(){
+    var s=lines[li];
+    if(!del){ci++;el.textContent=s.slice(0,ci);if(ci===s.length){del=true;return setTimeout(tick,1700)}}
+    else{ci--;el.textContent=s.slice(0,ci);if(ci===0){del=false;li=(li+1)%lines.length}}
+    setTimeout(tick,del?28:62);
   }
-  const near = (a,b) => Math.hypot(a.x-b.x, a.y-b.y);
-  function send(from, to){ packets.push({a:from, b:to, t:0, sp:.012 + Math.random()*.01}); }
-  function step(){
-    ctx.clearRect(0,0,W,H);
-    for (const n of nodes){
-      n.x += n.vx; n.y += n.vy;
-      if (n.x<0||n.x>W) n.vx*=-1; if (n.y<0||n.y>H) n.vy*=-1;
-    }
-    ctx.lineWidth = 1;
-    for (let i=0;i<nodes.length;i++) for (let j=i+1;j<nodes.length;j++){
-      const d = near(nodes[i],nodes[j]);
-      if (d < LINK){ ctx.strokeStyle = [col.line,col.hot,col.ind][(i+j)%3]; ctx.globalAlpha = (1-d/LINK)*.55; ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke(); }
-    }
-    if (mouse){
-      for (const n of nodes){ const d = near(n,mouse); if (d < LINK*1.3){ ctx.strokeStyle = col.hot; ctx.globalAlpha = (1-d/(LINK*1.3))*.9; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(mouse.x,mouse.y); ctx.stroke(); } }
-      ctx.globalAlpha = 1; ctx.fillStyle = col.hot; ctx.beginPath(); ctx.arc(mouse.x,mouse.y,4,0,7); ctx.fill();
-    }
-    for (const n of nodes){ ctx.globalAlpha = .7; ctx.fillStyle = n.r>3 ? col.hot : col.node; const k = n.r*1.6; ctx.beginPath(); ctx.moveTo(n.x,n.y-k); ctx.lineTo(n.x+k,n.y); ctx.lineTo(n.x,n.y+k); ctx.lineTo(n.x-k,n.y); ctx.closePath(); ctx.fill(); }
-    // random traffic
-    if (Math.random() < .05 && packets.length < 18){
-      const a = nodes[Math.random()*nodes.length|0];
-      const nb = nodes.filter(b => b!==a && near(a,b) < LINK);
-      if (nb.length) send(a, nb[Math.random()*nb.length|0]);
-    }
-    packets = packets.filter(p => {
-      p.t += p.sp; if (p.t >= 1) return false;
-      const x = p.a.x + (p.b.x-p.a.x)*p.t, y = p.a.y + (p.b.y-p.a.y)*p.t;
-      ctx.globalAlpha = 1; ctx.fillStyle = p.hotPkt ? col.hot : col.line;
-      const ang = Math.atan2(p.b.y-p.a.y, p.b.x-p.a.x); ctx.save(); ctx.translate(x,y); ctx.rotate(ang); ctx.beginPath(); ctx.moveTo(5,0); ctx.lineTo(-4,-4); ctx.lineTo(-4,4); ctx.closePath(); ctx.fill(); ctx.restore(); return true;
-    });
-    pulses = pulses.filter(u => {
-      u.r += 3; const a = 1 - u.r/160; if (a <= 0) return false;
-      ctx.globalAlpha = a; ctx.strokeStyle = col.hot; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(u.x,u.y,u.r,0,7); ctx.stroke(); return true;
-    });
-    ctx.globalAlpha = 1;
-    if (!reduce && running) requestAnimationFrame(step);
+  tick();
+})();
+
+/* network canvas */
+(function(){
+  var c=document.getElementById('net'),x=c.getContext('2d'),W,H,dpr,nodes=[],links=[],packets=[];
+  function col(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+  function build(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    W=c.clientWidth;H=c.clientHeight;c.width=W*dpr;c.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0);
+    var n=Math.round(Math.min(34,Math.max(14,W*H/22000)));nodes=[];links=[];packets=[];
+    for(var i=0;i<n;i++)nodes.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()<.18?5:3,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15,ph:Math.random()*6});
+    for(var a=0;a<n;a++){var d=[];for(var b=0;b<n;b++)if(a!==b)d.push([b,Math.hypot(nodes[a].x-nodes[b].x,nodes[a].y-nodes[b].y)]);
+      d.sort(function(p,q){return p[1]-q[1]});for(var k=0;k<2;k++){var bb=d[k][0];if(!links.some(function(l){return(l[0]===a&&l[1]===bb)||(l[0]===bb&&l[1]===a)}))links.push([a,bb])}}
   }
-  const pos = e => { const r = cv.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
-  cv.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') mouse = pos(e); });
-  cv.addEventListener('pointerleave', () => mouse = null);
-  cv.addEventListener('pointerdown', e => {
-    const m = pos(e); pulses.push({x:m.x, y:m.y, r:4});
-    const src = {x:m.x, y:m.y};
-    nodes.filter(n => near(n,m) < LINK*1.6).slice(0,10).forEach(n => packets.push({a:src, b:n, t:0, sp:.02, hotPkt:true}));
-    if (reduce) step();
+  function spawn(){var l=links[Math.floor(Math.random()*links.length)];if(!l)return;var r=Math.random()<.5;packets.push({a:r?l[0]:l[1],b:r?l[1]:l[0],t:0,s:.006+Math.random()*.01,hot:Math.random()<.3})}
+  function draw(t){
+    var acc=col('--accent'),sig=col('--signal'),line=col('--line');
+    x.clearRect(0,0,W,H);
+    nodes.forEach(function(n){if(!reduce){n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1}});
+    x.lineWidth=1;x.strokeStyle=line;x.globalAlpha=.9;
+    links.forEach(function(l){var A=nodes[l[0]],B=nodes[l[1]];x.beginPath();x.moveTo(A.x,A.y);x.lineTo(B.x,B.y);x.stroke()});
+    x.globalAlpha=1;
+    nodes.forEach(function(n){var p=reduce?0:Math.sin(t/700+n.ph)*1.2;x.fillStyle=n.r>4?acc:line;x.beginPath();x.arc(n.x,n.y,n.r+p*.4,0,7);x.fill();
+      if(n.r>4){x.strokeStyle=acc;x.globalAlpha=.25;x.beginPath();x.arc(n.x,n.y,n.r+6+p*2,0,7);x.stroke();x.globalAlpha=1}});
+    packets.forEach(function(p){p.t+=p.s;var A=nodes[p.a],B=nodes[p.b],px=A.x+(B.x-A.x)*p.t,py=A.y+(B.y-A.y)*p.t;
+      x.fillStyle=p.hot?sig:acc;x.shadowColor=x.fillStyle;x.shadowBlur=10;x.beginPath();x.arc(px,py,2.6,0,7);x.fill();x.shadowBlur=0});
+    packets=packets.filter(function(p){return p.t<1});
+    if(!reduce){if(packets.length<26&&Math.random()<.18)spawn();requestAnimationFrame(draw)}
+  }
+  build();
+  if(reduce){for(var i=0;i<14;i++){spawn();packets[i]&&(packets[i].t=Math.random())}draw(0)}else requestAnimationFrame(draw);
+  var to;window.addEventListener('resize',function(){clearTimeout(to);to=setTimeout(function(){build();if(reduce)draw(0)},200)});
+})();
+
+/* filters */
+(function(){
+  var btns=document.querySelectorAll('.filters button'),cards=document.querySelectorAll('.card');
+  btns.forEach(function(b){b.addEventListener('click',function(){
+    btns.forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});
+    var f=b.dataset.f;cards.forEach(function(cd){cd.hidden=!(f==='all'||cd.dataset.c===f)});
+  })});
+})();
+
+/* scroll reveal: content is visible at rest; only below-fold items get a soft entrance */
+(function(){
+  if(reduce||!('IntersectionObserver' in window))return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.rv').forEach(function(el,i){
+    if(el.getBoundingClientRect().top>window.innerHeight){el.classList.add('pre');el.style.transitionDelay=((i%3)*80)+'ms';io.observe(el)}
   });
-  readCols(); size();
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readCols);
-  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(size, 150); });
-  // pause drawing when hero is off-screen
-  new IntersectionObserver(([e]) => { if (e.isIntersecting && !running && !reduce){ running = true; step(); } else if (!e.isIntersecting) running = false; }).observe(cv);
-  if (reduce) step();
 })();
 </script>
 </body>
