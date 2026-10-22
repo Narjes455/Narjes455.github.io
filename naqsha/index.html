@@ -1,0 +1,337 @@
+<title>نقشة</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="نقشة: صناعة رموز QR بألوان وأشكال مختلفة، مجانًا.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+<style>
+/* Layout: workbench — controls column + sticky preview "print" on the other side; stacks on phones */
+:root{
+  --bg:#f7f3f1; --panel:#ffffff; --ink:#2b2427; --muted:#7a6d72; --line:#e8dfe2;
+  --accent:#b8577a; --accent-ink:#ffffff; --soft:#f6e6ec;
+  --good:#2f8a5b; --warn:#b7791f; --bad:#c0392b;
+  --display:"El Messiri","Tajawal",Tahoma,sans-serif;
+  --body:"Tajawal","Segoe UI",Tahoma,sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1b1719; --panel:#252022; --ink:#f3ecee; --muted:#b3a6ab; --line:#3a3236;
+  --accent:#e08aa9; --accent-ink:#2a1820; --soft:#3a2830; --good:#5cc08b; --warn:#e0a84a; --bad:#ef6b5b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1b1719; --panel:#252022; --ink:#f3ecee; --muted:#b3a6ab; --line:#3a3236;
+  --accent:#e08aa9; --accent-ink:#2a1820; --soft:#3a2830; --good:#5cc08b; --warn:#e0a84a; --bad:#ef6b5b; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+.wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1;margin:0;letter-spacing:0}
+h1 span{color:var(--accent)}
+.tag{margin:0;color:var(--muted);max-width:42ch;text-wrap:balance}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:24px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}.preview{order:-1;position:static!important}}
+
+.controls{display:flex;flex-direction:column;gap:16px;min-width:0}
+section.box{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.box h2{font-family:var(--display);font-weight:500;font-size:1.15rem;margin:0}
+label.lbl{font-size:.85rem;color:var(--muted);font-weight:500}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+input[type=text],input[type=url],input[type=tel],input[type=password],textarea,select{
+  width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:72px;resize:vertical}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.theme{font:inherit;cursor:pointer;border:2px solid var(--line);border-radius:12px;padding:8px;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:6px}
+.theme[aria-pressed="true"]{border-color:var(--accent)}
+.theme canvas{width:56px;height:56px;border-radius:8px}
+.theme span{font-size:.85rem}
+
+.shapes{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
+.shape{cursor:pointer;border:2px solid var(--line);background:var(--bg);border-radius:10px;padding:6px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink);font:inherit;font-size:.75rem}
+.shape[aria-pressed="true"]{border-color:var(--accent)}
+.shape svg{width:34px;height:34px}
+
+.colors{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.color{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--bg)}
+.color input[type=color]{width:34px;height:34px;border:none;padding:0;background:none;cursor:pointer;flex:none}
+.color span{font-size:.85rem}
+.switch{display:flex;align-items:center;gap:8px;font-size:.9rem;cursor:pointer}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=checkbox]{accent-color:var(--accent);width:18px;height:18px}
+
+.preview{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;gap:12px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;justify-content:center}
+.frame{width:100%;max-width:340px;border-radius:22px;padding:18px 18px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:background .2s}
+.frame.noframe{padding:0;background:transparent!important}
+#qr{width:100%;aspect-ratio:1;max-width:100%}
+#qr canvas,#qr svg{width:100%!important;height:auto!important;display:block;border-radius:10px}
+.cap{font-family:var(--display);font-weight:700;font-size:1.25rem;text-align:center;min-height:1.2em}
+.meter{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.88rem;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.pill{border-radius:999px;padding:2px 10px;font-weight:600;font-size:.8rem;color:#fff}
+.pill.good{background:var(--good)}.pill.warn{background:var(--warn)}.pill.bad{background:var(--bad)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{font:inherit;font-weight:600;cursor:pointer;border-radius:12px;padding:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.hint{font-size:.82rem;color:var(--muted);margin:0}
+#saveImg{width:100%;border-radius:12px;border:1px dashed var(--line)}
+.upload{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.upload img{width:44px;height:44px;object-fit:contain;border-radius:8px;border:1px solid var(--line);background:#fff}
+footer{color:var(--muted);font-size:.82rem;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" dir="rtl" lang="ar">
+  <header>
+    <h1>نقش<span>ة</span></h1>
+    <p class="tag">رمز QR بذوقك: ثيمات وأشكال وألوان، مع شعار وعبارة تحت الكود، وتنزيل بضغطة.</p>
+  </header>
+
+  <div class="grid">
+    <div class="controls">
+      <section class="box">
+        <h2>المحتوى</h2>
+        <div class="tabs" role="group" aria-label="نوع المحتوى">
+          <button class="chip" data-kind="url" aria-pressed="true">رابط</button>
+          <button class="chip" data-kind="text" aria-pressed="false">نص</button>
+          <button class="chip" data-kind="wa" aria-pressed="false">واتساب</button>
+          <button class="chip" data-kind="wifi" aria-pressed="false">واي فاي</button>
+        </div>
+        <div id="k-url" class="field"><label class="lbl" for="inUrl">الرابط</label>
+          <input id="inUrl" type="url" dir="ltr" value="https://narjes455.github.io/" placeholder="https://"></div>
+        <div id="k-text" class="field" hidden><label class="lbl" for="inText">النص</label>
+          <textarea id="inText">أهلًا بك 🌸</textarea></div>
+        <div id="k-wa" class="row" hidden>
+          <div class="field"><label class="lbl" for="inWa">رقم الجوال مع رمز الدولة</label><input id="inWa" type="tel" dir="ltr" placeholder="9665XXXXXXXX"></div>
+          <div class="field"><label class="lbl" for="inWaMsg">رسالة جاهزة (اختياري)</label><input id="inWaMsg" type="text"></div>
+        </div>
+        <div id="k-wifi" class="row" hidden>
+          <div class="field"><label class="lbl" for="inSsid">اسم الشبكة</label><input id="inSsid" type="text" dir="ltr"></div>
+          <div class="field"><label class="lbl" for="inPass">كلمة المرور</label><input id="inPass" type="text" dir="ltr"></div>
+          <div class="field"><label class="lbl" for="inSec">نوع الحماية</label>
+            <select id="inSec"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">بدون</option></select></div>
+        </div>
+      </section>
+
+      <section class="box">
+        <h2>الثيم</h2>
+        <div class="themes" id="themes"></div>
+      </section>
+
+      <section class="box">
+        <h2>الشكل</h2>
+        <label class="lbl">النقاط</label>
+        <div class="shapes" id="dotShapes"></div>
+        <label class="lbl">إطار الزوايا</label>
+        <div class="shapes" id="cornerShapes"></div>
+        <label class="lbl">قلب الزوايا</label>
+        <div class="shapes" id="cdotShapes"></div>
+      </section>
+
+      <section class="box">
+        <h2>الألوان</h2>
+        <div class="colors">
+          <label class="color"><input type="color" id="cDots"><span>النقاط</span></label>
+          <label class="color"><input type="color" id="cDots2"><span>تدرّج النقاط</span></label>
+          <label class="color"><input type="color" id="cCorner"><span>الزوايا</span></label>
+          <label class="color"><input type="color" id="cBg"><span>الخلفية</span></label>
+          <label class="color"><input type="color" id="cFrame"><span>الإطار</span></label>
+          <label class="color"><input type="color" id="cCap"><span>العبارة</span></label>
+        </div>
+        <label class="switch"><input type="checkbox" id="useGrad"> تدرّج لوني للنقاط</label>
+      </section>
+
+      <section class="box">
+        <h2>الإطار والعبارة</h2>
+        <label class="switch"><input type="checkbox" id="useFrame" checked> إطار حول الكود</label>
+        <div class="field"><label class="lbl" for="inCap">العبارة تحت الكود</label>
+          <input id="inCap" type="text" value="امسح الكود" maxlength="40"></div>
+      </section>
+
+      <section class="box">
+        <h2>الشعار في المنتصف</h2>
+        <div class="upload">
+          <input type="file" id="inLogo" accept="image/*">
+          <img id="logoThumb" alt="" hidden>
+          <button class="btn" id="rmLogo" hidden>إزالة</button>
+        </div>
+        <div class="field"><label class="lbl" for="logoSize">حجم الشعار</label>
+          <input type="range" id="logoSize" min="0.15" max="0.4" step="0.01" value="0.28"></div>
+        <p class="hint">عند إضافة شعار يرتفع مستوى تصحيح الأخطاء تلقائيًا ليبقى الكود مقروءًا.</p>
+      </section>
+    </div>
+
+    <aside class="preview">
+      <div class="stage">
+        <div class="frame" id="frame">
+          <div id="qr"></div>
+          <div class="cap" id="capOut"></div>
+        </div>
+      </div>
+      <div class="meter"><span>وضوح المسح</span><span class="pill good" id="scanPill">ممتاز</span></div>
+      <div class="actions">
+        <button class="btn primary" id="dlPng">تنزيل PNG</button>
+        <button class="btn" id="dlSvg">تنزيل SVG</button>
+      </div>
+      <button class="btn" id="mkImg">صورة للحفظ بالضغط المطوّل</button>
+      <img id="saveImg" alt="رمز QR جاهز للحفظ" hidden>
+      <p class="hint">نصيحة: يُفضّل تجربة مسح الكود بالجوال قبل الطباعة، خاصة بعد تغيير الألوان.</p>
+    </aside>
+  </div>
+  <footer>نقشة · كل شيء يتم داخل المتصفح، ولا تُحفظ أي بيانات.</footer>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const THEMES={
+  rose:{name:"ورد",dots:"#3a2f35",dots2:"#b8577a",grad:false,corner:"#d6809e",bg:"#ffffff",frame:"#f8dde6",cap:"#8e3f5c",dotType:"dots",cType:"extra-rounded",cdType:"dot"},
+  sea:{name:"بحر",dots:"#0e5a7a",dots2:"#2aa3b8",grad:true,corner:"#0b3d52",bg:"#f4fbfd",frame:"#cfeef4",cap:"#0b3d52",dotType:"rounded",cType:"extra-rounded",cdType:"dot"},
+  night:{name:"ليل",dots:"#f5d68a",dots2:"#f0a95a",grad:true,corner:"#f0b85a",bg:"#1d2038",frame:"#2c3058",cap:"#f5d68a",dotType:"classy-rounded",cType:"extra-rounded",cdType:"dot"},
+  gold:{name:"ذهبي",dots:"#4a3719",dots2:"#a57a2e",grad:true,corner:"#b8893a",bg:"#fffaf0",frame:"#f1e2c0",cap:"#6b4f22",dotType:"classy",cType:"square",cdType:"square"},
+  mint:{name:"نعناع",dots:"#1f5a4a",dots2:"#3fa58a",grad:false,corner:"#3fa58a",bg:"#f4fbf7",frame:"#d4efe3",cap:"#1f5a4a",dotType:"rounded",cType:"extra-rounded",cdType:"square"},
+  lav:{name:"لافندر",dots:"#4b3d7a",dots2:"#9b84d6",grad:true,corner:"#7c64c4",bg:"#ffffff",frame:"#e6defa",cap:"#4b3d7a",dotType:"dots",cType:"extra-rounded",cdType:"dot"},
+  coral:{name:"مرجان",dots:"#7a2e22",dots2:"#e46a4f",grad:true,corner:"#e46a4f",bg:"#fff6f2",frame:"#ffd9cc",cap:"#7a2e22",dotType:"extra-rounded",cType:"extra-rounded",cdType:"dot"},
+  classic:{name:"كلاسيك",dots:"#111111",dots2:"#444444",grad:false,corner:"#111111",bg:"#ffffff",frame:"#eeeeee",cap:"#111111",dotType:"square",cType:"square",cdType:"square"}
+};
+const DOTS=[["square","مربع"],["dots","دوائر"],["rounded","ناعم"],["extra-rounded","مدوّر"],["classy","أنيق"],["classy-rounded","أنيق ناعم"]];
+const CORNERS=[["square","مربع"],["extra-rounded","مدوّر"],["dot","دائري"]];
+const CDOTS=[["square","مربع"],["dot","دائري"]];
+
+const st={kind:"url",theme:"rose",logo:null,...THEMES.rose,useFrame:true};
+
+function data(){
+  if(st.kind==="url") return $("inUrl").value.trim()||"https://";
+  if(st.kind==="text") return $("inText").value||" ";
+  if(st.kind==="wa"){const n=$("inWa").value.replace(/\D/g,"");const m=$("inWaMsg").value.trim();
+    return "https://wa.me/"+n+(m?"?text="+encodeURIComponent(m):"");}
+  const esc=s=>s.replace(/([\\;,:"])/g,"\\$1");
+  return `WIFI:T:${$("inSec").value};S:${esc($("inSsid").value)};P:${esc($("inPass").value)};;`;
+}
+function opts(size){
+  const dotsOpt=st.grad?{gradient:{type:"linear",rotation:Math.PI/4,colorStops:[{offset:0,color:st.dots},{offset:1,color:st.dots2}]}}:{color:st.dots};
+  return {width:size,height:size,type:"canvas",data:data(),margin:Math.round(size*0.04),
+    qrOptions:{errorCorrectionLevel:st.logo?"H":"Q"},
+    image:st.logo||undefined,
+    imageOptions:{crossOrigin:"anonymous",margin:Math.round(size*0.01),imageSize:+$("logoSize").value,hideBackgroundDots:true},
+    dotsOptions:{type:st.dotType,...dotsOpt},
+    cornersSquareOptions:{type:st.cType,color:st.corner},
+    cornersDotOptions:{type:st.cdType,color:st.corner},
+    backgroundOptions:{color:st.bg}};
+}
+
+const qr=new QRCodeStyling(opts(1000));
+qr.append($("qr"));
+
+// contrast-based scan check
+function lum(h){const c=h.replace("#","").match(/../g).map(x=>{x=parseInt(x,16)/255;return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+function ratio(a,b){const A=lum(a),B=lum(b);return (Math.max(A,B)+.05)/(Math.min(A,B)+.05)}
+function scanCheck(){
+  const r=Math.min(ratio(st.dots,st.bg),st.grad?ratio(st.dots2,st.bg):99,ratio(st.corner,st.bg));
+  const inverted=lum(st.dots)>lum(st.bg);
+  const p=$("scanPill");
+  let cls="good",t="ممتاز";
+  if(r<2.5){cls="bad";t="ضعيف، يحتاج تباين أعلى"}else if(r<4||inverted){cls="warn";t=inverted?"مقبول (ألوان معكوسة)":"مقبول"}
+  p.className="pill "+cls;p.textContent=t;
+}
+
+let raf;
+function render(){
+  cancelAnimationFrame(raf);
+  raf=requestAnimationFrame(()=>{
+    qr.update(opts(1000));
+    const f=$("frame");
+    f.classList.toggle("noframe",!st.useFrame);
+    f.style.background=st.frame;
+    $("capOut").textContent=st.useFrame?$("inCap").value:"";
+    $("capOut").style.color=st.cap;
+    syncPressed();scanCheck();$("saveImg").hidden=true;
+  });
+}
+
+function syncColors(){["dots","dots2","corner","bg","frame","cap"].forEach(k=>{
+  const id={dots:"cDots",dots2:"cDots2",corner:"cCorner",bg:"cBg",frame:"cFrame",cap:"cCap"}[k];$(id).value=st[k]});
+  $("useGrad").checked=st.grad;}
+function syncPressed(){
+  document.querySelectorAll(".theme").forEach(b=>b.setAttribute("aria-pressed",b.dataset.t===st.theme));
+  document.querySelectorAll("#dotShapes .shape").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===st.dotType));
+  document.querySelectorAll("#cornerShapes .shape").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===st.cType));
+  document.querySelectorAll("#cdotShapes .shape").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===st.cdType));
+}
+
+// theme swatches: tiny QR per theme
+Object.entries(THEMES).forEach(([k,t])=>{
+  const b=document.createElement("button");b.className="theme";b.dataset.t=k;b.type="button";
+  const c=document.createElement("div");
+  b.append(c);const s=document.createElement("span");s.textContent=t.name;b.append(s);
+  $("themes").append(b);
+  const mini=new QRCodeStyling({width:112,height:112,type:"canvas",data:"naqsha",margin:6,
+    dotsOptions:{type:t.dotType,...(t.grad?{gradient:{type:"linear",rotation:Math.PI/4,colorStops:[{offset:0,color:t.dots},{offset:1,color:t.dots2}]}}:{color:t.dots})},
+    cornersSquareOptions:{type:t.cType,color:t.corner},cornersDotOptions:{type:t.cdType,color:t.corner},backgroundOptions:{color:t.bg}});
+  mini.append(c);
+  b.onclick=()=>{Object.assign(st,THEMES[k]);st.theme=k;syncColors();render()};
+});
+
+// shape buttons with small svg glyphs
+function glyph(kind,v){
+  const r={square:0,dots:5,rounded:2,"extra-rounded":4,classy:0,"classy-rounded":3,dot:9}[v]??0;
+  if(kind==="dot"){let s="";[[2,2],[13,2],[24,2],[2,13],[24,13],[2,24],[13,24],[24,24],[13,13]].forEach(([x,y],i)=>{
+      if(v==="classy"||v==="classy-rounded"){s+=`<path d="M${x} ${y+8}V${y+(v==="classy"?0:3)}${v==="classy"?"":`Q${x} ${y} ${x+3} ${y}`}H${x+8}V${y+(v==="classy"?8:5)}${v==="classy"?"":`Q${x+8} ${y+8} ${x+5} ${y+8}`}Z" fill="currentColor"/>`}
+      else s+=`<rect x="${x}" y="${y}" width="8" height="8" rx="${Math.min(r,4)}" fill="currentColor"/>`;});
+    return `<svg viewBox="0 0 34 34">${s}</svg>`;}
+  if(kind==="corner"){const rr=v==="dot"?14:v==="extra-rounded"?8:0;
+    return `<svg viewBox="0 0 34 34"><rect x="4" y="4" width="26" height="26" rx="${rr}" fill="none" stroke="currentColor" stroke-width="5"/></svg>`;}
+  return `<svg viewBox="0 0 34 34"><rect x="9" y="9" width="16" height="16" rx="${v==="dot"?8:0}" fill="currentColor"/></svg>`;
+}
+function shapes(el,list,kind,key){list.forEach(([v,n])=>{const b=document.createElement("button");b.type="button";b.className="shape";b.dataset.v=v;
+  b.innerHTML=glyph(kind,v)+`<span>${n}</span>`;b.onclick=()=>{st[key]=v;render()};$(el).append(b)})}
+shapes("dotShapes",DOTS,"dot","dotType");shapes("cornerShapes",CORNERS,"corner","cType");shapes("cdotShapes",CDOTS,"cdot","cdType");
+
+// content tabs
+document.querySelectorAll(".chip[data-kind]").forEach(b=>b.onclick=()=>{
+  st.kind=b.dataset.kind;
+  document.querySelectorAll(".chip[data-kind]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  ["url","text","wa","wifi"].forEach(k=>$("k-"+k).hidden=k!==st.kind);render();});
+["inUrl","inText","inWa","inWaMsg","inSsid","inPass","inSec","inCap","logoSize"].forEach(id=>$(id).addEventListener("input",render));
+const cmap={cDots:"dots",cDots2:"dots2",cCorner:"corner",cBg:"bg",cFrame:"frame",cCap:"cap"};
+Object.entries(cmap).forEach(([id,k])=>$(id).addEventListener("input",e=>{st[k]=e.target.value;render()}));
+$("useGrad").onchange=e=>{st.grad=e.target.checked;render()};
+$("useFrame").onchange=e=>{st.useFrame=e.target.checked;$("inCap").disabled=!st.useFrame;render()};
+
+$("inLogo").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{st.logo=rd.result;$("logoThumb").src=rd.result;$("logoThumb").hidden=false;$("rmLogo").hidden=false;render()};rd.readAsDataURL(f)};
+$("rmLogo").onclick=()=>{st.logo=null;$("inLogo").value="";$("logoThumb").hidden=true;$("rmLogo").hidden=true;render()};
+
+// final composed PNG (QR + frame + caption)
+async function composed(){
+  const size=1200;
+  const q=new QRCodeStyling(opts(size));
+  const blob=await q.getRawData("png");
+  const img=await createImageBitmap(blob);
+  const cap=st.useFrame?$("inCap").value.trim():"";
+  if(!st.useFrame) {const c=document.createElement("canvas");c.width=size;c.height=size;c.getContext("2d").drawImage(img,0,0);return c;}
+  try{await document.fonts.load('700 80px "El Messiri"')}catch(e){}
+  const pad=70,capH=cap?150:0,W=size+pad*2,H=size+pad*2+capH;
+  const c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
+  g.fillStyle=st.frame;g.beginPath();g.roundRect?g.roundRect(0,0,W,H,80):g.rect(0,0,W,H);g.fill();
+  g.save();g.beginPath();g.roundRect?g.roundRect(pad,pad,size,size,40):g.rect(pad,pad,size,size);g.clip();g.drawImage(img,pad,pad);g.restore();
+  if(cap){g.fillStyle=st.cap;g.font='700 84px "El Messiri","Tajawal",sans-serif';g.textAlign="center";g.textBaseline="middle";g.direction="rtl";
+    g.fillText(cap,W/2,pad+size+capH/2+5,W-pad*2);}
+  return c;
+}
+function fname(ext){return "naqsha-qr."+ext}
+$("dlPng").onclick=async()=>{const c=await composed();c.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=fname("png");document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},"image/png")};
+$("dlSvg").onclick=()=>{const q=new QRCodeStyling({...opts(1000),type:"svg"});q.download({name:"naqsha-qr",extension:"svg"})};
+$("mkImg").onclick=async()=>{const c=await composed();$("saveImg").src=c.toDataURL("image/png");$("saveImg").hidden=false;$("saveImg").scrollIntoView({behavior:"smooth",block:"nearest"})};
+
+syncColors();render();
+})();
+</script>
