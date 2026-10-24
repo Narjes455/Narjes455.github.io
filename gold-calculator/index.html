@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حاسبة الذهب</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf7f0; --card:#ffffff; --text:#2a2418; --muted:#7a6f5c;
+  --gold:#b8860b; --gold2:#e6c068; --line:#ece4d2; --ok:#2e7d4f; --err:#b23a3a;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15130f; --card:#1f1c16; --text:#f3ecdc; --muted:#a89c84;
+    --gold:#e6c068; --gold2:#b8860b; --line:#332e24;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15130f; --card:#1f1c16; --text:#f3ecdc; --muted:#a89c84;
+  --gold:#e6c068; --gold2:#b8860b; --line:#332e24;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 48px}
+header{text-align:center;margin-bottom:20px}
+h1{margin:0;font-size:2rem;font-weight:800;
+  background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);margin:4px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+.card h2{font-size:1.1rem;margin:0 0 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.status{font-size:.85rem;font-weight:500;color:var(--muted)}
+.status.ok{color:var(--ok)} .status.err{color:var(--err)}
+.prices{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.p{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.p b{display:block;color:var(--gold);font-size:.95rem}
+.p span{font-size:1.15rem;font-weight:700}
+.p small{display:block;color:var(--muted);font-size:.75rem}
+.ounce{margin-top:10px;color:var(--muted);font-size:.85rem;text-align:center}
+label{display:block;font-weight:500;margin-bottom:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg);color:var(--text);font:inherit;font-size:1rem}
+input:focus,select:focus{outline:2px solid var(--gold2);border-color:transparent}
+.karats{display:flex;gap:8px;flex-wrap:wrap}
+.karats button{flex:1;min-width:60px;padding:10px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg);color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+.karats button.on{background:var(--gold);color:#fff;border-color:var(--gold)}
+.row{display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--muted)}
+.row input{width:auto}
+.result{text-align:center;padding:22px;border-radius:16px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff}
+.result .big{font-size:2.2rem;font-weight:800;margin:4px 0}
+.breakdown{display:grid;grid-template-columns:1fr auto;gap:6px 12px;margin-top:14px;
+  background:rgba(255,255,255,.15);border-radius:12px;padding:12px;text-align:right;font-size:.95rem}
+.manual{margin-top:12px;font-size:.9rem}
+.manual summary{cursor:pointer;color:var(--muted)}
+.btn{padding:8px 14px;border:none;border-radius:10px;background:var(--gold);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:20px}
+@media (max-width:560px){
+  .prices{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:1fr}
+  h1{font-size:1.6rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>حاسبة الذهب</h1>
+    <p class="sub">أسعار الذهب اليوم بالريال السعودي واحسب قيمة ذهبك</p>
+  </header>
+
+  <section class="card">
+    <h2>سعر الجرام اليوم <span id="status" class="status">جاري التحديث…</span></h2>
+    <div class="prices" id="prices"></div>
+    <div class="ounce" id="ounce"></div>
+    <details class="manual">
+      <summary>إدخال سعر الأونصة يدوياً</summary>
+      <div class="grid" style="margin-top:10px">
+        <input id="manualOz" type="number" min="0" step="0.01" placeholder="سعر الأونصة بالدولار">
+        <button class="btn" id="applyManual">تطبيق</button>
+      </div>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>احسب قيمة الذهب</h2>
+    <div class="grid">
+      <div>
+        <label for="weight">الوزن (جرام)</label>
+        <input id="weight" type="number" min="0" step="0.01" value="10" inputmode="decimal">
+      </div>
+      <div>
+        <label for="making">المصنعية لكل جرام (ريال)</label>
+        <input id="making" type="number" min="0" step="0.5" value="0" inputmode="decimal">
+      </div>
+    </div>
+    <label style="margin-top:12px">العيار</label>
+    <div class="karats" id="karats">
+      <button data-k="24">24</button>
+      <button data-k="22">22</button>
+      <button data-k="21" class="on">21</button>
+      <button data-k="18">18</button>
+    </div>
+    <label class="row"><input type="checkbox" id="vat"> إضافة ضريبة القيمة المضافة 15%</label>
+  </section>
+
+  <section class="result">
+    <div>القيمة الإجمالية</div>
+    <div class="big" id="total">—</div>
+    <div class="breakdown" id="breakdown"></div>
+  </section>
+
+  <footer>الأسعار استرشادية حسب السعر العالمي، وقد تختلف قليلاً عن أسعار المحلات.</footer>
+</div>
+
+<script>
+const OZ = 31.1034768;     // جرام في الأونصة
+const USD_SAR = 3.75;      // سعر الصرف الثابت
+const KARATS = [24, 22, 21, 18];
+let ozUsd = null, karat = 21;
+
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('ar-SA', {minimumFractionDigits:2, maximumFractionDigits:2});
+const gramPrice = k => ozUsd * USD_SAR / OZ * (k / 24);
+
+function save(v){ try{ localStorage.setItem('goldOz', JSON.stringify({v, t:Date.now()})); }catch(e){} }
+function load(){ try{ return JSON.parse(localStorage.getItem('goldOz')); }catch(e){ return null; } }
+
+function setStatus(text, cls){ const s=$('status'); s.textContent=text; s.className='status '+(cls||''); }
+
+function renderPrices(){
+  if(!ozUsd){ $('prices').innerHTML=''; return; }
+  $('prices').innerHTML = KARATS.map(k =>
+    `<div class="p"><b>عيار ${k}</b><span>${fmt(gramPrice(k))}</span><small>ريال / جرام</small></div>`).join('');
+  $('ounce').textContent = `الأونصة: ${fmt(ozUsd)} دولار ≈ ${fmt(ozUsd*USD_SAR)} ريال`;
+  calc();
+}
+
+function calc(){
+  if(!ozUsd){ $('total').textContent='—'; return; }
+  const w = parseFloat($('weight').value) || 0;
+  const m = parseFloat($('making').value) || 0;
+  const gold = gramPrice(karat) * w;
+  const making = m * w;
+  const vat = $('vat').checked ? (gold + making) * 0.15 : 0;
+  const total = gold + making + vat;
+  $('total').textContent = fmt(total) + ' ريال';
+  $('breakdown').innerHTML =
+    `<span>قيمة الذهب (عيار ${karat}، ${w} جم)</span><span>${fmt(gold)}</span>` +
+    (making ? `<span>المصنعية</span><span>${fmt(making)}</span>` : '') +
+    (vat ? `<span>الضريبة 15%</span><span>${fmt(vat)}</span>` : '');
+}
+
+async function fetchPrice(){
+  setStatus('جاري التحديث…');
+  try{
+    const r = await fetch('https://api.gold-api.com/price/XAU', {cache:'no-store'});
+    if(!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    if(!d.price) throw new Error('no price');
+    ozUsd = d.price; save(ozUsd);
+    const when = d.updatedAt ? new Date(d.updatedAt) : new Date();
+    setStatus('محدّث ' + when.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'}), 'ok');
+  }catch(e){
+    const c = load();
+    if(c){ ozUsd = c.v; setStatus('آخر سعر محفوظ — ' + new Date(c.t).toLocaleDateString('ar-SA'), 'err'); }
+    else setStatus('تعذّر جلب السعر — أدخليه يدوياً', 'err');
+  }
+  renderPrices();
+}
+
+$('karats').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#karats button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); karat = +b.dataset.k; calc();
+});
+['weight','making','vat'].forEach(id => $(id).addEventListener('input', calc));
+$('applyManual').addEventListener('click', () => {
+  const v = parseFloat($('manualOz').value);
+  if(v > 0){ ozUsd = v; setStatus('سعر يدوي'); renderPrices(); }
+});
+
+fetchPrice();
+setInterval(fetchPrice, 10 * 60 * 1000); // تحديث كل 10 دقائق
+</script>
+</body>
+</html>
