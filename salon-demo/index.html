@@ -127,6 +127,8 @@ table.t td.n{text-align:left;font-variant-numeric:tabular-nums;white-space:nowra
 .receipt{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--surface)}
 .receipt .rh{text-align:center;border-bottom:1px dashed var(--line);padding-bottom:10px;margin-bottom:10px}
 .receipt .rh .nm{font-family:var(--display);font-size:22px;color:var(--accent)}
+.qr{background:#fff;padding:6px;border-radius:6px;width:max-content;margin:12px auto 0}
+.qr svg{display:block;width:132px;height:132px}
 .kv{display:flex;justify-content:space-between;gap:8px;font-size:13px}
 .auth{max-width:380px;margin:40px auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;gap:12px}
 .auth h2{text-align:center;color:var(--accent)}
@@ -170,11 +172,12 @@ table.t td.n{text-align:left;font-variant-numeric:tabular-nums;white-space:nowra
   </main>
 </div>
 <footer class="wrap" style="padding-block:24px 40px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid var(--line)">
-  نظام إدارة الصالونات: حجوزات، فواتير بضريبة 15%، عميلات، موظفات بصلاحيات، وتقرير نهاية اليوم.<br>
+  نظام إدارة الصالونات: حجوزات، فواتير ضريبية برمز QR، عميلات، موظفات بصلاحيات، وتقرير نهاية اليوم.<br>
   لطلب النظام لصالونك: <a href="https://narjes455.github.io/" style="color:var(--accent)">نرجس العمري</a>
 </footer>
 <div id="modalRoot"></div>
 
+<script src="qrcode.js"></script>
 <script>
 (() => {
 "use strict";
@@ -691,9 +694,24 @@ function receiptHtml(x){
       ${x.vatEnabled?`<div><span>الإجمالي قبل الضريبة</span><span>${SAR(x.net)}</span></div><div><span>ضريبة القيمة المضافة 15%</span><span>${SAR(x.vat)}</span></div>`:""}
       <div class="grand"><span>الإجمالي</span><span>${SAR(x.total)}</span></div>
       <div class="kv"><span>طريقة الدفع</span><span>${PAY[x.pay]||""}</span></div></div>
+    ${zatcaBlock(x)}
     ${x.void?`<div class="notice" style="margin:10px 0 0">هذه الفاتورة ملغاة ولا تدخل في المبيعات.</div>`:""}
     ${st.footer?`<div class="small muted" style="text-align:center;margin-top:10px">${esc(st.footer)}</div>`:""}
   </div>`;
+}
+/* ZATCA phase 1 QR: TLV (1 seller, 2 VAT no, 3 timestamp, 4 total, 5 VAT) in Base64 */
+function zatcaB64(x){
+  const st=S.settings, enc=new TextEncoder(), out=[];
+  const add=(t,v)=>{ const b=enc.encode(String(v)).slice(0,255); out.push(t,b.length,...b); };
+  const ts=new Date(x.createdAt||`${x.date}T${x.time||"00:00"}:00`).toISOString().replace(/\.\d{3}Z$/,"Z");
+  add(1,st.name||""); add(2,st.vatNo||""); add(3,ts); add(4,(+x.total||0).toFixed(2)); add(5,(+x.vat||0).toFixed(2));
+  let bin=""; out.forEach(c=>bin+=String.fromCharCode(c)); return btoa(bin);
+}
+function zatcaBlock(x){
+  if(!x.vatEnabled) return "";
+  if(!S.settings.vatNo) return S.me && isAdmin() ? `<div class="small muted" style="text-align:center;margin-top:10px">أضيفي الرقم الضريبي من الإعدادات عشان يطلع رمز QR الضريبي</div>` : "";
+  if(typeof qrcode!=="function") return "";
+  try{ const q=qrcode(0,"M"); q.addData(zatcaB64(x)); q.make(); return `<div class="qr" role="img" aria-label="رمز QR الضريبي">${q.createSvgTag({cellSize:3,margin:2})}</div>`; }catch(e){ return ""; }
 }
 async function findInvoice(id){
   let x = byId(S.invoices,id); if(x) return x;
