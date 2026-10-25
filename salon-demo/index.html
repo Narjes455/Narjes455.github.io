@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="نظام إدارة صالونات بالعربي: حجوزات، فواتير ضريبية، عميلات، صلاحيات للموظفات، وتقرير نهاية اليوم. جربيه الحين.">
+<meta property="og:title" content="نظام إدارة الصالون | جربي الديمو">
+<meta property="og:description" content="حجوزات، فواتير بضريبة 15%، عميلات، موظفات، وتقرير نهاية اليوم. ادخلي بحساب تجريبي وجربي بنفسك.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://narjes455.github.io/salon-demo/">
+<meta name="theme-color" content="#8a2d5c">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+<title>نظام إدارة الصالون | نسخة تجريبية</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky header + scrollable tab strip, one working column (max 1100px); lists as quiet rows, cards only for modals and KPIs */
+:root{
+  --bg:#f8f5f7; --surface:#ffffff; --sunk:#f1ecef; --line:#e4dbe1;
+  --ink:#2b1f2a; --muted:#76687a; --accent:#8a2d5c; --accent-ink:#ffffff; --accent-soft:#f5e4ec;
+  --ok:#2f7a55; --ok-soft:#e2f2e9; --warn:#a46412; --warn-soft:#fbefd9; --bad:#b23a3a; --bad-soft:#f8e1e1; --info:#3b5f9a; --info-soft:#e3ebf7;
+  --display:"El Messiri","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171216; --surface:#211a20; --sunk:#1c161b; --line:#3a2f38;
+  --ink:#f1e9ef; --muted:#ad9fab; --accent:#e58ab4; --accent-ink:#2a0f1d; --accent-soft:#3c2231;
+  --ok:#7fd1a6; --ok-soft:#1f3329; --warn:#f0bd6e; --warn-soft:#3a2d18; --bad:#f09a9a; --bad-soft:#3d2222; --info:#9fbcf0; --info-soft:#1f2a3d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171216; --surface:#211a20; --sunk:#1c161b; --line:#3a2f38;
+  --ink:#f1e9ef; --muted:#ad9fab; --accent:#e58ab4; --accent-ink:#2a0f1d; --accent-soft:#3c2231;
+  --ok:#7fd1a6; --ok-soft:#1f3329; --warn:#f0bd6e; --warn-soft:#3a2d18; --bad:#f09a9a; --bad-soft:#3d2222; --info:#9fbcf0; --info-soft:#1f2a3d; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+#app{min-height:100%}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px 6px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand h1{font-family:var(--display);font-size:24px;margin:0;font-weight:700;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand .date{color:var(--muted);font-size:13px}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:4px 0}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px;font:inherit;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--accent);font-weight:600}
+main{padding-block:20px 60px}
+h2{font-family:var(--display);font-size:22px;margin:0;font-weight:600;text-wrap:balance}
+h3{font-size:15px;margin:0 0 8px;font-weight:600}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+button,.btn{font:inherit;cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:8px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:500;font-size:14px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--accent);padding-inline:8px}
+.btn.danger{color:var(--bad);border-color:var(--bad-soft)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+textarea{min-height:64px;resize:vertical}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:500;min-width:0}
+label.f > span{color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.datebar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.datebar input{width:auto}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.kpi .l{font-size:12px;color:var(--muted);font-weight:500}
+.kpi .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:13px;font-weight:500;color:var(--muted)}
+.kpi.hl{background:var(--accent-soft);border-color:transparent}
+.kpi.hl .v{color:var(--accent)}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.row{display:grid;grid-template-columns:72px 1fr auto;gap:12px;padding:12px 14px;border-top:1px solid var(--line);align-items:start}
+.row:first-child{border-top:0}
+.row .time{font-weight:700;font-variant-numeric:tabular-nums;font-size:16px;direction:ltr;text-align:right}
+.row .main{min-width:0}
+.row .who{font-weight:600}
+.row .meta{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.row .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.row.dim{opacity:.6}
+.row.simple{grid-template-columns:1fr auto}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:1px 9px;border-radius:999px;white-space:nowrap}
+.s-booked{background:var(--info-soft);color:var(--info)}
+.s-arrived{background:var(--warn-soft);color:var(--warn)}
+.s-done{background:var(--ok-soft);color:var(--ok)}
+.s-cancelled,.s-noshow{background:var(--bad-soft);color:var(--bad)}
+.s-void{background:var(--sunk);color:var(--muted);text-decoration:line-through}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+.notice{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:14px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:18px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;min-width:0}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:right;font-size:12px;color:var(--muted);font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line)}
+table.t td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t tr:last-child td{border-bottom:0}
+table.t td.n{text-align:left;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tscroll{overflow-x:auto}
+.catlabel{font-size:12px;letter-spacing:.02em;color:var(--muted);font-weight:600;padding:10px 14px 4px;background:var(--sunk);border-top:1px solid var(--line)}
+.catlabel:first-child{border-top:0}
+.search{max-width:320px}
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(20,10,18,.45);z-index:20;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:calc(24px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.modal{background:var(--surface);border-radius:14px;width:100%;max-width:620px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.modal .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px}
+.modal .mf{display:flex;gap:8px;justify-content:flex-start;margin-top:16px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chk{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer;user-select:none}
+.chk input{width:auto;margin:0}
+.chk:has(input:checked){background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.items .it{display:grid;grid-template-columns:1fr 70px 100px 32px;gap:6px;margin-bottom:6px;align-items:center}
+.totals{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;display:grid;gap:4px;font-size:14px}
+.totals div{display:flex;justify-content:space-between}
+.totals .grand{font-size:18px;font-weight:700;color:var(--accent)}
+.confirm{background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:10px;margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;z-index:40;font-size:14px}
+.receipt{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--surface)}
+.receipt .rh{text-align:center;border-bottom:1px dashed var(--line);padding-bottom:10px;margin-bottom:10px}
+.receipt .rh .nm{font-family:var(--display);font-size:22px;color:var(--accent)}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13px}
+.auth{max-width:380px;margin:40px auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;gap:12px}
+.auth h2{text-align:center;color:var(--accent)}
+.auth .err{color:var(--bad);font-size:13px;min-height:1.2em}
+.userbox{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.userbox b{color:var(--ink)}
+.role{font-size:11px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.demo-bar{background:var(--accent);color:var(--accent-ink);text-align:center;font-size:13px;padding-block:6px}
+.demo-accts{display:grid;gap:6px}
+.demo-accts button{display:flex;justify-content:space-between;gap:8px;text-align:right;border:1px dashed var(--line);background:var(--sunk);border-radius:8px;padding:8px 10px;color:var(--ink);font-size:13px}
+.demo-accts button:hover{border-color:var(--accent)}
+@media (max-width:560px){
+  .row{grid-template-columns:66px 1fr}
+  .row .time{font-size:14px;white-space:nowrap}
+  .row .acts{grid-column:1 / -1;justify-content:flex-start}
+  .row.simple{grid-template-columns:1fr}
+  .items .it{grid-template-columns:1fr 54px 80px 28px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+</head>
+<body>
+<div id="app" dir="rtl" lang="ar">
+  <header>
+    <div class="demo-bar" id="demoBar" hidden><div class="wrap">نسخة تجريبية للعرض: البيانات وهمية وترجع لوضعها الأصلي إذا حدّثتي الصفحة</div></div>
+    <div class="wrap">
+      <div class="top">
+        <div class="brand"><h1 id="salonName">الصالون</h1><span class="date" id="todayLbl"></span></div>
+        <div class="quick">
+          <span class="userbox" id="userbox" hidden></span>
+          <button class="btn primary" id="qBook" type="button">+ حجز جديد</button>
+          <button class="btn" id="qInv" type="button">+ فاتورة</button>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist" id="tabs"></nav>
+    </div>
+  </header>
+  <main class="wrap" id="view">
+    <div class="empty"><b>جاري تحميل بيانات الصالون…</b>الحجوزات والفواتير تظهر هنا بعد ثوانٍ.</div>
+  </main>
+</div>
+<footer class="wrap" style="padding-block:24px 40px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid var(--line)">
+  نظام إدارة الصالونات: حجوزات، فواتير بضريبة 15%، عميلات، موظفات بصلاحيات، وتقرير نهاية اليوم.<br>
+  لطلب النظام لصالونك: <a href="https://narjes455.github.io/" style="color:var(--accent)">نرجس العمري</a>
+</footer>
+<div id="modalRoot"></div>
+
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const addDays = (s,n) => { const d = new Date(s+"T12:00:00"); d.setDate(d.getDate()+n); return ymd(d); };
+const TODAY = ymd(new Date());
+const dayName = s => new Date(s+"T12:00:00").toLocaleDateString("ar-SA-u-ca-gregory-nu-latn",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+const money = n => (Math.round((+n||0)*100)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const SAR = n => `<span class="num">${money(n)}</span> ر.س`;
+const r2 = n => Math.round((+n||0)*100)/100;
+const t12 = t => { if(!t) return "—"; const [h,m]=t.split(":").map(Number); const ap = h<12?"ص":"م"; const hh = ((h+11)%12)+1; return `${hh}:${pad(m)} ${ap}`; };
+
+const STATUS = {
+  booked:{l:"محجوز"}, arrived:{l:"وصلت"}, done:{l:"مكتمل"}, cancelled:{l:"ملغي"}, noshow:{l:"لم تحضر"}
+};
+const PAY = {cash:"كاش", mada:"مدى / شبكة", transfer:"تحويل", other:"أخرى"};
+const TABS = [
+  ["bookings","الحجوزات"],["invoices","الفواتير"],["report","تقرير نهاية اليوم"],
+  ["clients","العميلات"],["services","الخدمات والأسعار"],["staff","الموظفات"],["settings","الإعدادات"]
+];
+const DEMO = true;
+const ROLES = {admin:"مديرة", reception:"استقبال", stylist:"موظفة"};
+const ROLE_TABS = {admin:TABS.map(t=>t[0]), reception:["bookings","invoices","report","clients"], stylist:["bookings"]};
+const DEMO_ACCTS = [{u:"admin",p:"1234",label:"المديرة: كل الصلاحيات"},{u:"reception",p:"1234",label:"الاستقبال"},{u:"noura",p:"1234",label:"موظفة (نورة): حجوزاتها فقط"}];
+const myRole = () => S.me?.role || "stylist";
+const isAdmin = () => myRole()==="admin";
+const canBook = () => S.canWrite && myRole()!=="stylist";
+const hex = b => [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+const newSalt = () => { const a=new Uint8Array(12); crypto.getRandomValues(a); return hex(a.buffer); };
+async function hashPw(pw, salt){
+  const enc=new TextEncoder();
+  const k=await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+  return hex(await crypto.subtle.deriveBits({name:"PBKDF2", salt:enc.encode(salt), iterations:100000, hash:"SHA-256"}, k, 256));
+}
+const USER_RE = /^[a-z0-9._-]{3,20}$/;
+
+const S = {
+  tab:"bookings", day:TODAY, invDay:TODAY, repDay:TODAY, staffFilter:"", clientQ:"",
+  services:[], staff:[], clients:[], bookings:[], invoices:[],
+  settings:{name:"الصالون", vatEnabled:true, pricesIncludeVat:false, vatNo:"", address:"", phone:"", footer:"شكراً لزيارتكم"},
+  ready:false, canWrite:true, db:null, downloads:null, extra:{},
+  me:null, meAt:0, fails:0, lockUntil:0, restored:false
+};
+const CUTOFF = addDays(TODAY,-90);
+const docs = snap => snap.docs.map(d => ({id:d.id, ...d.data()}));
+const byId = (arr,id) => arr.find(x => x.id===id);
+const staffName = id => byId(S.staff,id)?.name || "";
+
+function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2200); }
+function dbErr(e){
+  if(e && e.code==="quota_exceeded") toast("قاعدة البيانات ممتلئة. احذفي سجلات قديمة ثم أعيدي المحاولة.");
+  else if(e && e.code==="invalid_argument") { S.canWrite=false; toast("ما عندك صلاحية تعديل. اطلبي من صاحبة الصالون صلاحية مساهم."); render(); }
+  else toast("تعذر الحفظ، تأكدي من الاتصال وحاولي مرة ثانية.");
+  console.error(e);
+}
+
+/* ---------- money logic ---------- */
+function calcTotals(items, discount, st){
+  const gross = r2(items.reduce((s,i)=>s + (+i.price||0)*(+i.qty||1),0));
+  const disc = Math.min(r2(discount), gross);
+  const after = r2(gross - disc);
+  let net, vat, total;
+  if(!st.vatEnabled){ net=after; vat=0; total=after; }
+  else if(st.pricesIncludeVat){ total=after; vat=r2(after*15/115); net=r2(total-vat); }
+  else { net=after; vat=r2(after*0.15); total=r2(net+vat); }
+  return {gross, discount:disc, net, vat, total};
+}
+
+/* ---------- tabs & render ---------- */
+function renderTabs(){
+  if(!S.me){ $("#tabs").innerHTML=""; return; }
+  const allowed = ROLE_TABS[myRole()];
+  $("#tabs").innerHTML = TABS.filter(([k])=>allowed.includes(k)).map(([k,l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${k==="bookings"&&myRole()==="stylist"?"حجوزاتي":l}</button>`).join("");
+}
+const accounts = () => S.staff.filter(s=>s.username && s.pwHash);
+const authMode = () => accounts().length ? "login" : "setup";
+function syncMe(){
+  if(!S.ready) return;
+  if(S.me){
+    const f=byId(S.staff,S.me.id);
+    if(f) S.me = (f.active!==false && f.pwHash) ? f : null;
+    else if(Date.now()-S.meAt > 10000) S.me = null;
+  } else if(!S.restored){
+    S.restored=true; let sid=null;
+    try{ sid=sessionStorage.getItem("salon_me"); }catch(e){}
+    const f = sid && byId(S.staff,sid);
+    if(f && f.active!==false && f.pwHash){ S.me=f; S.meAt=Date.now(); }
+  }
+}
+function setMe(acc){
+  S.me=acc; S.meAt=Date.now();
+  try{ sessionStorage.setItem("salon_me", acc?acc.id:""); }catch(e){}
+  if(acc) S.tab = ROLE_TABS[acc.role||"stylist"][0];
+  render();
+}
+function vAuth(){
+  if(authMode()==="setup"){
+    if(!S.canWrite) return `<div class="auth"><h2>${esc(S.settings.name||"الصالون")}</h2><div class="muted">النظام لم يُجهّز بعد. صاحبة الصالون تنشئ الحسابات أول مرة.</div></div>`;
+    return `<form class="auth" id="setupForm"><h2>تجهيز النظام</h2>
+      <div class="small muted">أنشئي حساب المديرة أولاً. بعدها تضيفين حساب لكل موظفة من تبويب "الموظفات".</div>
+      <label class="f"><span>الاسم</span><input id="su-name" required></label>
+      <label class="f"><span>اسم المستخدم (إنجليزي)</span><input id="su-user" required autocomplete="username" dir="ltr" autocapitalize="none"></label>
+      <label class="f"><span>كلمة المرور (٤ خانات على الأقل)</span><input id="su-pw" type="password" required autocomplete="new-password" dir="ltr"></label>
+      <label class="f"><span>تأكيد كلمة المرور</span><input id="su-pw2" type="password" required autocomplete="new-password" dir="ltr"></label>
+      <div class="err" id="authErr" role="alert"></div>
+      <button class="btn primary" type="submit">إنشاء الحساب والدخول</button></form>`;
+  }
+  return `<form class="auth" id="loginForm"><h2>${esc(S.settings.name||"الصالون")}</h2>
+    <div class="small muted" style="text-align:center">سجّلي دخولك</div>
+    <label class="f"><span>اسم المستخدم</span><input id="li-user" required autocomplete="username" dir="ltr" autocapitalize="none"></label>
+    <label class="f"><span>كلمة المرور</span><input id="li-pw" type="password" required autocomplete="current-password" dir="ltr"></label>
+    <div class="err" id="authErr" role="alert"></div>
+    <button class="btn primary" type="submit">دخول</button>
+    ${DEMO?`<div class="small muted">حسابات تجريبية، اضغطي على أي حساب للدخول:</div><div class="demo-accts">${DEMO_ACCTS.map(a=>`<button type="button" data-demo="${a.u}"><span>${a.label}</span><span class="num muted">${a.u} / ${a.p}</span></button>`).join("")}</div>`:""}
+  </form>`;
+}
+async function doLogin(){
+  const err=$("#authErr");
+  if(Date.now()<S.lockUntil){ err.textContent=`محاولات كثيرة. انتظري ${Math.ceil((S.lockUntil-Date.now())/1000)} ثانية.`; return; }
+  const u=$("#li-user").value.trim().toLowerCase(), p=$("#li-pw").value;
+  const acc=accounts().find(s=>s.username.toLowerCase()===u);
+  if(acc && acc.active!==false && await hashPw(p, acc.pwSalt)===acc.pwHash){ S.fails=0; setMe(acc); return; }
+  if(++S.fails>=5){ S.lockUntil=Date.now()+30000; S.fails=0; }
+  err.textContent = (acc && acc.active===false) ? "هذا الحساب موقوف. راجعي المديرة." : "اسم المستخدم أو كلمة المرور غير صحيحة.";
+}
+async function doSetup(){
+  const err=$("#authErr");
+  const name=$("#su-name").value.trim(), u=$("#su-user").value.trim().toLowerCase(), p=$("#su-pw").value;
+  if(!USER_RE.test(u)){ err.textContent="اسم المستخدم بالإنجليزي من ٣ إلى ٢٠ (حروف، أرقام، . _ -)."; return; }
+  if(p.length<4){ err.textContent="كلمة المرور لازم ٤ خانات على الأقل."; return; }
+  if(p!==$("#su-pw2").value){ err.textContent="كلمتا المرور غير متطابقتين."; return; }
+  try{
+    const salt=newSalt(), ref=S.db.collection("staff").doc();
+    const acc={name, specialty:"مديرة الصالون", phone:"", role:"admin", username:u, pwSalt:salt, pwHash:await hashPw(p,salt), active:true};
+    await ref.set(acc); setMe({id:ref.id, ...acc}); toast("تم إنشاء الحساب");
+  }catch(e){ dbErr(e); }
+}
+function render(){
+  $("#salonName").textContent = S.settings.name || "الصالون";
+  $("#todayLbl").textContent = dayName(TODAY);
+  $("#demoBar").hidden = !DEMO;
+  syncMe();
+  const logged = S.ready && !!S.me;
+  $("#qBook").hidden = $("#qInv").hidden = !(logged && canBook());
+  const ub=$("#userbox"); ub.hidden=!logged;
+  ub.innerHTML = logged ? `<b>${esc(S.me.name)}</b><span class="role">${ROLES[myRole()]}</span><button class="btn ghost sm" id="logout" type="button">خروج</button>` : "";
+  if(logged && !ROLE_TABS[myRole()].includes(S.tab)) S.tab = ROLE_TABS[myRole()][0];
+  renderTabs();
+  if(!S.ready) return;
+  const v = $("#view");
+  if(!S.me){
+    const mode = authMode() + (S.canWrite?"w":"r");
+    if(v.dataset.mode!==mode){ v.innerHTML=vAuth(); v.dataset.mode=mode; const f=v.querySelector("input"); f && f.focus(); }
+    return;
+  }
+  v.dataset.mode="";
+  if(S.tab==="settings" && v.contains(document.activeElement) && document.activeElement.closest("#setForm")) return;
+  const ro = S.canWrite ? "" : `<div class="notice">عندك صلاحية عرض فقط. للحجز وإصدار الفواتير تحتاجين صلاحية "مساهم" من صاحبة الصالون.</div>`;
+  v.innerHTML = ro + ({bookings:vBookings, invoices:vInvoices, report:vReport, clients:vClients, services:vServices, staff:vStaff, settings:vSettings}[S.tab])();
+  if(S.tab==="report") ensureDay(S.repDay), ensureDay(addDays(S.repDay,1));
+  if(S.tab==="bookings") ensureDay(S.day);
+  if(S.tab==="invoices") ensureDay(S.invDay);
+}
+
+/* days older than the live window are fetched once on demand */
+async function ensureDay(day){
+  if(day >= CUTOFF || S.extra[day] || !S.db) return;
+  S.extra[day] = {bookings:[], invoices:[], loading:true};
+  try{
+    const [b,i] = await Promise.all([
+      S.db.collection("bookings").where("date","==",day).get(),
+      S.db.collection("invoices").where("date","==",day).get()
+    ]);
+    S.extra[day] = {bookings:docs(b), invoices:docs(i)};
+  }catch(e){ S.extra[day] = {bookings:[], invoices:[]}; }
+  render();
+}
+const dayBookings = day => (day>=CUTOFF ? S.bookings : (S.extra[day]?.bookings||[])).filter(b=>b.date===day).sort((a,b)=>(a.time||"").localeCompare(b.time||""));
+const dayInvoices = day => (day>=CUTOFF ? S.invoices : (S.extra[day]?.invoices||[])).filter(x=>x.date===day).sort((a,b)=>(b.createdAt||"").localeCompare(a.createdAt||""));
+
+function dateBar(key){
+  const d = S[key];
+  return `<div class="datebar">
+    <button class="btn sm" data-dnav="${key}" data-n="-1" type="button" aria-label="اليوم السابق">→</button>
+    <input type="date" id="dp-${key}" data-dpick="${key}" value="${d}">
+    <button class="btn sm" data-dnav="${key}" data-n="1" type="button" aria-label="اليوم التالي">←</button>
+    ${d!==TODAY?`<button class="btn ghost sm" data-dset="${key}" type="button">اليوم</button>`:""}
+  </div>`;
+}
+
+function serviceNames(ids){ return (ids||[]).map(id => byId(S.services,id)?.name).filter(Boolean).join("، "); }
+function bookingRow(b, opts={}){
+  const st = STATUS[b.status]||STATUS.booked;
+  const dim = (b.status==="cancelled"||b.status==="noshow") ? " dim" : "";
+  const staffRole = myRole()==="stylist";
+  let acts = "";
+  if(S.canWrite && !opts.ro){
+    if(b.status==="booked") acts += `<button class="btn sm" data-bstat="arrived" data-id="${b.id}" type="button">وصلت</button>`;
+    if(!staffRole && (b.status==="booked"||b.status==="arrived") && !b.invoiceId) acts += `<button class="btn sm primary" data-binv="${b.id}" type="button">إصدار فاتورة</button>`;
+  }
+  if(b.invoiceId && !staffRole) acts += `<button class="btn sm ghost" data-vinv="${b.invoiceId}" type="button">الفاتورة</button>`;
+  if(S.canWrite && !opts.ro && !staffRole) acts += `<button class="btn sm ghost" data-bedit="${b.id}" type="button">تعديل</button>`;
+  return `<div class="row${dim}">
+    <div class="time">${esc(t12(b.time))}</div>
+    <div class="main">
+      <div><span class="who">${esc(b.clientName)}</span> <span class="pill s-${b.status||"booked"}">${st.l}</span></div>
+      <div class="meta">${esc(serviceNames(b.serviceIds)) || "بدون خدمة محددة"}${b.staffId?` · مع ${esc(staffName(b.staffId))}`:""}</div>
+      <div class="meta"><span class="num">${esc(b.clientPhone||"")}</span>${b.notes?` · ${esc(b.notes)}`:""}</div>
+    </div>
+    <div class="acts">${acts}</div>
+  </div>`;
+}
+
+/* ---------- views ---------- */
+function vBookings(){
+  let list = dayBookings(S.day);
+  const mine = myRole()==="stylist";
+  if(mine) list = list.filter(b=>b.staffId===S.me.id);
+  else if(S.staffFilter) list = list.filter(b=>b.staffId===S.staffFilter);
+  const active = list.filter(b=>b.status!=="cancelled"&&b.status!=="noshow");
+  const done = list.filter(b=>b.status==="done").length;
+  const waiting = list.filter(b=>b.status==="booked").length;
+  const staffOpts = S.staff.filter(s=>s.active!==false).map(s=>`<option value="${s.id}" ${S.staffFilter===s.id?"selected":""}>${esc(s.name)}</option>`).join("");
+  return `<div class="sechead"><h2>${mine?"حجوزاتي":"حجوزات"} ${S.day===TODAY?"اليوم":esc(dayName(S.day))}</h2>${dateBar("day")}</div>
+  <div class="kpis">
+    <div class="kpi hl"><div class="l">الحجوزات الفعّالة</div><div class="v">${active.length}</div></div>
+    <div class="kpi"><div class="l">بانتظار الحضور</div><div class="v">${waiting}</div></div>
+    <div class="kpi"><div class="l">مكتملة</div><div class="v">${done}</div></div>
+    <div class="kpi"><div class="l">ملغية / لم تحضر</div><div class="v">${list.length-active.length}</div></div>
+  </div>
+  ${S.staff.length&&!mine?`<div style="margin-bottom:10px;max-width:240px"><select id="staffFilter" aria-label="تصفية حسب الموظفة"><option value="">كل الموظفات</option>${staffOpts}</select></div>`:""}
+  <div class="list">${list.length? list.map(b=>bookingRow(b)).join("") : `<div class="empty"><b>لا توجد حجوزات في هذا اليوم</b>${canBook()?`اضغطي "+ حجز جديد" لإضافة أول حجز.`:""}</div>`}</div>`;
+}
+
+function invRow(x){
+  return `<div class="row simple${x.void?" dim":""}">
+    <div class="main">
+      <div><span class="who">${esc(x.clientName||"عميلة")}</span> <span class="small muted num">#${esc(x.number)}</span> ${x.void?'<span class="pill s-void">ملغاة</span>':""}</div>
+      <div class="meta">${esc((x.items||[]).map(i=>i.name).join("، "))}${x.staffId?` · ${esc(staffName(x.staffId))}`:""} · ${PAY[x.pay]||""} · ${esc(t12(x.time))}</div>
+    </div>
+    <div class="acts"><b>${SAR(x.total)}</b><button class="btn sm ghost" data-vinv="${x.id}" type="button">عرض</button></div>
+  </div>`;
+}
+function vInvoices(){
+  const list = dayInvoices(S.invDay);
+  const valid = list.filter(x=>!x.void);
+  const sum = valid.reduce((s,x)=>s+(+x.total||0),0);
+  const vat = valid.reduce((s,x)=>s+(+x.vat||0),0);
+  return `<div class="sechead"><h2>فواتير ${S.invDay===TODAY?"اليوم":esc(dayName(S.invDay))}</h2>${dateBar("invDay")}</div>
+  <div class="kpis">
+    <div class="kpi hl"><div class="l">إجمالي المبيعات</div><div class="v">${money(sum)} <small>ر.س</small></div></div>
+    <div class="kpi"><div class="l">عدد الفواتير</div><div class="v">${valid.length}</div></div>
+    <div class="kpi"><div class="l">ضريبة القيمة المضافة</div><div class="v">${money(vat)} <small>ر.س</small></div></div>
+  </div>
+  <div class="list">${list.length? list.map(invRow).join("") : `<div class="empty"><b>لا توجد فواتير في هذا اليوم</b>تُصدر الفاتورة من زر "إصدار فاتورة" في الحجز، أو من "+ فاتورة" لعميلة بدون حجز.</div>`}</div>`;
+}
+
+function reportData(day){
+  const bk = dayBookings(day), inv = dayInvoices(day).filter(x=>!x.void);
+  const cnt = k => bk.filter(b=>b.status===k).length;
+  const pay = {}; const stf = {}; const svc = {};
+  let sum=0, vat=0, net=0, disc=0;
+  inv.forEach(x=>{
+    sum+=+x.total||0; vat+=+x.vat||0; net+=+x.net||0; disc+=+x.discount||0;
+    pay[x.pay] = (pay[x.pay]||0) + (+x.total||0);
+    const sn = staffName(x.staffId)||"بدون موظفة"; stf[sn] = stf[sn]||{n:0,t:0}; stf[sn].n++; stf[sn].t+=+x.total||0;
+    (x.items||[]).forEach(i=>{ svc[i.name]=svc[i.name]||{n:0,t:0}; svc[i.name].n+=+i.qty||1; svc[i.name].t+=(+i.price||0)*(+i.qty||1); });
+  });
+  return {bk, inv, cnt, pay, stf, svc, sum:r2(sum), vat:r2(vat), net:r2(net), disc:r2(disc)};
+}
+function vReport(){
+  const d = S.repDay, R = reportData(d);
+  const tomorrow = dayBookings(addDays(d,1)).filter(b=>b.status==="booked"||b.status==="arrived");
+  const pending = R.bk.filter(b=>b.status==="booked"||b.status==="arrived");
+  const payRows = Object.keys(PAY).filter(k=>R.pay[k]).map(k=>`<tr><td>${PAY[k]}</td><td class="n">${SAR(R.pay[k])}</td></tr>`).join("") || `<tr><td colspan="2" class="muted">لا مبيعات</td></tr>`;
+  const stfRows = Object.entries(R.stf).sort((a,b)=>b[1].t-a[1].t).map(([n,v])=>`<tr><td>${esc(n)}</td><td class="n">${v.n}</td><td class="n">${SAR(v.t)}</td></tr>`).join("") || `<tr><td colspan="3" class="muted">لا مبيعات</td></tr>`;
+  const svcRows = Object.entries(R.svc).sort((a,b)=>b[1].n-a[1].n).map(([n,v])=>`<tr><td>${esc(n)}</td><td class="n">${v.n}</td></tr>`).join("") || `<tr><td colspan="2" class="muted">لا خدمات</td></tr>`;
+  return `<div class="sechead"><h2>تقرير ${d===TODAY?"اليوم":esc(dayName(d))}</h2><div class="datebar">${dateBar("repDay")}<button class="btn" id="copyRep" type="button">نسخ الملخص</button></div></div>
+  ${pending.length?`<div class="notice">باقي ${pending.length} حجز بدون إقفال (محجوز أو وصلت). حدّثي حالتها قبل إقفال اليوم.</div>`:""}
+  <div class="kpis">
+    <div class="kpi hl"><div class="l">إجمالي المبيعات (شامل الضريبة)</div><div class="v">${money(R.sum)} <small>ر.س</small></div></div>
+    <div class="kpi"><div class="l">قبل الضريبة</div><div class="v">${money(R.net)} <small>ر.س</small></div></div>
+    <div class="kpi"><div class="l">ضريبة 15%</div><div class="v">${money(R.vat)} <small>ر.س</small></div></div>
+    <div class="kpi"><div class="l">الخصومات</div><div class="v">${money(R.disc)} <small>ر.س</small></div></div>
+    <div class="kpi"><div class="l">الفواتير</div><div class="v">${R.inv.length}</div></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">كل الحجوزات</div><div class="v">${R.bk.length}</div></div>
+    <div class="kpi"><div class="l">مكتملة</div><div class="v" style="color:var(--ok)">${R.cnt("done")}</div></div>
+    <div class="kpi"><div class="l">ملغية</div><div class="v" style="color:var(--bad)">${R.cnt("cancelled")}</div></div>
+    <div class="kpi"><div class="l">لم تحضر</div><div class="v" style="color:var(--bad)">${R.cnt("noshow")}</div></div>
+  </div>
+  <div class="cols">
+    <div class="box"><h3>حسب طريقة الدفع</h3><div class="tscroll"><table class="t"><tbody>${payRows}</tbody></table></div></div>
+    <div class="box"><h3>حسب الموظفة</h3><div class="tscroll"><table class="t"><thead><tr><th>الموظفة</th><th>فواتير</th><th>المبلغ</th></tr></thead><tbody>${stfRows}</tbody></table></div></div>
+    <div class="box"><h3>الخدمات المنفذة</h3><div class="tscroll"><table class="t"><thead><tr><th>الخدمة</th><th>العدد</th></tr></thead><tbody>${svcRows}</tbody></table></div></div>
+  </div>
+  <h3>حجوزات اليوم</h3>
+  <div class="list" style="margin-bottom:18px">${R.bk.length? R.bk.map(b=>bookingRow(b)).join("") : `<div class="empty">لا توجد حجوزات في هذا اليوم.</div>`}</div>
+  <h3>حجوزات بكرة (${esc(dayName(addDays(d,1)))})</h3>
+  <div class="list">${tomorrow.length? tomorrow.map(b=>bookingRow(b,{ro:true})).join("") : `<div class="empty">لا توجد حجوزات لليوم التالي.</div>`}</div>`;
+}
+function reportText(){
+  const d=S.repDay, R=reportData(d);
+  const L=[`تقرير ${S.settings.name||"الصالون"} — ${dayName(d)}`, "",
+    `الحجوزات: ${R.bk.length} (مكتملة ${R.cnt("done")}، ملغية ${R.cnt("cancelled")}، لم تحضر ${R.cnt("noshow")})`,
+    `الفواتير: ${R.inv.length}`,
+    `إجمالي المبيعات: ${money(R.sum)} ر.س`, `قبل الضريبة: ${money(R.net)} ر.س`, `الضريبة: ${money(R.vat)} ر.س`, `الخصومات: ${money(R.disc)} ر.س`, "", "طرق الدفع:"];
+  Object.keys(PAY).filter(k=>R.pay[k]).forEach(k=>L.push(`- ${PAY[k]}: ${money(R.pay[k])} ر.س`));
+  L.push("","الموظفات:"); Object.entries(R.stf).forEach(([n,v])=>L.push(`- ${n}: ${v.n} فاتورة، ${money(v.t)} ر.س`));
+  return L.join("\n");
+}
+
+function clientStats(){
+  const m={};
+  S.bookings.forEach(b=>{ if(!b.clientId) return; const c=m[b.clientId]||(m[b.clientId]={n:0,last:""}); if(b.status!=="cancelled"&&b.status!=="noshow") c.n++; if(b.date<=TODAY && b.date>c.last) c.last=b.date; });
+  return m;
+}
+function vClients(){
+  const q=S.clientQ.trim(); const st=clientStats();
+  let list=[...S.clients].sort((a,b)=>(a.name||"").localeCompare(b.name||"","ar"));
+  if(q) list=list.filter(c=>(c.name||"").includes(q)||(c.phone||"").includes(q));
+  return `<div class="sechead"><h2>العميلات <span class="muted small">(${S.clients.length})</span></h2>
+    <div class="datebar"><input class="search" id="clientQ" type="search" placeholder="ابحثي بالاسم أو الجوال" value="${esc(S.clientQ)}">${S.canWrite?`<button class="btn" id="addClient" type="button">+ عميلة</button>`:""}</div></div>
+  <div class="list">${list.length? list.map(c=>`<div class="row simple"><div class="main"><div class="who">${esc(c.name)}</div><div class="meta"><span class="num">${esc(c.phone)}</span>${st[c.id]?` · ${st[c.id].n} زيارة خلال ٣ شهور${st[c.id].last?` · آخر زيارة ${esc(st[c.id].last)}`:""}`:""}${c.notes?` · ${esc(c.notes)}`:""}</div></div>
+    <div class="acts"><button class="btn sm ghost" data-chist="${c.id}" type="button">السجل</button>${S.canWrite?`<button class="btn sm" data-cbook="${c.id}" type="button">حجز</button><button class="btn sm ghost" data-cedit="${c.id}" type="button">تعديل</button>`:""}</div></div>`).join("")
+    : `<div class="empty"><b>${q?"ما فيه نتائج":"ما فيه عميلات بعد"}</b>${q?"":"تنضاف العميلة تلقائياً أول ما تسوين لها حجز أو فاتورة."}</div>`}</div>`;
+}
+
+function vServices(){
+  const cats={}; S.services.forEach(s=>{ (cats[s.category||"عام"]=cats[s.category||"عام"]||[]).push(s); });
+  const keys=Object.keys(cats).sort((a,b)=>a.localeCompare(b,"ar"));
+  const note = S.settings.vatEnabled ? (S.settings.pricesIncludeVat?"الأسعار شاملة الضريبة":"الأسعار قبل الضريبة، وتنضاف 15% في الفاتورة") : "الضريبة غير مفعّلة";
+  return `<div class="sechead"><div><h2>الخدمات والأسعار</h2><div class="small muted">${note}</div></div>${S.canWrite?`<button class="btn primary" id="addSvc" type="button">+ خدمة</button>`:""}</div>
+  <div class="list">${keys.length? keys.map(k=>`<div class="catlabel">${esc(k)}</div>`+cats[k].sort((a,b)=>(a.name||"").localeCompare(b.name||"","ar")).map(s=>`<div class="row simple${s.active===false?" dim":""}"><div class="main"><div class="who">${esc(s.name)} ${s.active===false?'<span class="pill s-void">موقوفة</span>':""}</div><div class="meta">${s.duration?`${esc(s.duration)} دقيقة`:""}</div></div><div class="acts"><b>${SAR(s.price)}</b>${S.canWrite?`<button class="btn sm ghost" data-sedit="${s.id}" type="button">تعديل</button>`:""}</div></div>`).join("")).join("")
+    : `<div class="empty"><b>ما فيه خدمات بعد</b>أضيفي خدماتك وأسعارها عشان تظهر في الحجز والفاتورة.</div>`}</div>`;
+}
+function vStaff(){
+  return `<div class="sechead"><h2>الموظفات</h2>${S.canWrite?`<button class="btn primary" id="addStaff" type="button">+ موظفة</button>`:""}</div>
+  <div class="list">${S.staff.length? S.staff.map(s=>{ const n=S.bookings.filter(b=>b.staffId===s.id&&b.date===TODAY&&b.status!=="cancelled").length;
+    return `<div class="row simple${s.active===false?" dim":""}"><div class="main"><div class="who">${esc(s.name)} ${s.pwHash?`<span class="role">${ROLES[s.role]||""}</span>`:""} ${s.active===false?'<span class="pill s-void">موقوفة</span>':""}</div><div class="meta">${esc(s.specialty||"")}${s.username&&s.pwHash?` · دخول: <span class="num">${esc(s.username)}</span>`:" · بدون حساب دخول"}${s.phone?` · <span class="num">${esc(s.phone)}</span>`:""} · ${n} حجز اليوم</div></div><div class="acts">${S.canWrite?`<button class="btn sm ghost" data-tedit="${s.id}" type="button">تعديل</button>`:""}</div></div>`}).join("")
+    : `<div class="empty"><b>ما فيه موظفات بعد</b>أضيفي الموظفات عشان تربطين كل حجز بموظفة وتطلع مبيعات كل وحدة في التقرير.</div>`}</div>`;
+}
+function vSettings(){
+  const s=S.settings, dis=S.canWrite?"":"disabled";
+  return `<div class="sechead"><h2>الإعدادات</h2></div>
+  <form id="setForm" class="box" style="max-width:640px">
+    <div class="grid2">
+      <label class="f"><span>اسم الصالون</span><input id="set-name" value="${esc(s.name)}" ${dis}></label>
+      <label class="f"><span>جوال الصالون</span><input id="set-phone" value="${esc(s.phone)}" inputmode="tel" ${dis}></label>
+      <label class="f"><span>الرقم الضريبي</span><input id="set-vatno" value="${esc(s.vatNo)}" inputmode="numeric" ${dis}></label>
+      <label class="f"><span>العنوان</span><input id="set-address" value="${esc(s.address)}" ${dis}></label>
+    </div>
+    <div style="display:grid;gap:8px;margin-top:12px">
+      <label class="chk" style="border-radius:8px"><input type="checkbox" id="set-vat" ${s.vatEnabled?"checked":""} ${dis}> تفعيل ضريبة القيمة المضافة 15%</label>
+      <label class="chk" style="border-radius:8px"><input type="checkbox" id="set-incl" ${s.pricesIncludeVat?"checked":""} ${dis}> أسعار الخدمات شاملة الضريبة</label>
+    </div>
+    <label class="f" style="margin-top:12px"><span>سطر أسفل الفاتورة</span><input id="set-footer" value="${esc(s.footer)}" ${dis}></label>
+    ${S.canWrite?`<div class="mf" style="margin-top:14px"><button class="btn primary" type="submit">حفظ الإعدادات</button></div>`:""}
+  </form>`;
+}
+
+/* ---------- modals ---------- */
+function openModal(html){ $("#modalRoot").innerHTML = `<div class="scrim" id="scrim"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`; const f=$("#modalRoot input:not([type=hidden]),#modalRoot select"); f && f.focus(); }
+function closeModal(){ $("#modalRoot").innerHTML=""; }
+const mh = t => `<div class="mh"><h2>${t}</h2><button class="btn ghost" data-close type="button" aria-label="إغلاق">✕</button></div>`;
+
+function svcChecks(selected, name="svc"){
+  const act=S.services.filter(s=>s.active!==false || (selected||[]).includes(s.id));
+  if(!act.length) return `<div class="small muted">أضيفي الخدمات أولاً من تبويب "الخدمات والأسعار".</div>`;
+  return `<div class="chips">${act.map(s=>`<label class="chk"><input type="checkbox" name="${name}" value="${s.id}" ${(selected||[]).includes(s.id)?"checked":""}> ${esc(s.name)} <span class="num muted">${money(s.price)}</span></label>`).join("")}</div>`;
+}
+const staffSelect = (id, sel) => `<select id="${id}"><option value="">— بدون —</option>${S.staff.filter(s=>s.active!==false||s.id===sel).map(s=>`<option value="${s.id}" ${s.id===sel?"selected":""}>${esc(s.name)}</option>`).join("")}</select>`;
+const clientDatalist = () => `<datalist id="clientList">${S.clients.map(c=>`<option value="${esc(c.phone)}">${esc(c.name)}</option>`).join("")}</datalist>`;
+
+function bookingModal(b={}){
+  const isNew=!b.id;
+  openModal(mh(isNew?"حجز جديد":"تعديل الحجز") + `
+  <form id="bkForm" data-id="${b.id||""}">
+    <div class="grid2">
+      <label class="f"><span>جوال العميلة</span><input id="bk-phone" list="clientList" inputmode="tel" value="${esc(b.clientPhone||"")}" placeholder="05xxxxxxxx" autocomplete="off"></label>
+      <label class="f"><span>اسم العميلة *</span><input id="bk-name" required value="${esc(b.clientName||"")}"></label>
+      <label class="f"><span>التاريخ *</span><input id="bk-date" type="date" required value="${esc(b.date||S.day)}"></label>
+      <label class="f"><span>الوقت *</span><input id="bk-time" type="time" required value="${esc(b.time||"")}" step="900"></label>
+      <label class="f"><span>الموظفة</span>${staffSelect("bk-staff", b.staffId)}</label>
+      ${isNew?"":`<label class="f"><span>الحالة</span><select id="bk-status">${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${b.status===k?"selected":""}>${v.l}</option>`).join("")}</select></label>`}
+    </div>
+    <div style="margin-top:12px"><div class="small muted" style="margin-bottom:6px;font-weight:500">الخدمات</div>${svcChecks(b.serviceIds)}</div>
+    <div id="bk-clash" class="small" style="color:var(--warn);margin-top:6px"></div>
+    <label class="f" style="margin-top:12px"><span>ملاحظات</span><textarea id="bk-notes">${esc(b.notes||"")}</textarea></label>
+    ${clientDatalist()}
+    <div class="mf"><button class="btn primary" type="submit">${isNew?"تأكيد الحجز":"حفظ"}</button>
+      ${isNew?"":`<button class="btn danger" type="button" id="bkDelAsk">حذف الحجز</button>`}
+    </div>
+    <div id="bkDelBox"></div>
+  </form>`);
+  checkClash();
+}
+function checkClash(){
+  const el=$("#bk-clash"); if(!el) return;
+  const d=$("#bk-date").value, t=$("#bk-time").value, st=$("#bk-staff").value, id=$("#bkForm").dataset.id;
+  if(!d||!t||!st){ el.textContent=""; return; }
+  const c=S.bookings.find(b=>b.id!==id&&b.date===d&&b.time===t&&b.staffId===st&&b.status!=="cancelled"&&b.status!=="noshow");
+  el.textContent = c ? `تنبيه: ${staffName(st)} عندها حجز ثاني بنفس الوقت (${c.clientName}).` : "";
+}
+const phoneId = p => { const d=String(p||"").replace(/\D/g,""); return d ? "c"+d : ""; };
+async function upsertClient(name, phone){
+  const id=phoneId(phone); if(!id) return "";
+  const ex=byId(S.clients,id);
+  if(!ex) await S.db.doc("clients/"+id).set({name, phone, createdAt:new Date().toISOString()});
+  else if(ex.name!==name && name) await S.db.doc("clients/"+id).update({name});
+  return id;
+}
+async function saveBooking(form){
+  const id=form.dataset.id;
+  const data={
+    clientName:$("#bk-name").value.trim(), clientPhone:$("#bk-phone").value.trim(),
+    date:$("#bk-date").value, time:$("#bk-time").value, staffId:$("#bk-staff").value,
+    serviceIds:[...form.querySelectorAll("input[name=svc]:checked")].map(i=>i.value),
+    notes:$("#bk-notes").value.trim()
+  };
+  if(!data.clientName||!data.date||!data.time){ toast("أكملي الاسم والتاريخ والوقت"); return; }
+  try{
+    data.clientId = await upsertClient(data.clientName, data.clientPhone);
+    if(id){ if($("#bk-status")) data.status=$("#bk-status").value; await S.db.doc("bookings/"+id).update(data); toast("تم حفظ الحجز"); }
+    else { data.status="booked"; data.createdAt=new Date().toISOString(); data.createdBy=S.me?.id||""; await S.db.collection("bookings").add(data); toast("تم تأكيد الحجز"); }
+    closeModal();
+  }catch(e){ dbErr(e); }
+}
+
+let invDraft=null;
+function invoiceModal(pre={}){
+  invDraft = {bookingId:pre.bookingId||"", clientName:pre.clientName||"", clientPhone:pre.clientPhone||"", staffId:pre.staffId||"",
+    items:(pre.items&&pre.items.length)?pre.items:[], discount:0, pay:"mada"};
+  drawInvoiceModal();
+}
+function drawInvoiceModal(){
+  const d=invDraft, T=calcTotals(d.items,d.discount,S.settings);
+  openModal(mh("فاتورة جديدة") + `
+  <form id="invForm">
+    <div class="grid2">
+      <label class="f"><span>جوال العميلة</span><input id="iv-phone" list="clientList" inputmode="tel" value="${esc(d.clientPhone)}" autocomplete="off"></label>
+      <label class="f"><span>اسم العميلة</span><input id="iv-name" value="${esc(d.clientName)}"></label>
+      <label class="f"><span>الموظفة</span>${staffSelect("iv-staff", d.staffId)}</label>
+      <label class="f"><span>طريقة الدفع</span><select id="iv-pay">${Object.entries(PAY).map(([k,v])=>`<option value="${k}" ${d.pay===k?"selected":""}>${v}</option>`).join("")}</select></label>
+    </div>
+    <div style="margin-top:14px">
+      <div class="small muted" style="margin-bottom:6px;font-weight:500">البنود</div>
+      <div class="items" id="ivItems">${d.items.map((it,i)=>`<div class="it">
+        <input aria-label="البند" data-it="name" data-i="${i}" value="${esc(it.name)}">
+        <input aria-label="الكمية" data-it="qty" data-i="${i}" type="number" min="1" step="1" value="${esc(it.qty||1)}">
+        <input aria-label="السعر" data-it="price" data-i="${i}" type="number" min="0" step="0.01" value="${esc(it.price)}">
+        <button class="btn ghost sm" type="button" data-itdel="${i}" aria-label="حذف البند">✕</button></div>`).join("") || `<div class="small muted" style="margin-bottom:6px">أضيفي خدمة من القائمة.</div>`}</div>
+      <div class="datebar">
+        <select id="ivAddSvc" style="width:auto;max-width:100%"><option value="">+ إضافة خدمة…</option>${S.services.filter(s=>s.active!==false).map(s=>`<option value="${s.id}">${esc(s.name)} — ${money(s.price)}</option>`).join("")}</select>
+        <button class="btn sm" type="button" id="ivAddCustom">+ بند يدوي</button>
+      </div>
+    </div>
+    <label class="f" style="margin-top:12px;max-width:200px"><span>خصم (ر.س)</span><input id="iv-disc" type="number" min="0" step="0.01" value="${d.discount||""}"></label>
+    <div class="totals" id="ivTotals">${totalsHtml(T)}</div>
+    ${clientDatalist()}
+    <div class="mf"><button class="btn primary" type="submit" ${d.items.length?"":"disabled"}>حفظ الفاتورة</button></div>
+  </form>`);
+}
+function totalsHtml(T){
+  const st=S.settings;
+  return `<div><span>المجموع</span><span>${SAR(T.gross)}</span></div>
+    ${T.discount?`<div><span>الخصم</span><span>- ${SAR(T.discount)}</span></div>`:""}
+    ${st.vatEnabled?`<div><span>الإجمالي قبل الضريبة</span><span>${SAR(T.net)}</span></div><div><span>ضريبة القيمة المضافة 15%</span><span>${SAR(T.vat)}</span></div>`:""}
+    <div class="grand"><span>الإجمالي المستحق</span><span>${SAR(T.total)}</span></div>`;
+}
+function syncDraft(){
+  const d=invDraft; if(!d||!$("#invForm")) return;
+  d.clientName=$("#iv-name").value; d.clientPhone=$("#iv-phone").value; d.staffId=$("#iv-staff").value; d.pay=$("#iv-pay").value;
+  d.discount=+$("#iv-disc").value||0;
+  document.querySelectorAll("[data-it]").forEach(el=>{ const it=d.items[+el.dataset.i]; if(!it) return; const k=el.dataset.it; it[k]= k==="name"?el.value:(+el.value||0); });
+}
+async function saveInvoice(){
+  syncDraft(); const d=invDraft;
+  const items=d.items.filter(i=>i.name && (+i.qty||1)>0).map(i=>({name:i.name, qty:+i.qty||1, price:r2(i.price)}));
+  if(!items.length){ toast("أضيفي بند واحد على الأقل"); return; }
+  const T=calcTotals(items,d.discount,S.settings); const now=new Date();
+  const number = `${String(now.getFullYear()).slice(2)}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${Math.random().toString(36).slice(2,4).toUpperCase()}`;
+  try{
+    const clientId = await upsertClient(d.clientName.trim(), d.clientPhone.trim());
+    const ref = S.db.collection("invoices").doc();
+    await ref.set({number, date:ymd(now), time:`${pad(now.getHours())}:${pad(now.getMinutes())}`, createdAt:now.toISOString(),
+      bookingId:d.bookingId, clientId, clientName:d.clientName.trim(), clientPhone:d.clientPhone.trim(), staffId:d.staffId,
+      items, discount:T.discount, net:T.net, vat:T.vat, total:T.total, pay:d.pay,
+      vatEnabled:!!S.settings.vatEnabled, pricesIncludeVat:!!S.settings.pricesIncludeVat, void:false, createdBy:S.me?.id||""});
+    if(d.bookingId) await S.db.doc("bookings/"+d.bookingId).update({status:"done", invoiceId:ref.id});
+    toast("تم حفظ الفاتورة"); invDraft=null; viewInvoice(ref.id, true);
+  }catch(e){ dbErr(e); }
+}
+
+function receiptHtml(x){
+  const st=S.settings;
+  return `<div class="receipt">
+    <div class="rh"><div class="nm">${esc(st.name||"الصالون")}</div>
+      ${st.address?`<div class="small muted">${esc(st.address)}</div>`:""}${st.phone?`<div class="small muted num">${esc(st.phone)}</div>`:""}
+      ${st.vatNo?`<div class="small">الرقم الضريبي: <span class="num">${esc(st.vatNo)}</span></div>`:""}
+      <div style="font-weight:600;margin-top:6px">فاتورة ضريبية مبسطة</div></div>
+    <div class="kv"><span>رقم الفاتورة</span><span class="num">${esc(x.number)}</span></div>
+    <div class="kv"><span>التاريخ</span><span class="num">${esc(x.date)} ${esc(x.time||"")}</span></div>
+    ${x.clientName?`<div class="kv"><span>العميلة</span><span>${esc(x.clientName)}</span></div>`:""}
+    ${x.staffId?`<div class="kv"><span>الموظفة</span><span>${esc(staffName(x.staffId))}</span></div>`:""}
+    <div class="tscroll" style="margin-top:10px"><table class="t"><thead><tr><th>الخدمة</th><th>الكمية</th><th>السعر</th><th>المبلغ</th></tr></thead><tbody>
+      ${(x.items||[]).map(i=>`<tr><td>${esc(i.name)}</td><td class="n">${i.qty}</td><td class="n">${money(i.price)}</td><td class="n">${money(i.price*i.qty)}</td></tr>`).join("")}
+    </tbody></table></div>
+    <div class="totals">${x.discount?`<div><span>الخصم</span><span>- ${SAR(x.discount)}</span></div>`:""}
+      ${x.vatEnabled?`<div><span>الإجمالي قبل الضريبة</span><span>${SAR(x.net)}</span></div><div><span>ضريبة القيمة المضافة 15%</span><span>${SAR(x.vat)}</span></div>`:""}
+      <div class="grand"><span>الإجمالي</span><span>${SAR(x.total)}</span></div>
+      <div class="kv"><span>طريقة الدفع</span><span>${PAY[x.pay]||""}</span></div></div>
+    ${x.void?`<div class="notice" style="margin:10px 0 0">هذه الفاتورة ملغاة ولا تدخل في المبيعات.</div>`:""}
+    ${st.footer?`<div class="small muted" style="text-align:center;margin-top:10px">${esc(st.footer)}</div>`:""}
+  </div>`;
+}
+async function findInvoice(id){
+  let x = byId(S.invoices,id); if(x) return x;
+  for(const k in S.extra){ x=byId(S.extra[k].invoices||[],id); if(x) return x; }
+  try{ const s=await S.db.doc("invoices/"+id).get(); if(s.exists) return {id:s.id,...s.data()}; }catch(e){}
+  return null;
+}
+async function viewInvoice(id){
+  const x = await findInvoice(id); if(!x){ toast("ما لقيت الفاتورة"); return; }
+  openModal(mh("الفاتورة") + receiptHtml(x) + `${x.createdBy&&staffName(x.createdBy)?`<div class="small muted" style="margin-top:8px">أصدرتها: ${esc(staffName(x.createdBy))}</div>`:""}<div class="mf">
+    ${S.downloads?`<button class="btn primary" type="button" data-dlinv="${x.id}">تنزيل الفاتورة</button>`:""}
+    <button class="btn" type="button" data-cpinv="${x.id}">نسخ كنص</button>
+    ${S.canWrite&&!x.void&&isAdmin()?`<button class="btn danger" type="button" id="voidAsk">إلغاء الفاتورة</button>`:""}
+  </div><div id="voidBox" data-id="${x.id}"></div>`);
+}
+function invoiceText(x){
+  const L=[S.settings.name||"الصالون", S.settings.vatNo?`الرقم الضريبي: ${S.settings.vatNo}`:"", `فاتورة رقم ${x.number}`, `${x.date} ${x.time||""}`, x.clientName?`العميلة: ${x.clientName}`:"", ""];
+  (x.items||[]).forEach(i=>L.push(`${i.name} × ${i.qty} = ${money(i.price*i.qty)}`));
+  L.push("", x.discount?`الخصم: ${money(x.discount)}`:"", x.vatEnabled?`قبل الضريبة: ${money(x.net)}\nالضريبة 15%: ${money(x.vat)}`:"", `الإجمالي: ${money(x.total)} ر.س`, `الدفع: ${PAY[x.pay]||""}`);
+  return L.filter(l=>l!=="").join("\n");
+}
+async function downloadInvoice(id){
+  const x=await findInvoice(id); if(!x||!S.downloads) return;
+  const css=`body{font-family:Tahoma,Arial,sans-serif;max-width:420px;margin:20px auto;color:#222;padding:0 12px}.rh{text-align:center;border-bottom:1px dashed #bbb;padding-bottom:10px;margin-bottom:10px}.nm{font-size:22px;font-weight:700;color:#8a2d5c}.kv,.totals div{display:flex;justify-content:space-between;font-size:13px}table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}th,td{padding:5px 3px;border-bottom:1px solid #eee;text-align:right}.n{text-align:left}.totals{border-top:1px dashed #bbb;margin-top:10px;padding-top:8px}.grand{font-weight:700;font-size:16px}.small{font-size:12px;color:#666}.muted{color:#666}.num{direction:ltr;unicode-bidi:isolate}.notice{color:#b23a3a}`;
+  const html=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة ${esc(x.number)}</title><style>${css}</style></head><body>${receiptHtml(x)}</body></html>`;
+  try{ await S.downloads.save({filename:`فاتورة-${x.number}.html`, data:html}); toast("تم التنزيل"); }
+  catch(e){ if(e?.code!=="declined") toast("تعذر التنزيل"); }
+}
+async function copyText(t){
+  try{ await navigator.clipboard.writeText(t); toast("تم النسخ"); }
+  catch(e){ openModal(mh("انسخي النص") + `<textarea id="cpbox" style="min-height:240px">${esc(t)}</textarea>`); const b=$("#cpbox"); b.focus(); b.select(); }
+}
+
+function serviceModal(s={}){
+  const cats=[...new Set(S.services.map(x=>x.category).filter(Boolean))];
+  openModal(mh(s.id?"تعديل خدمة":"خدمة جديدة")+`<form id="svcForm" data-id="${s.id||""}">
+    <div class="grid2">
+      <label class="f"><span>اسم الخدمة *</span><input id="sv-name" required value="${esc(s.name||"")}"></label>
+      <label class="f"><span>القسم</span><input id="sv-cat" list="catList" value="${esc(s.category||"")}" placeholder="شعر، أظافر، مكياج…"></label>
+      <label class="f"><span>السعر (ر.س) *</span><input id="sv-price" type="number" min="0" step="0.01" required value="${esc(s.price??"")}"></label>
+      <label class="f"><span>المدة (دقيقة)</span><input id="sv-dur" type="number" min="0" step="5" value="${esc(s.duration??"")}"></label>
+    </div>
+    <datalist id="catList">${cats.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>
+    ${s.id?`<label class="chk" style="margin-top:12px;border-radius:8px"><input type="checkbox" id="sv-active" ${s.active!==false?"checked":""}> الخدمة متاحة للحجز</label>`:""}
+    <div class="mf"><button class="btn primary" type="submit">حفظ</button>${s.id?`<button class="btn danger" type="button" data-delask="services/${s.id}">حذف</button>`:""}</div>
+    <div id="delBox"></div></form>`);
+}
+function staffModal(s={}){
+  openModal(mh(s.id?"تعديل موظفة":"موظفة جديدة")+`<form id="stfForm" data-id="${s.id||""}">
+    <div class="grid2">
+      <label class="f"><span>الاسم *</span><input id="st-name" required value="${esc(s.name||"")}"></label>
+      <label class="f"><span>التخصص</span><input id="st-spec" value="${esc(s.specialty||"")}" placeholder="كوافيرة، مكياج، أظافر…"></label>
+      <label class="f"><span>الجوال</span><input id="st-phone" inputmode="tel" value="${esc(s.phone||"")}"></label>
+    </div>
+    <h3 style="margin-top:16px">حساب الدخول</h3>
+    <div class="grid2">
+      <label class="f"><span>الصلاحية</span><select id="st-perm">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${(s.role||"stylist")===k?"selected":""}>${v}</option>`).join("")}</select></label>
+      <label class="f"><span>اسم المستخدم (إنجليزي)</span><input id="st-user" dir="ltr" autocapitalize="none" autocomplete="off" value="${esc(s.username||"")}" placeholder="اتركيه فاضي إذا ما تدخل النظام"></label>
+      <label class="f"><span>${s.pwHash?"كلمة مرور جديدة (فاضية = بدون تغيير)":"كلمة المرور"}</span><input id="st-pw" type="password" dir="ltr" autocomplete="new-password"></label>
+    </div>
+    <div class="small muted" style="margin-top:6px">المديرة: كل شي · الاستقبال: الحجوزات والفواتير والعميلات وتقرير اليوم · الموظفة: تشوف حجوزاتها فقط</div>
+    ${s.id && s.id!==S.me?.id?`<label class="chk" style="margin-top:12px;border-radius:8px"><input type="checkbox" id="st-active" ${s.active!==false?"checked":""}> على رأس العمل</label>`:""}
+    <div class="mf"><button class="btn primary" type="submit">حفظ</button>${s.id && s.id!==S.me?.id?`<button class="btn danger" type="button" data-delask="staff/${s.id}">حذف</button>`:""}</div>
+    <div id="delBox"></div></form>`);
+}
+function clientModal(c={}){
+  openModal(mh(c.id?"تعديل عميلة":"عميلة جديدة")+`<form id="cliForm" data-id="${c.id||""}">
+    <div class="grid2">
+      <label class="f"><span>الاسم *</span><input id="cl-name" required value="${esc(c.name||"")}"></label>
+      <label class="f"><span>الجوال *</span><input id="cl-phone" required inputmode="tel" value="${esc(c.phone||"")}" ${c.id?"readonly":""}></label>
+    </div>
+    <label class="f" style="margin-top:12px"><span>ملاحظات (لون الصبغة المفضل، حساسية من منتج…)</span><textarea id="cl-notes">${esc(c.notes||"")}</textarea></label>
+    <div class="mf"><button class="btn primary" type="submit">حفظ</button></div></form>`);
+}
+async function clientHistory(id){
+  const c=byId(S.clients,id); if(!c) return;
+  openModal(mh(esc(c.name))+`<div class="small muted num" style="margin-bottom:10px">${esc(c.phone)}</div>${c.notes?`<div class="notice">${esc(c.notes)}</div>`:""}<div id="histBody" class="empty">جاري التحميل…</div>`);
+  try{
+    const [b,i]=await Promise.all([S.db.collection("bookings").where("clientId","==",id).get(), S.db.collection("invoices").where("clientId","==",id).get()]);
+    const bk=docs(b).sort((x,y)=>(y.date+y.time).localeCompare(x.date+x.time)), inv=docs(i).filter(x=>!x.void);
+    const spent=inv.reduce((s,x)=>s+(+x.total||0),0);
+    const body=$("#histBody"); if(!body) return;
+    body.className="";
+    body.innerHTML=`<div class="kpis"><div class="kpi"><div class="l">الزيارات</div><div class="v">${bk.filter(x=>x.status==="done").length}</div></div><div class="kpi hl"><div class="l">إجمالي المدفوع</div><div class="v">${money(spent)} <small>ر.س</small></div></div></div>
+      <div class="list">${bk.length?bk.map(x=>`<div class="row simple"><div class="main"><div><span class="num">${esc(x.date)}</span> · ${esc(t12(x.time))} <span class="pill s-${x.status}">${STATUS[x.status]?.l||""}</span></div><div class="meta">${esc(serviceNames(x.serviceIds))}${x.staffId?` · ${esc(staffName(x.staffId))}`:""}</div></div></div>`).join(""):`<div class="empty">لا توجد حجوزات سابقة.</div>`}</div>`;
+  }catch(e){ const body=$("#histBody"); if(body) body.textContent="تعذر تحميل السجل."; }
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", async e => {
+  const t=e.target.closest("button,[data-close]");
+  if(e.target.id==="scrim"){ closeModal(); return; }
+  if(!t) return;
+  const ds=t.dataset;
+  if(ds.tab){ S.tab=ds.tab; render(); window.scrollTo(0,0); return; }
+  if("close" in ds){ closeModal(); return; }
+  if(t.id==="logout"){ closeModal(); setMe(null); return; }
+  if(ds.demo){ const a=DEMO_ACCTS.find(x=>x.u===ds.demo); if(a){ $("#li-user").value=a.u; $("#li-pw").value=a.p; doLogin(); } return; }
+  if(t.id==="qBook"){ bookingModal(); return; }
+  if(t.id==="qInv"){ invoiceModal(); return; }
+  if(ds.dnav){ S[ds.dnav]=addDays(S[ds.dnav],+ds.n); render(); return; }
+  if(ds.dset){ S[ds.dset]=TODAY; render(); return; }
+  if(ds.bstat){ try{ await S.db.doc("bookings/"+ds.id).update({status:ds.bstat}); }catch(err){ dbErr(err); } return; }
+  if(ds.bedit){ const b=[...S.bookings,...Object.values(S.extra).flatMap(x=>x.bookings||[])].find(x=>x.id===ds.bedit); b && bookingModal(b); return; }
+  if(ds.binv){ const b=S.bookings.find(x=>x.id===ds.binv)||Object.values(S.extra).flatMap(x=>x.bookings||[]).find(x=>x.id===ds.binv); if(!b) return;
+    invoiceModal({bookingId:b.id, clientName:b.clientName, clientPhone:b.clientPhone, staffId:b.staffId,
+      items:(b.serviceIds||[]).map(id=>byId(S.services,id)).filter(Boolean).map(s=>({name:s.name, qty:1, price:+s.price||0}))}); return; }
+  if(ds.vinv){ viewInvoice(ds.vinv); return; }
+  if(ds.dlinv){ downloadInvoice(ds.dlinv); return; }
+  if(ds.cpinv){ const x=await findInvoice(ds.cpinv); x && copyText(invoiceText(x)); return; }
+  if(t.id==="voidAsk"){ $("#voidBox").innerHTML=`<div class="confirm">تأكيد إلغاء الفاتورة؟ بتنحذف من مبيعات اليوم. <button class="btn sm danger" id="voidYes" type="button">نعم، ألغيها</button><button class="btn sm" data-close type="button">تراجع</button></div>`; return; }
+  if(t.id==="voidYes"){ const id=$("#voidBox").dataset.id; try{ await S.db.doc("invoices/"+id).update({void:true, voidedAt:new Date().toISOString()}); toast("تم إلغاء الفاتورة"); closeModal(); }catch(err){ dbErr(err); } return; }
+  if(t.id==="bkDelAsk"){ $("#bkDelBox").innerHTML=`<div class="confirm">حذف الحجز نهائياً؟ (لو العميلة ألغت، الأفضل تغيّرين الحالة لـ"ملغي" عشان يطلع في التقرير) <button class="btn sm danger" id="bkDelYes" type="button">احذفي</button></div>`; return; }
+  if(t.id==="bkDelYes"){ try{ await S.db.doc("bookings/"+$("#bkForm").dataset.id).delete(); toast("تم الحذف"); closeModal(); }catch(err){ dbErr(err);} return; }
+  if(ds.delask){ $("#delBox").innerHTML=`<div class="confirm">متأكدة من الحذف؟ <button class="btn sm danger" data-delyes="${ds.delask}" type="button">احذفي</button></div>`; return; }
+  if(ds.delyes){ try{ await S.db.doc(ds.delyes).delete(); toast("تم الحذف"); closeModal(); }catch(err){ dbErr(err);} return; }
+  if(t.id==="addSvc"){ serviceModal(); return; }
+  if(ds.sedit){ serviceModal(byId(S.services,ds.sedit)); return; }
+  if(t.id==="addStaff"){ staffModal(); return; }
+  if(ds.tedit){ staffModal(byId(S.staff,ds.tedit)); return; }
+  if(t.id==="addClient"){ clientModal(); return; }
+  if(ds.cedit){ clientModal(byId(S.clients,ds.cedit)); return; }
+  if(ds.chist){ clientHistory(ds.chist); return; }
+  if(ds.cbook){ const c=byId(S.clients,ds.cbook); bookingModal({clientName:c.name, clientPhone:c.phone}); return; }
+  if(t.id==="copyRep"){ copyText(reportText()); return; }
+  if(t.id==="ivAddCustom"){ syncDraft(); invDraft.items.push({name:"", qty:1, price:0}); drawInvoiceModal(); const l=document.querySelectorAll('[data-it="name"]'); l[l.length-1]?.focus(); return; }
+  if(ds.itdel!==undefined){ syncDraft(); invDraft.items.splice(+ds.itdel,1); drawInvoiceModal(); return; }
+});
+document.addEventListener("change", e => {
+  const t=e.target;
+  if(t.dataset.dpick){ if(t.value){ S[t.dataset.dpick]=t.value; render(); } return; }
+  if(t.id==="staffFilter"){ S.staffFilter=t.value; render(); return; }
+  if(t.id==="ivAddSvc" && t.value){ syncDraft(); const s=byId(S.services,t.value); s && invDraft.items.push({name:s.name, qty:1, price:+s.price||0}); drawInvoiceModal(); return; }
+  if(["bk-date","bk-time","bk-staff"].includes(t.id)) checkClash();
+  if(t.id==="bk-phone"||t.id==="iv-phone"){ const c=byId(S.clients,phoneId(t.value)); const n=$(t.id==="bk-phone"?"#bk-name":"#iv-name"); if(c && n && !n.value) n.value=c.name; }
+});
+document.addEventListener("input", e => {
+  const t=e.target;
+  if(t.id==="clientQ"){ S.clientQ=t.value; const pos=t.selectionStart; render(); const n=$("#clientQ"); n.focus(); n.setSelectionRange(pos,pos); return; }
+  if(t.closest && t.closest("#invForm") && (t.dataset.it||t.id==="iv-disc")){ syncDraft(); $("#ivTotals").innerHTML=totalsHtml(calcTotals(invDraft.items,invDraft.discount,S.settings)); }
+});
+document.addEventListener("keydown", e => { if(e.key==="Escape" && $("#modalRoot").innerHTML) closeModal(); });
+document.addEventListener("submit", async e => {
+  e.preventDefault(); const f=e.target;
+  if(!S.db) return;
+  if(f.id==="loginForm") return doLogin();
+  if(f.id==="setupForm") return doSetup();
+  if(!S.me) return;
+  if(f.id==="bkForm") return saveBooking(f);
+  if(f.id==="invForm") return saveInvoice();
+  try{
+    if(f.id==="svcForm"){
+      const data={name:$("#sv-name").value.trim(), category:$("#sv-cat").value.trim()||"عام", price:r2($("#sv-price").value), duration:+$("#sv-dur").value||0};
+      if(f.dataset.id){ data.active=$("#sv-active").checked; await S.db.doc("services/"+f.dataset.id).update(data); } else { data.active=true; await S.db.collection("services").add(data); }
+      toast("تم الحفظ"); closeModal();
+    } else if(f.id==="stfForm"){
+      const id=f.dataset.id, ex=id?byId(S.staff,id):null;
+      const data={name:$("#st-name").value.trim(), specialty:$("#st-spec").value.trim(), phone:$("#st-phone").value.trim(), role:$("#st-perm").value,
+        active: $("#st-active") ? $("#st-active").checked : true};
+      const u=$("#st-user").value.trim().toLowerCase(), pw=$("#st-pw").value;
+      if(u){
+        if(!USER_RE.test(u)){ toast("اسم المستخدم بالإنجليزي من ٣ إلى ٢٠ (حروف، أرقام، . _ -)"); return; }
+        if(S.staff.some(x=>x.id!==id && (x.username||"").toLowerCase()===u)){ toast("اسم المستخدم مستخدم لموظفة ثانية"); return; }
+        data.username=u;
+        if(pw){ if(pw.length<4){ toast("كلمة المرور ٤ خانات على الأقل"); return; } data.pwSalt=newSalt(); data.pwHash=await hashPw(pw,data.pwSalt); }
+        else if(!ex?.pwHash){ toast("اكتبي كلمة مرور للحساب"); return; }
+      } else { data.username=""; data.pwHash=""; data.pwSalt=""; }
+      const admins = accounts().filter(x=>x.role==="admin" && x.active!==false && x.id!==id).length;
+      const stillAdmin = data.role==="admin" && data.active && (data.pwHash || (u && ex?.pwHash));
+      if(ex?.role==="admin" && ex.pwHash && !stillAdmin && admins===0){ toast("لازم يبقى حساب مديرة واحد على الأقل"); return; }
+      if(id){ await S.db.doc("staff/"+id).update(data); } else { await S.db.collection("staff").add(data); }
+      toast("تم الحفظ"); closeModal();
+    } else if(f.id==="cliForm"){
+      const name=$("#cl-name").value.trim(), phone=$("#cl-phone").value.trim(), notes=$("#cl-notes").value.trim();
+      const id=f.dataset.id||phoneId(phone); if(!id){ toast("اكتبي رقم جوال صحيح"); return; }
+      if(byId(S.clients,id)) await S.db.doc("clients/"+id).update({name, notes}); else await S.db.doc("clients/"+id).set({name, phone, notes, createdAt:new Date().toISOString()});
+      toast("تم الحفظ"); closeModal();
+    } else if(f.id==="setForm"){
+      await S.db.doc("settings/salon").set({name:$("#set-name").value.trim()||"الصالون", phone:$("#set-phone").value.trim(), vatNo:$("#set-vatno").value.trim(),
+        address:$("#set-address").value.trim(), vatEnabled:$("#set-vat").checked, pricesIncludeVat:$("#set-incl").checked, footer:$("#set-footer").value.trim()});
+      toast("تم حفظ الإعدادات");
+    }
+  }catch(err){ dbErr(err); }
+});
+
+/* ---------- boot ---------- */
+/* in-memory store with the same calls as the db capability, used by the demo */
+function makeMemDb(){
+  const store={}, listeners=new Set(); let seq=0;
+  const col=p=>store[p]||(store[p]=new Map());
+  const uid=()=>"m"+Date.now().toString(36)+(seq++).toString(36);
+  const clone=d=>JSON.parse(JSON.stringify(d));
+  const ok=(d,fs)=>fs.every(([f,op,v])=>{ const x=d[f]; return op==="=="?x===v: op===">="?x>=v: op==="<="?x<=v: op===">"?x>v: op==="<"?x<v: op==="!="?x!==v: true; });
+  const qsnap=(c,fs)=>{ const ds=[...col(c)].filter(([,d])=>ok(d,fs)).map(([id,d])=>({id,exists:true,data:()=>d,metadata:{}})); return {docs:ds,size:ds.length,empty:!ds.length}; };
+  const notify=c=>listeners.forEach(l=>{ if(l.c===c) l.fire(); });
+  function docRef(c,id){ return { id, path:c+"/"+id,
+    get:async()=>{ const d=col(c).get(id); return {id,exists:!!d,data:()=>d}; },
+    set:async d=>{ col(c).set(id,clone(d)); notify(c); },
+    update:async d=>{ const o=col(c).get(id); if(!o) throw {code:"invalid_argument",message:"missing"}; col(c).set(id,{...o,...clone(d)}); notify(c); },
+    delete:async()=>{ col(c).delete(id); notify(c); },
+    onSnapshot(cb){ const l={c,fire:()=>{ const d=col(c).get(id); cb({id,exists:!!d,data:()=>d}); }}; listeners.add(l); setTimeout(l.fire,0); return ()=>listeners.delete(l); }
+  }; }
+  function query(c,fs=[]){ return { path:c,
+    where:(f,op,v)=>query(c,[...fs,[f,op,v]]), orderBy:()=>query(c,fs), limit:()=>query(c,fs),
+    get:async()=>qsnap(c,fs),
+    onSnapshot(cb){ const l={c,fire:()=>cb(qsnap(c,fs))}; listeners.add(l); setTimeout(l.fire,0); return ()=>listeners.delete(l); },
+    doc:id=>docRef(c,id||uid()),
+    add:async d=>{ const r=docRef(c,uid()); await r.set(d); return r; }
+  }; }
+  return { collection:p=>query(p), doc:p=>{ const i=p.lastIndexOf("/"); return docRef(p.slice(0,i),p.slice(i+1)); } };
+}
+async function seedDemo(db){
+  const set=(c,id,d)=>db.collection(c).doc(id).set(d);
+  const settings={name:"صالون نرجس", phone:"0550000000", vatNo:"300000000000003", address:"حي النخيل", vatEnabled:true, pricesIncludeVat:false, footer:"شكراً لزيارتكم، نسعد بشوفتكم مرة ثانية"};
+  await set("settings","salon",settings);
+  const svc=[["s01","قص شعر","شعر",80,45],["s02","سشوار","شعر",60,30],["s03","صبغة كاملة","شعر",250,120],["s04","هايلايت","شعر",350,150],["s05","بروتين","شعر",400,180],["s06","تسريحة","شعر",150,60],["s07","مكياج سهرة","مكياج",300,60],["s08","مكياج عروس","مكياج",1200,120],["s09","منكير","أظافر",50,30],["s10","باديكير","أظافر",70,45],["s11","تركيب أظافر جل","أظافر",150,75],["s12","تنظيف بشرة","بشرة",200,60],["s13","حواجب خيط","بشرة",30,15],["s14","حناء","أخرى",100,60]];
+  for(const [id,name,category,price,duration] of svc) await set("services",id,{name,category,price,duration,active:true});
+  const staff=[["st1","مها","مديرة الصالون","admin","admin"],["st2","ريم","استقبال","reception","reception"],["st3","نورة","كوافيرة","stylist","noura"],["st4","لمى","مكياج","stylist","lama"],["st5","هيا","أظافر وبشرة","stylist",""]];
+  for(const [id,name,specialty,role,username] of staff){
+    const d={name,specialty,role,phone:"",active:true,username,pwSalt:"",pwHash:""};
+    if(username){ d.pwSalt=newSalt(); d.pwHash=await hashPw("1234",d.pwSalt); }
+    await set("staff",id,d);
+  }
+  const cl=["سارة","العنود","جود","رهف","دانة","شهد","لينا","غادة","أمل","وعد","منيرة","بشاير"].map((n,i)=>({id:"c05510000"+pad(i+1), name:n, phone:"05510000"+pad(i+1)}));
+  for(const c of cl) await set("clients",c.id,{name:c.name,phone:c.phone,notes:c.name==="العنود"?"تفضل صبغة بني فاتح":"",createdAt:new Date().toISOString()});
+  // [dayOffset, time, client, staff, services, status, pay]
+  const plan=[
+    [-1,"10:00",0,"st3",["s01","s02"],"done","mada"],[-1,"11:00",1,"st3",["s03"],"done","cash"],[-1,"12:30",2,"st4",["s07"],"done","mada"],
+    [-1,"14:00",3,"st5",["s09","s10"],"done","transfer"],[-1,"16:00",4,"st3",["s06"],"noshow",""],[-1,"17:30",5,"st4",["s12"],"done","mada"],[-1,"19:00",6,"st5",["s13"],"cancelled",""],
+    [0,"09:30",7,"st3",["s01"],"done","mada"],[0,"10:30",8,"st5",["s11"],"done","cash"],[0,"11:30",1,"st3",["s04","s02"],"done","mada"],
+    [0,"13:00",9,"st4",["s07","s13"],"done","transfer"],[0,"15:00",10,"st3",["s05"],"arrived",""],[0,"16:30",11,"st5",["s09"],"booked",""],
+    [0,"18:00",0,"st4",["s08"],"booked",""],[0,"19:30",3,"st3",["s06"],"booked",""],[0,"20:00",2,"st5",["s14"],"cancelled",""],
+    [1,"10:00",4,"st3",["s03"],"booked",""],[1,"12:00",5,"st5",["s10","s09"],"booked",""],[1,"14:30",6,"st4",["s07"],"booked",""],[1,"17:00",8,"st3",["s01","s02"],"booked",""]
+  ];
+  let n=0;
+  for(const [off,time,ci,sid,sids,status,pay] of plan){
+    const c=cl[ci], date=addDays(TODAY,off), bid="b"+(++n);
+    const b={date,time,clientId:c.id,clientName:c.name,clientPhone:c.phone,staffId:sid,serviceIds:sids,status,notes:"",createdAt:date+"T08:00:00",createdBy:"st2"};
+    if(status==="done"){
+      const items=sids.map(id=>{ const s=svc.find(x=>x[0]===id); return {name:s[1],qty:1,price:s[3]}; });
+      const disc = n%4===0 ? 20 : 0, T=calcTotals(items,disc,settings), iid="i"+n;
+      const [h,m]=time.split(":").map(Number), end=`${pad(h+1)}:${pad(m)}`;
+      await set("invoices",iid,{number:`${date.slice(2).replace(/-/g,"")}-${pad(h+1)}${pad(m)}D${n}`,date,time:end,createdAt:`${date}T${end}:00`,bookingId:bid,
+        clientId:c.id,clientName:c.name,clientPhone:c.phone,staffId:sid,items,discount:T.discount,net:T.net,vat:T.vat,total:T.total,pay,
+        vatEnabled:true,pricesIncludeVat:false,void:false,createdBy:"st2"});
+      b.invoiceId=iid;
+    }
+    await set("bookings",bid,b);
+  }
+}
+
+render();
+(async () => {
+  let db;
+  if(DEMO){ db=makeMemDb(); await seedDemo(db); }
+  else {
+    db = await claude.use("db");
+    if(!db){ $("#view").innerHTML=`<div class="empty"><b>تعذر الاتصال بقاعدة بيانات الصالون</b>سجّلي دخولك في Claude وافتحي الرابط مرة ثانية.</div>`; return; }
+    try{ const u=await claude.use("user"); if(u){ const c=await u.can("data.write"); if(c===false) S.canWrite=false; } }catch(e){}
+  }
+  S.db=db;
+  if(window.claude?.use) claude.use("downloads").then(d=>{ S.downloads=d; }).catch(()=>{});
+  let pending=6; const done=()=>{ if(--pending<=0 && !S.ready){ S.ready=true; } render(); };
+  const sub=(q,key)=>{ let first=true; q.onSnapshot(s=>{ S[key]=docs(s); if(first){first=false; done();} else render(); }, err=>{ console.error(err); if(first){first=false; done();} }); };
+  sub(db.collection("services"),"services");
+  sub(db.collection("staff"),"staff");
+  sub(db.collection("clients"),"clients");
+  sub(db.collection("bookings").where("date",">=",CUTOFF),"bookings");
+  sub(db.collection("invoices").where("date",">=",CUTOFF),"invoices");
+  let firstSet=true;
+  db.doc("settings/salon").onSnapshot(s=>{ if(s.exists) S.settings={...S.settings,...s.data()}; if(firstSet){firstSet=false; done();} else render(); }, ()=>{ if(firstSet){firstSet=false; done();} });
+})();
+})();
+</script>
+
+</body>
+</html>
