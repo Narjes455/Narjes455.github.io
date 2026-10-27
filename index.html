@@ -120,6 +120,18 @@ section{position:relative;padding:110px 6vw}
 .filters button.on{background:linear-gradient(90deg,var(--pink),var(--lilac))}
 .filters button i{font-style:normal;opacity:.6;font-size:12px;margin-right:4px}
 
+/* ========== ABOUT ========== */
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:24px;max-width:1150px;margin:auto}
+.acard{background:var(--c);border-radius:30px;padding:30px 26px}
+.acard .e{font-size:44px;display:block}
+.acard h3{font-family:'Lalezar';font-weight:400;font-size:27px;margin-bottom:10px}
+.acard ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.acard li{background:rgba(255,255,255,.7);border-radius:16px;padding:10px 14px;line-height:1.5}
+.acard small{color:var(--soft);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips i{font-style:normal;font-weight:800;font-size:14px;background:#fff;padding:5px 12px;border-radius:99px;direction:ltr;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.chips i:hover{transform:translateY(-3px) rotate(-3deg)}
+
 /* ========== CONTACT ========== */
 #contact{text-align:center;padding-bottom:150px}
 #contact h2{font-size:clamp(46px,9vw,110px)}
@@ -170,6 +182,7 @@ body.xray .name,body.xray h2,body.xray h3{letter-spacing:0}
   <div class="logo">نرجس</div>
   <a class="l" href="#ideas">آلة الأفكار</a>
   <a class="l" href="#work">أعمالي</a>
+  <a class="l" href="#about">عنّي</a>
   <a class="l" href="#contact">تواصل</a>
   <button id="xbtn">👀 وراء الكواليس</button>
 </nav>
@@ -224,6 +237,30 @@ body.xray .name,body.xray h2,body.xray h3{letter-spacing:0}
   <div class="projs" id="projs"></div>
 </section>
 
+<!-- ABOUT -->
+<section id="about">
+  <div class="head rv"><span class="tagp" style="background:var(--lilac)">عنّي</span><h2 class="lz">وش وراي؟</h2></div>
+  <div class="about">
+    <div class="acard rv" style="--c:#ECE5FF"><span class="e">💼</span><h3>الخبرة</h3>
+      <ul>
+        <li><b>مطوّرة أنظمة داخلية</b> — شركة مقاولات، المدينة المنورة<br><small>بنيت نظام اورا وشغّلته على أجهزة الموظفين، ونظام استقبال طلبات العملاء</small></li>
+        <li><b>مطوّرة مستقلة</b><br><small>أنظمة ومواقع لصالونات وكافيهات وكيترنق ومتاجر</small></li>
+        <li><b>متدربة دعم فني</b> — مستشفى النساء والولادة<br><small>أغسطس 2025 – يناير 2026</small></li>
+      </ul>
+    </div>
+    <div class="acard rv" style="--c:#DDF9EE"><span class="e">🎓</span><h3>التعليم والشهادات</h3>
+      <ul>
+        <li><b>دبلوم إدارة أنظمة الشبكات</b><br><small>جامعة طيبة، الكلية التطبيقية · يناير 2026</small></li>
+        <li><b>أساسيات الشبكات</b><br><small>Cisco Networking Academy · أبريل 2025</small></li>
+        <li><b>أساسيات الأمن السيبراني</b><br><small>IBM SkillsBuild · مايو 2025</small></li>
+      </ul>
+    </div>
+    <div class="acard rv" style="--c:#FFF6CC"><span class="e">🧰</span><h3>أدواتي</h3>
+      <div class="chips"><i>Python</i><i>JavaScript</i><i>HTML/CSS</i><i>Flask</i><i>Streamlit</i><i>Flutter</i><i>PostgreSQL</i><i>SQLite</i><i>Firebase</i><i>Vercel</i><i>Cloudflare</i><i>GitHub</i><i>Cisco</i><i>pfSense</i><i>Wireshark</i><i>Linux</i></div>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <h2 class="lz rv">عندك فكرة؟<br><span class="rain">خلنا نسويها!</span></h2>
@@ -255,6 +292,7 @@ const IDEAS = [
 ];
 const PROJECTS = [
   {t:"اورا", d:"نظام إدارة شركات: موظفين، حضور، عقود، فواتير", e:"🏢", c:"#ECE5FF", k:"أنظمة", u:"https://narjes455.github.io/ora-demo/"},
+  {t:"نظام الصالونات", d:"حجوزات، فواتير بضريبة 15%، تقرير نهاية اليوم ودخول لكل موظفة", e:"💇‍♀️", c:"#FFE2F0", k:"أنظمة", u:"https://narjes455.github.io/salon-demo/"},
   {t:"نظام الدعم الفني", d:"تذاكر وأولويات وتقارير أداء لفرق الدعم", e:"🎫", c:"#E0F2FF", k:"أنظمة", u:"https://narjes455.github.io/helpdesk-system/"},
   {t:"برنامج المحاسبة", d:"مبيعات ومصروفات وصافي ربح، محفوظة في Excel", e:"📒", c:"#FFF6CC", k:"أنظمة", u:"https://github.com/Narjes455/accounting-app"},
   {t:"نقشة", d:"مولّد QR بأشكال وألوان", e:"🔳", c:"#DDF9EE", k:"أدوات", u:"https://narjes455.github.io/naqsha/"},
@@ -263,6 +301,7 @@ const PROJECTS = [
   {t:"إذاعة اليوم الوطني", d:"يولّد سكربت إذاعة مدرسية كاملة بشخصيات طلاب", e:"🎙️", c:"#DDF9EE", k:"أدوات", u:"https://github.com/Narjes455/national_day_radio"},
   {t:"اليوم الوطني", d:"صفحة احتفالية متحركة", e:"🇸🇦", c:"#DDF9EE", k:"مواقع", u:"https://narjes455.github.io/saudi-national-day/"},
   {t:"السعودية خط أحمر", d:"شاشة عرض وطنية متحركة", e:"🛑", c:"#FFE2F0", k:"مواقع", u:"https://narjes455.github.io/saudi-red-line/redline-screen.html"},
+  {t:"سَمرة", d:"تحدي أسئلة سعودي بين فريقين، الانضمام من الجوال برمز QR", e:"🏆", c:"#FFF6CC", k:"ألعاب", u:"https://narjes455.github.io/samra/"},
   {t:"جزيرة الإحصاء", d:"لعبة المتوسط والوسيط والمنوال", e:"🏝️", c:"#E0F2FF", k:"ألعاب", u:"https://narjes455.github.io/stats-island/"},
   {t:"ألعاب صغيرة", d:"خمّن الكلمة ولعبة الذاكرة وغيرها", e:"🎮", c:"#FFE2F0", k:"ألعاب", u:"https://narjes455.github.io/mini-games/"},
   {t:"العب وتعلّم", d:"ألعاب حروف وأرقام لطلاب الصف الأول، بنطق صوتي", e:"🖍️", c:"#FFF6CC", k:"ألعاب", u:"https://narjes455.github.io/first-grade-games/"},
@@ -273,7 +312,8 @@ const PROJECTS = [
   {t:"مراقب الشبكة", d:"يفحص الاتصال ويسجّل زمن الاستجابة في Excel", e:"📡", c:"#FFEBD9", k:"شبكات", u:"https://github.com/Narjes455/network-monitor"},
   {t:"شبكة VLAN آمنة", d:"VLANs وDHCP وACL وخوادم DNS وويب وبريد", e:"🔐", c:"#FFE2F0", k:"شبكات", u:"https://github.com/Narjes455/ACL-Security-Network"},
   {t:"شبكة LAN", d:"تصميم شبكة محلية على Packet Tracer", e:"🖧", c:"#E0F2FF", k:"شبكات", u:"https://github.com/Narjes455/packet-tracer-lan-project"},
-  {t:"سياج", d:"جدار حماية لأوامر الذكاء الاصطناعي", e:"🛡️", c:"#ECE5FF", k:"ذكاء اصطناعي", u:"https://github.com/Narjes455/siyaj-ai-firewall"},
+  {t:"سياج", d:"مشروع تخرجي: جدار حماية لأوامر الذكاء الاصطناعي", e:"🛡️", c:"#ECE5FF", k:"ذكاء اصطناعي", u:"https://github.com/Narjes455/siyaj-ai-firewall"},
+  {t:"وش الرياكشن", d:"صف الموقف والذكاء الاصطناعي يجيب لك الرياكشن المناسب", e:"😂", c:"#FFF6CC", k:"ذكاء اصطناعي", u:"https://narjes455.github.io/reaction-finder/"},
   {t:"الجدار الناري الذكي", d:"يصنّف حركة الشبكة بالتعلم الآلي ويصد الخطر", e:"🔥", c:"#FFEBD9", k:"ذكاء اصطناعي", u:"https://github.com/Narjes455/AI-Driven_Smart_Firewall"},
   {t:"تحليل المبيعات", d:"تقارير ورسوم بيانية لأداء المنتجات والمناطق", e:"📊", c:"#FFF6CC", k:"بيانات وأتمتة", u:"https://github.com/Narjes455/sales-analysis-project"},
   {t:"أتمتة المتصفح", d:"روبوت بايثون يتحكم في Chrome تلقائيًا", e:"🕹️", c:"#DDF9EE", k:"بيانات وأتمتة", u:"https://github.com/Narjes455/real-estate-scraper"},
