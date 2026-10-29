@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="ديمو نظام موحّد لمعاهد اللغات: تحضير QR، بوابة الطالبة، المعلمة، الاستقبال، الإدارة، واختبار تحديد المستوى. من أعمال نرجس العمري.">
+<title>بوابة أُفق</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* Layout: brand bar + role switcher on top; each role is a working console; shared "نبض المعهد" feed shows every cross-role event */
+:root{
+  --bg:#F3F5FB; --surface:#FFFFFF; --surface-2:#E9EDF8; --line:#D6DCEC;
+  --fg:#0E1430; --muted:#5A6283; --brand:#001392; --brand-ink:#FFFFFF; --brand-soft:#DDE3FF;
+  --maple:#C8322A; --good:#1D7A4C; --good-soft:#DDF2E6; --warn:#A86200; --warn-soft:#FBEBD2; --bad:#B42318; --bad-soft:#FBE1DE;
+  --display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A0E22; --surface:#121838; --surface-2:#1A2148; --line:#283163;
+  --fg:#E8EBFA; --muted:#9AA3C8; --brand:#7D8CFF; --brand-ink:#0A0E22; --brand-soft:#1F2A66;
+  --maple:#FF7A6E; --good:#5CD39A; --good-soft:#123826; --warn:#F2B451; --warn-soft:#3A2A0E; --bad:#FF8577; --bad-soft:#3F1714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A0E22; --surface:#121838; --surface-2:#1A2148; --line:#283163;
+  --fg:#E8EBFA; --muted:#9AA3C8; --brand:#7D8CFF; --brand-ink:#0A0E22; --brand-soft:#1F2A66;
+  --maple:#FF7A6E; --good:#5CD39A; --good-soft:#123826; --warn:#F2B451; --warn-soft:#3A2A0E; --bad:#FF8577; --bad-soft:#3F1714; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6;direction:rtl}
+button,input,select,textarea{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--brand);color:var(--brand-ink)}
+header.top .wrap{padding-block:16px 0;display:flex;flex-direction:column;gap:14px}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:40px;height:40px;border-radius:10px;background:var(--brand-ink);color:var(--brand);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:20px}
+.brand h1{margin:0;font-family:var(--display);font-size:19px;font-weight:700;line-height:1.2}
+.brand small{display:block;opacity:.8;font-size:12.5px}
+.demo-tag{font-size:12px;border:1px solid currentColor;border-radius:99px;padding:3px 10px;opacity:.85}
+.roles{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.roles::-webkit-scrollbar{display:none}
+.role{flex:0 0 auto;background:transparent;border:0;color:var(--brand-ink);opacity:.72;padding:10px 14px 12px;border-radius:10px 10px 0 0;cursor:pointer;font-weight:600;position:relative;display:flex;align-items:center;gap:6px}
+.role[aria-selected="true"]{background:var(--bg);color:var(--fg);opacity:1}
+.role:focus-visible{outline:2px solid var(--brand-ink);outline-offset:-2px}
+.badge{min-width:18px;height:18px;border-radius:9px;background:var(--maple);color:#fff;font-size:11px;display:inline-grid;place-items:center;padding:0 5px}
+main .wrap{padding-block:20px 40px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+@media (max-width:900px){main .wrap{grid-template-columns:minmax(0,1fr)}}
+.view{display:flex;flex-direction:column;gap:16px;min-width:0}
+.vhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.vhead h2{margin:0;font-family:var(--display);font-size:22px;text-wrap:balance}
+.vhead p{margin:2px 0 0;color:var(--muted);font-size:13.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.card h3{margin:0 0 12px;font-family:var(--display);font-size:16px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card h3 .sub{font-family:var(--body);font-weight:500;font-size:12.5px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:700px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.kpi .l{font-size:12.5px;color:var(--muted)}
+.kpi .v{font-family:var(--display);font-size:24px;font-weight:700;margin-top:2px}
+.kpi .h{font-size:12px;color:var(--muted)}
+.kpi.hero{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.kpi.hero .l,.kpi.hero .h{color:var(--brand-ink);opacity:.8}
+.list{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);min-width:0}
+.row:first-child{border-top:0}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:600;overflow-wrap:anywhere}
+.row .s{font-size:12.5px;color:var(--muted)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--surface-2);color:var(--brand);display:grid;place-items:center;font-weight:700;flex:0 0 auto;font-size:14px}
+.pill{font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.p-good{background:var(--good-soft);color:var(--good)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)}
+.p-info{background:var(--brand-soft);color:var(--brand)}
+.p-mute{background:var(--surface-2);color:var(--muted)}
+.btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:10px;padding:9px 16px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--line)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:default;filter:none}
+.btn:focus-visible,.field:focus-visible,.opt:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.field{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+textarea.field{min-height:70px;resize:vertical}
+.form{display:flex;flex-direction:column;gap:10px}
+.inline{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.inline .field{flex:1;min-width:140px}
+label.lb{font-size:12.5px;color:var(--muted);display:block;margin-bottom:4px}
+.bar{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:4px}
+.bar i.warn{background:var(--warn)} .bar i.bad{background:var(--bad)} .bar i.good{background:var(--good)}
+.empty{color:var(--muted);font-size:13.5px;padding:8px 0}
+.feed{position:sticky;top:16px;display:flex;flex-direction:column;gap:0;max-height:calc(100vh - 32px);overflow:auto}
+@media (max-width:900px){.feed{position:static;max-height:none}}
+.feed .ev{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:13px}
+.feed .ev:first-of-type{border-top:0}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:7px;flex:0 0 auto;background:var(--brand)}
+.ev .who{font-size:11.5px;color:var(--muted)}
+.ev.new{animation:flash 1.6s ease}
+@keyframes flash{from{background:var(--brand-soft)}to{background:transparent}}
+.qrbox{background:#fff;border-radius:12px;padding:12px;display:inline-grid;place-items:center;border:1px solid var(--line)}
+.qrbox img,.qrbox canvas{display:block}
+.idcard{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.ann{border-inline-start:3px solid var(--maple);padding:8px 12px;background:var(--surface-2);border-radius:0 8px 8px 0}
+.ann .t{font-weight:600}
+.ann .s{font-size:12.5px;color:var(--muted)}
+.stars{display:flex;gap:4px;direction:ltr;justify-content:flex-end}
+.star{background:none;border:0;font-size:26px;cursor:pointer;color:var(--line);padding:0;line-height:1}
+.star.on{color:#E8A317}
+.q{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:start;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;direction:ltr}
+.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.progress{display:flex;gap:4px}
+.progress span{flex:1;height:4px;border-radius:2px;background:var(--surface-2)}
+.progress span.on{background:var(--brand)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:start;padding:9px 8px;border-top:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:500;font-size:12.5px;border-top:0}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(20px);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:10px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:20;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.hint{font-size:12.5px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.big{font-family:var(--display);font-size:40px;font-weight:700;color:var(--brand);line-height:1}
+.scanner{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px;border:2px dashed var(--line);border-radius:var(--r);text-align:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="brand">
+        <div class="mark">أ</div>
+        <div><h1>بوابة أُفق</h1><small>معهد أُفق للغات · نظام موحّد للإدارة والاستقبال والمعلمات والطالبات</small></div>
+      </div>
+      <span class="demo-tag">نسخة عرض تجريبية · بيانات افتراضية</span>
+    </div>
+    <nav class="roles" role="tablist" id="roles"></nav>
+  </div>
+</header>
+
+<main><div class="wrap">
+  <section class="view" id="view"></section>
+  <aside class="card feed" id="feedCard">
+    <h3>نبض المعهد <span class="sub">كل حركة تظهر هنا لحظياً</span></h3>
+    <div id="feed"></div>
+  </aside>
+</div></main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const ROLES=[
+  {id:'admin',name:'الإدارة'},
+  {id:'reception',name:'الاستقبال'},
+  {id:'teacher',name:'المعلمة'},
+  {id:'student',name:'الطالبة'},
+  {id:'visitor',name:'زائرة · اختبار المستوى'}
+];
+const VAT=0.15;
+const S={
+  role:'admin',
+  clock:{h:15,m:48},
+  teachers:{t1:'أ. ريم الحربي',t2:'أ. سارة القحطاني'},
+  classes:[
+    {id:'c1',name:'إنجليزي عام · المستوى 3',lvl:'B1',teacher:'t1',days:'أحد · ثلاثاء · خميس',time:'4:00 م',start:[16,0],room:'قاعة 2',cap:12,today:true,price:2400,week:6,weeks:8},
+    {id:'c3',name:'إنجليزي تأسيسي · المستوى 1',lvl:'A1',teacher:'t1',days:'أحد · ثلاثاء · خميس',time:'6:00 م',start:[18,0],room:'قاعة 1',cap:14,today:true,price:2100,week:3,weeks:8},
+    {id:'c2',name:'تحضير IELTS',lvl:'B2',teacher:'t2',days:'اثنين · أربعاء',time:'6:00 م',start:[18,0],room:'قاعة 3',cap:10,today:false,price:3200,week:5,weeks:6}
+  ],
+  students:[],
+  todayAtt:{},
+  hw:[
+    {id:'h1',cls:'c1',title:'Unit 7 · Workbook p.42–43',due:'الأحد 1 نوفمبر',by:'t1'},
+    {id:'h2',cls:'c1',title:'اكتبي فقرة 120 كلمة: My ideal weekend',due:'الثلاثاء 3 نوفمبر',by:'t1'}
+  ],
+  subs:[],
+  ann:[
+    {id:1,to:'all',title:'إجازة اليوم الوطني انتهت، الدوام منتظم',body:'نرحب بعودتكن، جدول الحصص كما هو.',by:'الإدارة',at:'الأحد'},
+    {id:2,to:'c1',title:'اختبار منتصف المستوى',body:'الخميس القادم في نفس وقت الحصة، الوحدات 5 إلى 7.',by:'أ. ريم الحربي',at:'الثلاثاء'}
+  ],
+  leads:[
+    {id:'L1',name:'بشاير الزهراني',phone:'05xxxxxx31',level:'A2',suggest:'c3',at:'أمس',status:'new'},
+    {id:'L2',name:'وعد السهلي',phone:'05xxxxxx78',level:'B2',suggest:'c2',at:'اليوم 1:20 م',status:'new'}
+  ],
+  payments:[],
+  ratings:[
+    {stu:'ريما الجهني',cls:'c1',stars:5,comment:'الشرح واضح والأنشطة ممتعة، صرت أتكلم بثقة أكثر في الشغل.',pub:true,when:'المستوى الحالي'},
+    {stu:'شيماء العنزي',cls:'c2',stars:4,comment:'نحتاج اختبارات تجريبية أكثر',pub:false,when:'المستوى الحالي'},
+    {stu:'أمل الحربي',cls:'c3',stars:5,comment:'بديت من الصفر وما كنت أعرف أكوّن جملة، الحين أفهم وأرد.',pub:true,when:'المستوى الحالي'},
+    {stu:'هديل الرفاعي',cls:'c2',stars:5,comment:'جبت 7 في IELTS من أول محاولة، التدريب على الكتابة فرق معي كثير.',pub:true,when:'خريجة · صيف 2026'},
+    {stu:'نوال القرشي',cls:'c1',stars:5,comment:'المعلمات صبورات والقاعات مريحة، وتابعت معي حتى بعد الحصص.',pub:true,when:'خريجة · ربيع 2026'},
+    {stu:'رنا الغامدي',cls:'c3',stars:4,comment:'تجربة حلوة، تمنيت لو فيه حصص مسائية أكثر.',pub:true,when:'خريجة · ربيع 2026'},
+    {stu:'سمية العمري',cls:'c2',stars:5,comment:'خطة واضحة لكل مهارة، ونموذج اختبار كامل كل أسبوع.',pub:true,when:'خريجة · شتاء 2026'},
+    {stu:'أفنان الحجيلي',cls:'c1',stars:5,comment:'انتقلت من المستوى 2 للـ 4 خلال سنة، أنصح فيه.',pub:true,when:'خريجة · شتاء 2026'}
+  ],
+  reenroll:[],
+  log:[],
+  seen:{admin:0,reception:0,teacher:0,student:0,visitor:0},
+  me:'W-1042',
+  teacherMe:'t1',
+  tCls:'c1',
+  quiz:{i:0,ans:[],done:false,level:null}
+};
+// seed students
+const seed=[
+ ['W-1042','نوف السلمي','c1',16,18,1,92],['W-1043','ريما الجهني','c1',17,18,1,95],['W-1044','شهد المطيري','c1',12,18,1,74],
+ ['W-1045','لمى الحربي','c1',15,18,.5,81],['W-1046','أروى العتيبي','c1',13,18,1,69],['W-1047','جود الرحيلي','c1',18,18,1,97],
+ ['W-1048','هيا الصاعدي','c1',14,18,0,77],['W-1049','منار الأحمدي','c1',16,18,1,85],['W-1050','رهف الشريف','c1',17,18,1,90],
+ ['W-1051','دانة البلوي','c1',15,18,.5,80],
+ ['W-1061','أمل الحربي','c3',9,9,1,88],['W-1062','سارة الردادي','c3',8,9,1,79],['W-1063','غادة المحمدي','c3',6,9,.5,70],
+ ['W-1064','ليان الجابري','c3',9,9,1,91],['W-1065','مها اللهيبي','c3',7,9,0,66],['W-1066','عهود السناني','c3',8,9,1,83],
+ ['W-1067','بيان الأنصاري','c3',9,9,1,86],['W-1068','ريم الصبحي','c3',8,9,1,78],['W-1069','نجود المغامسي','c3',6,9,1,72],
+ ['W-1071','شيماء العنزي','c2',9,10,1,7.0],['W-1072','أسيل الفايدي','c2',10,10,1,6.5],['W-1073','العنود الحازمي','c2',7,10,.5,6.0],
+ ['W-1074','تهاني الخالدي','c2',10,10,1,7.5],['W-1075','ياسمين الشنقيطي','c2',8,10,0,6.5],['W-1076','حنين البركاتي','c2',9,10,1,7.0],['W-1077','وجدان العوفي','c2',10,10,1,6.0]
+];
+seed.forEach(([id,name,cls,att,tot,paidPct,grade])=>{
+  const c=S.classes.find(x=>x.id===cls); const fee=Math.round(c.price*(1+VAT));
+  S.students.push({id,name,cls,att,tot,fee,paid:Math.round(fee*paidPct),grade,ielts:cls==='c2'});
+});
+// already-arrived students (early)
+[['W-1047','3:41 م'],['W-1043','3:44 م'],['W-1050','3:46 م']].forEach(([id,t])=>S.todayAtt[id]={t,late:false,by:'QR'});
+S.subs.push({hw:'h1',stu:'W-1047',at:'أمس 9:12 م',grade:null},{hw:'h1',stu:'W-1043',at:'أمس 10:40 م',grade:null});
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const stu=id=>S.students.find(s=>s.id===id);
+const cls=id=>S.classes.find(c=>c.id===id);
+const sar=n=>Math.round(n).toLocaleString('en-US')+' ر.س';
+const ini=n=>n.trim()[0];
+const absRate=s=>{const att=s.att+(isToday(s)&&S.todayAtt[s.id]?1:0);const tot=s.tot+(isToday(s)&&clockPast(s)?1:0);return tot?1-att/tot:0};
+const isToday=s=>cls(s.cls).today;
+const clockPast=s=>false;
+const attPct=s=>Math.round((1-absRate(s))*100);
+function clockStr(){let {h,m}=S.clock;const ap=h>=12?'م':'ص';let hh=h%12||12;return hh+':'+String(m).padStart(2,'0')+' '+ap}
+function tick(min){S.clock.m+=min;while(S.clock.m>=60){S.clock.m-=60;S.clock.h++}}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2200)}
+function log(text,who,targets){S.log.unshift({text,who,at:clockStr(),targets:targets||[],id:Date.now()+Math.random(),fresh:true});renderFeed();renderRoles()}
+
+// ---------- roles nav ----------
+function unseen(role){return S.log.filter(e=>e.targets.includes(role)).length-S.seen[role]}
+function renderRoles(){
+  $('#roles').innerHTML=ROLES.map(r=>{const n=r.id===S.role?0:unseen(r.id);return `<button class="role" role="tab" id="tab-${r.id}" aria-selected="${r.id===S.role}" data-role="${r.id}">${r.name}${n>0?`<span class="badge">${n}</span>`:''}</button>`}).join('');
+}
+$('#roles').addEventListener('click',e=>{const b=e.target.closest('.role');if(!b)return;go(b.dataset.role)});
+function go(role){S.role=role;S.seen[role]=S.log.filter(e=>e.targets.includes(role)).length;try{localStorage.setItem('ufuq-role',role)}catch(e){}renderRoles();render();window.scrollTo({top:0})}
+
+function renderFeed(){
+  $('#feed').innerHTML=S.log.length?S.log.slice(0,30).map(e=>`<div class="ev ${e.fresh?'new':''}"><span class="dot"></span><div><div>${e.text}</div><div class="who">${esc(e.who)} · ${e.at}</div></div></div>`).join(''):'<div class="empty">جرّبي أي إجراء في أي واجهة، وراح تشوفين أثره هنا وعند الطرف الثاني مباشرة.</div>';
+  S.log.forEach(e=>e.fresh=false);
+}
+
+// ---------- shared actions ----------
+function checkIn(id,by){
+  const s=stu(id); if(!s) return toast('رقم الطالبة غير موجود');
+  const c=cls(s.cls); if(!c.today) return toast(`${s.name}: ليس عندها حصة اليوم`);
+  if(S.todayAtt[id]) return toast(`${s.name} محضّرة مسبقاً`);
+  tick(2+Math.floor(Math.random()*3));
+  const late=(S.clock.h*60+S.clock.m)>(c.start[0]*60+c.start[1]+10);
+  S.todayAtt[id]={t:clockStr(),late,by};
+  log(`تحضير <b>${esc(s.name)}</b> في ${esc(c.name)}${late?' · <span style="color:var(--warn)">متأخرة</span>':''} (${by})`,by==='QR'?'بوابة الدخول':'الاستقبال',['admin','teacher','reception']);
+  toast(`تم تحضير ${s.name} ${late?'(متأخرة)':''}`);
+}
+function balance(s){return s.fee-s.paid}
+
+// ---------- views ----------
+function render(){
+  const v=$('#view');
+  ({admin:vAdmin,reception:vReception,teacher:vTeacher,student:vStudent,visitor:vVisitor})[S.role](v);
+}
+
+function vAdmin(v){
+  const all=S.students; const totalStu=all.length;
+  const todayStu=all.filter(isToday); const present=todayStu.filter(s=>S.todayAtt[s.id]).length;
+  const collected=all.reduce((a,s)=>a+s.paid,0); const due=all.reduce((a,s)=>a+s.fee,0);
+  const outstanding=due-collected; const vatCollected=collected-collected/(1+VAT);
+  const risk=all.map(s=>({s,r:absRate(s)})).filter(x=>x.r>=0.2).sort((a,b)=>b.r-a.r);
+  const unpaid=all.filter(s=>balance(s)>0).sort((a,b)=>balance(b)-balance(a));
+  const avgRating=S.ratings.length?(S.ratings.reduce((a,r)=>a+r.stars,0)/S.ratings.length):0;
+  const finishing=all.filter(s=>{const c=cls(s.cls);return c.weeks-c.week<=2});
+  v.innerHTML=`
+  <div class="vhead"><div><h2>لوحة الإدارة</h2><p>الخميس 29 أكتوبر 2026 · الساعة <span class="num">${clockStr()}</span></p></div>
+  <button class="btn ghost sm" data-act="exportHint">تقرير الشهر</button></div>
+  <div class="kpis">
+    <div class="kpi hero"><div class="l">حضور اليوم</div><div class="v num">${present} / ${todayStu.length}</div><div class="h">حصتان اليوم</div></div>
+    <div class="kpi"><div class="l">الطالبات المسجلات</div><div class="v num">${totalStu}</div><div class="h">في 3 دورات</div></div>
+    <div class="kpi"><div class="l">المحصّل هذا المستوى</div><div class="v num">${sar(collected)}</div><div class="h">منها ضريبة <span class="num">${sar(vatCollected)}</span></div></div>
+    <div class="kpi"><div class="l">مستحقات متأخرة</div><div class="v num" style="color:var(--bad)">${sar(outstanding)}</div><div class="h">${unpaid.length} طالبات</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>تنبيهات الغياب <span class="sub">حد الحرمان 25%</span></h3><div class="list">
+      ${risk.length?risk.map(({s,r})=>`<div class="row"><div class="av">${ini(s.name)}</div><div class="grow"><div class="t">${esc(s.name)}</div><div class="s">${esc(cls(s.cls).name)} · غياب <span class="num">${Math.round(r*100)}%</span></div></div><span class="pill ${r>=.25?'p-bad':'p-warn'}">${r>=.25?'تجاوزت الحد':'قريبة من الحد'}</span><button class="btn ghost sm" data-act="warn" data-id="${s.id}">إنذار</button></div>`).join(''):'<div class="empty">لا توجد طالبات قريبات من حد الغياب.</div>'}
+    </div></div>
+    <div class="card"><h3>الدورات وإشغالها</h3><div class="list">
+      ${S.classes.map(c=>{const n=all.filter(s=>s.cls===c.id).length;const p=n/c.cap;return `<div class="row" style="flex-direction:column;align-items:stretch;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px"><div><div class="t">${esc(c.name)} <span class="pill p-info">${c.lvl}</span></div><div class="s">${S.teachers[c.teacher]} · ${c.days} ${c.time} · الأسبوع <span class="num">${c.week}/${c.weeks}</span></div></div><div class="num" style="font-weight:600">${n}/${c.cap}</div></div><div class="bar"><i class="${p>.9?'good':''}" style="width:${p*100}%"></i></div></div>`}).join('')}
+    </div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>المتأخرات المالية <span class="sub">شامل ضريبة 15%</span></h3><div class="list">
+      ${unpaid.length?unpaid.map(s=>`<div class="row"><div class="av">${ini(s.name)}</div><div class="grow"><div class="t">${esc(s.name)}</div><div class="s">مدفوع <span class="num">${sar(s.paid)}</span> من <span class="num">${sar(s.fee)}</span></div></div><span class="pill p-bad num">${sar(balance(s))}</span><button class="btn ghost sm" data-act="remind" data-id="${s.id}">تذكير</button></div>`).join(''):'<div class="empty">كل الطالبات مسددات.</div>'}
+    </div></div>
+    <div class="card"><h3>الاستمرار للمستوى التالي <span class="sub">${finishing.length} طالبة ينهين خلال أسبوعين</span></h3>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px"><div class="big num">${S.reenroll.length}</div><div class="s" style="color:var(--muted);font-size:13px">طالبات سجّلن في المستوى التالي من البوابة<br>${S.reenroll.length?'':'جرّبي من واجهة الطالبة'}</div></div>
+      <div class="list">${S.reenroll.map(r=>`<div class="row"><div class="av">${ini(stu(r.id).name)}</div><div class="grow"><div class="t">${esc(stu(r.id).name)}</div><div class="s">إلى ${esc(r.to)} · ${r.at}</div></div><span class="pill p-good">مؤكد</span></div>`).join('')}</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>تقييم الطالبات <span class="sub">متوسط <span class="num">${avgRating.toFixed(1)}</span> من 5 · ${S.ratings.filter(r=>r.pub).length} منشورة للزوار</span></h3>
+      <div class="hint" style="margin-bottom:6px">الإدارة تختار أي تقييم يظهر في صفحة الزوار.</div><div class="list">
+      ${S.ratings.map((r,i)=>`<div class="row"><div class="grow"><div class="t"><span style="color:#E8A317">${'★'.repeat(r.stars)}</span><span style="color:var(--line)">${'★'.repeat(5-r.stars)}</span> · ${esc(cls(r.cls).name)}</div><div class="s">${r.comment?esc(r.comment):'بدون تعليق'} — ${esc(r.stu)}</div></div>${r.pub?`<button class="btn ghost sm" data-act="unpub" data-i="${i}">إخفاء</button>`:(r.comment?`<button class="btn sm" data-act="pub" data-i="${i}">نشر للزوار</button>`:'<span class="pill p-mute">داخلي</span>')}</div>`).join('')}
+    </div></div>
+    <div class="card"><h3>إعلان لكل الطالبات</h3><form class="form" id="annAll">
+      <input class="field" id="annAllT" placeholder="عنوان الإعلان" required>
+      <textarea class="field" id="annAllB" placeholder="نص الإعلان"></textarea>
+      <button class="btn">نشر للجميع</button></form>
+      <div class="hint" style="margin-top:10px">الإعلان يوصل لكل طالبة في بوابتها فوراً. هذا يحل مشكلة انقطاع التواصل بعد الحصص.</div>
+    </div>
+  </div>
+  <div class="card"><h3>طلبات من اختبار المستوى <span class="sub">عملاء محتملات</span></h3><div class="list">
+    ${S.leads.map(l=>`<div class="row"><div class="av">${ini(l.name)}</div><div class="grow"><div class="t">${esc(l.name)}</div><div class="s">مستوى <b>${l.level}</b> · ${l.at}</div></div><span class="pill ${l.status==='new'?'p-warn':'p-good'}">${l.status==='new'?'بانتظار الاستقبال':'سُجّلت'}</span></div>`).join('')}
+  </div></div>`;
+  $('#annAll').onsubmit=e=>{e.preventDefault();const t=$('#annAllT').value.trim();if(!t)return;S.ann.unshift({id:Date.now(),to:'all',title:t,body:$('#annAllB').value.trim(),by:'الإدارة',at:'الآن'});log(`إعلان عام: <b>${esc(t)}</b>`,'الإدارة',['student','teacher','reception']);toast('تم نشر الإعلان');render()};
+}
+
+function vReception(v){
+  const today=S.classes.filter(c=>c.today);
+  const newLeads=S.leads.filter(l=>l.status==='new');
+  v.innerHTML=`
+  <div class="vhead"><div><h2>مكتب الاستقبال</h2><p>الطالبات يحضّرن أنفسهن بالـ QR، ودورك هنا للاستثناءات فقط</p></div><span class="pill p-info">الساعة <span class="num">${clockStr()}</span></span></div>
+  <div class="grid2">
+    <div class="card"><h3>تحضير برقم الطالبة</h3>
+      <form class="inline" id="manual"><input class="field num" id="manualId" placeholder="مثال: W-1044" style="text-align:right"><button class="btn">تحضير</button></form>
+      <div class="hint" style="margin-top:10px">لو نسيت الطالبة جوالها. غير كذا التحضير يصير تلقائي عند الباب.</div>
+    </div>
+    <div class="card"><h3>تسجيل دفعة</h3><form class="form" id="payForm">
+      <select class="field" id="payStu">${S.students.filter(s=>balance(s)>0).map(s=>`<option value="${s.id}">${esc(s.name)} · متبقي ${sar(balance(s))}</option>`).join('')||'<option value="">لا توجد مستحقات</option>'}</select>
+      <div class="inline"><input class="field num" id="payAmt" type="number" min="1" placeholder="المبلغ"><select class="field" id="payWay" style="flex:0 0 auto;width:auto"><option>مدى</option><option>تحويل</option><option>نقداً</option></select><button class="btn">تسجيل وإصدار سند</button></div>
+    </form></div>
+  </div>
+  ${today.map(c=>{const list=S.students.filter(s=>s.cls===c.id);const pr=list.filter(s=>S.todayAtt[s.id]).length;return `
+  <div class="card"><h3>${esc(c.name)} · ${c.time} · ${c.room}<span class="sub num">${pr}/${list.length} حاضرة</span></h3>
+    <div class="bar" style="margin-bottom:8px"><i class="good" style="width:${pr/list.length*100}%"></i></div>
+    <div class="list">${list.map(s=>{const a=S.todayAtt[s.id];return `<div class="row"><div class="av">${ini(s.name)}</div><div class="grow"><div class="t">${esc(s.name)}</div><div class="s num">${s.id}</div></div>${a?`<span class="pill ${a.late?'p-warn':'p-good'}">${a.late?'متأخرة':'حاضرة'} · <span class="num">${a.t}</span> · ${a.by}</span>`:`<button class="btn ghost sm" data-act="checkin" data-id="${s.id}">تحضير يدوي</button>`}</div>`}).join('')}</div>
+  </div>`}).join('')}
+  <div class="card"><h3>طلبات تسجيل جديدة <span class="sub">من اختبار المستوى في الموقع</span></h3><div class="list">
+    ${newLeads.length?newLeads.map(l=>`<div class="row" style="flex-wrap:wrap"><div class="av">${ini(l.name)}</div><div class="grow"><div class="t">${esc(l.name)} <span class="pill p-info">${l.level}</span></div><div class="s"><span class="num">${esc(l.phone)}</span> · ${l.at}</div></div><select class="field" style="width:auto;flex:0 0 auto" id="lc-${l.id}">${S.classes.map(c=>`<option value="${c.id}" ${c.id===l.suggest?'selected':''}>${esc(c.name)}</option>`).join('')}</select><button class="btn sm" data-act="enroll" data-id="${l.id}">تسجيل وإصدار فاتورة</button></div>`).join(''):'<div class="empty">لا توجد طلبات جديدة. جرّبي اختبار المستوى من تبويب الزائرة.</div>'}
+  </div></div>
+  <div class="card"><h3>آخر السندات</h3><div class="list">${S.payments.length?S.payments.map(p=>`<div class="row"><div class="grow"><div class="t">سند ${p.no} · ${esc(stu(p.stu).name)}</div><div class="s">${p.way} · ${p.at} · ضريبة <span class="num">${sar(p.amount-p.amount/(1+VAT))}</span></div></div><b class="num">${sar(p.amount)}</b></div>`).join(''):'<div class="empty">ما سُجّلت دفعات اليوم بعد.</div>'}</div></div>`;
+  $('#manual').onsubmit=e=>{e.preventDefault();checkIn($('#manualId').value.trim().toUpperCase(),'يدوي');render()};
+  $('#payForm').onsubmit=e=>{e.preventDefault();const s=stu($('#payStu').value);const a=+$('#payAmt').value;if(!s||!a)return toast('اختاري الطالبة واكتبي المبلغ');const amt=Math.min(a,balance(s));s.paid+=amt;const no='R-'+(2310+S.payments.length);S.payments.unshift({no,stu:s.id,amount:amt,way:$('#payWay').value,at:clockStr()});log(`دفعة <b class="num">${sar(amt)}</b> من ${esc(s.name)} · سند ${no}`,'الاستقبال',['admin','student']);toast('تم تسجيل الدفعة وإصدار السند');render()};
+}
+
+function vTeacher(v){
+  const mine=S.classes.filter(c=>c.teacher===S.teacherMe);
+  const c=cls(S.tCls); const list=S.students.filter(s=>s.cls===c.id);
+  const pending=S.subs.filter(x=>{const h=S.hw.find(h=>h.id===x.hw);return h&&h.cls===c.id&&x.grade==null});
+  const graded=S.subs.filter(x=>{const h=S.hw.find(h=>h.id===x.hw);return h&&h.cls===c.id&&x.grade!=null});
+  v.innerHTML=`
+  <div class="vhead"><div><h2>${S.teachers[S.teacherMe]}</h2><p>فصولك، الحضور المباشر، والواجبات</p></div>
+  <div class="seg">${mine.map(x=>`<button data-act="tcls" data-id="${x.id}" aria-pressed="${x.id===c.id}">${esc(x.name)}</button>`).join('')}</div></div>
+  <div class="grid3">
+    <div class="kpi"><div class="l">حضور اليوم</div><div class="v num">${c.today?list.filter(s=>S.todayAtt[s.id]).length+' / '+list.length:'—'}</div><div class="h">${c.time} · ${c.room}</div></div>
+    <div class="kpi"><div class="l">واجبات بانتظار التصحيح</div><div class="v num">${pending.length}</div><div class="h">تُسلَّم من بوابة الطالبة</div></div>
+    <div class="kpi"><div class="l">متوسط الدرجات</div><div class="v num">${Math.round(list.reduce((a,s)=>a+s.grade,0)/list.length)}</div><div class="h">المستوى ${c.lvl} · الأسبوع ${c.week}/${c.weeks}</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>الطالبات <span class="sub">الحضور يتحدث لحظياً من الباب</span></h3><div class="list">
+      ${list.map(s=>{const a=S.todayAtt[s.id];const r=absRate(s);return `<div class="row"><div class="av">${ini(s.name)}</div><div class="grow"><div class="t">${esc(s.name)}</div><div class="s">حضور <span class="num">${attPct(s)}%</span> · درجة <span class="num">${s.grade}</span></div></div>${r>=.25?'<span class="pill p-bad">تجاوزت الغياب</span>':''}${c.today?(a?`<span class="pill ${a.late?'p-warn':'p-good'}">${a.late?'متأخرة':'حاضرة'}</span>`:'<span class="pill p-mute">لم تصل</span>'):''}</div>`}).join('')}
+    </div></div>
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <div class="card"><h3>تصحيح الواجبات</h3><div class="list">
+        ${pending.length?pending.map(x=>{const h=S.hw.find(h=>h.id===x.hw);const i=S.subs.indexOf(x);return `<div class="row" style="flex-wrap:wrap"><div class="grow"><div class="t">${esc(stu(x.stu).name)}</div><div class="s">${esc(h.title)} · ${x.at}</div></div><div class="inline" style="flex:0 0 auto"><input class="field num" type="number" min="0" max="10" id="g-${i}" placeholder="/10" style="width:70px;min-width:0;flex:0 0 auto"><button class="btn sm" data-act="grade" data-i="${i}">اعتماد</button></div></div>`}).join(''):'<div class="empty">لا توجد تسليمات جديدة.</div>'}
+        ${graded.map(x=>`<div class="row"><div class="grow"><div class="t">${esc(stu(x.stu).name)}</div><div class="s">${esc(S.hw.find(h=>h.id===x.hw).title)}</div></div><span class="pill p-good num">${x.grade}/10</span></div>`).join('')}
+      </div></div>
+      <div class="card"><h3>واجب جديد</h3><form class="form" id="hwForm">
+        <input class="field" id="hwT" placeholder="مثال: Unit 8 · Listening task" required>
+        <input class="field" id="hwD" placeholder="موعد التسليم، مثال: الثلاثاء 3 نوفمبر">
+        <button class="btn">إرسال للفصل</button></form></div>
+      <div class="card"><h3>رسالة للفصل</h3><form class="form" id="clsAnn">
+        <input class="field" id="caT" placeholder="مثال: ملخص درس اليوم" required>
+        <textarea class="field" id="caB" placeholder="التفاصيل"></textarea>
+        <button class="btn">نشر</button></form></div>
+    </div>
+  </div>`;
+  $('#hwForm').onsubmit=e=>{e.preventDefault();const t=$('#hwT').value.trim();if(!t)return;S.hw.unshift({id:'h'+Date.now(),cls:c.id,title:t,due:$('#hwD').value.trim()||'الحصة القادمة',by:S.teacherMe});log(`واجب جديد لفصل ${esc(c.name)}: <b>${esc(t)}</b>`,S.teachers[S.teacherMe],['student','admin']);toast('وصل الواجب لبوابة الطالبات');render()};
+  $('#clsAnn').onsubmit=e=>{e.preventDefault();const t=$('#caT').value.trim();if(!t)return;S.ann.unshift({id:Date.now(),to:c.id,title:t,body:$('#caB').value.trim(),by:S.teachers[S.teacherMe],at:'الآن'});log(`رسالة لفصل ${esc(c.name)}: <b>${esc(t)}</b>`,S.teachers[S.teacherMe],['student']);toast('تم النشر للفصل');render()};
+}
+
+function vStudent(v){
+  const s=stu(S.me); const c=cls(s.cls); const a=S.todayAtt[s.id];
+  const anns=S.ann.filter(x=>x.to==='all'||x.to===s.cls);
+  const hws=S.hw.filter(h=>h.cls===s.cls);
+  const rated=S.ratings.some(r=>r.stu===s.name);
+  const re=S.reenroll.find(r=>r.id===s.id);
+  const nextName='إنجليزي عام · المستوى 4 (B2)';
+  v.innerHTML=`
+  <div class="vhead"><div><h2>أهلاً ${esc(s.name.split(' ')[0])}</h2><p>${esc(c.name)} · ${S.teachers[c.teacher]}</p></div><span class="pill p-info">الأسبوع <span class="num">${c.week}</span> من <span class="num">${c.weeks}</span></span></div>
+  <div class="card"><div class="idcard">
+    <div class="qrbox" id="qr" aria-label="رمز الدخول"></div>
+    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:var(--display);font-weight:600;font-size:17px">بطاقة الدخول</div>
+      <div class="s" style="color:var(--muted);font-size:13px">رقمك <b class="num">${s.id}</b> · حصة اليوم ${c.time} في ${c.room}</div>
+      ${a?`<span class="pill ${a.late?'p-warn':'p-good'}" style="align-self:flex-start">تم تحضيرك الساعة <span class="num">${a.t}</span></span>`:`<button class="btn" data-act="selfscan" style="align-self:flex-start">محاكاة: مسح الكود عند الباب</button>`}
+      <div class="hint">امسحي الكود على جهاز الباب، ويتسجل حضورك عند المعلمة والإدارة بنفس اللحظة.</div>
+    </div></div></div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">نسبة حضوري</div><div class="v num">${attPct(s)}%</div><div class="bar"><i class="${absRate(s)>=.2?'warn':'good'}" style="width:${attPct(s)}%"></i></div></div>
+    <div class="kpi"><div class="l">درجتي الحالية</div><div class="v num">${s.grade}</div><div class="h">من 100</div></div>
+    <div class="kpi"><div class="l">المتبقي علي</div><div class="v num" style="color:${balance(s)?'var(--bad)':'var(--good)'}">${balance(s)?sar(balance(s)):'مسدد'}</div><div class="h">شامل الضريبة</div></div>
+    <div class="kpi"><div class="l">واجباتي</div><div class="v num">${hws.filter(h=>!S.subs.some(x=>x.hw===h.id&&x.stu===s.id)).length}</div><div class="h">بانتظار التسليم</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>الإعلانات</h3><div style="display:flex;flex-direction:column;gap:10px">
+      ${anns.map(x=>`<div class="ann"><div class="t">${esc(x.title)}</div>${x.body?`<div>${esc(x.body)}</div>`:''}<div class="s">${esc(x.by)} · ${x.at}</div></div>`).join('')}
+    </div></div>
+    <div class="card"><h3>الواجبات</h3><div class="list">
+      ${hws.map(h=>{const sub=S.subs.find(x=>x.hw===h.id&&x.stu===s.id);return `<div class="row"><div class="grow"><div class="t" style="direction:${/[a-z]/i.test(h.title[0])?'ltr':'rtl'};text-align:right">${esc(h.title)}</div><div class="s">التسليم: ${esc(h.due)}</div></div>${sub?(sub.grade!=null?`<span class="pill p-good num">${sub.grade}/10</span>`:'<span class="pill p-info">سُلّم</span>'):`<button class="btn sm" data-act="submit" data-id="${h.id}">تسليم</button>`}</div>`}).join('')}
+    </div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>المستوى القادم</h3>
+      ${re?`<div class="ann" style="border-color:var(--good)"><div class="t">تم حجز مقعدك في ${esc(nextName)}</div><div class="s">صدرت الفاتورة وتقدرين تسددين من الاستقبال</div></div>`:`<p style="margin:0 0 10px">باقي أسبوعين على نهاية مستواك. احجزي مقعدك في <b>${esc(nextName)}</b> قبل اكتمال العدد.</p><button class="btn" data-act="reenroll">احجزي مقعدي</button>`}
+    </div>
+    <div class="card"><h3>قيّمي الدورة</h3>
+      ${rated?'<div class="empty">شكراً، وصل تقييمك للإدارة.</div>':`<div class="stars" id="stars">${[1,2,3,4,5].map(n=>`<button class="star" data-n="${n}" aria-label="${n} نجوم">★</button>`).join('')}</div>
+      <textarea class="field" id="rateC" placeholder="ملاحظة اختيارية" style="margin-top:8px"></textarea>
+      <button class="btn" data-act="rate" style="margin-top:8px">إرسال التقييم</button>`}
+    </div>
+  </div>`;
+  try{if(window.QRCode){new QRCode($('#qr'),{text:`UFUQ|${s.id}|${s.cls}|2026-10-29`,width:132,height:132,colorDark:'#0E1430',colorLight:'#ffffff'})}else{$('#qr').textContent=s.id}}catch(e){$('#qr').textContent=s.id}
+  const st=$('#stars'); if(st){st.onclick=e=>{const b=e.target.closest('.star');if(!b)return;S._stars=+b.dataset.n;st.querySelectorAll('.star').forEach(x=>x.classList.toggle('on',+x.dataset.n<=S._stars))}}
+}
+
+const QUIZ=[
+  {q:'She ___ to work every day.',o:['go','goes','going','gone'],a:1},
+  {q:'I have lived here ___ 2019.',o:['for','since','from','at'],a:1},
+  {q:'If I ___ more time, I would travel.',o:['have','had','will have','having'],a:1},
+  {q:'The report ___ by the manager yesterday.',o:['wrote','was written','has written','writes'],a:1},
+  {q:'Choose the closest meaning of "reluctant".',o:['eager','unwilling','tired','careful'],a:1},
+  {q:'By next June, she ___ her degree.',o:['will finish','finishes','will have finished','finished'],a:2}
+];
+const LEVELS=[['A1','c3'],['A1','c3'],['A2','c3'],['B1','c1'],['B1','c1'],['B2','c2'],['B2','c2']];
+function reviewsHTML(title){
+  const pubAll=S.ratings.filter(r=>r.pub&&r.comment);
+  const f=S.rf||'all'; const list=f==='all'?pubAll:pubAll.filter(r=>r.cls===f);
+  const avg=list.length?list.reduce((a,r)=>a+r.stars,0)/list.length:0;
+  const dist=[5,4,3,2,1].map(n=>[n,list.filter(r=>r.stars===n).length]);
+  return `<div class="card"><h3>${title}<span class="sub">${pubAll.length} تقييم موثّق من طالبات المعهد</span></h3>
+  <div class="seg" style="margin-bottom:14px"><button data-act="rf" data-id="all" aria-pressed="${f==='all'}">كل الدورات</button>${S.classes.map(c=>`<button data-act="rf" data-id="${c.id}" aria-pressed="${f===c.id}">${esc(c.name)}</button>`).join('')}</div>
+  ${list.length?`<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+    <div><div class="big num">${avg.toFixed(1)}</div><div style="color:#E8A317;font-size:18px">${'★'.repeat(Math.round(avg))}<span style="color:var(--line)">${'★'.repeat(5-Math.round(avg))}</span></div><div style="font-size:12.5px;color:var(--muted)"><span class="num">${list.length}</span> تقييم</div></div>
+    <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px">${dist.map(([n,k])=>`<div style="display:flex;align-items:center;gap:8px;font-size:12.5px"><span class="num" style="width:12px">${n}</span><div class="bar" style="flex:1"><i style="width:${list.length?k/list.length*100:0}%;background:#E8A317"></i></div><span class="num" style="width:16px;color:var(--muted)">${k}</span></div>`).join('')}</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px">${list.map(r=>`<figure style="margin:0;background:var(--surface-2);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+    <div style="color:#E8A317;letter-spacing:2px">${'★'.repeat(r.stars)}<span style="color:var(--line)">${'★'.repeat(5-r.stars)}</span></div>
+    <blockquote style="margin:0;line-height:1.7">${esc(r.comment)}</blockquote>
+    <figcaption style="display:flex;align-items:center;gap:8px;margin-top:auto"><div class="av" style="width:28px;height:28px;font-size:12px;background:var(--surface)">${ini(r.stu)}</div><div style="font-size:12.5px"><b>${esc(r.stu.split(' ')[0])} ${esc(r.stu.split(' ')[1]?r.stu.split(' ')[1][0]+'.':'')}</b><div style="color:var(--muted)">${esc(cls(r.cls).name)} · ${esc(r.when||'')}</div></div><span class="pill p-good" style="margin-inline-start:auto;font-size:11px">طالبة موثّقة</span></figcaption>
+  </figure>`).join('')}</div>`:'<div class="empty">لا توجد تقييمات منشورة لهذه الدورة بعد.</div>'}
+  </div>`;
+}
+function vVisitor(v){
+  const Q=S.quiz;
+  if(Q.done){
+    const score=Q.ans.filter((x,i)=>x===QUIZ[i].a).length; const [lvl,cid]=LEVELS[score]; const c=cls(cid); if(!Q.rfSet){S.rf=cid;Q.rfSet=true}
+    v.innerHTML=`<div class="vhead"><div><h2>نتيجة اختبار المستوى</h2><p>صفحة عامة على موقع المعهد، توصل للزائرة من الإنستقرام أو قوقل ماب</p></div></div>
+    <div class="card" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap"><div class="big num" style="font-size:56px">${lvl}</div><div style="flex:1;min-width:200px"><div style="font-weight:600">أجبتِ <span class="num">${score}</span> من <span class="num">${QUIZ.length}</span> صحيحة</div><div style="color:var(--muted)">الدورة المناسبة لك: <b style="color:var(--fg)">${esc(c.name)}</b> · ${c.days} ${c.time}</div><div style="color:var(--muted)">الرسوم <span class="num">${sar(c.price)}</span> + الضريبة · متبقي <span class="num">${c.cap-S.students.filter(s=>s.cls===c.id).length}</span> مقاعد</div></div></div>
+    ${Q.sent?`<div class="card"><div class="ann" style="border-color:var(--good)"><div class="t">وصل طلبك للاستقبال</div><div class="s">بيتواصلون معك لتأكيد التسجيل. شوفي طلبك الآن في تبويب الاستقبال والإدارة.</div></div><button class="btn ghost" data-act="quizReset" style="margin-top:12px">اختبار جديد</button></div>`:
+    `<div class="card"><h3>احجزي مقعدك</h3><form class="form" id="leadF"><input class="field" id="lN" placeholder="الاسم" required><input class="field num" id="lP" placeholder="رقم الجوال" style="text-align:right" required><button class="btn">أرسلي طلب التسجيل</button></form></div>`}
+    ${reviewsHTML('وش قالت طالباتنا عن هذي الدورة')}`;
+    const f=$('#leadF'); if(f) f.onsubmit=e=>{e.preventDefault();const n=$('#lN').value.trim(),p=$('#lP').value.trim();if(!n||!p)return;const id='L'+Date.now();S.leads.unshift({id,name:n,phone:p,level:lvl,suggest:cid,at:'الآن',status:'new'});Q.sent=true;log(`طلب تسجيل جديد: <b>${esc(n)}</b> · مستوى ${lvl}`,'موقع المعهد',['reception','admin']);toast('تم إرسال الطلب');render()};
+    return;
+  }
+  const item=QUIZ[Q.i];
+  v.innerHTML=`<div class="vhead"><div><h2>اختبار تحديد المستوى</h2><p>6 أسئلة، دقيقتين، وتعرفين مستواك والدورة المناسبة لك</p></div><span class="pill p-info">سؤال <span class="num">${Q.i+1}/${QUIZ.length}</span></span></div>
+  <div class="card q"><div class="progress">${QUIZ.map((_,i)=>`<span class="${i<=Q.i?'on':''}"></span>`).join('')}</div>
+  <div style="font-size:18px;font-weight:600;direction:ltr;text-align:left;margin:8px 0">${esc(item.q)}</div>
+  ${item.o.map((o,i)=>`<button class="opt ${Q.ans[Q.i]===i?'sel':''}" data-act="pick" data-i="${i}">${esc(o)}</button>`).join('')}
+  <div class="inline" style="justify-content:space-between;margin-top:6px"><button class="btn ghost" data-act="qprev" ${Q.i?'':'disabled'}>السابق</button><button class="btn" data-act="qnext" ${Q.ans[Q.i]==null?'disabled':''}>${Q.i===QUIZ.length-1?'اعرضي النتيجة':'التالي'}</button></div></div>
+  <div class="hint">النتيجة تحوّل الزائرة مباشرة لطلب تسجيل عند الاستقبال، بدل ما تضيع في رسائل الواتساب.</div>
+  ${reviewsHTML('تجارب طالباتنا')}`;
+}
+
+// ---------- event delegation ----------
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return;
+  const act=b.dataset.act, id=b.dataset.id;
+  if(act==='checkin'){checkIn(id,'يدوي');render()}
+  else if(act==='selfscan'){checkIn(S.me,'QR');render()}
+  else if(act==='tcls'){S.tCls=id;render()}
+  else if(act==='warn'){const s=stu(id);log(`إنذار غياب أُرسل لـ <b>${esc(s.name)}</b> (${Math.round(absRate(s)*100)}%)`,'الإدارة',['student','teacher']);toast('وصل الإنذار لبوابة الطالبة')}
+  else if(act==='remind'){const s=stu(id);log(`تذكير سداد لـ <b>${esc(s.name)}</b> بمبلغ <span class="num">${sar(balance(s))}</span>`,'الإدارة',['student','reception']);toast('تم إرسال التذكير')}
+  else if(act==='exportHint'){toast('في النسخة الفعلية: تقرير PDF وExcel للحضور والمالية')}
+  else if(act==='enroll'){const l=S.leads.find(x=>x.id===id);const cid=$('#lc-'+id).value;const c=cls(cid);const nid='W-'+(1080+S.students.length);S.students.push({id:nid,name:l.name,cls:cid,att:0,tot:0,fee:Math.round(c.price*(1+VAT)),paid:0,grade:0});l.status='done';log(`تسجيل <b>${esc(l.name)}</b> في ${esc(c.name)} · رقمها ${nid} · فاتورة <span class="num">${sar(c.price*(1+VAT))}</span>`,'الاستقبال',['admin','teacher']);toast('تم التسجيل وإصدار الفاتورة');render()}
+  else if(act==='grade'){const i=+b.dataset.i;const g=+$('#g-'+i).value;if(isNaN(g)||$('#g-'+i).value==='')return toast('اكتبي الدرجة');S.subs[i].grade=Math.max(0,Math.min(10,g));const s=stu(S.subs[i].stu);log(`تصحيح واجب <b>${esc(s.name)}</b>: <span class="num">${S.subs[i].grade}/10</span>`,S.teachers[S.teacherMe],['student']);toast('وصلت الدرجة للطالبة');render()}
+  else if(act==='submit'){const h=S.hw.find(x=>x.id===id);S.subs.push({hw:id,stu:S.me,at:'الآن',grade:null});log(`<b>${esc(stu(S.me).name)}</b> سلّمت: ${esc(h.title)}`,'بوابة الطالبة',['teacher']);toast('تم التسليم، وصل للمعلمة');render()}
+  else if(act==='reenroll'){const s=stu(S.me);S.reenroll.push({id:s.id,to:'إنجليزي عام · المستوى 4',at:clockStr()});s.fee+=Math.round(2400*(1+VAT));log(`<b>${esc(s.name)}</b> حجزت مقعد المستوى 4 · فاتورة جديدة <span class="num">${sar(2400*(1+VAT))}</span>`,'بوابة الطالبة',['admin','reception']);toast('تم حجز مقعدك');render()}
+  else if(act==='rate'){if(!S._stars)return toast('اختاري عدد النجوم');const s=stu(S.me);S.ratings.unshift({stu:s.name,cls:s.cls,stars:S._stars,comment:$('#rateC').value.trim(),pub:false,when:'المستوى الحالي'});log(`تقييم جديد ${'★'.repeat(S._stars)} من ${esc(s.name)} · بانتظار موافقة النشر`,'بوابة الطالبة',['admin']);S._stars=0;toast('شكراً لتقييمك');render()}
+  else if(act==='pub'||act==='unpub'){const r=S.ratings[+b.dataset.i];r.pub=act==='pub';log(r.pub?`نُشر تقييم <b>${esc(r.stu)}</b> في صفحة الزوار`:`أُخفي تقييم ${esc(r.stu)} من صفحة الزوار`,'الإدارة',['visitor']);toast(r.pub?'ظهر التقييم للزوار':'تم الإخفاء');render()}
+  else if(act==='rf'){S.rf=b.dataset.id;render()}
+  else if(act==='pick'){S.quiz.ans[S.quiz.i]=+b.dataset.i;render()}
+  else if(act==='qnext'){if(S.quiz.i<QUIZ.length-1)S.quiz.i++;else S.quiz.done=true;render()}
+  else if(act==='qprev'){S.quiz.i=Math.max(0,S.quiz.i-1);render()}
+  else if(act==='quizReset'){S.quiz={i:0,ans:[],done:false};render()}
+});
+
+// boot
+try{const r=localStorage.getItem('ufuq-role');if(r&&ROLES.some(x=>x.id===r))S.role=r}catch(e){}
+renderRoles();renderFeed();render();
+</script>
+
+<footer style="text-align:center;padding:24px 16px 40px;color:var(--muted);font-size:13px">نسخة عرض تجريبية ببيانات افتراضية · تصميم وتطوير <a href="https://narjes455.github.io/" style="color:var(--brand)">نرجس العمري</a></footer>
+</body>
+</html>
