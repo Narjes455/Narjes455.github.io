@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="من يثرب إلى طيبة: قصة بصرية تفاعلية عن المدينة المنورة، رسم وتصميم وبرمجة نرجس العمري.">
+<meta property="og:title" content="من يثرب إلى طيبة">
+<meta property="og:description" content="قصة بصرية تفاعلية عن المدينة المنورة، تتحول أمامك كلما مرّرت.">
+<title>من يثرب إلى طيبة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* Layout: one sticky landscape fills the screen; scrolling moves time forward from Yathrib to today and the land rebuilds itself. Chapter text floats over it. Single committed night-to-day look. */
+:root{
+  --ink:#fbf4e6;
+  --muted:#e2d3bb;
+  --gold:#e8c06a;
+  --card:rgba(18,14,12,.55);
+  --line:rgba(232,192,106,.35);
+  --display:"Aref Ruqaa","Amiri",serif;
+  --body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:#0b0d18}
+body{background:#0b0d18;color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.85;direction:rtl;overflow-x:clip}
+.scene{position:sticky;top:0;height:100vh;height:100dvh;margin-bottom:-100vh;margin-bottom:-100dvh;overflow:hidden;z-index:0}
+.scene svg{display:block;width:100%;height:100%}
+main{position:relative;z-index:1}
+.ch{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-start;padding-block:9vh 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ch .box{max-width:520px;margin-inline:auto;width:100%;padding:16px 20px;border-radius:18px;background:var(--card);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.era{display:inline-block;font-size:13px;letter-spacing:.06em;color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
+.ch h2{font-family:var(--display);font-weight:700;font-size:clamp(36px,10vw,60px);line-height:1.15;margin:2px 0 6px;text-wrap:balance}
+.ch p{margin:0;color:var(--muted);max-width:44ch;font-size:16px;line-height:1.75}
+.hero{align-items:center;justify-content:center;text-align:center;padding-block:10vh 14vh}
+.hero .in{display:grid;gap:10px;justify-items:center}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(84px,26vw,170px);line-height:1;margin:0;color:var(--ink);text-shadow:0 6px 40px rgba(0,0,0,.5)}
+.hero p{margin:0;color:var(--muted);font-size:16px}
+.scroll{margin-top:18px;font-size:13px;color:var(--gold);display:grid;justify-items:center;gap:6px}
+.scroll i{width:2px;height:34px;border-radius:2px;background:linear-gradient(var(--gold),transparent);animation:drip 1.8s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(.2);transform-origin:top}50%{transform:scaleY(1)}100%{transform:scaleY(.2);transform-origin:bottom}}
+.end{align-items:center}
+.end .box{text-align:center;display:grid;gap:8px;justify-items:center}
+.end h2{font-size:clamp(46px,13vw,72px)}
+.end a{color:var(--gold)}
+.dots{position:fixed;inset-block:0;left:max(10px,env(safe-area-inset-left,0px));display:grid;align-content:center;gap:10px;z-index:2}
+.dots b{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .3s,transform .3s}
+.dots b.on{background:var(--gold);transform:scale(1.4)}
+@media (prefers-reduced-motion:reduce){.scroll i{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="scene" aria-hidden="true">
+  <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMax slice" id="svg">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop id="s0" offset="0" stop-color="#0b0d18"/><stop id="s1" offset=".62" stop-color="#232a4a"/><stop id="s2" offset="1" stop-color="#3a3350"/></linearGradient>
+      <radialGradient id="sunG"><stop offset="0" stop-color="#fff2cc" stop-opacity=".95"/><stop offset=".3" stop-color="#ffd690" stop-opacity=".45"/><stop offset="1" stop-color="#ffb46a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="halo"><stop offset="0" stop-color="#ffe2a0" stop-opacity=".95"/><stop offset="1" stop-color="#ffcf70" stop-opacity="0"/></radialGradient>
+      <radialGradient id="dome" cx=".32" cy=".28" r=".85"><stop offset="0" stop-color="#7fcb98"/><stop offset=".45" stop-color="#3f9a63"/><stop offset="1" stop-color="#1d5c38"/></radialGradient>
+      <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c79d68"/><stop offset="1" stop-color="#8a6740"/></linearGradient>
+      <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#f3dcb2" stop-opacity=".35"/></linearGradient>
+      <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+      <filter id="tint" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncR id="tR" type="linear" slope=".3"/><feFuncG id="tG" type="linear" slope=".32"/><feFuncB id="tB" type="linear" slope=".5"/></feComponentTransfer></filter>
+    </defs>
+    <rect width="600" height="700" fill="url(#sky)"/>
+    <g id="stars"></g>
+    <circle id="sunGlow" cx="300" cy="520" r="120" fill="url(#sunG)"/>
+    <circle id="sun" cx="300" cy="520" r="18" fill="#fff4dc"/>
+    <g id="moon" transform="translate(470 120)"><circle r="16" fill="#f4f0e2"/><circle r="16" cx="7" cy="-3" fill="#0b0d18" id="moonCut"/></g>
+
+    <g id="world" filter="url(#tint)">
+      <!-- جبل أحد والحرّة -->
+      <path d="M0 470 L40 448 L80 456 L130 410 L170 428 L215 386 L255 408 L300 372 L340 400 L380 384 L425 416 L470 400 L520 430 L560 418 L600 434 V560 H0Z" fill="#a85a3a"/>
+      <path d="M130 410 L142 452 M215 386 L226 436 M300 372 L308 428 M380 384 L388 432" stroke="#7a3a26" stroke-width="2" opacity=".5" fill="none"/>
+      <path d="M0 500 L60 486 L130 496 L210 482 L300 494 L390 480 L470 492 L540 484 L600 490 V560 H0Z" fill="#2b2220"/>
+      <rect y="440" width="600" height="80" fill="url(#haze)"/>
+
+      <!-- الأرض -->
+      <path d="M0 540 Q150 524 300 532 T600 528 V700 H0Z" fill="url(#sand)"/>
+
+      <!-- بيوت يثرب الطينية -->
+      <g id="houses" fill="#b88a5a"></g>
+
+      <!-- المسجد النبوي الأول: لبن وجذوع وجريد -->
+      <g id="old">
+        <rect x="200" y="486" width="200" height="54" fill="#a87a4c"/>
+        <rect x="200" y="486" width="200" height="6" fill="#8a6038"/>
+        <path d="M196 486 L404 486 L396 476 L204 476Z" fill="#6f7a3a"/>
+        <path d="M204 476 L396 476" stroke="#4f5a26" stroke-width="2" stroke-dasharray="3 3"/>
+        <g fill="#5a3a20"><rect x="222" y="492" width="5" height="48"/><rect x="252" y="492" width="5" height="48"/><rect x="282" y="492" width="5" height="48"/><rect x="313" y="492" width="5" height="48"/><rect x="343" y="492" width="5" height="48"/><rect x="373" y="492" width="5" height="48"/></g>
+        <rect x="290" y="506" width="20" height="34" fill="#3a2614"/>
+      </g>
+
+      <!-- المسجد النبوي اليوم -->
+      <g id="now">
+        <g id="towers" fill="#d7cdbd"></g>
+        <rect x="70" y="488" width="460" height="56" fill="#ece3d1"/>
+        <g id="arches"></g>
+        <rect x="70" y="482" width="460" height="7" fill="#e3d6be"/>
+        <g id="domeG">
+          <rect x="356" y="448" width="58" height="36" fill="#d8cab0"/>
+          <path d="M354 450 C352 418 366 400 385 394 C404 400 418 418 416 450Z" fill="url(#dome)"/>
+          <path d="M385 394 V450 M368 450 C368 424 376 404 385 394 M402 450 C402 424 394 404 385 394" stroke="#1a5233" stroke-width="1" opacity=".5" fill="none"/>
+          <rect x="384" y="374" width="2" height="21" fill="#d9b44a"/><circle cx="385" cy="382" r="3" fill="#e2c25c"/>
+        </g>
+        <g id="minarets"></g>
+        <g id="umbs"></g>
+      </g>
+
+      <!-- النخيل -->
+      <g id="palms"></g>
+
+      <!-- القافلة -->
+      <g id="caravan" fill="#2a1a10"></g>
+    </g>
+
+    <!-- إضاءة الليل الحديثة -->
+    <g id="lights" opacity="0"></g>
+  </svg>
+</div>
+
+<nav class="dots" id="dots" aria-hidden="true"></nav>
+
+<main>
+  <section class="ch hero">
+    <div class="in">
+      <h1>طيبة</h1>
+      <p>رحلة بصرية من يثرب إلى المدينة المنورة</p>
+      <div class="scroll"><span>مرّر لتمضي في الزمن</span><i></i></div>
+    </div>
+  </section>
+
+  <section class="ch"><div class="box">
+    <span class="era">قبل الهجرة</span>
+    <h2>يثرب</h2>
+    <p>واحة خضراء بين حرّتين سوداوين، تشرب نخيلها من آبارها وأوديتها، ويسكنها الأوس والخزرج في بيوت من الطين.</p>
+  </div></section>
+
+  <section class="ch"><div class="box">
+    <span class="era">١ هـ · ٦٢٢ م</span>
+    <h2>الهجرة</h2>
+    <p>مع الفجر وصل النبي ﷺ مهاجراً من مكة، فخرج أهلها يستقبلونه بالفرح. ومنذ ذلك اليوم صار اسمها المدينة.</p>
+  </div></section>
+
+  <section class="ch"><div class="box">
+    <span class="era">السنة الأولى</span>
+    <h2>أول مسجد</h2>
+    <p>بُني المسجد النبوي بأيدي الصحابة: جدرانه من اللبن، وأعمدته من جذوع النخل، وسقفه من الجريد.</p>
+  </div></section>
+
+  <section class="ch"><div class="box">
+    <span class="era">عبر القرون</span>
+    <h2>العمارة تكبر</h2>
+    <p>توسّع المسجد مرة بعد مرة، وارتفعت مآذنه، وعلت القبة الخضراء فوق الحجرة النبوية لتصير علامة المدينة.</p>
+  </div></section>
+
+  <section class="ch"><div class="box">
+    <span class="era">اليوم</span>
+    <h2>طيبة الآن</h2>
+    <p>عشر مآذن تضيء الليل، ومظلات تنفتح مع الشمس، وزوار من كل العالم. والمدينة كما سمّاها النبي ﷺ: طيبة.</p>
+  </div></section>
+
+  <section class="ch end"><div class="box">
+    <span class="era">المدينة بعيني</span>
+    <h2>نرجس العمري</h2>
+    <p>رسم وتصميم وبرمجة. كل ما في هذه الصفحة مرسوم بالكود، ويتحرك مع تمريرك.</p>
+    <a href="https://narjes455.github.io/" target="_blank" rel="noopener">narjes455.github.io</a>
+  </div></section>
+</main>
+
+<script>
+(function(){
+  var NS="http://www.w3.org/2000/svg",$=function(id){return document.getElementById(id)};
+  function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e}
+  var seed=5;function R(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
+
+  // نجوم
+  for(var i=0;i<90;i++)el("circle",{cx:R()*600,cy:R()*380,r:(.4+R()*1.3).toFixed(2),fill:"#fff",opacity:(.3+R()*.7).toFixed(2)},$("stars"));
+
+  // بيوت طينية
+  [[30,524,34,22],[70,518,26,28],[110,526,40,18],[440,522,36,24],[486,516,28,30],[530,524,44,20],[160,528,24,16],[410,530,22,14]].forEach(function(h){
+    var g=el("g",{},$("houses"));el("rect",{x:h[0],y:h[1],width:h[2],height:h[3]},g);el("rect",{x:h[0]+h[2]*.62,y:h[1],width:h[2]*.38,height:h[3],fill:"#9a6e44"},g);
+    el("rect",{x:h[0]+4,y:h[1]+h[3]*.35,width:4,height:5,fill:"#3a2614"},g);el("rect",{x:h[0]-1,y:h[1]-3,width:h[2]+2,height:3,fill:"#a17448"},g)});
+
+  // نخيل
+  function palm(x,base,h,k){var g=el("g",{},$("palms")),top=base-h;
+    el("path",{d:"M"+(x-4*k)+" "+base+" Q"+(x-k)+" "+(base-h/2)+" "+(x-2*k)+" "+top+" L"+(x+2*k)+" "+top+" Q"+(x+k)+" "+(base-h/2)+" "+(x+4*k)+" "+base+"Z",fill:"#5a3e28"},g);
+    [-170,-140,-112,-85,-58,-30,-5,20].forEach(function(a,i){var r=a*Math.PI/180,L=(36+(i%2)*8)*k,ex=x+Math.cos(r)*L,ey=top+Math.sin(r)*L*.5+L*.42,mx=(x+ex)/2,my=Math.min(top,ey)-12*k;
+      el("path",{d:"M"+x+" "+top+" Q"+mx+" "+my+" "+ex+" "+ey+" Q"+mx+" "+(my+8*k)+" "+x+" "+(top+3*k)+"Z",fill:["#2f5a2f","#3d6e38","#4a7f41"][i%3]},g)});
+    el("circle",{cx:x-3*k,cy:top+9*k,r:3.5*k,fill:"#b5602a"},g);}
+  palm(14,560,150,1.15);palm(62,552,112,.9);palm(560,560,160,1.2);palm(520,548,104,.8);palm(170,548,84,.7);palm(452,550,92,.72);
+
+  // القافلة
+  function camel(x,k,rider){var g=el("g",{transform:"translate("+x+" 0)"},$("caravan")),y=540;
+    el("path",{d:"M0 "+y+" l2 -26 l-2 -6 q6 -18 22 -14 q8 -14 16 0 q6 2 10 -8 q2 -12 10 -12 l6 4 l-4 4 q-4 4 -6 14 l-4 10 l2 34 h-4 l-3 -26 q-10 6 -24 4 l-4 22 h-4 l-1 -22 l-6 22 h-4Z",transform:"scale("+k+") translate(0 "+(y/k-y)+")"},g);
+    if(rider)el("path",{d:"M"+(20*k)+" "+(y-46*k)+" q4 -14 10 0 l2 10 h-14Z"},g);
+    return g}
+  var cv=$("caravan");camel(0,1,true);camel(-70,.9,false);camel(-134,.85,true);
+
+  // مباني اليوم
+  [[0,404,62],[66,430,40],[470,412,50],[524,388,76]].forEach(function(t){
+    el("rect",{x:t[0],y:t[1],width:t[2],height:500-t[1]},$("towers"));
+    el("rect",{x:t[0]+t[2]*.7,y:t[1],width:t[2]*.3,height:500-t[1],fill:"#bfb3a0"},$("towers"));
+    for(var yy=t[1]+6;yy<492;yy+=9)for(var xx=t[0]+4;xx<t[0]+t[2]-4;xx+=8)el("rect",{x:xx,y:yy,width:4,height:4,fill:"#a99c86",class:"win"},$("towers"));});
+  for(var ax=76;ax<526;ax+=15){el("path",{d:"M"+ax+" 542 V514 Q"+ax+" 504 "+(ax+5)+" 500 Q"+(ax+10)+" 504 "+(ax+10)+" 514 V542Z",fill:"#a8977d",class:"arch"},$("arches"))}
+  var mins=[];
+  [[110,300],[210,280],[300,292],[470,276],[520,304]].forEach(function(m){
+    var x=m[0],t=m[1],g=el("g",{},$("minarets")),base=488;mins.push(g);
+    el("rect",{x:x-8,y:t+90,width:16,height:base-t-90,fill:"#efe7d8"},g);el("rect",{x:x+2,y:t+90,width:6,height:base-t-90,fill:"#c9bca5"},g);
+    el("rect",{x:x-11,y:t+86,width:22,height:4,fill:"#f6f0e4",class:"bal"},g);
+    el("rect",{x:x-6,y:t+46,width:12,height:40,fill:"#efe7d8"},g);
+    el("rect",{x:x-9,y:t+42,width:18,height:4,fill:"#f6f0e4",class:"bal"},g);
+    el("rect",{x:x-4,y:t+16,width:8,height:26,fill:"#efe7d8"},g);
+    el("path",{d:"M"+(x-5)+" "+(t+16)+" C"+(x-5)+" "+(t+2)+" "+(x+5)+" "+(t+2)+" "+(x+5)+" "+(t+16)+"Z",fill:"#cfd3d4"},g);
+    el("rect",{x:x-.6,y:t-10,width:1.2,height:12,fill:"#d9b44a"},g);el("circle",{cx:x,cy:t-10,r:2,fill:"#e2c25c"},g);
+  });
+  var umbs=[];
+  [110,190,270,350,430,510].forEach(function(cx){var g=el("g",{},$("umbs"));
+    el("rect",{x:cx-1.6,y:560,width:3.2,height:60,fill:"#cfc6b6"},g);
+    var top=el("path",{d:"M"+(cx-38)+" 566 Q"+cx+" 544 "+(cx+38)+" 566 Q"+cx+" 556 "+(cx-38)+" 566Z",fill:"#fbf9f3",stroke:"#d3cab9"},g);
+    top.style.transformOrigin=cx+"px 560px";umbs.push(top)});
+
+  // إضاءة الليل
+  var L=$("lights");
+  [[0,404,62],[66,430,40],[470,412,50],[524,388,76]].forEach(function(t){for(var yy=t[1]+6;yy<492;yy+=9)for(var xx=t[0]+4;xx<t[0]+t[2]-4;xx+=8)if(R()>.3)el("rect",{x:xx,y:yy,width:4,height:4,fill:"#ffd98f"},L)});
+  for(var ax2=76;ax2<526;ax2+=15)el("path",{d:"M"+ax2+" 542 V514 Q"+ax2+" 504 "+(ax2+5)+" 500 Q"+(ax2+10)+" 504 "+(ax2+10)+" 514 V542Z",fill:"#ffcf7a",opacity:".8"},L);
+  var gl=el("g",{filter:"url(#soft)"},L);
+  [[110,300],[210,280],[300,292],[470,276],[520,304]].forEach(function(m){[m[1]+86,m[1]+42,m[1]+10].forEach(function(y){el("rect",{x:m[0]-12,y:y,width:24,height:4,fill:"#ffe7a8"},gl)})});
+  el("ellipse",{cx:385,cy:425,rx:40,ry:36,fill:"#b8f0c8",opacity:".35"},gl);
+  el("rect",{x:70,y:536,width:460,height:10,fill:"#ffd88a",opacity:".6"},gl);
+  el("ellipse",{cx:300,cy:600,rx:320,ry:50,fill:"#ffe0a0",opacity:".18"},gl);
+
+  // ===== مفاتيح الزمن =====
+  // 0 البداية ليلاً · 1 يثرب · 2 الهجرة فجراً · 3 أول مسجد ضحى · 4 العمارة عصراً · 5 اليوم ليلاً · 6 الخاتمة
+  var K=[
+    {s:["#0b0d18","#232a4a","#3a3350"],tint:[.32,.34,.55],stars:1,sun:[300,640,0],moon:1,houses:1,old:0,now:0,grow:0,umb:0,lights:0,car:-200},
+    {s:["#0b0d18","#232a4a","#3a3350"],tint:[.36,.38,.58],stars:1,sun:[300,640,0],moon:1,houses:1,old:0,now:0,grow:0,umb:0,lights:0,car:-200},
+    {s:["#2a2f5c","#c47a74","#f2b27a"],tint:[.9,.72,.66],stars:.15,sun:[460,505,1],moon:0,houses:1,old:0,now:0,grow:0,umb:0,lights:0,car:300},
+    {s:["#4a8fc8","#a9d0e6","#f0e4c8"],tint:[1.02,1,.96],stars:0,sun:[420,150,1],moon:0,houses:.9,old:1,now:0,grow:0,umb:0,lights:0,car:820},
+    {s:["#6b9fcb","#e9c48a","#f4d29a"],tint:[1.06,.95,.82],stars:0,sun:[180,260,1],moon:0,houses:.2,old:0,now:1,grow:1,umb:1,lights:0,car:820},
+    {s:["#05070f","#14204a","#2b2f55"],tint:[.24,.28,.46],stars:.9,sun:[120,640,0],moon:1,houses:0,old:0,now:1,grow:1,umb:0,lights:1,car:820},
+    {s:["#05070f","#14204a","#2b2f55"],tint:[.24,.28,.46],stars:.9,sun:[120,640,0],moon:1,houses:0,old:0,now:1,grow:1,umb:0,lights:1,car:820}
+  ];
+  function hx(h){return [1,3,5].map(function(i){return parseInt(h.substr(i,2),16)})}
+  function mix(a,b,t){var x=hx(a),y=hx(b);return "rgb("+x.map(function(v,i){return Math.round(v+(y[i]-v)*t)}).join(",")+")"}
+  function lp(a,b,t){return a+(b-a)*t}
+  function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+
+  var secs=[].slice.call(document.querySelectorAll(".ch")),dots=$("dots");
+  secs.forEach(function(){dots.appendChild(document.createElement("b"))});
+  var ticking=false;
+  function render(){
+    ticking=false;
+    var H=innerHeight,p=Math.max(0,Math.min(K.length-1,scrollY/H));
+    var i=Math.min(K.length-2,Math.floor(p)),t=ease(p-i),a=K[i],b=K[i+1];
+    ["s0","s1","s2"].forEach(function(id,k){$(id).setAttribute("stop-color",mix(a.s[k],b.s[k],t))});
+    $("moonCut").setAttribute("fill",mix(a.s[0],b.s[0],t));
+    ["tR","tG","tB"].forEach(function(id,k){$(id).setAttribute("slope",lp(a.tint[k],b.tint[k],t).toFixed(3))});
+    $("stars").setAttribute("opacity",lp(a.stars,b.stars,t));
+    $("moon").setAttribute("opacity",lp(a.moon,b.moon,t));
+    var sx=lp(a.sun[0],b.sun[0],t),sy=lp(a.sun[1],b.sun[1],t),so=lp(a.sun[2],b.sun[2],t);
+    ["sun","sunGlow"].forEach(function(id){$(id).setAttribute("cx",sx);$(id).setAttribute("cy",sy);$(id).setAttribute("opacity",so)});
+    $("houses").setAttribute("opacity",lp(a.houses,b.houses,t));
+    $("old").setAttribute("opacity",lp(a.old,b.old,t));
+    $("now").setAttribute("opacity",Math.min(1,lp(a.now,b.now,t)*1.6));
+    var g=lp(a.grow,b.grow,t);
+    mins.forEach(function(m,k){var gg=Math.max(0,Math.min(1,g*1.6-k*.12));m.setAttribute("transform","translate(0 "+((1-gg)*220)+")")});
+    $("domeG").setAttribute("transform","translate(0 "+((1-Math.min(1,g*1.3))*70)+")");
+    $("towers").setAttribute("opacity",Math.max(0,Math.min(1,(g-.5)*2)));
+    var u=lp(a.umb,b.umb,t);umbs.forEach(function(e){e.style.transform="scaleX("+(.12+.88*u)+") scaleY("+(1+1.6*(1-u))+")"});
+    $("umbs").setAttribute("opacity",Math.min(1,g*1.2));
+    $("lights").setAttribute("opacity",lp(a.lights,b.lights,t));
+    var cx=lp(a.car,b.car,p-i);cv.setAttribute("transform","translate("+cx+" 0)");
+    cv.setAttribute("opacity",cx>700||cx<-150?0:1);
+    var on=Math.round(p);[].forEach.call(dots.children,function(d,k){d.classList.toggle("on",k===on)});
+  }
+  addEventListener("scroll",function(){if(!ticking){ticking=true;requestAnimationFrame(render)}},{passive:true});
+  addEventListener("resize",render);
+  render();
+})();
+</script>
+
+</body>
+</html>
