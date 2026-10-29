@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>جَمرة | نموذج طلبات</title>
+<meta name="description" content="نموذج تجريبي لنظام طلبات المطاعم والمطابخ السحابية">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* قالب طلبات للكوفيهات والمطاعم: الشكل ثابت، والمحتوى كله من شيت قوقل. تخطيط: شعار دائري، تبويبات أقسام، بطاقة منيو، شريط سلة، لوحة طلب منزلقة */
+:root{
+  /* ================= 🎨 هوية العميل: عدّليها مرة وحدة لكل عميل ================= */
+  --brand:#22201f;        /* لون الخلفية الأساسي والعناوين */
+  --brand-deep:#0f0e0d;   /* درجة أغمق منه للظلال */
+  --card:#f6b04a;         /* لون بطاقة المنيو والأزرار */
+  --card-soft:#fbd9a6;    /* درجة أفتح من البطاقة */
+  --paper:#fff7ec;        /* لون لوحة الطلب */
+  --ink:#22201f;          /* لون النص */
+  --muted:#6b5a48;        /* لون النص الثانوي */
+  --display:"Baloo Bhaijaan 2","IBM Plex Sans Arabic",system-ui,sans-serif;  /* خط العناوين */
+  --body:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; /* خط النص */
+  --wave:0;               /* 1 = حواف متموجة للمنيو، 0 = حواف عادية */
+  /* ============================================================================ */
+  --ok:#2f7d5b; color-scheme:light;
+}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--brand);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;direction:rtl;padding-bottom:104px}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header .wrap{padding-block:26px 18px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.logo{width:132px;height:132px;border-radius:50%;object-fit:cover;background:var(--paper);box-shadow:0 8px 0 var(--brand-deep)}
+header h1{font-family:var(--display);font-weight:800;color:var(--card);font-size:2.4rem;margin:6px 0 0;line-height:1}
+header p{margin:0;color:var(--paper);opacity:.9;font-size:.92rem}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--brand)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--brand)}
+nav .wrap{display:flex;gap:8px;justify-content:center;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+nav button{flex:none;font:800 1rem var(--display);border:2px solid var(--card);background:transparent;color:var(--card);padding:4px 16px;border-radius:999px;cursor:pointer}
+nav button.on{background:var(--card);color:var(--brand)}
+
+.card{position:relative;background:var(--card);margin-block:22px 10px;padding:14px 18px 22px;border-radius:6px}
+.card::before,.card::after{content:"";position:absolute;inset-inline:0;height:18px;background:var(--card);opacity:var(--wave);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='18'%3E%3Cpath d='M0 18 V9 Q20 0 40 9 T80 9 V18Z'/%3E%3C/svg%3E") repeat-x 0 0/80px 18px;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='18'%3E%3Cpath d='M0 18 V9 Q20 0 40 9 T80 9 V18Z'/%3E%3C/svg%3E") repeat-x 0 0/80px 18px}
+.card::before{top:-17px}
+.card::after{bottom:-17px;transform:scaleY(-1)}
+section{padding-block:10px}
+section + section{border-top:2px dashed color-mix(in srgb,var(--brand) 35%,transparent)}
+section h2{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--brand);margin:0 0 6px;line-height:1.2}
+.item{display:flex;align-items:center;gap:12px;padding-block:10px}
+.item .txt{min-width:0;flex:1}
+.item.out{opacity:.55}
+.item.out .price{text-decoration:line-through}
+.tag{display:inline-block;font-style:normal;font:700 .75rem var(--body);background:var(--brand);color:var(--paper);border-radius:999px;padding:1px 10px;margin-top:2px}
+.tag.low{background:var(--paper);color:var(--brand);border:1.5px solid var(--brand)}
+.item b{display:block;font-family:var(--display);font-weight:800;font-size:1.2rem;color:var(--brand);line-height:1.3}
+.item span{color:var(--muted);font-size:.85rem}
+.price{font-family:var(--display);font-weight:800;color:var(--brand);font-size:1.15rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.opts{display:flex;gap:6px;margin-top:4px}
+.opts button{font:600 .8rem var(--body);border:1.5px solid var(--brand);background:transparent;color:var(--brand);border-radius:999px;padding:1px 12px;cursor:pointer}
+.opts button.on{background:var(--brand);color:var(--paper)}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:34px;height:34px;border-radius:50%;border:2px solid var(--brand);background:var(--paper);color:var(--brand);font:800 1.15rem var(--display);cursor:pointer;line-height:1}
+.qty button.add{background:var(--brand);color:var(--paper)}
+.qty output{min-width:18px;text-align:center;font:800 1.05rem var(--display);color:var(--brand)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--paper);outline-offset:2px}
+.card button:focus-visible,.panel :focus-visible{outline-color:var(--brand)}
+
+.bar{position:fixed;inset:auto 0 0;z-index:6;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));padding-top:14px;background:linear-gradient(transparent,var(--brand) 40%)}
+.bar button{width:100%;display:flex;justify-content:space-between;align-items:center;border:0;border-radius:999px;padding:12px 22px;background:var(--paper);color:var(--brand);font:800 1.15rem var(--display);cursor:pointer;box-shadow:0 5px 0 var(--brand-deep)}
+.bar .count{background:var(--brand);color:var(--paper);border-radius:999px;padding:0 10px;margin-inline-start:8px;font-size:.95rem}
+
+.sheet{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,var(--brand-deep) 70%,transparent);display:flex;align-items:flex-end;justify-content:center}
+.panel{background:var(--paper);color:var(--ink);width:100%;max-width:560px;max-height:92%;overflow-y:auto;border-radius:26px 26px 0 0;padding:20px max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.panel h3{font-family:var(--display);font-weight:800;color:var(--brand);margin:0;font-size:1.6rem;display:flex;justify-content:space-between;align-items:center}
+.x{border:0;background:var(--card-soft);color:var(--brand);width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer}
+.lines{display:flex;flex-direction:column;gap:6px}
+.line{display:flex;justify-content:space-between;gap:10px;font-variant-numeric:tabular-nums}
+.total{display:flex;justify-content:space-between;border-top:2px dashed var(--card);padding-top:10px;font:800 1.25rem var(--display);color:var(--brand)}
+form{display:flex;flex-direction:column;gap:12px}
+label{font-size:.85rem;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+input,textarea{font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--card);border-radius:12px;padding:10px 12px}
+.pay{display:flex;gap:8px}
+.pay label{flex:1}
+.pay label{flex-direction:row;align-items:center;gap:8px;border:1.5px solid var(--card);border-radius:14px;padding:10px;color:var(--ink);cursor:pointer;background:#fff}
+.pay label:has(input:checked){border-color:var(--brand);background:var(--card-soft)}
+.pay input{accent-color:var(--brand)}
+.note{font-size:.85rem;color:var(--ink);background:var(--card-soft);border-radius:12px;padding:10px 12px}
+.bankcard{display:flex;flex-direction:column;gap:1px;background:linear-gradient(135deg,var(--brand),var(--brand-deep));color:var(--paper);border-radius:16px;padding:16px 18px;margin-bottom:8px;box-shadow:0 4px 0 color-mix(in srgb,var(--brand-deep) 60%,transparent)}
+.bankcard .bk{font:800 1.1rem var(--display);color:var(--card);margin-bottom:8px}
+.bankcard .lbl{font-size:.72rem;opacity:.75;margin-top:6px}
+.bankcard b{font-weight:600;font-size:.95rem;overflow-wrap:anywhere}
+.bankcard .num{direction:ltr;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:.03em}
+.closed{background:var(--paper);color:var(--brand);font-weight:700;border-radius:12px;padding:8px 16px;margin-top:6px}
+body.is-closed .qty{display:none}
+.iban{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;border-radius:10px;padding:6px 8px 6px 6px;flex-wrap:wrap}
+.iban code{font-size:.9rem;min-width:0}
+.iban button{border:0;border-radius:999px;background:var(--brand);color:var(--paper);font:600 .8rem var(--body);padding:5px 12px;cursor:pointer}
+.upload{margin-top:8px;display:block;border:2px dashed var(--brand);border-radius:12px;padding:12px;text-align:center;color:var(--brand);font-weight:600;cursor:pointer;background:#fff}
+.upload.has{border-style:solid;background:var(--paper)}
+.upload input{display:block;margin:8px auto 0;max-width:100%;font-size:.8rem;color:var(--muted)}
+.promo{display:inline-block;background:var(--card);color:var(--brand);font-weight:600;font-size:.85rem;border-radius:999px;padding:3px 14px;margin-top:4px;opacity:1}
+.loyal{background:var(--card-soft);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;color:var(--ink);font-size:.88rem;margin:0}
+.loyal b{color:var(--brand)}
+.loyal .dots{display:flex;gap:6px}
+.loyal .dots i{font-style:normal;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1.5px dashed var(--brand);filter:grayscale(1);opacity:.45;font-size:.9rem}
+.loyal .dots i.on{border-style:solid;background:#fff;filter:none;opacity:1}
+.kind{display:flex;gap:8px;flex-wrap:wrap}
+.kind label{flex:1 1 30%;flex-direction:row;align-items:center;justify-content:center;gap:6px;border:1.5px solid var(--card);border-radius:14px;padding:10px 8px;color:var(--ink);cursor:pointer;background:#fff;white-space:nowrap}
+.kind label:has(input:checked){border-color:var(--brand);background:var(--card-soft)}
+.kind input{accent-color:var(--brand)}
+.loc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.82rem}
+.loc button{border:1.5px solid var(--brand);background:#fff;color:var(--brand);border-radius:999px;padding:5px 12px;font:600 .82rem var(--body);cursor:pointer}
+.demo-bar{background:var(--card);color:var(--brand);text-align:center;font:700 .82rem var(--body);padding:8px 16px}
+.wa{background:#e7ddd3;border-radius:14px;padding:12px;text-align:start;display:flex;flex-direction:column;gap:6px;width:100%}
+.wa small{color:var(--muted);font-weight:600}
+.wa .bub{background:#d9fdd3;color:#111;border-radius:10px 10px 10px 2px;padding:8px 10px;white-space:pre-line;font-size:.82rem;line-height:1.55;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.made{font-size:.78rem;color:var(--card-soft);opacity:.85}
+.made a{color:inherit}
+.note code{font-family:ui-monospace,monospace;user-select:all;direction:ltr;unicode-bidi:embed}
+.go{border:0;border-radius:999px;padding:13px;background:var(--brand);color:var(--paper);font:800 1.15rem var(--display);cursor:pointer;text-align:center;text-decoration:none;display:block}
+.err{color:var(--brand);font-weight:600;font-size:.85rem;margin:0}
+.done{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.done .num{direction:ltr;unicode-bidi:isolate;font:800 2.2rem var(--display);color:var(--brand);font-variant-numeric:tabular-nums}
+.done .logo{width:84px;height:84px;box-shadow:none}
+.empty{color:var(--muted);text-align:center;padding:20px 0}
+footer{color:var(--card);font-size:.8rem;text-align:center;padding-block:18px}
+footer b{font-family:var(--display);font-size:1.6rem;display:block;line-height:1.2}
+@media (prefers-reduced-motion:no-preference){.panel{animation:up .25s ease-out}@keyframes up{from{transform:translateY(40px);opacity:.6}}
+  .qty button:active{transform:scale(.9)}}
+</style>
+
+</head>
+<body>
+<div class="demo-bar">🧪 نموذج تجريبي: جرّب تطلب، الطلب ما ينرسل لأي مطعم</div>
+<header><div class="wrap">
+  <img class="logo" id="logo" src="logo.svg" alt="الشعار">
+  <h1 id="shopName"></h1>
+  <p id="tagline" hidden></p>
+  <p class="promo" id="promo" hidden></p>
+  <p class="closed" id="closedMsg" hidden></p>
+</div></header>
+
+<nav aria-label="أقسام المنيو"><div class="wrap" id="tabs"></div></nav>
+<main class="wrap"><div class="card" id="menu"></div></main>
+<footer class="wrap"><b id="footTitle"></b><span id="footLine"></span><p class="made">نموذج من تصميم <b style="display:inline;font-size:inherit">نرجس العمري</b> · واتساب 0556211944 · <a href="https://narjes455.github.io/" target="_blank" rel="noopener">أعمالي</a></p></footer>
+
+<div class="bar"><div class="wrap"><button id="openCart" type="button"><span>السلة<span class="count" id="count">0</span></span><span id="barTotal">0 ريال</span></button></div></div>
+
+<div class="sheet" id="sheet" hidden><div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" id="panel"></div></div>
+
+<script>
+/* ======== وضع النموذج: سيرفر وهمي داخل الصفحة بدل شيت قوقل ======== */
+(function(){
+  const DEMO_MENU=[
+    {cat:"البرجر",items:[
+      {name:"جَمرة كلاسيك",desc:"لحم أنقس مشوي على الفحم، شيدر، صوص جمرة",price:24,opts:["عادي","دبل"],status:"متوفر",left:null},
+      {name:"دجاج كرسبي",desc:"صدر دجاج مقرمش، خس، مايونيز حار",price:21,opts:["عادي","حار"],status:"متوفر",left:null},
+      {name:"سموكي ماشروم",desc:"لحم، فطر مدخن، جبنة سويسرية",price:27,opts:[],status:"ينتهي قريباً",left:3}]},
+    {cat:"البروست",items:[
+      {name:"بروست ٤ قطع",desc:"مع بطاطس وثومية وخبز",price:22,opts:["عادي","حار"],status:"متوفر",left:null},
+      {name:"بروست ٨ قطع",desc:"وجبة عائلية مع بطاطس كبير",price:39,opts:["عادي","حار"],status:"متوفر",left:null},
+      {name:"ستربس ٥ قطع",desc:"مع صوص العسل والخردل",price:19,opts:[],status:"متوفر",left:null}]},
+    {cat:"الجانبيات",items:[
+      {name:"بطاطس جمرة",desc:"بطاطس مع صوص جمرة وجبنة",price:12,opts:[],status:"متوفر",left:null},
+      {name:"أصابع موزاريلا",desc:"٦ قطع",price:14,opts:[],status:"منتهي",left:null},
+      {name:"كول سلو",desc:"",price:6,opts:[],status:"متوفر",left:null}]},
+    {cat:"المشروبات",items:[
+      {name:"موهيتو",desc:"",price:11,opts:["ليمون","فراولة","توت"],status:"متوفر",left:null},
+      {name:"مشروب غازي",desc:"",price:4,opts:[],status:"متوفر",left:null}]}];
+  const DEMO_SET={name:"جَمرة",tagline:"مطبخ سحابي في البدراني · التحضير ٢٠ دقيقة",open:true,closedMsg:"",
+    doneMsg:"طلبك وصل للمطبخ وبدأ يتجهز.",cash:true,transfer:true,bank:"بنك تجريبي",holder:"مطعم جمرة (حساب وهمي)",
+    account:"",iban:"SA00 0000 0000 0000 0000 0000",whatsapp:"",pickup:true,dinein:false,delivery:true,deliveryFee:10,deliveryMin:30,
+    loyalty:true,every:5,gift:"بطاطس جمرة"};
+  let seq=Math.floor(Math.random()*20)+7;
+  const find=n=>DEMO_MENU.flatMap(c=>c.items).find(i=>i.name===n);
+  const json=o=>Promise.resolve(new Response(JSON.stringify(o),{headers:{"Content-Type":"application/json"}}));
+  const realFetch=window.fetch.bind(window);
+  window.fetch=(url,opt)=>{
+    if(!String(url).startsWith("https://script.google.com/demo")) return realFetch(url,opt);
+    return new Promise(r=>setTimeout(r,450)).then(()=>{
+      const q=String(url).split("?phone=")[1];
+      if(!opt||!opt.method){
+        if(q) return json({ok:true,stamps:q.endsWith("5")?5:3,every:5,due:q.endsWith("5"),freeItem:DEMO_SET.gift});
+        return json({ok:true,menu:DEMO_MENU,settings:DEMO_SET});
+      }
+      const d=JSON.parse(opt.body);
+      const fee=d.kind==="توصيل"?DEMO_SET.deliveryFee:0;
+      const lines=d.lines.map(l=>({...l,price:find(l.name).price}));
+      const sub=lines.reduce((s,l)=>s+l.qty*l.price,0);
+      if(d.kind==="توصيل"&&sub<DEMO_SET.deliveryMin) return json({ok:false,error:"min_order",min:DEMO_SET.deliveryMin});
+      const due=d.phone.endsWith("5");
+      const now=new Date(); const no=String(now.getMonth()+1).padStart(2,"0")+String(now.getDate()).padStart(2,"0")+"-"+String(++seq).padStart(3,"0");
+      const gift=due?DEMO_SET.gift:"";
+      window.__demoWa=`طلب جديد ${no}\n`+lines.map(l=>`• ${l.qty} × ${l.name}${l.opt?" ("+l.opt+")":""}`).join("\n")+
+        (gift?`\n• 1 × ${gift} 🎁 مجانية`:"")+
+        `\nنوع الطلب: ${d.kind}${d.where?" - "+d.where:""}${d.geo?"\n📍 "+d.geo:""}`+(fee?`\nرسوم التوصيل: ${fee} ريال`:"")+
+        `\nالإجمالي: ${sub+fee} ريال\nالدفع: ${d.pay}\nالاسم: ${d.name}\nالجوال: ${d.phone}`+(d.notes?`\nملاحظات: ${d.notes}`:"")+
+        (d.receipt?`\nالإيصال: (صورة الإيصال توصل مع الرسالة)`:"");
+      return json({ok:true,no,total:sub+fee,gift,stamps:due?0:4,every:5});
+    });
+  };
+})();
+</script>
+<script>
+/* ================= ⚙️ إعدادات ثابتة للعميل: عدّليها مرة وحدة ================= */
+const CONFIG = {
+  orderUrl: "https://script.google.com/demo",   // رابط Web app من Apps Script الخاص بالعميل
+  logo: "logo.svg",                   // ملف الشعار (ارفعيه جنب index.html بنفس الاسم)
+  footerTitle: "JAMRA",                    // سطر كبير تحت المنيو (مثلاً اسم المحل بالإنجليزي)، فاضي = يختفي
+  footerLine: "مطبخ سحابي · برجر وبروست على الجمر",                     // سطر صغير تحته (شعار المحل)، فاضي = يختفي
+  orderIcon: "🍔"                     // أيقونة بطاقة الولاء (☕ للكوفي، 🍔 للمطعم...)
+};
+/* كل شي ثاني (اسم المحل، المنيو، الأسعار، الكميات، الدفع، الحساب البنكي، الاستلام والتوصيل، الولاء، فتح وقفل الطلبات) يجي من شيت قوقل */
+/* ============================================================================ */
+
+// قيم مؤقتة لين يوصل رد الشيت
+let SET = {name:"", tagline:"", open:true, closedMsg:"", doneMsg:"طلبك يتجهز الحين. احتفظ برقم الطلب.",
+  cash:true, transfer:false, bank:"", holder:"", iban:"", account:"", whatsapp:"",
+  pickup:true, dinein:false, delivery:false, deliveryFee:0, deliveryMin:0,
+  loyalty:false, every:5, gift:""};
+const ORD=["","الأول","الثاني","الثالث","الرابع","الخامس","السادس","السابع","الثامن","التاسع","العاشر","الحادي عشر"];
+const TABLE_FROM_QR=(new URLSearchParams(location.search).get("table")||"").replace(/[^\w\u0600-\u06FF-]/g,"").slice(0,10);
+function applySettings(){
+  shopName.textContent=SET.name; if(SET.name) document.title=SET.name;
+  logo.src=CONFIG.logo; logo.alt=SET.name?"شعار "+SET.name:"الشعار";
+  tagline.textContent=SET.tagline; tagline.hidden=!SET.tagline;
+  promo.hidden=!(SET.loyalty&&SET.gift);
+  promo.textContent=`${CONFIG.orderIcon} كل ${SET.every} طلبات، طلبك ${ORD[SET.every+1]||"رقم "+(SET.every+1)} معه ${SET.gift} مجاناً`;
+  closedMsg.hidden=SET.open; closedMsg.textContent=SET.closedMsg||"الطلبات مقفلة حالياً";
+  document.body.classList.toggle("is-closed",!SET.open);
+  footTitle.textContent=CONFIG.footerTitle; footTitle.hidden=!CONFIG.footerTitle;
+  footLine.textContent=CONFIG.footerLine; footLine.hidden=!CONFIG.footerLine;
+}
+logo.onerror=()=>{logo.hidden=true;};
+// المنيو كله من ورقة "المنيو" في الشيت
+let MENU = [];
+/* ========================================== */
+
+const cart = {};               // المفتاح: id أو id|خيار
+const choice = {};             // الخيار المختار لكل صنف له خيارات
+const OUT="منتهي", LOW="ينتهي قريباً";
+let items=[], menuLoaded=false;
+function indexMenu(){items=MENU.flatMap(c=>c.items); items.forEach(it=>{it.id=it.name; if(it.opts&&!it.opts.length) delete it.opts;});}
+indexMenu();
+const esc = v => String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const find = id => items.find(i=>i.id===id);
+const keyOf = it => it.opts ? it.id+"|"+(choice[it.id]||it.opts[0]) : it.id;
+const label = k => {const [id,o]=k.split("|"); return id+(o?" ("+o+")":"");};
+const priceOf = k => find(k.split("|")[0]).price;
+const money = n => n+" ريال";
+const totals = () => Object.entries(cart).reduce((a,[k,q])=>({n:a.n+q,s:a.s+q*priceOf(k)}),{n:0,s:0});
+
+function renderMenu(){
+  if(!MENU.length){tabs.innerHTML=""; menu.innerHTML=`<p class="empty">${menuLoaded?"المنيو فاضي حالياً.":"جاري تحميل المنيو…"}</p>`; renderQty(); return;}
+  tabs.innerHTML = MENU.map((c,i)=>`<button type="button" data-i="${i}" class="${i?'':'on'}">${esc(c.cat)}</button>`).join("");
+  menu.innerHTML = MENU.map((c,i)=>`<section id="sec${i}"><h2>${esc(c.cat)}</h2>${
+    c.items.map(it=>`<div class="item${it.status===OUT?" out":""}"><div class="txt"><b>${esc(it.name)}</b>${it.desc?`<span>${esc(it.desc)}</span>`:""}${
+      it.status===LOW?`<em class="tag low">${it.left?"باقي "+it.left:"ينتهي قريباً"}</em>`:it.status===OUT?`<em class="tag">نفد</em>`:""}${
+      it.opts&&it.status!==OUT?`<div class="opts" data-id="${esc(it.id)}">${it.opts.map((o,j)=>`<button type="button" data-o="${esc(o)}" class="${(choice[it.id]||it.opts[0])===o?'on':''}">${esc(o)}</button>`).join("")}</div>`:""
+    }</div><div class="price">${money(it.price)}</div><div class="qty" data-id="${esc(it.id)}"></div></div>`).join("")
+  }</section>`).join("");
+  tabs.onclick = e=>{const b=e.target.closest("button"); if(!b)return;
+    tabs.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+    document.getElementById("sec"+b.dataset.i).scrollIntoView({behavior:"smooth",block:"center"});};
+  menu.onclick = e=>{
+    const o=e.target.closest("button[data-o]");
+    if(o){const box=o.parentElement; choice[box.dataset.id]=o.dataset.o;
+      box.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===o)); renderQty(); return;}
+    const b=e.target.closest("button[data-d]"); if(b) change(keyOf(find(b.parentElement.dataset.id)),+b.dataset.d);
+  };
+  renderQty();
+}
+function change(k,d){cart[k]=Math.max(0,(cart[k]||0)+d); if(!cart[k])delete cart[k]; renderQty();}
+function renderQty(){
+  document.querySelectorAll(".qty").forEach(el=>{const it=find(el.dataset.id); if(it.status===OUT){el.innerHTML="";return;} const q=cart[keyOf(it)]||0;
+    el.innerHTML = q ? `<button type="button" data-d="-1" aria-label="إنقاص">−</button><output>${q}</output><button type="button" class="add" data-d="1" aria-label="زيادة">+</button>`
+                     : `<button type="button" class="add" data-d="1" aria-label="أضف للسلة">+</button>`;});
+  const t=totals(); count.textContent=t.n; barTotal.textContent=money(t.s);
+}
+
+function openSheet(html){
+  if(html.includes('class="done"')&&window.__demoWa){
+    html=html.replace(/(<button class="x"[^>]*>رجوع للمنيو<\/button>)/,`<div class="wa"><small>📲 هذا اللي يوصل صاحب المطعم على الواتساب، وينحفظ في جدول الطلبات:</small><div class="bub">${esc(window.__demoWa)}</div></div>$1`);
+    window.__demoWa="";
+  }
+  panel.innerHTML=html; sheet.hidden=false;}
+sheet.onclick=e=>{if(e.target===sheet||e.target.closest(".x"))sheet.hidden=true;};
+
+openCart.onclick=()=>{
+  const t=totals();
+  if(!SET.open){openSheet(`<h3 id="sheetTitle">الطلبات مقفلة<button class="x" type="button" aria-label="إغلاق">✕</button></h3><p class="empty">${esc(SET.closedMsg||"الطلبات مقفلة حالياً")}</p>`);return;}
+  const kinds=[SET.pickup&&{v:"استلام",t:"استلام من المحل"},SET.dinein&&{v:"طاولة",t:"على الطاولة"},SET.delivery&&{v:"توصيل",t:"توصيل"}].filter(Boolean);
+  if(!kinds.length) kinds.push({v:"استلام",t:"استلام من المحل"});
+  const defKind=TABLE_FROM_QR&&SET.dinein?"طاولة":kinds[0].v;
+  if(!t.n){openSheet(`<h3 id="sheetTitle">السلة<button class="x" type="button" aria-label="إغلاق">✕</button></h3><p class="empty">سلتك فاضية، اختر من المنيو.</p>`);return;}
+  openSheet(`<h3 id="sheetTitle">طلبك<button class="x" type="button" aria-label="إغلاق">✕</button></h3>
+  <div class="lines">${Object.entries(cart).map(([k,q])=>`<div class="line"><span>${q} × ${label(k)}</span><span>${money(q*priceOf(k))}</span></div>`).join("")}</div>
+  <div class="line" id="feeLine" hidden><span>رسوم التوصيل</span><span>${money(SET.deliveryFee)}</span></div>
+  <div class="total"><span>الإجمالي</span><span id="grand">${money(t.s)}</span></div>
+  <form id="f" novalidate>
+    ${kinds.length>1?`<div class="kind" role="radiogroup" aria-label="طريقة الاستلام">${kinds.map(k=>`<label><input type="radio" name="kind" value="${k.v}"${k.v===defKind?" checked":""}> ${k.t}</label>`).join("")}</div>`:""}
+    <label for="tb" id="tbBox" hidden>رقم الطاولة<input id="tb" inputmode="numeric" value="${esc(TABLE_FROM_QR)}"></label>
+    <div id="dlBox" style="display:none;flex-direction:column;gap:8px">
+      <label for="ad">عنوان التوصيل (الحي، الشارع، رقم البيت)<textarea id="ad" rows="2"></textarea></label>
+      <div class="loc"><button type="button" id="gl">📍 أرسل موقعي</button><span id="glMsg">اختياري، يساعد المندوب يوصل أسرع</span></div>
+    </div>
+    <label for="nm">الاسم<input id="nm" required autocomplete="name"></label>
+    <label for="ph">رقم الجوال<input id="ph" required inputmode="tel" placeholder="05XXXXXXXX"></label>
+    <div class="loyal" id="loyal" hidden></div>
+    <label for="nt">ملاحظات (اختياري)<textarea id="nt" rows="2" placeholder="مثل: بدون بصل، زيادة ثلج"></textarea></label>
+    <div class="pay" role="radiogroup" aria-label="طريقة الدفع">
+      <label${SET.cash?"":" hidden"}><input type="radio" name="pay" id="p1" value="كاش عند الاستلام"${SET.cash?" checked":""}> كاش عند الاستلام</label>
+      <label${SET.transfer?"":" hidden"}><input type="radio" name="pay" id="p2" value="تحويل بنكي"${!SET.cash&&SET.transfer?" checked":""}> تحويل بنكي</label>
+    </div>
+    <div class="note" id="tnote"${!SET.cash&&SET.transfer?"":" hidden"}><p style="margin:0 0 8px">حوّل <b>${money(t.s)}</b> على الحساب هذا، وبعدها ارفع صورة الإيصال تحت.</p>
+      <div class="bankcard"><span class="bk">${esc(SET.bank)}</span><span class="lbl">اسم صاحب الحساب</span><b>${esc(SET.holder)}</b>${SET.account?`<span class="lbl">رقم الحساب</span><b class="num">${esc(SET.account)}</b>`:""}<span class="lbl">الآيبان</span><b class="num">${esc(SET.iban)}</b></div>
+      <div class="iban"><code id="ib">${esc(SET.iban)}</code><button type="button" id="cp">نسخ الآيبان</button></div><label class="upload" for="rc"><span id="rcName">📎 ارفع إيصال التحويل (صورة أو PDF) — مطلوب</span><input type="file" id="rc" accept="image/*,application/pdf"></label></div>
+    <p class="err" id="er" hidden></p>
+    <button class="go" type="submit">أرسل الطلب</button>
+  </form>`);
+  let geo="";
+  const kindNow=()=>{const r=f.querySelector("input[name=kind]:checked"); return r?r.value:defKind;};
+  const fee=()=>kindNow()==="توصيل"?SET.deliveryFee:0;
+  const syncKind=()=>{const k=kindNow(); tbBox.hidden=k!=="طاولة"; dlBox.style.display=k==="توصيل"?"flex":"none";
+    feeLine.hidden=!(k==="توصيل"&&SET.deliveryFee>0); grand.textContent=money(t.s+fee()); tnote.querySelector("b").textContent=money(t.s+fee());};
+  f.onchange=()=>{tnote.hidden=!p2.checked; syncKind();};
+  syncKind();
+  gl.onclick=()=>{ if(!navigator.geolocation){glMsg.textContent="جهازك ما يدعم تحديد الموقع، اكتب العنوان بس.";return;}
+    glMsg.textContent="جاري تحديد موقعك…";
+    navigator.geolocation.getCurrentPosition(p=>{geo=`https://maps.google.com/?q=${p.coords.latitude.toFixed(6)},${p.coords.longitude.toFixed(6)}`; glMsg.textContent="✅ تم إرفاق موقعك";},
+      ()=>{glMsg.textContent="ما قدرنا نحدد موقعك، اكتب العنوان بس.";},{enableHighAccuracy:true,timeout:10000});};
+  cp.onclick=()=>{const done=()=>{cp.textContent="تم النسخ"};
+    try{navigator.clipboard.writeText(SET.iban.replace(/ /g,"")).then(done,()=>{getSelection().selectAllChildren(ib)})}catch(e){getSelection().selectAllChildren(ib)}};
+  rc.onchange=()=>{const fl=rc.files[0]; rcName.textContent=fl?"✅ "+fl.name:"📎 ارفع إيصال التحويل (صورة أو PDF) — مطلوب"; rc.closest(".upload").classList.toggle("has",!!fl); er.hidden=true;};
+  const fail=m=>{er.hidden=false; er.innerHTML=m;};
+  // بطاقة الولاء: تطلع لما يكتب رقم جوال صحيح
+  let freeOpt="", loyTimer, loyFor="";
+  const renderLoyal=j=>{
+    const dots=Array.from({length:j.every},(_,i)=>`<i class="${i<j.stamps?"on":""}">${CONFIG.orderIcon}</i>`).join("");
+    const fi=find(j.freeItem);
+    if(j.due){ freeOpt=fi&&fi.opts?fi.opts[0]:"";
+      loyal.innerHTML=`<b>🎉 مبروك! طلبك هذا معه ${esc(j.freeItem)} مجاناً</b>`+(fi&&fi.opts?`<div class="opts" id="fo">${fi.opts.map((o,k)=>`<button type="button" data-fo="${esc(o)}" class="${k?"":"on"}">${esc(o)}</button>`).join("")}</div>`:"");
+      const fo=document.getElementById("fo"); if(fo) fo.onclick=e=>{const b=e.target.closest("button"); if(!b)return; freeOpt=b.dataset.fo; fo.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));};
+    } else { freeOpt="";
+      const left=j.every-j.stamps;
+      loyal.innerHTML=`<div class="dots">${dots}</div><span>${j.stamps?`عندك ${j.stamps} من ${j.every}، `:""}باقي ${left} ${left===1?"طلب":"طلبات"} ويجيك ${esc(j.freeItem)} مجاناً</span>`;
+    }
+    loyal.hidden=false;
+  };
+  ph.oninput=()=>{clearTimeout(loyTimer); const v=phone();
+    if(!/^05\d{8}$/.test(v)){loyal.hidden=true; loyFor=""; return;}
+    if(v===loyFor) return;
+    loyTimer=setTimeout(()=>{loyFor=v; fetch(CONFIG.orderUrl+"?phone="+v).then(r=>r.json()).then(j=>{if(j.ok&&phone()===v) renderLoyal(j);}).catch(()=>{});},350);};
+  // يقبل الأرقام العربية والإنجليزية، ويشيل المسافات والشرطات، ويحوّل 9665 أو +9665 إلى 05
+  const phone=()=>{let v=ph.value.replace(/[٠-٩]/g,d=>d.charCodeAt(0)-1632).replace(/[۰-۹]/g,d=>d.charCodeAt(0)-1776).replace(/[\s\-()]/g,"");
+    v=v.replace(/^(\+|00)?966(?=5)/,"0"); return v;};
+  f.onsubmit=async e=>{e.preventDefault(); er.hidden=true;
+    if(!nm.value.trim()||!/^05\d{8}$/.test(phone())) return fail("اكتب اسمك ورقم جوال يبدأ بـ 05 ومن 10 أرقام.");
+    const isTransfer=p2.checked, file=rc.files[0];
+    if(isTransfer&&!file) return fail("ارفع صورة إيصال التحويل قبل إرسال الطلب.");
+    if(file&&file.size>8*1024*1024) return fail("حجم الإيصال كبير، الحد ٨ ميقا. صوّر الشاشة وارفع الصورة.");
+    const kind=kindNow();
+    if(kind==="طاولة"&&!tb.value.trim()) return fail("اكتب رقم الطاولة.");
+    if(kind==="توصيل"&&ad.value.trim().length<6) return fail("اكتب عنوان التوصيل.");
+    if(kind==="توصيل"&&SET.deliveryMin&&t.s<SET.deliveryMin) return fail(`أقل طلب للتوصيل ${money(SET.deliveryMin)}.`);
+    const where=kind==="طاولة"?tb.value.trim():kind==="توصيل"?ad.value.trim():"";
+    const pay=f.querySelector("input[name=pay]:checked").value;
+    const itemsTxt=Object.entries(cart).map(([k,q])=>`${q} × ${label(k)}`).join("، ");
+    const order={name:nm.value.trim(),phone:phone(),notes:nt.value.trim(),pay,total:t.s,items:itemsTxt,
+      lines:Object.entries(cart).map(([k,q])=>{const [name,opt]=k.split("|"); return {name,opt:opt||"",qty:q};}),freeOpt,kind,where,geo};
+    const waMsg=`طلب جديد من موقع ${SET.name}\n`+Object.entries(cart).map(([k,q])=>`• ${q} × ${label(k)}`).join("\n")+
+      `\nنوع الطلب: ${kind}${where?" - "+where:""}${geo?"\n"+geo:""}`+
+      `\nالإجمالي: ${t.s+fee()} ريال\nالدفع: ${pay}\nالاسم: ${order.name}\nالجوال: ${order.phone}`+(order.notes?`\nملاحظات: ${order.notes}`:"");
+    const waUrl=`https://wa.me/${SET.whatsapp}?text=${encodeURIComponent(waMsg)}`;
+    const btn=f.querySelector("button[type=submit]"); btn.disabled=true; btn.textContent="جاري الإرسال…";
+    try{
+      if(file) order.receipt={name:file.name,type:file.type||"application/octet-stream",data:await new Promise((ok,no)=>{
+        const r=new FileReader(); r.onload=()=>ok(String(r.result).split(",")[1]); r.onerror=no; r.readAsDataURL(file);})};
+      const res=await fetch(CONFIG.orderUrl,{method:"POST",body:JSON.stringify(order)});
+      const j=await res.json();
+      if(!j.ok&&j.error==="min_order"){ btn.disabled=false; btn.textContent="أرسل الطلب"; return fail(`أقل طلب للتوصيل ${money(j.min)}.`); }
+      if(!j.ok&&j.error==="closed"){ btn.disabled=false; btn.textContent="أرسل الطلب"; await loadMenu(); return fail(esc(SET.closedMsg||"الطلبات مقفلة حالياً")); }
+      if(!j.ok&&(j.error==="out_of_stock"||j.error==="item_unavailable")){
+        btn.disabled=false; btn.textContent="أرسل الطلب";
+        await loadMenu();
+        return fail(j.left?`باقي من ${esc(j.item)} ${j.left} بس. عدّل الكمية من المنيو وأرسل مرة ثانية.`:`للأسف ${esc(j.item||"أحد الأصناف")} خلص. شلناه من سلتك، راجع طلبك وأرسل مرة ثانية.`);
+      }
+      if(!j.ok) throw new Error(j.error||"failed");
+      openSheet(`<div class="done"><img class="logo" src="${document.querySelector('.logo').src}" alt=""><h3 id="sheetTitle">وصلنا طلبك</h3><div class="num">${j.no}</div>
+        <p>${esc(SET.doneMsg)}${kind==="طاولة"?" بنجيبه لطاولتك.":kind==="توصيل"?" بنتواصل معك وقت التوصيل.":""}</p>
+        ${j.gift?`<p class="loyal"><b>🎁 معك ${esc(j.gift)} مجاناً</b></p>`:j.every?`<p class="loyal"><span>${CONFIG.orderIcon} صار عندك ${j.stamps} من ${j.every}${j.stamps>=j.every?`، طلبك الجاي معه ${esc(SET.gift)} مجاناً 🎉`:""}</span></p>`:""}
+        <button class="x" type="button" style="width:auto;border-radius:999px;padding:6px 16px">رجوع للمنيو</button></div>`);
+      Object.keys(cart).forEach(k=>delete cart[k]); renderQty();
+    }catch(err){
+      btn.disabled=false; btn.textContent="أرسل الطلب";
+      fail(`ما قدرنا نرسل الطلب. جرّب مرة ثانية، أو <a href="${waUrl}" target="_blank" rel="noopener" style="color:inherit">أرسله على الواتساب</a>${isTransfer?" مع صورة الإيصال":""}.`);
+    }
+  };
+};
+applySettings();
+renderMenu();
+
+// يجيب المنيو من الشيت: الأسعار والكميات والأصناف الجديدة
+function loadMenu(){
+  if(!/^https:\/\/script\.google/.test(CONFIG.orderUrl)){ menuLoaded=true; renderMenu(); return Promise.resolve(); }
+  return fetch(CONFIG.orderUrl).then(r=>r.json()).then(j=>{
+    if(j.ok&&j.settings){SET=Object.assign(SET,j.settings); applySettings();}
+    menuLoaded=true;
+    if(!j.ok||!Array.isArray(j.menu)) return;
+    MENU=j.menu; indexMenu();
+    Object.keys(cart).forEach(k=>{const it=find(k.split("|")[0]); if(!it||it.status===OUT) delete cart[k];});
+    renderMenu();
+  }).catch(()=>{ if(!MENU.length) menu.innerHTML=`<p class="empty">ما قدرنا نحمّل المنيو. حدّث الصفحة.</p>`; });
+}
+loadMenu();
+</script>
+
+</body>
+</html>
