@@ -184,6 +184,9 @@ body.spooky .card{border-color:#000;box-shadow:4px 4px 0 #000}
 .ord ul{margin:6px 0;padding-inline-start:18px;font-size:14px}
 .ord .act{display:flex;gap:8px}
 .ord .act button{flex:1;border:0;border-radius:10px;padding:8px;font-weight:800;background:var(--green);color:#fff}
+.sw{width:52px;height:30px;border-radius:99px;border:2.5px solid var(--ink);background:#e7e7e7;position:relative;flex:0 0 auto;transition:.25s;padding:0}
+.sw i{position:absolute;top:2px;right:2px;width:21px;height:21px;border-radius:50%;background:#fff;border:2px solid var(--ink);transition:.25s}
+.sw.on{background:var(--green)}.sw.on i{right:23px}
 .empty{text-align:center;color:var(--muted);padding:26px;border:2.5px dashed var(--line);border-radius:18px}
 .note{font-size:13px;color:var(--muted);background:var(--card);border-radius:12px;padding:8px 12px;border:2px dashed var(--line);margin:10px 0}
 
@@ -246,6 +249,8 @@ body.spooky .bats{display:block}
   </div>
   <h2>المنيو</h2>
   <p class="sub">اختر مشروبك، حدد وقت الاستلام، وتعال خذه جاهز من الكشك في بوليفارد ليفيلز 📍</p>
+  <div class="chips" id="cats" style="margin-bottom:12px"></div>
+  <p class="note" id="catNote" style="display:none;margin-top:0">🍃 تستلمها من الكشك مع طلبك. والأسعار هنا تجريبية</p>
   <div class="grid" id="menu"></div>
   <div id="trackWrap"></div>
 </section>
@@ -316,6 +321,8 @@ body.spooky .bats{display:block}
     <div class="kpi"><b id="kCups">0</b><small>كوب</small></div>
     <div class="kpi"><b id="kRev">0</b><small>ر.س</small></div>
   </div>
+  <h3 style="margin:6px 0">🗂️ المخزون <small style="color:var(--muted);font-weight:500;font-size:14px">اللي يخلص يختفي من المنيو على طول</small></h3>
+  <div class="card" id="stockList" style="padding:6px 14px"></div>
   <h3 style="margin:6px 0">🍵 طلبات الاستلام</h3>
   <div id="ordList"></div>
   <h3 style="margin:16px 0 6px">📦 طلبات الكميات</h3>
@@ -347,7 +354,14 @@ const MENU=[
  {id:'donut',name:'كومبو الدونات',desc:'كيتي ماتشا مع دونات',price:29,top:'donut'},
  {id:'crois',name:'كومبو كرواسون',desc:'كيتي ماتشا مع كرواسون',price:29,top:'crois'},
  {id:'cookie',name:'كومبو كوكيز',desc:'كيتي ماتشا مع كوكيز',price:29,top:'cookie'},
+ {id:'pw30',name:'ماتشا بودرة 30g',desc:'ماتشا احتفالية فاخرة تحضّرها في البيت',price:59,top:'pouch',cat:'powder',badge:'🍃 جديد'},
+ {id:'pw100',name:'ماتشا بودرة 100g',desc:'الحجم الاقتصادي لعشاق الماتشا',price:149,top:'pouch',cat:'powder'},
+ {id:'kcup',name:'كوب كيتي',desc:'كوب كيتي الملوّن لمشروباتك',price:45,top:'tumbler',cat:'powder'},
 ];
+MENU.forEach(m=>{m.cat=m.cat||'drink'});
+const STOCK=Object.assign(Object.fromEntries(MENU.map(m=>[m.id,true])),(()=>{try{return JSON.parse(localStorage.getItem('kitty_stock'))||{}}catch(e){return{}}})());
+const saveStock=()=>{try{localStorage.setItem('kitty_stock',JSON.stringify(STOCK))}catch(e){}};
+const CATS=[['drink','🍵 المشروبات'],['powder','🍃 ماتشا بودرة ومنتجات']];let curCat='drink';
 const MILK=[['عادي',0],['لوز',3],['شوفان',3]], SWEET=['بدون سكر','خفيف','عادي','زيادة'], ICE=['ثلج عادي','ثلج خفيف'];
 
 /* ================= HELPERS ================= */
@@ -363,6 +377,28 @@ const pad=n=>String(n).padStart(2,'0');
 function fmtTime(d){let h=d.getHours(),m=d.getMinutes();const ap=h>=12?'م':'ص';h=h%12||12;return `${h}:${pad(m)} ${ap}`}
 
 /* ================= CUP SVG ================= */
+function art(top){
+  if(top==='pouch')return `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+   <defs><clipPath id="pch"><path d="M28 30 L92 30 L96 140 Q60 146 24 140Z"/></clipPath></defs>
+   <g clip-path="url(#pch)"><rect x="0" y="0" width="120" height="150" fill="#4f9e57"/>
+    <path d="M0 50 Q40 30 70 55 T130 45 V70 Q90 80 60 70 T0 80Z" fill="#f5b3cf"/>
+    <path d="M0 95 Q35 80 65 100 T130 90 V112 Q95 122 60 112 T0 120Z" fill="#fbe468"/>
+    <path d="M0 125 Q40 112 70 130 T130 122 V150 H0Z" fill="#f78c3f"/></g>
+   <path d="M28 30 L92 30 L96 140 Q60 146 24 140Z" fill="none" stroke="#141414" stroke-width="3.5" stroke-linejoin="round"/>
+   <rect x="26" y="18" width="68" height="14" rx="3" fill="#fff" stroke="#141414" stroke-width="3"/>
+   <rect x="38" y="62" width="44" height="34" rx="9" fill="#fff8ec" stroke="#141414" stroke-width="2.5"/>
+   <text x="60" y="78" text-anchor="middle" font-size="11" font-weight="800" fill="#141414" font-family="sans-serif">MATCHA</text>
+   <text x="60" y="91" text-anchor="middle" font-size="10" font-weight="700" fill="#2f6b37" font-family="sans-serif">🍃</text></svg>`;
+  if(top==='tumbler')return `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+   <defs><clipPath id="tmb"><path d="M34 40 L86 40 L80 140 Q60 144 40 140Z"/></clipPath></defs>
+   <g clip-path="url(#tmb)"><rect x="0" y="0" width="120" height="150" fill="#fff8ec"/>
+    <path d="M0 60 Q40 48 120 66 V80 Q60 66 0 76Z" fill="#f5b3cf"/><path d="M0 84 Q50 72 120 90 V104 Q60 90 0 100Z" fill="#4f9e57"/>
+    <path d="M0 108 Q50 96 120 114 V126 Q60 112 0 122Z" fill="#fbe468"/><path d="M0 128 Q50 118 120 134 V150 H0Z" fill="#f78c3f"/></g>
+   <path d="M34 40 L86 40 L80 140 Q60 144 40 140Z" fill="none" stroke="#141414" stroke-width="3.5" stroke-linejoin="round"/>
+   <rect x="30" y="28" width="60" height="14" rx="6" fill="#fff" stroke="#141414" stroke-width="3"/>
+   <rect x="64" y="4" width="6" height="28" rx="3" fill="#e46a9f" stroke="#141414" stroke-width="2.5"/></svg>`;
+  return cup(top);
+}
 function cup(top){
   const toppings={
     none:'',
@@ -421,9 +457,17 @@ $('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(b)go(b.dataset.t)};
 
 /* ================= MENU ================= */
 let cart=[];
-$('#menu').innerHTML=MENU.map(i=>`<div class="item">${i.badge?`<span class="badge">${i.badge}</span>`:''}
-  <div class="cupbox">${cup(i.top)}</div><h3>${i.name}</h3><p>${i.desc}</p>
-  <div class="price">${i.price} <small>ر.س</small></div><button class="add" data-id="${i.id}">أضف +</button></div>`).join('');
+function renderMenu(){
+  $('#cats').innerHTML=CATS.map(([k,l])=>`<button class="chip ${k===curCat?'on':''}" data-c="${k}">${l}</button>`).join('');
+  const list=MENU.filter(i=>i.cat===curCat&&STOCK[i.id]);
+  $('#menu').innerHTML=list.length?list.map(i=>`<div class="item">${i.badge?`<span class="badge">${i.badge}</span>`:''}
+  <div class="cupbox">${art(i.top)}</div><h3>${i.name}</h3><p>${i.desc}</p>
+  <div class="price">${i.price} <small>ر.س</small></div><button class="add" data-id="${i.id}">أضف +</button></div>`).join('')
+   :`<div class="empty" style="grid-column:1/-1">خلصت كل الأصناف هنا اليوم 💚<br>ترجع قريب، تابعونا!</div>`;
+  $('#catNote').style.display=curCat==='powder'?'':'none';
+}
+$('#cats').onclick=e=>{const c=e.target.closest('[data-c]');if(c){curCat=c.dataset.c;renderMenu()}};
+renderMenu();
 $('#menu').onclick=e=>{const b=e.target.closest('.add');if(b)openItem(b.dataset.id,b)};
 
 function openSheet(html){$('#sheetBody').innerHTML=html;$('#sheet').classList.add('show');$('#veil').classList.add('show')}
@@ -435,21 +479,22 @@ function bindChips(root){root.querySelectorAll('.chips').forEach(g=>g.onclick=e=
 const pick=(root,g)=>+root.querySelector(`[data-g="${g}"] .on`).dataset.i;
 
 function openItem(id,btn){
-  const it=MENU.find(m=>m.id===id);let q=1;
-  openSheet(`<div style="display:flex;gap:12px;align-items:center"><div style="width:84px;background:var(--green-l);border-radius:16px">${cup(it.top)}</div>
+  const it=MENU.find(m=>m.id===id);let q=1;const pw=it.cat==='powder';
+  openSheet(`<div style="display:flex;gap:12px;align-items:center"><div style="width:84px;background:var(--green-l);border-radius:16px">${art(it.top)}</div>
     <div><h3 style="margin:0;font-size:22px">${it.name}</h3><div style="color:var(--muted)">${it.desc}</div></div></div>
-    <div class="opt"><h4>🥛 الحليب</h4>${chips('milk',MILK.map(([n,p])=>p?`${n} +${p}`:n),0)}
-    <h4>🍯 السكر</h4>${chips('sweet',SWEET,2)}<h4>🧊 الثلج</h4>${chips('ice',ICE,0)}</div>
+    ${pw?'':`<div class="opt"><h4>🥛 الحليب</h4>${chips('milk',MILK.map(([n,p])=>p?`${n} +${p}`:n),0)}
+    <h4>🍯 السكر</h4>${chips('sweet',SWEET,2)}<h4>🧊 الثلج</h4>${chips('ice',ICE,0)}</div>`}
     <div class="row" style="border:0;margin-top:12px"><b>الكمية</b><span class="qty"><button id="qm">−</button><b id="qv">1</b><button id="qp">+</button></span></div>
     <button class="big" id="addBtn"></button>`);
   const sb=$('#sheetBody');bindChips(sb);
-  const price=()=>(it.price+MILK[pick(sb,'milk')][1])*q;
+  const price=()=>(it.price+(pw?0:MILK[pick(sb,'milk')][1]))*q;
   const upd=()=>{$('#qv').textContent=q;$('#addBtn').textContent=`أضف للسلة · ${price()} ر.س`};
   sb.querySelectorAll('.chips').forEach(g=>g.addEventListener('change',upd));
   $('#qm').onclick=()=>{if(q>1){q--;upd()}};$('#qp').onclick=()=>{q++;upd()};upd();
   $('#addBtn').onclick=()=>{
+    if(pw)cart.push({id,name:it.name,unit:it.price,q,opts:'',cat:'powder'});else{
     const m=pick(sb,'milk');
-    cart.push({id,name:it.name,unit:it.price+MILK[m][1],q,opts:[MILK[m][0]==='عادي'?'':'حليب '+MILK[m][0],SWEET[pick(sb,'sweet')],ICE[pick(sb,'ice')]].filter(Boolean).join(' · ')});
+    cart.push({id,name:it.name,unit:it.price+MILK[m][1],q,cat:'drink',opts:[MILK[m][0]==='عادي'?'':'حليب '+MILK[m][0],SWEET[pick(sb,'sweet')],ICE[pick(sb,'ice')]].filter(Boolean).join(' · ')});}
     closeSheet();flyCup(btn);setTimeout(renderCart,650);
   };
 }
@@ -482,7 +527,7 @@ function checkout(){
   sb.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{cart.splice(+b.dataset.del,1);renderCart();cart.length?checkout():closeSheet()});
   $('#placeBtn').onclick=()=>{
     const name=$('#cName').value.trim()||'ضيف كيتي';
-    const o={no:'KT-'+(100+orders.length+Math.floor(Math.random()*9)),name,items:cart.map(c=>({...c})),total:cartTotal(),cups:cartCount(),
+    const o={no:'KT-'+(100+orders.length+Math.floor(Math.random()*9)),name,items:cart.map(c=>({...c})),total:cartTotal(),cups:cart.filter(c=>c.cat!=='powder').reduce((a,c)=>a+c.q,0),
       time:fmtTime(sl[pick(sb,'slot')]),pay:['عند الاستلام','Apple Pay','مدى'][pick(sb,'pay')],status:0,mine:true,fresh:true};
     orders.unshift(o);myOrder=o;cart=[];renderCart();closeSheet();
     addStamps(o.cups,false);confetti();renderTrack();toast('🐾 وصل طلبك، وانضافت أختامك!');
@@ -520,11 +565,11 @@ const OCC=['🎓 مدرسة/جامعة','💼 مكتب','🎉 حفلة','🏠 ع
 $('#occ').outerHTML=chips('occ',OCC,0).replace('class="chips"','class="chips" id="occ"');
 $('#bWay').outerHTML=chips('way',['استلام من الكشك','توصيل داخل المدينة'],0).replace('class="chips"','class="chips" id="bWay"');
 const bq={};MENU.forEach(m=>bq[m.id]=0);bq.kitty=20;
-$('#bulkItems').innerHTML=MENU.map(m=>`<div class="row"><div><b>${m.name}</b><small>${m.price} ر.س للكوب</small></div><span class="qty"><button data-b="${m.id}" data-d="-10">−</button><b id="bq_${m.id}">${bq[m.id]}</b><button data-b="${m.id}" data-d="10">+</button></span></div>`).join('');
+$('#bulkItems').innerHTML=MENU.filter(m=>m.cat==='drink').map(m=>`<div class="row"><div><b>${m.name}</b><small>${m.price} ر.س للكوب</small></div><span class="qty"><button data-b="${m.id}" data-d="-10">−</button><b id="bq_${m.id}">${bq[m.id]}</b><button data-b="${m.id}" data-d="10">+</button></span></div>`).join('');
 $('#bulkItems').onclick=e=>{const b=e.target.closest('[data-b]');if(!b)return;bq[b.dataset.b]=Math.max(0,bq[b.dataset.b]+ +b.dataset.d);$('#bq_'+b.dataset.b).textContent=bq[b.dataset.b];calcBulk()};
 const bsec=$('#bulk');bindChips(bsec);
 const dmin=riyadhNow();dmin.setDate(dmin.getDate()+2);$('#bDate').min=$('#bDate').value=`${dmin.getFullYear()}-${pad(dmin.getMonth()+1)}-${pad(dmin.getDate())}`;
-function calcBulk(){const n=Object.values(bq).reduce((a,b)=>a+b,0);const sub=MENU.reduce((a,m)=>a+m.price*bq[m.id],0);
+function calcBulk(){const n=Object.values(bq).reduce((a,b)=>a+b,0);const sub=MENU.filter(m=>m.cat==='drink').reduce((a,m)=>a+m.price*bq[m.id],0);
   const disc=n>=100?.10:n>=50?.05:0;$('#bTotal').innerHTML=`${Math.round(sub*(1-disc))} <small>ر.س</small>`;
   $('#bDisc').textContent=`${n} كوب${disc?` · خصم ${disc*100}% للكميات 🎁`:n<50?` · أضف ${50-n} وخذ خصم 5%`:''}`;return{n,total:Math.round(sub*(1-disc))}}
 calcBulk();
@@ -532,7 +577,7 @@ $('#bSend').onclick=()=>{
   const {n,total}=calcBulk();if(n<20){toast('أقل كمية 20 كوب 🙏');return}
   const b={occ:OCC[pick(bsec,'occ')],way:['استلام من الكشك','توصيل داخل المدينة'][pick(bsec,'way')],date:$('#bDate').value,time:$('#bTime').value,
     name:$('#bName').value.trim()||'عميل',phone:$('#bPhone').value.trim(),note:$('#bNote').value.trim(),n,total,
-    items:MENU.filter(m=>bq[m.id]).map(m=>`${bq[m.id]}× ${m.name}`),status:'جديد'};
+    items:MENU.filter(m=>m.cat==='drink'&&bq[m.id]).map(m=>`${bq[m.id]}× ${m.name}`),status:'جديد'};
   bulks.unshift(b);
   const txt=`طلب كميات - كيتي ماتشا 🐾\nالمناسبة: ${b.occ}\n${b.items.join('\n')}\nالتاريخ: ${b.date} ${b.time}\n${b.way}\nالاسم: ${b.name}\nالتقديري: ${total} ر.س${b.note?'\nملاحظات: '+b.note:''}`;
   $('#bulkDone').innerHTML=`<div class="card" style="animation:pop .5s"><b style="font-size:20px">✅ وصل طلبك يا ${b.name}!</b><p style="margin:6px 0">فريق كيتي بيراجع الطلب ويأكد لك السعر النهائي والموعد.</p>
@@ -545,7 +590,7 @@ const KB=[
  [/دوام|اوقات|أوقات|تفتح|متى|ساع|يسكر|مسكر/, ()=>`نفتح من <b>الاثنين للسبت، 4 العصر لين 11 الليل</b> 🕓 والأحد إجازة 😴<br>${isOpen()?'وحنا <b>مفتوحين الحين</b>، حيّاك!':'وحنا <b>مسكّرين الحين</b>، بس تقدر تحجز طلبك من «اطلب واستلم» 💚'}`],
  [/وين|مكان|موقع|لوكيشن|عنوان|خريط/, ()=>`تلقانا في <b>بوليفارد ليفيلز</b> 📍 مع رافال إيليت، ودوّر على شباك <b>ORDER HERE</b> 🐾<br><a href="https://maps.app.goo.gl/a5gD1g9J5uvPRcr38" target="_blank" rel="noopener">افتح اللوكيشن في قوقل ماب 🗺️</a>`],
  [/توصيل|جاهز|شفز|chefz|jahez|يوصل|توصلون/, ()=>`التوصيل <b>متوقف مؤقتًا</b> 🛵 بس تقدر تطلب من «اطلب واستلم» وتجي تاخذه جاهز من المحل بدون انتظار 🤍`],
- [/شحن|برا|دول|بودر|بودرة|متجر|اكياس|أكياس|اكواب|أكواب|سلة/, ()=>`بودرة كيتي ماتشا والأكواب موجودة في متجرنا 🛍️ <a href="https://kittymatcha.online/ar" target="_blank">kittymatcha.online</a><br>والشحن كل <b>أحد وأربعاء</b> 📦 ومتاح <b>لجميع دول العالم</b> 🌍`],
+ [/شحن|برا|دول|بودر|بودره|بودرة|متجر|اكياس|أكياس|اكواب|أكواب|سلة/, ()=>`بودرة الماتشا تقدر تاخذها من الكشك مع طلبك (قسم «ماتشا بودرة» في «اطلب واستلم») 🍃<br>وموجودة كمان في متجرنا 🛍️ <a href="https://kittymatcha.online/ar" target="_blank">kittymatcha.online</a><br>والشحن كل <b>أحد وأربعاء</b> 📦 ومتاح <b>لجميع دول العالم</b> 🌍`],
  [/تأخير|تاخير|تأخر|تاخر|وين شحنت|ما وصل|ماوصل|تتبع/, ()=>`إذا تأخرت شحنتك أو صار فيها مشكلة، تواصل مباشرة مع <b>شركة الشحن</b> 🚚 لأن الطلب يكون عندهم بعد ما نسلّمه لهم.`],
  [/كمي|مناسب|حفل|مدرس|مكتب|عزيم|كثير|جمل/, ()=>`للكميات لازم طلب مسبق 📦 عبّ الطلب من تبويب «كميات ومناسبات» وتشوف السعر التقديري على طول، وفيه خصم للكميات الكبيرة 🎁`],
  [/سعر|بكم|كم سعر|اسعار|أسعار|منيو|قائمة/, ()=>`كيتي ماتشا الأصلية <b>25 ر.س</b>، والكومبوهات (دونات، كرواسون، كوكيز) <b>29 ر.س</b>، وهالوين ماتشا <b>29 ر.س</b> 🎃`],
@@ -569,7 +614,14 @@ setTimeout(()=>bubble('هلا! أنا كيتي 🐾 اسألني أي شي عن 
 /* ================= OWNER ================= */
 const NEXT=['ابدأ التحضير 🍵','جاهز ✅','تم الاستلام 🐾'];
 const TAG=['جديد','يتحضّر','جاهز','مستلم'];
-function renderOwner(){
+function renderStock(){
+  $('#stockList').innerHTML=CATS.map(([k,l])=>`<div style="font-weight:800;margin:8px 0 2px">${l}</div>`+MENU.filter(m=>m.cat===k).map(m=>
+    `<div class="row"><div><b>${m.name}</b><small>${STOCK[m.id]?'ظاهر في المنيو':'مخفي، خلص'}</small></div>
+     <button class="sw ${STOCK[m.id]?'on':''}" data-stk="${m.id}" aria-label="متوفر"><i></i></button></div>`).join('')).join('');
+}
+$('#stockList').onclick=e=>{const b=e.target.closest('[data-stk]');if(!b)return;const id=b.dataset.stk,m=MENU.find(x=>x.id===id);
+  STOCK[id]=!STOCK[id];saveStock();renderStock();renderMenu();toast(STOCK[id]?`✅ رجع «${m.name}» للمنيو`:`🙈 «${m.name}» خلص واختفى من المنيو`)};
+function renderOwner(){renderStock();
   $('#kOrders').textContent=orders.length;$('#kCups').textContent=orders.reduce((a,o)=>a+o.cups,0);$('#kRev').textContent=orders.reduce((a,o)=>a+o.total,0);
   $('#ordList').innerHTML=orders.length?orders.map((o,i)=>`<div class="ord ${o.fresh?'new':''}"><div class="h"><span>${o.no} · ${o.name} ${o.mine?'<small>(طلبك)</small>':''}</span><span class="st-tag s${o.status}">${TAG[o.status]}</span></div>
      <ul>${o.items.map(c=>`<li>${c.q}× ${c.name}${c.opts?` <small style="color:var(--muted)">(${c.opts})</small>`:''}</li>`).join('')}</ul>
@@ -583,7 +635,7 @@ function renderOwner(){
     if(o.mine){renderTrack();if(o.status===2)toast('🔔 العميل وصله: «طلبك جاهز!»')}});
 }
 const NAMES=['ريم','سارة','لمى','نوف','جود','دانة','عبدالله','فيصل'];
-$('#simBtn').onclick=()=>{const it=MENU[Math.floor(Math.random()*MENU.length)],q=1+Math.floor(Math.random()*3);
+$('#simBtn').onclick=()=>{const av=MENU.filter(m=>m.cat==='drink'&&STOCK[m.id]);if(!av.length){toast('كل المشروبات مخفية 🙈');return}const it=av[Math.floor(Math.random()*av.length)],q=1+Math.floor(Math.random()*3);
   orders.unshift({no:'KT-'+(200+Math.floor(Math.random()*700)),name:NAMES[Math.floor(Math.random()*NAMES.length)],items:[{name:it.name,q,unit:it.price,opts:SWEET[Math.floor(Math.random()*4)]}],
     total:it.price*q,cups:q,time:fmtTime(slots()[1]||riyadhNow()),pay:'Apple Pay',status:0,fresh:true});
   renderOwner();toast('🔔 طلب جديد!')};

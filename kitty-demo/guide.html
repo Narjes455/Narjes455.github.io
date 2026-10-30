@@ -216,7 +216,7 @@ footer a{color:var(--green);font-weight:800;text-decoration:none}
   <div class="card reveal" style="margin-top:16px">
     <b style="font-size:18px">📑 تبويبات الملف</b>
     <table class="cost" style="margin-top:6px">
-      <tr><td>🍵 <b>المنيو</b></td><td style="font-weight:500;text-align:right;white-space:normal">الأصناف والأسعار والوصف، وخانة «متوفر» عشان توقفون صنف خلص</td></tr>
+      <tr><td>🍵 <b>المنيو</b></td><td style="font-weight:500;text-align:right;white-space:normal">المشروبات والبودرة بأسعارها، وخانة «متوفر»: اكتبوا «لا» والصنف يختفي من الموقع، و«نعم» يرجع</td></tr>
       <tr><td>⚙️ <b>الإعدادات</b></td><td style="font-weight:500;text-align:right;white-space:normal">الدوام، رقم الواتساب، التوصيل، رسالة البانر، وعدد الأختام للكوب المجاني</td></tr>
       <tr><td>📥 <b>الطلبات</b></td><td style="font-weight:500;text-align:right;white-space:normal">تنضاف فيه الطلبات تلقائيًا. تقدرون تفلترون وتطلعون تقرير اليوم أو الشهر</td></tr>
       <tr><td>🐾 <b>الأختام</b></td><td style="font-weight:500;text-align:right;white-space:normal">رقم كل عميل وكم ختم عنده، وتقدرون تعطون ختم يدوي</td></tr>
@@ -341,14 +341,15 @@ function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');cl
 
 /* ===== SHEET DATA ===== */
 const S={
- menu:{name:'🍵 المنيو',cols:['الصنف','السعر','متوفر','الوصف'],rows:[
-   ['هالوين ماتشا','29','نعم','إصدار محدود 🎃'],['كيتي ماتشا','25','نعم','الأصلية السحابية'],
-   ['كومبو الدونات','29','نعم','ماتشا + دونات'],['كومبو كرواسون','29','لا','ماتشا + كرواسون'],['كومبو كوكيز','29','نعم','ماتشا + كوكيز']],
-   hint:'💡 جرّبوا: غيروا «لا» عند كومبو كرواسون إلى «نعم»، أو غيروا سعر كيتي ماتشا.'},
+ menu:{name:'🍵 المنيو',cols:['الصنف','القسم','السعر','متوفر','الوصف'],rows:[
+   ['هالوين ماتشا','مشروبات','29','نعم','إصدار محدود 🎃'],['كيتي ماتشا','مشروبات','25','نعم','الأصلية السحابية'],
+   ['كومبو الدونات','مشروبات','29','نعم','ماتشا + دونات'],['كومبو كرواسون','مشروبات','29','لا','ماتشا + كرواسون'],['كومبو كوكيز','مشروبات','29','نعم','ماتشا + كوكيز'],
+   ['ماتشا بودرة 30g','بودرة','59','نعم','احتفالية فاخرة'],['ماتشا بودرة 100g','بودرة','149','لا','الحجم الاقتصادي']],
+   hint:'💡 جرّبوا: اكتبوا «نعم» عند «ماتشا بودرة 100g» وشوفوها تظهر في الجوال، أو «لا» عند أي صنف ويختفي. وتقدرون تضيفون صنف جديد في سطر فاضي.'},
  set:{name:'⚙️ الإعدادات',cols:['الإعداد','القيمة'],rows:[
    ['الدوام','4 العصر – 11 الليل'],['يوم الإجازة','الأحد'],['استقبال الطلبات','نعم'],['التوصيل','متوقف مؤقتًا'],
-   ['رسالة البانر','🎃 هالوين ماتشا متوفرة لفترة محدودة!'],['أختام الكوب المجاني','7'],['رقم الواتساب','05xxxxxxxx']],
-   hint:'💡 جرّبوا: غيروا «رسالة البانر»، أو اكتبوا «لا» في «استقبال الطلبات»، أو غيروا «التوصيل» إلى «متاح».'},
+   ['رسالة البانر','🎃 هالوين ماتشا متوفرة لفترة محدودة!'],['أختام الكوب المجاني','7'],['لما يخلص صنف','يختفي'],['رقم الواتساب','05xxxxxxxx']],
+   hint:'💡 جرّبوا: اكتبوا «يظهر باهت» في «لما يخلص صنف» بدل «يختفي»، أو غيروا «رسالة البانر»، أو اكتبوا «لا» في «استقبال الطلبات»، أو غيروا «التوصيل» إلى «متاح».'},
  orders:{name:'📥 الطلبات',cols:['رقم','الوقت','الاسم','الطلب','المبلغ','الحالة'],rows:[
    ['KT-101','4:15 م','ريم','2× كيتي ماتشا','50','استلم'],['KT-102','4:30 م','فيصل','كومبو دونات','29','جاهز']],
    hint:'💡 هذا التبويب يتعبى لحاله.',ro:true},
@@ -366,7 +367,7 @@ const COLS='ABCDEFG';
 $('#gtabs').innerHTML=Object.entries(S).map(([k,v])=>`<button data-k="${k}" class="${k===cur?'on':''}">${v.name}</button>`).join('');
 $('#gtabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;cur=b.dataset.k;
   document.querySelectorAll('#gtabs button').forEach(x=>x.classList.toggle('on',x===b));renderGrid()};
-function cellHTML(v,ci,k){const tf=(k==='menu'&&ci===2)||(k==='set'&&v.match&&(v==='نعم'||v==='لا'));
+function cellHTML(v,ci,k){const tf=(k==='menu'&&ci===3)||(k==='set'&&v.match&&(v==='نعم'||v==='لا'));
   return tf?`<span class="tf ${v==='نعم'?'y':'n'}">${v}</span>`:v}
 function renderGrid(newRow){
   const t=S[cur];
@@ -374,7 +375,7 @@ function renderGrid(newRow){
   h+=`<tr class="hd"><td class="rn">1</td>${t.cols.map(c=>`<td>${c}</td>`).join('')}</tr>`;
   t.rows.forEach((r,ri)=>{h+=`<tr class="${newRow&&ri===t.rows.length-1?'newrow':''}"><td class="rn">${ri+2}</td>${r.map((v,ci)=>
     `<td ${t.ro||(cur==='set'&&ci===0)?'':'contenteditable="true"'} data-r="${ri}" data-c="${ci}">${v}</td>`).join('')}</tr>`});
-  for(let i=t.rows.length+2;i<=t.rows.length+4;i++)h+=`<tr><td class="rn">${i}</td>${t.cols.map(()=>'<td></td>').join('')}</tr>`;
+  for(let i=t.rows.length+2;i<=t.rows.length+4;i++)h+=`<tr><td class="rn">${i}</td>${t.cols.map((_,ci)=>cur==='menu'?`<td contenteditable="true" data-new="1" data-c="${ci}"></td>`:'<td></td>').join('')}</tr>`;
   $('#grid').innerHTML=h+'</tbody>';
   $('#hint').innerHTML=t.hint+(cur==='orders'?' <button class="replay" style="display:inline-block;margin-top:6px" id="addOrd">⚡ طلب جديد من الموقع</button>':'');
   if(cur==='orders')$('#addOrd').onclick=simOrder;
@@ -382,14 +383,16 @@ function renderGrid(newRow){
 }
 $('#grid').addEventListener('focusin',e=>{const td=e.target.closest('td[contenteditable]');if(td)$('#fxv').textContent=td.textContent});
 $('#grid').addEventListener('input',e=>{const td=e.target.closest('td[contenteditable]');if(!td)return;
+  if(td.dataset.new){const row=S.menu.cols.map((_,i)=>i===1?'مشروبات':i===3?'نعم':'');S.menu.rows.push(row);td.dataset.r=S.menu.rows.length-1;delete td.dataset.new;
+    td.parentElement.querySelectorAll('td[data-new]').forEach(x=>{x.dataset.r=td.dataset.r;delete x.dataset.new});}
   S[cur].rows[+td.dataset.r][+td.dataset.c]=td.textContent.trim();$('#fxv').textContent=td.textContent;
   $('#saved').textContent='جارٍ الحفظ…';clearTimeout(window._sv);window._sv=setTimeout(()=>{$('#saved').textContent='✓ تم الحفظ في Drive';renderPhone(cur==='menu'?+td.dataset.r:null)},450)});
 $('#grid').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}});
-$('#grid').addEventListener('focusout',e=>{const td=e.target.closest('td[contenteditable]');if(td&&cur==='menu'&&+td.dataset.c===2)renderGrid()});
+$('#grid').addEventListener('focusout',e=>{const td=e.target.closest('td[contenteditable]');if(td&&cur==='menu'&&+td.dataset.c===3)td.innerHTML=cellHTML(td.textContent.trim(),3,'menu')});
 
 const NAMES=['لمى','نوف','دانة','عبدالله','سارة','جود'];let on=103;
-function simOrder(){const m=S.menu.rows.filter(r=>r[2]==='نعم');const it=m[Math.floor(Math.random()*m.length)];const q=1+Math.floor(Math.random()*2);
-  const d=new Date();S.orders.rows.push(['KT-'+(on++),`${(d.getHours()%12)||12}:${String(d.getMinutes()).padStart(2,'0')} ${d.getHours()>=12?'م':'ص'}`,NAMES[Math.floor(Math.random()*NAMES.length)],`${q}× ${it[0]}`,String(+it[1]*q),'جديد']);
+function simOrder(){const m=S.menu.rows.filter(r=>r[3]==='نعم'&&r[1]==='مشروبات'&&+r[2]);const it=m[Math.floor(Math.random()*m.length)];const q=1+Math.floor(Math.random()*2);
+  const d=new Date();S.orders.rows.push(['KT-'+(on++),`${(d.getHours()%12)||12}:${String(d.getMinutes()).padStart(2,'0')} ${d.getHours()>=12?'م':'ص'}`,NAMES[Math.floor(Math.random()*NAMES.length)],`${q}× ${it[0]}`,String(+it[2]*q),'جديد']);
   renderGrid(true);$('.gs-scroll').scrollTop=1e5;toast('📥 انضاف صف جديد في الشيت')}
 
 /* ===== PHONE PREVIEW ===== */
@@ -400,8 +403,14 @@ function renderPhone(pulse){
   h+=setv('رسالة البانر')?`<div class="ph-banner">${setv('رسالة البانر')}</div>`:'';
   h+=`<div class="ph-del ${delOn?'on':'off'}">🛵 التوصيل: ${del}</div>`;
   if(!acc)h+=`<div class="ph-banner" style="background:#ffe1ec;color:#b2245c;font-weight:700">⏸️ متوقفين عن استقبال الطلبات شوي، ارجعوا لنا بعد قليل 💚</div>`;
-  S.menu.rows.forEach((r,i)=>{if(!r[0])return;const out=r[2]!=='نعم'||!acc;
-    h+=`<div class="ph-item ${out?'out':''} ${pulse===i?'pulse':''}"><div><b>${r[0]}</b><small>${r[3]||''}</small></div><span class="pr">${r[2]!=='نعم'?'خلص اليوم':r[1]+' ر.س'}</span></div>`});
+  const hide=setv('لما يخلص صنف')!=='يظهر باهت';
+  [['مشروبات','🍵 المشروبات'],['بودرة','🍃 ماتشا بودرة']].forEach(([sec,lab])=>{
+    const rows=S.menu.rows.map((r,i)=>[r,i]).filter(([r])=>r[0]&&(r[1]||'مشروبات')===sec&&!(hide&&r[3]!=='نعم'));
+    if(!rows.length)return;
+    h+=`<div style="margin:10px 10px 6px;font-weight:800;font-size:13px">${lab}</div>`;
+    rows.forEach(([r,i])=>{const out=r[3]!=='نعم'||!acc;
+      h+=`<div class="ph-item ${out?'out':''} ${pulse===i?'pulse':''}"><div><b>${r[0]}</b><small>${r[4]||''}</small></div><span class="pr">${r[3]!=='نعم'?'خلص اليوم':(r[2]||'—')+' ر.س'}</span></div>`});
+  });
   h+=`<div class="ph-item" style="background:var(--yellow)"><div><b>🐾 كرت الختم</b><small>اجمع ${setv('أختام الكوب المجاني')} أختام والكوب الجاي علينا</small></div></div>`;
   h+=`<div style="margin:12px 10px 4px;font-weight:800;font-size:13px">💬 اسأل كيتي</div>`+S.faq.rows.map(r=>`<div class="ph-faq"><b>${r[0]}</b>${r[1]}</div>`).join('');
   $('#screen').innerHTML=h+'<div style="height:10px"></div>';
