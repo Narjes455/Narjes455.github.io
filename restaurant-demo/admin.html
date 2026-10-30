@@ -278,7 +278,7 @@ function card(o){
   const kindTag=o.kind==="توصيل"?"dl":o.source.indexOf("الفرع")===0?"br":"";
   return `<article class="ord s-${o.status.replace(/ /g,"-")}${o._fresh?" fresh":""}" data-no="${esc(o.no)}">
     <div class="oh"><b class="num ltr">${esc(o.no)}</b><small class="num ltr">${esc(o.time)}</small></div>
-    <div class="tags"><span class="tag ${kindTag}">${esc(o.kind)}</span><span class="tag">${esc(o.source.split(" · ")[0])}</span><span class="tag ${o.pay.indexOf("تحويل")===0?"tr":""}">${esc(o.pay)}</span>${o.gift?'<span class="tag">🎁 هدية</span>':""}</div>
+    <div class="tags"><span class="tag ${kindTag}">${esc(o.kind)}</span><span class="tag">${esc(o.source.split(" · ")[0])}</span><span class="tag ${o.pay.indexOf("تحويل")===0?"tr":o.pay==="Apple Pay"?"dl":""}">${esc(o.pay)}</span>${o.gift?'<span class="tag">🎁 هدية</span>':""}</div>
     <ul class="items">${(o.lines&&o.lines.length?o.lines.map(l=>`<li>${l.q} × ${esc(l.n)}${l.o?` <small>(${esc(l.o)})</small>`:""}${l.p===0?" 🎁":""}</li>`):o.items.split("، ").map(t=>`<li>${esc(t)}</li>`)).join("")}</ul>
     ${o.notes?`<div class="meta">📝 ${esc(o.notes)}</div>`:""}
     <div class="meta">${esc(o.name)}${o.phone?` · <a href="tel:${esc(o.phone)}" class="num ltr">${esc(o.phone)}</a>`:""}</div>
@@ -387,7 +387,7 @@ async function viewRep(){
   if(!j||!j.ok){$("#view").innerHTML=`<div class="panel"><p class="msg err">${j?errText(j):"ما قدرنا نحمّل التقارير"}</p></div>`;return;}
   const T=j.today,M=j.month, max=Math.max(1,...j.days.map(d=>d.total)), today=j.days.length?j.days[j.days.length-1].date:"";
   const sp=(o)=>{const s=o.total||1; return `<div class="split"><i style="width:${o.cash/s*100}%;background:var(--brand)"></i><i style="width:${o.card/s*100}%;background:var(--card)"></i><i style="width:${o.transfer/s*100}%;background:#93c5fd"></i></div>
-    <div class="legend"><span><b style="background:var(--brand)"></b>كاش ${money(o.cash)}</span><span><b style="background:var(--card)"></b>شبكة ${money(o.card)}</span><span><b style="background:#93c5fd"></b>تحويل ${money(o.transfer)}</span></div>`;};
+    <div class="legend"><span><b style="background:var(--brand)"></b>كاش ${money(o.cash)}</span><span><b style="background:var(--card)"></b>شبكة / Apple Pay ${money(o.card)}</span><span><b style="background:#93c5fd"></b>تحويل ${money(o.transfer)}</span></div>`;};
   const hrs=Object.entries(j.hours).sort((a,b)=>b[1]-a[1])[0];
   $("#view").innerHTML=`
   <div class="kpis">

@@ -1,7 +1,7 @@
 /* سيرفر تجريبي داخل المتصفح: يقلّد Google Apps Script عشان النموذج يشتغل بدون شيت.
    البيانات تنحفظ في المتصفح (localStorage) فطلب الزبون يظهر في صفحة الإدارة على نفس الجهاز. */
 (function () {
-  const KEY = "jamraDemo.v1";
+  const KEY = "jamraDemo.v2";
   const STAFF = [
     { name: "المدير", pin: "1234", role: "مدير" },
     { name: "سعد", pin: "1111", role: "كاشير" },
@@ -22,7 +22,7 @@
   ].map(([cat, name, desc, price, opts, qty, status]) => ({ cat, name, desc, price, opts, qty, status }));
   const SET = {
     name: "جَمرة", tagline: "مطبخ سحابي في البدراني · التحضير ٢٠ دقيقة", open: true, closedMsg: "الطلبات مقفلة حالياً",
-    doneMsg: "طلبك وصل للمطبخ وبدأ يتجهز.", cash: true, transfer: true, bank: "بنك تجريبي", holder: "مطعم جمرة (حساب وهمي)",
+    doneMsg: "طلبك وصل للمطبخ وبدأ يتجهز.", cash: true, transfer: false, applepay: true, bank: "بنك تجريبي", holder: "مطعم جمرة (حساب وهمي)",
     account: "", iban: "SA00 0000 0000 0000 0000 0000", whatsapp: "", pickup: true, dinein: false, delivery: true,
     deliveryFee: 10, deliveryMin: 30,
     zones: [{ name: "البدراني", fee: 8 }, { name: "العزيزية", fee: 12 }, { name: "الدفاع", fee: 15 }, { name: "قباء", fee: 18 }],
@@ -63,7 +63,7 @@
         const kind = online ? (rnd() > .45 ? "توصيل" : "استلام") : (rnd() > .5 ? "محلي" : "سفري");
         const fee = kind === "توصيل" ? SET.zones[Math.floor(rnd() * 4)].fee : 0;
         const sub = lines.reduce((s, l) => s + l.q * l.p, 0);
-        const pay = online ? (rnd() > .5 ? "كاش" : "تحويل بنكي") : (rnd() > .4 ? "شبكة" : "كاش");
+        const pay = online ? (rnd() > .45 ? "Apple Pay" : "كاش") : (rnd() > .4 ? "شبكة" : "كاش");
         const key = String(t.getMonth() + 1).padStart(2, "0") + pad(t.getDate());
         st.seq[key] = (st.seq[key] || 0) + 1;
         let stt = "تم";
@@ -121,7 +121,7 @@
   function createOrder(st, d, branch, u) {
     const online = !branch;
     if (online && !st.open) return { ok: false, error: "closed", msg: SET.closedMsg };
-    const pay = String(d.pay || "").indexOf("كاش") === 0 ? "كاش" : String(d.pay || "").indexOf("تحويل") === 0 ? "تحويل بنكي" : "شبكة";
+    const pay = String(d.pay || "").indexOf("كاش") === 0 ? "كاش" : String(d.pay || "").indexOf("تحويل") === 0 ? "تحويل بنكي" : String(d.pay || "").indexOf("Apple") === 0 ? "Apple Pay" : "شبكة";
     let kind, where = String(d.where || ""), fee = 0;
     if (online) {
       kind = d.kind === "توصيل" ? "توصيل" : "استلام";

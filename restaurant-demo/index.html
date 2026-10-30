@@ -107,6 +107,16 @@ select{font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--ca
 .track li.done{color:var(--ink)} .track li.done i{background:var(--brand);border-color:var(--brand)}
 .track li.now{color:var(--brand);font-size:1.1rem} .track li.now i{background:var(--card);border-color:var(--brand);box-shadow:0 0 0 4px var(--card-soft)}
 @media (prefers-reduced-motion:no-preference){.track li.now i{animation:pulse 1.4s infinite}@keyframes pulse{50%{box-shadow:0 0 0 8px transparent}}}
+.apl{font-weight:700;letter-spacing:-.01em;direction:ltr;unicode-bidi:isolate}
+.ap-wrap{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.ap{background:#f2f2f7;color:#111;width:100%;max-width:480px;border-radius:18px 18px 0 0;padding:16px max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px;font-family:system-ui,-apple-system,sans-serif}
+.ap-h{display:flex;justify-content:space-between;align-items:center}
+.ap-h b{font-size:1.2rem;direction:ltr}
+.ap-x{border:0;background:none;color:#0a64d8;font:inherit;cursor:pointer}
+.ap-r{display:flex;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 14px;font-size:.95rem}
+.ap-n{margin:0;font-size:.8rem;color:#666;text-align:center}
+.ap-go{border:0;border-radius:12px;background:#000;color:#fff;font:600 1.05rem system-ui,sans-serif;padding:14px;cursor:pointer}
+.ap-go.ok{background:#1c8a3a}
 .demo-bar{background:var(--card);color:var(--brand);text-align:center;font:700 .82rem var(--body);padding:8px 16px}
 .demo-bar a{color:inherit}
 .wa{background:#e7ddd3;border-radius:14px;padding:12px;text-align:start;display:flex;flex-direction:column;gap:6px;width:100%}
@@ -221,6 +231,21 @@ function renderQty(){
   const t=totals(); count.textContent=t.n; barTotal.textContent=money(t.s);
 }
 
+// محاكاة شاشة الدفع (في النظام الحقيقي تنفتح شاشة Apple Pay عن طريق بوابة دفع مثل ميسّر)
+function fakePay(amount){return new Promise(res=>{
+  const o=document.createElement("div"); o.className="ap-wrap";
+  o.innerHTML=`<div class="ap" role="dialog" aria-label="الدفع"><div class="ap-h"><b>Apple Pay</b><button type="button" class="ap-x">إلغاء</button></div>
+    <div class="ap-r"><span>جَمرة (نموذج)</span><b>${money(amount)}</b></div>
+    <div class="ap-r"><span>البطاقة</span><span>مدى •••• 0000 (وهمية)</span></div>
+    <p class="ap-n">🧪 محاكاة: ما فيه أي مبلغ ينخصم</p>
+    <button type="button" class="ap-go">ادفع بالبصمة / الوجه</button></div>`;
+  document.body.appendChild(o);
+  const close=v=>{o.remove();res(v);};
+  o.querySelector(".ap-x").onclick=()=>close(false);
+  o.onclick=e=>{if(e.target===o)close(false);};
+  o.querySelector(".ap-go").onclick=e=>{const b=e.target; b.disabled=true; b.textContent="جاري الدفع…";
+    setTimeout(()=>{b.textContent="✓ تم الدفع"; b.classList.add("ok"); setTimeout(()=>close(true),700);},1100);};
+});}
 function openSheet(html){
   if(html.includes('class="done"')&&window.__demoWa){
     html=html.replace(/(<button class="x"[^>]*>رجوع للمنيو<\/button>)/,`<div class="wa"><small>📲 هذا اللي يوصل صاحب المطعم على الواتساب، ويظهر في <a href="admin.html">لوحة الإدارة</a>:</small><div class="bub">${esc(window.__demoWa)}</div></div>$1`);
@@ -256,6 +281,7 @@ openCart.onclick=()=>{
     <div class="pay" role="radiogroup" aria-label="طريقة الدفع">
       <label${SET.cash?"":" hidden"}><input type="radio" name="pay" id="p1" value="كاش عند الاستلام"${SET.cash?" checked":""}> كاش عند الاستلام</label>
       <label${SET.transfer?"":" hidden"}><input type="radio" name="pay" id="p2" value="تحويل بنكي"${!SET.cash&&SET.transfer?" checked":""}> تحويل بنكي</label>
+      <label${SET.applepay?"":" hidden"}><input type="radio" name="pay" id="p3" value="Apple Pay"> <span class="apl">Apple&nbsp;Pay</span> / مدى</label>
     </div>
     <div class="note" id="tnote"${!SET.cash&&SET.transfer?"":" hidden"}><p style="margin:0 0 8px">حوّل <b>${money(t.s)}</b> على الحساب هذا، وبعدها ارفع صورة الإيصال تحت.</p>
       <div class="bankcard"><span class="bk">${esc(SET.bank)}</span><span class="lbl">اسم صاحب الحساب</span><b>${esc(SET.holder)}</b>${SET.account?`<span class="lbl">رقم الحساب</span><b class="num">${esc(SET.account)}</b>`:""}<span class="lbl">الآيبان</span><b class="num">${esc(SET.iban)}</b></div>
@@ -319,6 +345,7 @@ openCart.onclick=()=>{
       `\nنوع الطلب: ${kind}${zoneNow()?" - "+zoneNow().name:""}${where?" - "+where:""}${geo?"\n"+geo:""}`+
       `\nالإجمالي: ${t.s+fee()} ريال\nالدفع: ${pay}\nالاسم: ${order.name}\nالجوال: ${order.phone}`+(order.notes?`\nملاحظات: ${order.notes}`:"");
     const waUrl=`https://wa.me/${SET.whatsapp}?text=${encodeURIComponent(waMsg)}`;
+    if(document.getElementById("p3")&&p3.checked&&!(await fakePay(t.s+fee()))) return;
     const btn=f.querySelector("button[type=submit]"); btn.disabled=true; btn.textContent="جاري الإرسال…";
     try{
       if(file) order.receipt={name:file.name,type:file.type||"application/octet-stream",data:await new Promise((ok,no)=>{
