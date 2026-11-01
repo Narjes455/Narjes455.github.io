@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="اورا للمعاهد: نظام موحّد لأي معهد أو مركز تدريب - تحضير QR، بوابة طالبة وولي أمر، اختبارات بتحليل المهارات، رسوم بالضريبة، واختبار مستوى للزوار. من أعمال نرجس العمري.">
+<title>اورا للمعاهد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* Layout: brand bar with specialty switch + role tabs; each role a working console; live "نبض المركز" feed on the side.
+   The brand hue changes per specialty so each pitch feels made for that center. */
+:root{
+  --bg:#F4F5F9; --surface:#FFFFFF; --surface-2:#EBEEF6; --line:#D9DDEA;
+  --fg:#111427; --muted:#5B6280;
+  --brand:#16337A; --brand-ink:#FFFFFF; --brand-soft:#DFE6FA; --spot:#E0A526;
+  --good:#1D7A4C; --good-soft:#DDF2E6; --warn:#9A5B00; --warn-soft:#FBEBD2; --bad:#B42318; --bad-soft:#FBE1DE;
+  --display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B0E1C; --surface:#13182E; --surface-2:#1B2140; --line:#2A3158;
+  --fg:#E8EAF6; --muted:#9CA3C6; --brand:#8EA6FF; --brand-ink:#0B0E1C; --brand-soft:#1F2A5C; --spot:#F2C35A;
+  --good:#5CD39A; --good-soft:#123826; --warn:#F2B451; --warn-soft:#3A2A0E; --bad:#FF8577; --bad-soft:#3F1714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B0E1C; --surface:#13182E; --surface-2:#1B2140; --line:#2A3158;
+  --fg:#E8EAF6; --muted:#9CA3C6; --brand:#8EA6FF; --brand-ink:#0B0E1C; --brand-soft:#1F2A5C; --spot:#F2C35A;
+  --good:#5CD39A; --good-soft:#123826; --warn:#F2B451; --warn-soft:#3A2A0E; --bad:#FF8577; --bad-soft:#3F1714; color-scheme:dark}
+/* per-specialty brand hues (light + dark) */
+:root[data-spec="qudrat"]{--brand:#0F5B57;--brand-soft:#D6EFEC;--spot:#E5893B}
+:root[data-spec="skills"]{--brand:#3B2F7A;--brand-soft:#E4E0F7;--spot:#2BA3A0}
+:root[data-spec="kids"]{--brand:#7A3B12;--brand-soft:#F7E4D6;--spot:#3E9C5A}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"])[data-spec="qudrat"]{--brand:#5ED1C5;--brand-soft:#123B38}
+  :root:not([data-theme="light"])[data-spec="skills"]{--brand:#ADA2FF;--brand-soft:#2A2458}
+  :root:not([data-theme="light"])[data-spec="kids"]{--brand:#F3A86E;--brand-soft:#3D2414}}
+:root[data-theme="dark"][data-spec="qudrat"]{--brand:#5ED1C5;--brand-soft:#123B38}
+:root[data-theme="dark"][data-spec="skills"]{--brand:#ADA2FF;--brand-soft:#2A2458}
+:root[data-theme="dark"][data-spec="kids"]{--brand:#F3A86E;--brand-soft:#3D2414}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6;direction:rtl}
+button,input,select,textarea{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--brand);color:var(--brand-ink);transition:background .3s}
+header.top .wrap{padding-block:14px 0;display:flex;flex-direction:column;gap:12px}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.mark{width:42px;height:42px;border-radius:11px;background:var(--brand-ink);color:var(--brand);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:20px;flex:0 0 auto}
+.brand h1{margin:0;font-family:var(--display);font-size:19px;font-weight:700;line-height:1.25}
+.brand small{display:block;opacity:.8;font-size:12.5px}
+.specbox{display:flex;align-items:center;gap:8px;font-size:13px}
+.specbox select{background:transparent;color:var(--brand-ink);border:1px solid currentColor;border-radius:99px;padding:5px 12px;cursor:pointer}
+.specbox select option{color:#111427;background:#fff}
+.roles{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none}
+.roles::-webkit-scrollbar{display:none}
+.role{flex:0 0 auto;background:transparent;border:0;color:var(--brand-ink);opacity:.72;padding:10px 14px 12px;border-radius:10px 10px 0 0;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px}
+.role[aria-selected="true"]{background:var(--bg);color:var(--fg);opacity:1}
+.role:focus-visible{outline:2px solid var(--brand-ink);outline-offset:-2px}
+.badge{min-width:18px;height:18px;border-radius:9px;background:var(--spot);color:#111427;font-size:11px;display:inline-grid;place-items:center;padding:0 5px}
+main .wrap{padding-block:20px 40px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+@media (max-width:920px){main .wrap{grid-template-columns:minmax(0,1fr)}}
+.view{display:flex;flex-direction:column;gap:16px;min-width:0}
+.vhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.vhead h2{margin:0;font-family:var(--display);font-size:22px;text-wrap:balance}
+.vhead p{margin:2px 0 0;color:var(--muted);font-size:13.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.card h3{margin:0 0 12px;font-family:var(--display);font-size:16px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3 .sub{font-family:var(--body);font-weight:500;font-size:12.5px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:720px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:720px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;min-width:0}
+.kpi .l{font-size:12.5px;color:var(--muted)}
+.kpi .v{font-family:var(--display);font-size:24px;font-weight:700;margin-top:2px}
+.kpi .h{font-size:12px;color:var(--muted)}
+.kpi.hero{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.kpi.hero .l,.kpi.hero .h{color:var(--brand-ink);opacity:.82}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);min-width:0}
+.row:first-child{border-top:0}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:600;overflow-wrap:anywhere}
+.row .s{font-size:12.5px;color:var(--muted)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--surface-2);color:var(--brand);display:grid;place-items:center;font-weight:700;flex:0 0 auto;font-size:14px}
+.pill{font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.p-good{background:var(--good-soft);color:var(--good)} .p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)} .p-info{background:var(--brand-soft);color:var(--brand)} .p-mute{background:var(--surface-2);color:var(--muted)}
+.btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:10px;padding:9px 16px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--line)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:default;filter:none}
+.btn:focus-visible,.field:focus-visible,.opt:focus-visible,.seg button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.field{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+textarea.field{min-height:70px;resize:vertical}
+.form{display:flex;flex-direction:column;gap:10px}
+.inline{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.inline .field{flex:1;min-width:140px}
+.bar{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:4px}
+.bar i.warn{background:var(--warn)} .bar i.bad{background:var(--bad)} .bar i.good{background:var(--good)}
+.empty{color:var(--muted);font-size:13.5px;padding:8px 0}
+.feed{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+@media (max-width:920px){.feed{position:static;max-height:none}}
+.ev{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:13px}
+.ev:first-of-type{border-top:0}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:7px;flex:0 0 auto;background:var(--spot)}
+.ev .who{font-size:11.5px;color:var(--muted)}
+.ev.new{animation:flash 1.6s ease}
+@keyframes flash{from{background:var(--brand-soft)}to{background:transparent}}
+.qrbox{background:#fff;border-radius:12px;padding:10px;display:inline-grid;place-items:center;border:1px solid var(--line);min-width:132px;min-height:132px;color:#111427;font-weight:700}
+.idcard{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.ann{border-inline-start:3px solid var(--spot);padding:8px 12px;background:var(--surface-2);border-radius:0 8px 8px 0}
+.ann .t{font-weight:600}.ann .s{font-size:12.5px;color:var(--muted)}
+.stars{display:flex;gap:4px;direction:ltr;justify-content:flex-end}
+.star{background:none;border:0;font-size:26px;cursor:pointer;color:var(--line);padding:0;line-height:1}
+.star.on{color:#E8A317}
+.opt{text-align:start;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer}
+.opt.ltr{direction:ltr;text-align:left}
+.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.progress{display:flex;gap:4px}.progress span{flex:1;height:4px;border-radius:2px;background:var(--surface-2)}.progress span.on{background:var(--brand)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.hint{font-size:12.5px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.big{font-family:var(--display);font-size:42px;font-weight:700;color:var(--brand);line-height:1}
+.topics{display:flex;flex-direction:column;gap:8px}
+.topic{display:grid;grid-template-columns:90px minmax(0,1fr) 44px;gap:10px;align-items:center;font-size:13.5px}
+.heat{display:grid;gap:4px;font-size:12px}
+.heat .c{border-radius:6px;padding:6px 4px;text-align:center;font-weight:600}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-size:11px;font-family:var(--body)}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(20px);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:10px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:20;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.review{background:var(--surface-2);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;margin:0}
+.reviews{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.report{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.report .head{background:var(--brand);color:var(--brand-ink);padding:14px 16px}
+.report .body{padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--surface)}
+footer.f{text-align:center;color:var(--muted);font-size:12.5px;padding:0 16px 32px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body style="margin:0">
+
+
+<header class="top">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="brand"><div class="mark" id="mark">أ</div>
+        <div><h1 id="orgName">—</h1><small id="orgSub">منصة إدارة وتعليم · يعمل بنظام اورا</small></div></div>
+      <label class="specbox"><span>تخصص المركز:</span>
+        <select id="spec" aria-label="تخصص المركز">
+          <option value="lang">معهد لغات</option>
+          <option value="qudrat">مركز قدرات وتحصيلي</option>
+          <option value="skills">تدريب مهني وحاسب</option>
+          <option value="kids">مركز أطفال وتحفيظ</option>
+        </select></label>
+    </div>
+    <nav class="roles" role="tablist" id="roles"></nav>
+  </div>
+</header>
+<main><div class="wrap">
+  <section class="view" id="view"></section>
+  <aside class="card feed"><h3>نبض المركز <span class="sub">كل حركة تظهر هنا وعند الطرف المعني</span></h3><div id="feed"></div></aside>
+</div></main>
+<footer class="f">نسخة عرض ببيانات افتراضية · تصميم وتطوير نرجس العمري · نظام اورا</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const VAT=0.15, LIMIT=.25, WARN=.15;
+const ROLES=[{id:'admin',name:'الإدارة'},{id:'reception',name:'الاستقبال'},{id:'teacher',name:'المعلمة'},
+  {id:'student',name:'الطالبة'},{id:'parent',name:'ولي الأمر'},{id:'visitor',name:'زائرة · اختبار المستوى'}];
+
+/* ---------------- specialty packs ---------------- */
+const SPECS={
+ lang:{org:'معهد أُفق للغات',mark:'أ',unit:'المستوى',testName:'اختبار تحديد المستوى',ltr:true,
+  topics:['القواعد','المفردات','القراءة','الاستماع'],
+  classes:[['إنجليزي عام · المستوى 3','B1',2400,'أ. ريم'],['إنجليزي تأسيسي · المستوى 1','A1',2100,'أ. ريم'],['تحضير IELTS','B2',3200,'أ. سارة']],
+  quiz:[['She ___ to work every day.',['go','goes','going','gone'],1,0],['Choose the closest meaning of “reluctant”.',['eager','unwilling','tired','careful'],1,1],
+        ['I have lived here ___ 2019.',['for','since','from','at'],1,0],['“The meeting was postponed.” It means the meeting was…',['cancelled','moved to later','finished early','shortened'],1,2],
+        ['If I ___ more time, I would travel.',['have','had','will have','having'],1,0],['Which word means “very big”?',['tiny','huge','narrow','light'],1,1]],
+  levels:[[0,'A1',1],[2,'A2',1],[3,'B1',0],[5,'B2',2]],
+  hw:['Unit 7 · Workbook p.42','اكتبي فقرة 120 كلمة: My ideal weekend'],
+  reviews:[['هديل ر.','جبت 7 في IELTS من أول محاولة، التدريب على الكتابة فرق معي.',5,2],['نوال ق.','المعلمات صبورات وتابعوا معي حتى بعد الحصص.',5,0],['أمل ح.','بديت من الصفر والحين أفهم وأرد بثقة.',5,1],['رنا غ.','تجربة حلوة، تمنيت حصص مسائية أكثر.',4,0]]},
+ qudrat:{org:'مركز مسار للقدرات والتحصيلي',mark:'م',unit:'الدرجة المتوقعة',testName:'اختبار تشخيصي للكمي',ltr:false,
+  topics:['الحساب','الجبر','الهندسة','الإحصاء','المقارنات'],
+  classes:[['دورة الكمي المكثفة','كمي',1800,'أ. هيفاء'],['تأسيس الكمي','كمي',1500,'أ. هيفاء'],['التحصيلي العلمي','تحصيلي',2000,'أ. منى']],
+  quiz:[['إذا كان ٣س + ٥ = ٢٠ فإن س = ؟',['٣','٥','٧','١٥'],1,1],['متوسط الأعداد ٤ ، ٦ ، ٨ هو:',['٥','٦','٧','١٨'],1,3],
+        ['مربع محيطه ٢٠ سم، مساحته:',['١٦','٢٠','٢٥','٤٠'],2,2],['قارن: القيمة الأولى ٢⁵ ، القيمة الثانية ٥²',['الأولى أكبر','الثانية أكبر','متساويتان','المعطيات غير كافية'],0,4],
+        ['١٥٪ من ٢٠٠ =',['١٥','٢٠','٣٠','٤٥'],2,0],['النسبة بين ١٢ و ١٨ في أبسط صورة:',['٢ : ٣','٣ : ٢','٤ : ٦','١ : ٣'],0,0]],
+  levels:[[0,'تأسيس',1],[3,'متوسط',0],[5,'متقدم',0]],
+  hw:['نموذج كمي ٣ · الأسئلة ١ إلى ٣٠','حل ٢٠ سؤال مقارنات من الملزمة'],
+  reviews:[['لمى ع.','درجتي في الكمي طلعت من ٦٤ إلى ٨٧ بعد الدورة المكثفة.',5,0],['جود ر.','المحاكيات نفس الاختبار الحقيقي بالضبط، دخلت وأنا متعودة.',5,0],['شهد م.','الشرح مرتب، وتحليل نقاط الضعف ساعدني أركز على الهندسة.',5,1],['ريما ج.','ممتاز، بس الوقت بالمحاكي كان ضاغط أول مرة.',4,2]]},
+ skills:{org:'أكاديمية مهارة للتدريب',mark:'م',unit:'التقييم',testName:'اختبار تحديد المستوى',ltr:false,
+  topics:['أساسيات الحاسب','Excel','التصميم','المحاسبة'],
+  classes:[['Excel للأعمال','متوسط',1200,'أ. نورة'],['أساسيات التصميم بـ Canva','مبتدئ',900,'أ. أريج'],['محاسبة عملية للمنشآت الصغيرة','متوسط',1600,'أ. نورة']],
+  quiz:[['اختصار النسخ في ويندوز:',['Ctrl + X','Ctrl + C','Ctrl + V','Ctrl + Z'],1,0],['الدالة اللي تجمع خلايا في Excel:',['AVERAGE','COUNT','SUM','MAX'],2,1],
+        ['VLOOKUP تُستخدم لـ:',['رسم جدول','البحث عن قيمة','تنسيق الخلايا','حذف التكرار'],1,1],['الدقة المناسبة للطباعة:',['72 dpi','150 dpi','300 dpi','1000 dpi'],2,2],
+        ['نظام الألوان المستخدم للطباعة:',['RGB','CMYK','HEX','HSL'],1,2],['ضريبة القيمة المضافة في السعودية:',['5%','10%','15%','20%'],2,3]],
+  levels:[[0,'مبتدئ',1],[3,'متوسط',0],[5,'متقدم',2]],
+  hw:['جدول مبيعات بدالة SUMIF','تصميم إعلان منشور إنستقرام'],
+  reviews:[['منيرة س.','بعد دورة Excel صرت أطلع تقارير شغلي بنص الوقت.',5,0],['دانة ب.','تطبيق عملي من أول يوم، مو بس نظري.',5,1],['هيا ص.','المدربة تعرف السوق السعودي وفواتير الضريبة.',5,2],['أروى ع.','حلوة، احتجت تمارين أكثر في البيت.',4,0]]},
+ kids:{org:'مركز براعم للأطفال والتحفيظ',mark:'ب',unit:'المستوى',testName:'تقييم مستوى الطفل',ltr:false,
+  topics:['الحفظ','التجويد','الإنجليزي','الحساب'],
+  classes:[['حلقة التحفيظ · جزء عمّ','تمهيدي',600,'أ. أسماء'],['إنجليزي للأطفال','مبتدئ',800,'أ. ليلى'],['تأسيس الحساب والقراءة','مبتدئ',700,'أ. أسماء']],
+  quiz:[['كم عدد سور القرآن الكريم؟',['١٠٠','١١٤','١٢٠','٣٠'],1,0],['أطول سورة في القرآن:',['آل عمران','البقرة','النساء','الكهف'],1,0],
+        ['النون الساكنة قبل حرف الباء حكمها:',['إظهار','إدغام','إقلاب','إخفاء'],2,1],['Apple starts with the letter:',['A','B','P','E'],0,2],
+        ['٧ + ٥ =',['١١','١٢','١٣','١٥'],1,3],['Cat معناها:',['كلب','قطة','سمكة','عصفور'],1,2]],
+  levels:[[0,'تمهيدي',2],[3,'مبتدئ',0],[5,'متقدم',1]],
+  hw:['مراجعة سورة النبأ من آية ١ إلى ٢٠','لوّن الحروف من A إلى F'],
+  reviews:[['أم ريان','ولدي صار يحب يجي المركز، والتقرير الأسبوعي يطمني.',5,0],['أم سلمى','حفظت جزء عمّ كامل خلال ترم واحد.',5,0],['أم فهد','المعلمات لطيفات والتواصل ممتاز.',5,1],['أم جنى','حلو، بس نتمنى وقت الاستلام يكون أرتب.',4,2]]}
+};
+const NAMES_F=['نوف السلمي','ريما الجهني','شهد المطيري','لمى الحربي','أروى العتيبي','جود الرحيلي','هيا الصاعدي','منار الأحمدي','رهف الشريف','دانة البلوي','أمل الحربي','سارة الردادي','غادة المحمدي','ليان الجابري','مها اللهيبي','عهود السناني','بيان الأنصاري','ريم الصبحي','شيماء العنزي','أسيل الفايدي','العنود الحازمي','تهاني الخالدي','حنين البركاتي','وجدان العوفي'];
+const NAMES_K=['ريان','سلمى','فهد','جنى','يزن','لين','عمر','تالا','سلطان','ريم','خالد','جود','نايف','لمار','عبدالله','دانة','فيصل','سديم','تركي','غلا','مشعل','رزان','بدر','وتين'];
+
+/* ---------------- state ---------------- */
+let S;
+function rng(seed){let s=seed;return()=>{s=(s*9301+49297)%233280;return s/233280}}
+function build(spec){
+  const P=SPECS[spec], r=rng(spec.length*97+13);
+  const st={spec,P,role:S?S.role:'admin',clock:{h:15,m:48},log:[],seen:{},quiz:{i:0,ans:[],done:false},taking:null,
+    classes:P.classes.map((c,i)=>({id:'c'+i,name:c[0],lvl:c[1],price:c[2],teacher:c[3],cap:[12,14,10][i],week:[6,3,5][i],weeks:8,today:i<2,
+      start:[[16,0],[18,0],[17,0]][i],time:['4:00 م','6:00 م','5:00 م'][i],room:'قاعة '+(i+1)})),
+    students:[],att:{},subs:[],anns:[],leads:[],payments:[],reenroll:[],reviews:P.reviews.map(x=>({who:x[0],text:x[1],stars:x[2],cls:'c'+x[3],pub:true,when:'خريجة'})),
+    hw:P.hw.map((t,i)=>({id:'h'+i,cls:'c0',title:t,due:['الأحد 8 نوفمبر','الثلاثاء 10 نوفمبر'][i],max:10})),
+    quizzes:[{id:'q1',cls:'c0',title:spec==='qudrat'?'محاكي كمي · نموذج ٤':spec==='lang'?'Quiz · Units 5–7':'اختبار قصير ١',open:true,min:spec==='qudrat'?12:8}],
+    me:'S-1001', tMe:P.classes[0][3], tCls:'c0'};
+  const names=spec==='kids'?NAMES_K:NAMES_F;
+  const sizes=[10,9,7];
+  let n=1001, k=0;
+  st.classes.forEach((c,ci)=>{for(let j=0;j<sizes[ci];j++){
+    const name=names[k++%names.length]; const fee=Math.round(c.price*(1+VAT));
+    const base=.45+r()*.35, slope=.03+r()*.05;
+    // history of 5 past quizzes, per-topic scores
+    const hist=[...Array(5)].map((_,w)=>{const t={};P.topics.forEach((tp,ti)=>{t[tp]=Math.max(.15,Math.min(1,base+slope*w+(r()-.5)*.3-(ti===2?.12:0)))});return t});
+    const tot=c.week*3;
+    st.students.push({id:'S-'+(n++),name,cls:c.id,att:Math.round(tot*(.72+r()*.28)),tot,fee,paid:[1,1,.5,1,0,1][Math.floor(r()*6)]*fee|0,hist,
+      parent:spec==='kids'?'والد/ة '+name:'ولي أمر '+name.split(' ')[0]});
+  }});
+  // demo student: decent but improvable
+  const me=st.students[0]; me.att=me.tot-2; me.paid=Math.round(me.fee*.5);
+  [['S-1006','3:41 م'],['S-1002','3:44 م'],['S-1009','3:46 م']].forEach(([id,t])=>st.att[id]={t,late:false,by:'QR'});
+  st.subs.push({hw:'h0',stu:'S-1006',at:'أمس 9:12 م',grade:null},{hw:'h0',stu:'S-1002',at:'أمس 10:40 م',grade:null});
+  st.anns=[{to:'all',title:'تم تحديث جدول الحصص للأسبوع القادم',body:'تقدرين تشوفين الجدول من بوابتك.',by:'الإدارة',at:'الأحد'},
+           {to:'c0',title:spec==='qudrat'?'محاكي شامل يوم الخميس':'اختبار منتصف الدورة',body:'في نفس وقت الحصة.',by:st.tMe,at:'الثلاثاء'}];
+  st.leads=[{name:spec==='kids'?'أم يوسف':'بشاير الزهراني',phone:'05xxxxxx31',level:P.levels[1][1],cls:'c'+P.levels[1][2],at:'أمس',done:false}];
+  ROLES.forEach(x=>st.seen[x.id]=0);
+  return st;
+}
+
+/* ---------------- helpers ---------------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const stu=id=>S.students.find(s=>s.id===id), cls=id=>S.classes.find(c=>c.id===id);
+const sar=n=>Math.round(n).toLocaleString('en-US')+' ر.س';
+const ini=n=>n.trim()[0];
+const bal=s=>s.fee-s.paid;
+const isToday=s=>cls(s.cls).today;
+const absRate=s=>{const a=s.att+(isToday(s)&&S.att[s.id]?1:0);return s.tot?1-a/s.tot:0};
+const attPct=s=>Math.round((1-absRate(s))*100);
+const lastScore=s=>{const h=s.hist[s.hist.length-1];return Math.round(avg(Object.values(h))*100)};
+const firstScore=s=>Math.round(avg(Object.values(s.hist[0]))*100);
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const topicAvg=(list,tp)=>avg(list.map(s=>s.hist[s.hist.length-1][tp]));
+const clockStr=()=>{const{h,m}=S.clock;return (h%12||12)+':'+String(m).padStart(2,'0')+' '+(h>=12?'م':'ص')};
+const tick=n=>{S.clock.m+=n;while(S.clock.m>=60){S.clock.m-=60;S.clock.h++}};
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2200)}
+function log(text,who,targets){S.log.unshift({text,who,at:clockStr(),targets,fresh:true});renderFeed();renderRoles()}
+const scoreTone=v=>v>=.75?'p-good':v>=.55?'p-warn':'p-bad';
+const heatBg=v=>v>=.75?'var(--good-soft)':v>=.55?'var(--warn-soft)':'var(--bad-soft)';
+const heatFg=v=>v>=.75?'var(--good)':v>=.55?'var(--warn)':'var(--bad)';
+
+/* ---------------- chrome ---------------- */
+function unseen(r){return S.log.filter(e=>e.targets.includes(r)).length-S.seen[r]}
+function renderRoles(){
+  const lab=r=>S.spec==='kids'?({student:'الطفل',visitor:'زائر · تقييم المستوى',teacher:'المعلمة'}[r.id]||r.name):r.name;
+  $('#roles').innerHTML=ROLES.map(r=>{const n=r.id===S.role?0:unseen(r.id);return `<button class="role" role="tab" aria-selected="${r.id===S.role}" data-role="${r.id}">${lab(r)}${n>0?`<span class="badge">${n}</span>`:''}</button>`}).join('');
+}
+function renderFeed(){
+  $('#feed').innerHTML=S.log.length?S.log.slice(0,30).map(e=>`<div class="ev ${e.fresh?'new':''}"><span class="dot"></span><div><div>${e.text}</div><div class="who">${esc(e.who)} · ${e.at}</div></div></div>`).join(''):'<div class="empty">جرّبي أي إجراء من أي واجهة، وتشوفين أثره هنا وعند الطرف الثاني مباشرة.</div>';
+  S.log.forEach(e=>e.fresh=false);
+}
+function go(role){S.role=role;S.seen[role]=S.log.filter(e=>e.targets.includes(role)).length;try{localStorage.setItem('ora-edu-role',role)}catch(e){}renderRoles();render();window.scrollTo({top:0})}
+function setSpec(spec){
+  const keepRole=S?S.role:null; S=build(spec); if(keepRole) S.role=keepRole;
+  document.documentElement.dataset.spec=spec; $('#spec').value=spec;
+  $('#orgName').textContent=S.P.org; $('#mark').textContent=S.P.mark;
+  try{localStorage.setItem('ora-edu-spec',spec)}catch(e){}
+  renderRoles();renderFeed();render();
+}
+$('#roles').addEventListener('click',e=>{const b=e.target.closest('.role');if(b)go(b.dataset.role)});
+$('#spec').addEventListener('change',e=>{setSpec(e.target.value);toast('تغيّر التخصص: '+S.P.org)});
+
+/* ---------------- shared actions ---------------- */
+function checkIn(id,by){
+  const s=stu(id); if(!s) return toast('الرقم غير موجود');
+  const c=cls(s.cls); if(!c.today) return toast(`${s.name}: ما عندها حصة اليوم`);
+  if(S.att[id]) return toast(`${s.name} محضّرة مسبقاً`);
+  tick(2+Math.floor(Math.random()*3));
+  const late=(S.clock.h*60+S.clock.m)>(c.start[0]*60+c.start[1]+10);
+  S.att[id]={t:clockStr(),late,by};
+  log(`تحضير <b>${esc(s.name)}</b> · ${esc(c.name)}${late?' · <span style="color:var(--warn)">متأخرة</span>':''} (${by})`,by==='QR'?'جهاز الباب':'الاستقبال',['admin','teacher','reception','parent']);
+  toast(`تم تحضير ${s.name}${late?' (متأخرة)':''}`);
+}
+
+/* ---------------- charts ---------------- */
+function lineChart(points,{w=520,h=170,labels}={}){
+  const pad={l:34,r:12,t:12,b:24}, iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const x=i=>pad.l+(points.length>1?i*iw/(points.length-1):iw/2), y=v=>pad.t+ih-(v/100)*ih;
+  const path=points.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area=path+` L${x(points.length-1)},${pad.t+ih} L${x(0)},${pad.t+ih} Z`;
+  const grid=[0,25,50,75,100].map(v=>`<line x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pad.l-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`).join('');
+  const lab=(labels||points.map((_,i)=>i+1)).map((t,i)=>`<text x="${x(i)}" y="${h-6}" text-anchor="middle">${t}</text>`).join('');
+  const last=points.length-1;
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="منحنى التقدم">${grid}<path d="${area}" fill="var(--brand-soft)" opacity=".7"/><path d="${path}" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round"/>${points.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="${i===last?5:3}" fill="${i===last?'var(--spot)':'var(--brand)'}"/>`).join('')}<text x="${x(last)}" y="${y(points[last])-10}" text-anchor="middle" style="fill:var(--fg);font-weight:700;font-size:12px">${points[last]}</text>${lab}</svg>`;
+}
+function topicBars(h){
+  return `<div class="topics">${S.P.topics.map(tp=>{const v=h[tp];return `<div class="topic"><span>${tp}</span><div class="bar"><i class="${v>=.75?'good':v>=.55?'warn':'bad'}" style="width:${Math.round(v*100)}%"></i></div><b class="num">${Math.round(v*100)}%</b></div>`}).join('')}</div>`;
+}
+
+/* ---------------- views ---------------- */
+function render(){({admin:vAdmin,reception:vReception,teacher:vTeacher,student:vStudent,parent:vParent,visitor:vVisitor})[S.role]($('#view'))}
+
+function vAdmin(v){
+  const all=S.students, today=all.filter(isToday), present=today.filter(s=>S.att[s.id]).length;
+  const collected=all.reduce((a,s)=>a+s.paid,0), outstanding=all.reduce((a,s)=>a+bal(s),0);
+  const risk=all.map(s=>({s,r:absRate(s)})).filter(x=>x.r>=WARN).sort((a,b)=>b.r-a.r);
+  const unpaid=all.filter(s=>bal(s)>0).sort((a,b)=>bal(b)-bal(a)).slice(0,6);
+  const pubRev=S.reviews.filter(r=>r.pub); const ravg=avg(S.reviews.map(r=>r.stars));
+  const improve=Math.round(avg(all.map(s=>lastScore(s)-firstScore(s))));
+  v.innerHTML=`
+  <div class="vhead"><div><h2>لوحة الإدارة</h2><p>الأحد 1 نوفمبر 2026 · الساعة <span class="num">${clockStr()}</span></p></div><button class="btn ghost sm" data-act="report">تقرير الشهر</button></div>
+  <div class="kpis">
+    <div class="kpi hero"><div class="l">حضور اليوم</div><div class="v num">${present} / ${today.length}</div><div class="h">${S.classes.filter(c=>c.today).length} حصص اليوم</div></div>
+    <div class="kpi"><div class="l">متوسط التحسّن</div><div class="v num" style="color:var(--good)">+${improve}</div><div class="h">نقطة من أول اختبار لآخر اختبار</div></div>
+    <div class="kpi"><div class="l">المحصّل هذا الترم</div><div class="v num">${sar(collected)}</div><div class="h">منها ضريبة <span class="num">${sar(collected-collected/(1+VAT))}</span></div></div>
+    <div class="kpi"><div class="l">مستحقات متأخرة</div><div class="v num" style="color:var(--bad)">${sar(outstanding)}</div><div class="h">${all.filter(s=>bal(s)>0).length} حسابات</div></div>
+  </div>
+  <div class="card"><h3>نقاط الضعف على مستوى المركز <span class="sub">متوسط آخر اختبار لكل مهارة · لكل دورة</span></h3>
+    <div class="heat" style="grid-template-columns:minmax(120px,1.4fr) repeat(${S.P.topics.length},minmax(0,1fr))">
+      <div></div>${S.P.topics.map(t=>`<div style="text-align:center;color:var(--muted)">${t}</div>`).join('')}
+      ${S.classes.map(c=>{const l=all.filter(s=>s.cls===c.id);return `<div style="align-self:center;font-weight:600">${esc(c.name)}</div>`+S.P.topics.map(tp=>{const a=topicAvg(l,tp);return `<div class="c num" style="background:${heatBg(a)};color:${heatFg(a)}">${Math.round(a*100)}%</div>`}).join('')}).join('')}
+    </div>
+    <div class="hint" style="margin-top:10px">الأحمر يوضح وين تحتاج الدفعة دعم. تقدرين توجّهين المعلمة لحصة مراجعة عليه.</div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>تنبيهات الغياب <span class="sub">حد الحرمان ${LIMIT*100}%</span></h3>
+      ${risk.length?risk.slice(0,6).map(({s,r})=>`<div class="row"><div class="av">${ini(s.name)}</div><div class="grow"><div class="t">${esc(s.name)}</div><div class="s">${esc(cls(s.cls).name)} · غياب <span class="num">${Math.round(r*100)}%</span></div></div><span class="pill ${r>=LIMIT?'p-bad':'p-warn'}">${r>=LIMIT?'تجاوزت':'قريبة'}</span><button class="btn ghost sm" data-act="warn" data-id="${s.id}">إنذار</button></div>`).join(''):'<div class="empty">ما فيه طالبات قريبات من الحد.</div>'}
+    </div>
+    <div class="card"><h3>الدورات وإشغالها</h3>
+      ${S.classes.map(c=>{const n=all.filter(s=>s.cls===c.id).length;return `<div class="row" style="flex-direction:column;align-items:stretch;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px"><div><div class="t">${esc(c.name)} <span class="pill p-info">${esc(c.lvl)}</span></div><div class="s">${esc(c.teacher)} · ${c.time} · الأسبوع <span class="num">${c.week}/${c.weeks}</span></div></div><b class="num">${n}/${c.cap}</b></div><div class="bar"><i style="width:${n/c.cap*100}%"></i></div></div>`}).join('')}
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>المتأخرات المالية <span class="sub">شامل ضريبة 15%</span></h3>
+      ${unpaid.map(s=>`<div class="row"><div class="av">${ini(s.name)}</div><div class="grow"><div class="t">${esc(s.name)}</div><div class="s">مدفوع <span class="num">${sar(s.paid)}</span> من <span class="num">${sar(s.fee)}</span></div></div><span class="pill p-bad num">${sar(bal(s))}</span><button class="btn ghost sm" data-act="remind" data-id="${s.id}">تذكير</button></div>`).join('')||'<div class="empty">كل الحسابات مسددة.</div>'}
+    </div>
+    <div class="card"><h3>تقييمات الطالبات <span class="sub">متوسط <span class="num">${ravg.toFixed(1)}</span> · ${pubRev.length} منشورة للزوار</span></h3>
+      ${S.reviews.slice(0,6).map((r,i)=>`<div class="row"><div class="grow"><div class="t"><span style="color:#E8A317">${'★'.repeat(r.stars)}</span> · ${esc(r.who)}</div><div class="s">${esc(r.text)}</div></div>${r.pub?`<button class="btn ghost sm" data-act="unpub" data-i="${i}">إخفاء</button>`:`<button class="btn sm" data-act="pub" data-i="${i}">نشر</button>`}</div>`).join('')}
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>الاستمرار للدورة التالية</h3><div class="inline"><div class="big num">${S.reenroll.length}</div><div class="s" style="color:var(--muted)">سجّلن في الدورة التالية من البوابة${S.reenroll.length?'':'، جرّبي من واجهة الطالبة'}</div></div></div>
+    <div class="card"><h3>إعلان للكل</h3><form class="form" id="annAll"><input class="field" id="annT" placeholder="عنوان الإعلان" required><textarea class="field" id="annB" placeholder="النص"></textarea><button class="btn">نشر للطالبات وأولياء الأمور</button></form></div>
+  </div>`;
+  $('#annAll').onsubmit=e=>{e.preventDefault();const t=$('#annT').value.trim();if(!t)return;S.anns.unshift({to:'all',title:t,body:$('#annB').value.trim(),by:'الإدارة',at:'الآن'});log(`إعلان عام: <b>${esc(t)}</b>`,'الإدارة',['student','parent','teacher','reception']);toast('تم النشر');render()};
+}
+
+function vReception(v){
+  const newLeads=S.leads.filter(l=>!l.done);
+  v.innerHTML=`
+  <div class="vhead"><div><h2>الاستقبال</h2><p>الطالبات يحضّرن بالـ QR، ودورك للاستثناءات والتسجيل والدفعات</p></div><span class="pill p-info">الساعة <span class="num">${clockStr()}</span></span></div>
+  <div class="grid2">
+    <div class="card"><h3>تحضير برقم الطالبة</h3><form class="inline" id="man"><input class="field num" id="manId" placeholder="مثال: S-1004" style="text-align:right"><button class="btn">تحضير</button></form>
+      <div class="hint" style="margin-top:10px">قارئ QR بالـ USB يكتب الرقم ويضغط Enter بنفسه، فالتحضير ياخذ ثانية.</div></div>
+    <div class="card"><h3>تسجيل دفعة</h3><form class="form" id="pay">
+      <select class="field" id="payS">${S.students.filter(s=>bal(s)>0).map(s=>`<option value="${s.id}">${esc(s.name)} · متبقي ${sar(bal(s))}</option>`).join('')||'<option value="">لا توجد مستحقات</option>'}</select>
+      <div class="inline"><input class="field num" id="payA" type="number" min="1" placeholder="المبلغ"><select class="field" id="payW" style="flex:0 0 auto;width:auto"><option>مدى</option><option>تحويل</option><option>نقداً</option></select><button class="btn">تسجيل وإصدار سند</button></div></form></div>
+  </div>
+  ${S.classes.filter(c=>c.today).map(c=>{const l=S.students.filter(s=>s.cls===c.id),pr=l.filter(s=>S.att[s.id]).length;return `
+  <div class="card"><h3>${esc(c.name)} · ${c.time} · ${c.room}<span class="sub num">${pr}/${l.length} حاضرة</span></h3><div class="bar" style="margin-bottom:8px"><i class="good" style="width:${pr/l.length*100}%"></i></div>
+    ${l.map(s=>{const a=S.att[s.id];return `<div class="row"><div class="av">${ini(s.name)}</div><div class="grow"><div class="t">${esc(s.name)}</div><div class="s num">${s.id}</div></div>${a?`<span class="pill ${a.late?'p-warn':'p-good'}">${a.late?'متأخرة':'حاضرة'} · <span class="num">${a.t}</span> · ${a.by}</span>`:`<button class="btn ghost sm" data-act="checkin" data-id="${s.id}">تحضير يدوي</button>`}</div>`}).join('')}
+  </div>`}).join('')}
+  <div class="card"><h3>طلبات تسجيل جديدة <span class="sub">من ${esc(S.P.testName)} في صفحة الزوار</span></h3>
+    ${newLeads.length?newLeads.map((l,i)=>`<div class="row" style="flex-wrap:wrap"><div class="av">${ini(l.name)}</div><div class="grow"><div class="t">${esc(l.name)} <span class="pill p-info">${esc(l.level)}</span></div><div class="s"><span class="num">${esc(l.phone)}</span> · ${l.at}</div></div><select class="field" style="width:auto;flex:0 0 auto" id="lc${i}">${S.classes.map(c=>`<option value="${c.id}" ${c.id===l.cls?'selected':''}>${esc(c.name)}</option>`).join('')}</select><button class="btn sm" data-act="enroll" data-i="${S.leads.indexOf(l)}" data-sel="lc${i}">تسجيل وإصدار فاتورة</button></div>`).join(''):'<div class="empty">ما فيه طلبات جديدة. جرّبي الاختبار من تبويب الزائرة.</div>'}
+  </div>
+  <div class="card"><h3>آخر السندات</h3>${S.payments.length?S.payments.map(p=>`<div class="row"><div class="grow"><div class="t">سند ${p.no} · ${esc(stu(p.stu).name)}</div><div class="s">${p.way} · ${p.at} · ضريبة <span class="num">${sar(p.amt-p.amt/(1+VAT))}</span></div></div><b class="num">${sar(p.amt)}</b></div>`).join(''):'<div class="empty">ما انسجلت دفعات اليوم.</div>'}</div>`;
+  $('#man').onsubmit=e=>{e.preventDefault();checkIn($('#manId').value.trim().toUpperCase(),'يدوي');render()};
+  $('#pay').onsubmit=e=>{e.preventDefault();const s=stu($('#payS').value),a=+$('#payA').value;if(!s||!a)return toast('اختاري الطالبة واكتبي المبلغ');const amt=Math.min(a,bal(s));s.paid+=amt;const no='R-'+(2310+S.payments.length);S.payments.unshift({no,stu:s.id,amt,way:$('#payW').value,at:clockStr()});log(`دفعة <b class="num">${sar(amt)}</b> من ${esc(s.name)} · سند ${no}`,'الاستقبال',['admin','student','parent']);toast('تم تسجيل الدفعة');render()};
+}
+
+function vTeacher(v){
+  const mine=S.classes.filter(c=>c.teacher===S.tMe), c=cls(S.tCls), l=S.students.filter(s=>s.cls===c.id);
+  const pend=S.subs.filter(x=>{const h=S.hw.find(h=>h.id===x.hw);return h&&h.cls===c.id&&x.grade==null});
+  const weakest=S.P.topics.map(tp=>[tp,topicAvg(l,tp)]).sort((a,b)=>a[1]-b[1])[0];
+  v.innerHTML=`
+  <div class="vhead"><div><h2>${esc(S.tMe)}</h2><p>فصولك، الحضور المباشر، الواجبات، ومستوى الفصل</p></div>
+  <div class="seg">${mine.map(x=>`<button data-act="tcls" data-id="${x.id}" aria-pressed="${x.id===c.id}">${esc(x.name)}</button>`).join('')}</div></div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">حضور اليوم</div><div class="v num">${c.today?l.filter(s=>S.att[s.id]).length+' / '+l.length:'—'}</div><div class="h">${c.time} · ${c.room}</div></div>
+    <div class="kpi"><div class="l">بانتظار التصحيح</div><div class="v num">${pend.length}</div><div class="h">تسليمات من البوابة</div></div>
+    <div class="kpi"><div class="l">متوسط آخر اختبار</div><div class="v num">${Math.round(avg(l.map(lastScore)))}%</div><div class="h">من ${Math.round(avg(l.map(firstScore)))}% في البداية</div></div>
+    <div class="kpi"><div class="l">أضعف مهارة بالفصل</div><div class="v" style="font-size:19px;color:var(--bad)">${weakest[0]}</div><div class="h num">${Math.round(weakest[1]*100)}%</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>الطالبات <span class="sub">الحضور يتحدث لحظياً من الباب</span></h3>
+      ${l.map(s=>{const a=S.att[s.id];return `<div class="row"><div class="av">${ini(s.name)}</div><div class="grow"><div class="t">${esc(s.name)}</div><div class="s">حضور <span class="num">${attPct(s)}%</span> · آخر اختبار <span class="num">${lastScore(s)}%</span></div></div>${absRate(s)>=LIMIT?'<span class="pill p-bad">تجاوزت الغياب</span>':''}${c.today?(a?`<span class="pill ${a.late?'p-warn':'p-good'}">${a.late?'متأخرة':'حاضرة'}</span>`:'<span class="pill p-mute">لم تصل</span>'):''}</div>`}).join('')}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <div class="card"><h3>تصحيح الواجبات</h3>
+        ${pend.length?pend.map(x=>{const h=S.hw.find(h=>h.id===x.hw),i=S.subs.indexOf(x);return `<div class="row" style="flex-wrap:wrap"><div class="grow"><div class="t">${esc(stu(x.stu).name)}</div><div class="s">${esc(h.title)} · ${x.at}</div></div><div class="inline" style="flex:0 0 auto"><input class="field num" type="number" min="0" max="10" id="g${i}" placeholder="/10" style="width:70px;min-width:0;flex:0 0 auto"><button class="btn sm" data-act="grade" data-i="${i}">اعتماد</button></div></div>`}).join(''):'<div class="empty">ما فيه تسليمات جديدة.</div>'}
+      </div>
+      <div class="card"><h3>نشر واجب أو اختبار</h3><form class="form" id="hwF">
+        <div class="seg" role="group"><button type="button" data-act="kind" data-k="hw" aria-pressed="${(S.kind||'hw')==='hw'}">واجب</button><button type="button" data-act="kind" data-k="quiz" aria-pressed="${S.kind==='quiz'}">اختبار من بنك الأسئلة</button></div>
+        <input class="field" id="hwT" placeholder="${S.kind==='quiz'?'عنوان الاختبار':'عنوان الواجب'}" required>
+        <button class="btn">${S.kind==='quiz'?'فتح الاختبار للفصل':'إرسال للفصل'}</button></form>
+        <div class="hint" style="margin-top:8px">الاختبار يصحح تلقائياً، ويحلل كل طالبة حسب المهارة.</div></div>
+    </div>
+  </div>
+  <div class="card"><h3>مستوى الفصل حسب المهارة</h3>${topicBars(Object.fromEntries(S.P.topics.map(tp=>[tp,topicAvg(l,tp)])))}</div>`;
+  $('#hwF').onsubmit=e=>{e.preventDefault();const t=$('#hwT').value.trim();if(!t)return;
+    if(S.kind==='quiz'){S.quizzes.unshift({id:'q'+Date.now(),cls:c.id,title:t,open:true,min:10});log(`اختبار جديد مفتوح لـ ${esc(c.name)}: <b>${esc(t)}</b>`,S.tMe,['student','admin','parent'])}
+    else{S.hw.unshift({id:'h'+Date.now(),cls:c.id,title:t,due:'الحصة القادمة',max:10});log(`واجب جديد لـ ${esc(c.name)}: <b>${esc(t)}</b>`,S.tMe,['student','parent'])}
+    toast('وصل لبوابة الطالبات');render()};
+}
+
+function vStudent(v){
+  const s=stu(S.me), c=cls(s.cls), a=S.att[s.id], hws=S.hw.filter(h=>h.cls===s.cls), qs=S.quizzes.filter(q=>q.cls===s.cls);
+  const anns=S.anns.filter(x=>x.to==='all'||x.to===s.cls), re=S.reenroll.includes(s.id), rated=S.reviews.some(r=>r.me);
+  if(S.taking){return vTakeQuiz(v)}
+  const last=s.hist[s.hist.length-1], weak=S.P.topics.slice().sort((x,y)=>last[x]-last[y])[0];
+  v.innerHTML=`
+  <div class="vhead"><div><h2>أهلاً ${esc(s.name.split(' ')[0])}</h2><p>${esc(c.name)} · ${esc(c.teacher)}</p></div><span class="pill p-info">الأسبوع <span class="num">${c.week}</span> من <span class="num">${c.weeks}</span></span></div>
+  <div class="card"><div class="idcard"><div class="qrbox" id="qr">${s.id}</div>
+    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px"><b style="font-family:var(--display);font-size:17px">بطاقة الدخول</b>
+    <div style="color:var(--muted);font-size:13px">رقمك <b class="num">${s.id}</b> · حصة اليوم ${c.time} في ${c.room}</div>
+    ${a?`<span class="pill ${a.late?'p-warn':'p-good'}" style="align-self:flex-start">تم تحضيرك الساعة <span class="num">${a.t}</span></span>`:`<button class="btn" data-act="selfscan" style="align-self:flex-start">محاكاة: مسح الكود عند الباب</button>`}</div></div></div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">حضوري</div><div class="v num">${attPct(s)}%</div><div class="bar"><i class="${absRate(s)>=WARN?'warn':'good'}" style="width:${attPct(s)}%"></i></div></div>
+    <div class="kpi"><div class="l">${S.P.unit}</div><div class="v num">${lastScore(s)}</div><div class="h">من ${firstScore(s)} في أول اختبار</div></div>
+    <div class="kpi"><div class="l">ركّزي على</div><div class="v" style="font-size:19px;color:var(--bad)">${weak}</div><div class="h num">${Math.round(last[weak]*100)}%</div></div>
+    <div class="kpi"><div class="l">المتبقي علي</div><div class="v num" style="color:${bal(s)?'var(--bad)':'var(--good)'}">${bal(s)?sar(bal(s)):'مسدد'}</div><div class="h">شامل الضريبة</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>تقدّمي <span class="sub">نتيجة كل اختبار</span></h3>${lineChart(s.hist.map(h=>Math.round(avg(Object.values(h))*100)),{labels:s.hist.map((_,i)=>'اختبار '+(i+1))})}</div>
+    <div class="card"><h3>مهاراتي <span class="sub">آخر اختبار</span></h3>${topicBars(last)}</div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>المطلوب مني</h3>
+      ${qs.map(q=>{const done=q.res&&q.res[s.id];return `<div class="row"><div class="grow"><div class="t">${esc(q.title)}</div><div class="s">اختبار · ${S.P.quiz.length} أسئلة · ${q.min} دقيقة</div></div>${done?`<span class="pill p-good num">${done.score}/${done.total}</span>`:`<button class="btn sm" data-act="startq" data-id="${q.id}">ابدئي</button>`}</div>`}).join('')}
+      ${hws.map(h=>{const sub=S.subs.find(x=>x.hw===h.id&&x.stu===s.id);return `<div class="row"><div class="grow"><div class="t">${esc(h.title)}</div><div class="s">واجب · التسليم ${esc(h.due)}</div></div>${sub?(sub.grade!=null?`<span class="pill p-good num">${sub.grade}/10</span>`:'<span class="pill p-info">سُلّم</span>'):`<button class="btn sm ghost" data-act="submit" data-id="${h.id}">تسليم</button>`}</div>`}).join('')}
+    </div>
+    <div class="card"><h3>الإعلانات</h3><div style="display:flex;flex-direction:column;gap:10px">${anns.map(x=>`<div class="ann"><div class="t">${esc(x.title)}</div>${x.body?`<div>${esc(x.body)}</div>`:''}<div class="s">${esc(x.by)} · ${x.at}</div></div>`).join('')}</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>الدورة التالية</h3>${re?`<div class="ann" style="border-color:var(--good)"><div class="t">تم حجز مقعدك</div><div class="s">صدرت الفاتورة وتقدرين تسددين من الاستقبال</div></div>`:`<p style="margin:0 0 10px">باقي أسبوعين على نهاية دورتك. احجزي مقعدك في الدورة التالية قبل ما يكتمل العدد.</p><button class="btn" data-act="reenroll">احجزي مقعدي</button>`}</div>
+    <div class="card"><h3>قيّمي الدورة</h3>${rated?'<div class="empty">شكراً، وصل تقييمك للإدارة.</div>':`<div class="stars" id="stars">${[1,2,3,4,5].map(n=>`<button class="star" data-n="${n}" aria-label="${n} نجوم">★</button>`).join('')}</div><textarea class="field" id="rateC" placeholder="تعليقك (اختياري)" style="margin-top:8px"></textarea><button class="btn" data-act="rate" style="margin-top:8px">إرسال</button>`}</div>
+  </div>`;
+  try{if(window.QRCode){$('#qr').textContent='';new QRCode($('#qr'),{text:s.id,width:112,height:112,colorDark:'#111427',colorLight:'#ffffff'})}}catch(e){}
+  const st=$('#stars');if(st)st.onclick=e=>{const b=e.target.closest('.star');if(!b)return;S._stars=+b.dataset.n;st.querySelectorAll('.star').forEach(x=>x.classList.toggle('on',+x.dataset.n<=S._stars))};
+}
+
+function vTakeQuiz(v){
+  const T=S.taking, q=S.quizzes.find(x=>x.id===T.qid), item=S.P.quiz[T.i], ltr=S.P.ltr;
+  const left=Math.max(0,T.end-Date.now()), mm=Math.floor(left/60000), ss=Math.floor(left%60000/1000);
+  v.innerHTML=`<div class="vhead"><div><h2>${esc(q.title)}</h2><p>تصحيح تلقائي وتحليل حسب المهارة</p></div><span class="pill p-warn num" id="tmr">${mm}:${String(ss).padStart(2,'0')}</span></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:10px"><div class="progress">${S.P.quiz.map((_,i)=>`<span class="${i<=T.i?'on':''}"></span>`).join('')}</div>
+  <div class="s" style="color:var(--muted);font-size:12.5px">سؤال ${T.i+1} من ${S.P.quiz.length} · ${S.P.topics[item[3]]}</div>
+  <div style="font-size:18px;font-weight:600;${ltr?'direction:ltr;text-align:left':''}">${esc(item[0])}</div>
+  ${item[1].map((o,i)=>`<button class="opt ${ltr?'ltr':''} ${T.ans[T.i]===i?'sel':''}" data-act="qpick" data-i="${i}">${esc(o)}</button>`).join('')}
+  <div class="inline" style="justify-content:space-between"><button class="btn ghost" data-act="qprev" ${T.i?'':'disabled'}>السابق</button><button class="btn" data-act="qnext" ${T.ans[T.i]==null?'disabled':''}>${T.i===S.P.quiz.length-1?'تسليم':'التالي'}</button></div></div>`;
+  vTakeTick();
+}
+function vTakeTick(){clearTimeout(S._tm);S._tm=setTimeout(()=>{if(!S.taking||S.role!=='student')return;if(Date.now()>=S.taking.end)return finishQuiz();const el=$('#tmr');if(el){const l=Math.max(0,S.taking.end-Date.now());el.textContent=Math.floor(l/60000)+':'+String(Math.floor(l%60000/1000)).padStart(2,'0')}vTakeTick()},1000)}
+function finishQuiz(){
+  const T=S.taking, q=S.quizzes.find(x=>x.id===T.qid), s=stu(S.me);
+  const per={}; S.P.topics.forEach(t=>per[t]=[0,0]);
+  S.P.quiz.forEach((it,i)=>{const tp=S.P.topics[it[3]];per[tp][1]++;if(T.ans[i]===it[2])per[tp][0]++});
+  const score=S.P.quiz.filter((it,i)=>T.ans[i]===it[2]).length, total=S.P.quiz.length;
+  const prev=s.hist[s.hist.length-1], h={};
+  S.P.topics.forEach(tp=>h[tp]=per[tp][1]?per[tp][0]/per[tp][1]:prev[tp]);
+  s.hist.push(h); q.res=q.res||{}; q.res[s.id]={score,total};
+  S.taking=null; clearTimeout(S._tm);
+  log(`<b>${esc(s.name)}</b> أنهت «${esc(q.title)}» · <span class="num">${score}/${total}</span>`,'بوابة الطالبة',['teacher','admin','parent']);
+  toast(`درجتك ${score} من ${total} · انضافت لمنحنى تقدمك`);render();
+}
+
+function vParent(v){
+  const s=stu(S.me), c=cls(s.cls), a=S.att[s.id], last=s.hist[s.hist.length-1];
+  const strong=S.P.topics.slice().sort((x,y)=>last[y]-last[x])[0], weak=S.P.topics.slice().sort((x,y)=>last[x]-last[y])[0];
+  const notices=S.log.filter(e=>e.targets.includes('parent')&&e.text.includes(s.name)).slice(0,4);
+  v.innerHTML=`<div class="vhead"><div><h2>بوابة ولي الأمر</h2><p>متابعة ${esc(s.name)} بدون ما تسألين أحد</p></div><span class="pill p-info">يوصل كرابط برسالة أسبوعية</span></div>
+  <div class="report"><div class="head"><b style="font-family:var(--display);font-size:17px">التقرير الأسبوعي · ${esc(s.name)}</b><div style="opacity:.85;font-size:13px">${esc(c.name)} · ${esc(S.P.org)}</div></div>
+  <div class="body">
+    <div class="kpis">
+      <div class="kpi"><div class="l">اليوم</div><div class="v" style="font-size:18px;color:${a?'var(--good)':'var(--muted)'}">${a?(a.late?'وصلت متأخرة':'وصلت'):'لم تصل بعد'}</div><div class="h num">${a?a.t:c.time}</div></div>
+      <div class="kpi"><div class="l">نسبة الحضور</div><div class="v num">${attPct(s)}%</div></div>
+      <div class="kpi"><div class="l">${S.P.unit}</div><div class="v num">${lastScore(s)}</div><div class="h">بدأت من ${firstScore(s)}</div></div>
+      <div class="kpi"><div class="l">الرسوم المتبقية</div><div class="v num" style="font-size:19px;color:${bal(s)?'var(--bad)':'var(--good)'}">${bal(s)?sar(bal(s)):'مسددة'}</div></div>
+    </div>
+    <div class="grid2"><div>${lineChart(s.hist.map(h=>Math.round(avg(Object.values(h))*100)),{labels:s.hist.map((_,i)=>'اختبار '+(i+1)),h:150})}</div>
+    <div style="display:flex;flex-direction:column;gap:8px"><div class="ann" style="border-color:var(--good)"><div class="t">نقطة قوة</div><div>${strong} · <span class="num">${Math.round(last[strong]*100)}%</span></div></div>
+    <div class="ann" style="border-color:var(--bad)"><div class="t">تحتاج تركيز</div><div>${weak} · <span class="num">${Math.round(last[weak]*100)}%</span></div><div class="s">ملاحظة المعلمة: نراجعها في الحصة القادمة مع تمارين إضافية.</div></div></div></div>
+    <div><b>آخر التحديثات</b>${notices.length?notices.map(e=>`<div class="row"><div class="grow"><div>${e.text}</div><div class="s">${e.at}</div></div></div>`).join(''):'<div class="empty">حضّري الطالبة أو خليها تحل اختبار من واجهتها، ويظهر هنا مباشرة.</div>'}</div>
+  </div></div>`;
+}
+
+function reviewsHTML(title,clsId){
+  const all=S.reviews.filter(r=>r.pub&&r.text), list=clsId?all.filter(r=>r.cls===clsId):all, L=list.length?list:all;
+  const av=avg(L.map(r=>r.stars));
+  return `<div class="card"><h3>${title}<span class="sub">${L.length} تقييم من ${S.spec==='kids'?'أولياء أمور':'طالبات'} مسجّلين</span></h3>
+  <div class="inline" style="margin-bottom:12px"><div class="big num">${av.toFixed(1)}</div><div style="color:#E8A317;font-size:20px">${'★'.repeat(Math.round(av))}</div></div>
+  <div class="reviews">${L.map(r=>`<figure class="review"><div style="color:#E8A317;letter-spacing:2px">${'★'.repeat(r.stars)}</div><blockquote style="margin:0">${esc(r.text)}</blockquote><figcaption style="font-size:12.5px;color:var(--muted)"><b style="color:var(--fg)">${esc(r.who)}</b> · ${esc(cls(r.cls).name)} <span class="pill p-good" style="font-size:11px">موثّق</span></figcaption></figure>`).join('')}</div></div>`;
+}
+
+function vVisitor(v){
+  const Q=S.quiz, P=S.P;
+  if(Q.done){
+    const score=Q.ans.filter((x,i)=>x===P.quiz[i][2]).length; let lv=P.levels[0];P.levels.forEach(l=>{if(score>=l[0])lv=l});const c=cls('c'+lv[2]);
+    const n=S.students.filter(s=>s.cls===c.id).length;
+    v.innerHTML=`<div class="vhead"><div><h2>نتيجة ${esc(P.testName)}</h2><p>صفحة عامة تنحط في البايو والقوقل ماب</p></div></div>
+    <div class="card inline" style="gap:20px"><div class="big num" style="font-size:52px">${esc(lv[1])}</div><div style="flex:1;min-width:200px"><b>أجبتي ${score} من ${P.quiz.length} صحيحة</b><div style="color:var(--muted)">الدورة المناسبة: <b style="color:var(--fg)">${esc(c.name)}</b> · ${c.time}</div><div style="color:var(--muted)">الرسوم <span class="num">${sar(c.price)}</span> + الضريبة · متبقي <span class="num">${c.cap-n}</span> مقاعد</div></div></div>
+    ${Q.sent?`<div class="card"><div class="ann" style="border-color:var(--good)"><div class="t">وصل طلبك للاستقبال</div><div class="s">شوفيه الآن في تبويب الاستقبال والإدارة.</div></div><button class="btn ghost" data-act="qreset" style="margin-top:12px">اختبار جديد</button></div>`:
+    `<div class="card"><h3>احجزي مقعدك</h3><form class="form" id="leadF"><input class="field" id="lN" placeholder="الاسم" required><input class="field num" id="lP" placeholder="رقم الجوال" style="text-align:right" required><button class="btn">أرسلي طلب التسجيل</button></form></div>`}
+    ${reviewsHTML('تجارب من سبقوك في هذي الدورة',c.id)}`;
+    const f=$('#leadF');if(f)f.onsubmit=e=>{e.preventDefault();const nm=$('#lN').value.trim(),ph=$('#lP').value.trim();if(!nm||!ph)return;S.leads.unshift({name:nm,phone:ph,level:lv[1],cls:c.id,at:'الآن',done:false});Q.sent=true;log(`طلب تسجيل جديد: <b>${esc(nm)}</b> · ${esc(lv[1])}`,'صفحة الزوار',['reception','admin']);toast('تم إرسال الطلب');render()};
+    return;
+  }
+  const it=P.quiz[Q.i];
+  v.innerHTML=`<div class="vhead"><div><h2>${esc(P.testName)}</h2><p>${P.quiz.length} أسئلة، دقيقتين، وتطلع لك الدورة المناسبة</p></div><span class="pill p-info">سؤال <span class="num">${Q.i+1}/${P.quiz.length}</span></span></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:10px"><div class="progress">${P.quiz.map((_,i)=>`<span class="${i<=Q.i?'on':''}"></span>`).join('')}</div>
+  <div style="font-size:18px;font-weight:600;${P.ltr?'direction:ltr;text-align:left':''}">${esc(it[0])}</div>
+  ${it[1].map((o,i)=>`<button class="opt ${P.ltr?'ltr':''} ${Q.ans[Q.i]===i?'sel':''}" data-act="vpick" data-i="${i}">${esc(o)}</button>`).join('')}
+  <div class="inline" style="justify-content:space-between"><button class="btn ghost" data-act="vprev" ${Q.i?'':'disabled'}>السابق</button><button class="btn" data-act="vnext" ${Q.ans[Q.i]==null?'disabled':''}>${Q.i===P.quiz.length-1?'اعرضي النتيجة':'التالي'}</button></div></div>
+  ${reviewsHTML(S.spec==='kids'?'تجارب أولياء الأمور':'تجارب طالباتنا')}`;
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return; const act=b.dataset.act, id=b.dataset.id;
+  if(act==='checkin'){checkIn(id,'يدوي');render()}
+  else if(act==='selfscan'){checkIn(S.me,'QR');render()}
+  else if(act==='tcls'){S.tCls=id;render()}
+  else if(act==='kind'){S.kind=b.dataset.k;render()}
+  else if(act==='warn'){const s=stu(id);log(`إنذار غياب لـ <b>${esc(s.name)}</b> (${Math.round(absRate(s)*100)}%)`,'الإدارة',['student','parent','teacher']);toast('وصل الإنذار للطالبة وولي الأمر')}
+  else if(act==='remind'){const s=stu(id);log(`تذكير سداد لـ <b>${esc(s.name)}</b> · <span class="num">${sar(bal(s))}</span>`,'الإدارة',['student','parent','reception']);toast('تم إرسال التذكير')}
+  else if(act==='report'){toast('في النسخة الفعلية: تقرير PDF و Excel للحضور والأداء والمالية')}
+  else if(act==='pub'||act==='unpub'){const r=S.reviews[+b.dataset.i];r.pub=act==='pub';log(r.pub?`نُشر تقييم ${esc(r.who)} في صفحة الزوار`:`أُخفي تقييم ${esc(r.who)}`,'الإدارة',['visitor']);render()}
+  else if(act==='enroll'){const l=S.leads[+b.dataset.i],cid=$('#'+b.dataset.sel).value,c=cls(cid),nid='S-'+(1001+S.students.length);
+    S.students.push({id:nid,name:l.name,cls:cid,att:0,tot:0,fee:Math.round(c.price*(1+VAT)),paid:0,hist:[Object.fromEntries(S.P.topics.map(t=>[t,.5]))],parent:'ولي أمر '+l.name});l.done=true;
+    log(`تسجيل <b>${esc(l.name)}</b> في ${esc(c.name)} · رقمها ${nid} · فاتورة <span class="num">${sar(c.price*(1+VAT))}</span>`,'الاستقبال',['admin','teacher']);toast('تم التسجيل وإصدار الفاتورة');render()}
+  else if(act==='grade'){const i=+b.dataset.i,g=$('#g'+i).value;if(g==='')return toast('اكتبي الدرجة');S.subs[i].grade=Math.max(0,Math.min(10,+g));const s=stu(S.subs[i].stu);log(`تصحيح واجب <b>${esc(s.name)}</b>: <span class="num">${S.subs[i].grade}/10</span>`,S.tMe,['student','parent']);toast('وصلت الدرجة للطالبة');render()}
+  else if(act==='submit'){const h=S.hw.find(x=>x.id===id);S.subs.push({hw:id,stu:S.me,at:'الآن',grade:null});log(`<b>${esc(stu(S.me).name)}</b> سلّمت: ${esc(h.title)}`,'بوابة الطالبة',['teacher']);toast('وصل التسليم للمعلمة');render()}
+  else if(act==='startq'){S.taking={qid:id,i:0,ans:[],end:Date.now()+(S.quizzes.find(q=>q.id===id).min*60000)};render()}
+  else if(act==='qpick'){S.taking.ans[S.taking.i]=+b.dataset.i;render()}
+  else if(act==='qnext'){if(S.taking.i<S.P.quiz.length-1){S.taking.i++;render()}else finishQuiz()}
+  else if(act==='qprev'){S.taking.i=Math.max(0,S.taking.i-1);render()}
+  else if(act==='reenroll'){const s=stu(S.me);S.reenroll.push(s.id);s.fee+=Math.round(cls(s.cls).price*(1+VAT));log(`<b>${esc(s.name)}</b> حجزت مقعد الدورة التالية`,'بوابة الطالبة',['admin','reception','parent']);toast('تم حجز مقعدك');render()}
+  else if(act==='rate'){if(!S._stars)return toast('اختاري عدد النجوم');const s=stu(S.me),parts=s.name.split(' ');S.reviews.unshift({who:parts[0]+' '+(parts[1]?parts[1].replace(/^ال/,'')[0]+'.':''),text:$('#rateC').value.trim(),stars:S._stars,cls:s.cls,pub:false,me:true});log(`تقييم جديد ${'★'.repeat(S._stars)} من ${esc(s.name)} · بانتظار موافقة النشر`,'بوابة الطالبة',['admin']);S._stars=0;toast('شكراً لتقييمك');render()}
+  else if(act==='vpick'){S.quiz.ans[S.quiz.i]=+b.dataset.i;render()}
+  else if(act==='vnext'){if(S.quiz.i<S.P.quiz.length-1)S.quiz.i++;else S.quiz.done=true;render()}
+  else if(act==='vprev'){S.quiz.i=Math.max(0,S.quiz.i-1);render()}
+  else if(act==='qreset'){S.quiz={i:0,ans:[],done:false};render()}
+});
+
+/* ---------------- boot ---------------- */
+let spec0='lang',role0='admin';
+try{const s=localStorage.getItem('ora-edu-spec');if(SPECS[s])spec0=s;const r=localStorage.getItem('ora-edu-role');if(ROLES.some(x=>x.id===r))role0=r}catch(e){}
+try{const h=location.hash.slice(1);if(SPECS[h])spec0=h}catch(e){}
+S=null; setSpec(spec0); go(role0);
+</script>
+
+</body>
+</html>
