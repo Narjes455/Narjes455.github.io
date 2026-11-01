@@ -4,484 +4,483 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ركن وافوريا — Wafforia</title>
-<meta name="theme-color" content="#AA3B1C">
+<meta name="theme-color" content="#7d2a12">
 <link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Reem+Kufi+Fun:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --rust:#AA3B1C; --rust-d:#7d2a12; --cream:#F6E7C6; --cream-l:#FFF7E8; --gold:#E9A23B; --orange:#E2762C;
-  --ink:#3a1a0c; --muted:#8a6a55; --card:#fff; --line:#efdcb8; --green:#2e8b57;
+  --rust:#AA3B1C; --rust-d:#7d2a12; --rust-dd:#561a08; --cream:#F6E7C6; --cream-l:#FFF8EA; --gold:#E9A23B; --gold-d:#b97a22;
+  --ink:#3a1a0c; --muted:#8a6a55; --green:#2e8b57; --brass:#d9a441;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 html,body{margin:0}
-body{font-family:'Baloo Bhaijaan 2',system-ui,Tahoma,sans-serif;background:var(--cream-l);color:var(--ink);min-height:100vh;overflow-x:hidden}
+body{font-family:'Baloo Bhaijaan 2',system-ui,Tahoma,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
+  background:var(--rust-dd)}
 button{font-family:inherit;cursor:pointer}
-input,select{font-family:inherit;font-size:16px}
-.demo{background:var(--ink);color:var(--cream);text-align:center;font-size:12.5px;padding:5px 10px}
+input{font-family:inherit;font-size:16px;user-select:text;-webkit-user-select:text}
+.demo{background:#1f0d05;color:var(--cream);text-align:center;font-size:12px;padding:4px 10px;opacity:.9}
 
-/* HERO */
-.hero{position:relative;overflow:hidden;background:var(--rust);color:var(--cream);text-align:center;padding:26px 18px 74px}
-.grid-bg{position:absolute;inset:-40px;opacity:.12;background-image:linear-gradient(var(--cream) 3px,transparent 3px),linear-gradient(90deg,var(--cream) 3px,transparent 3px);
-  background-size:38px 38px;transform:rotate(-12deg);animation:drift 22s linear infinite}
-@keyframes drift{to{background-position:38px 38px}}
-.hero>*{position:relative}
-.logo{width:138px;height:138px;border-radius:50%;display:block;margin:0 auto;border:5px solid var(--cream);box-shadow:0 12px 30px rgba(0,0,0,.3);
-  animation:pop .9s cubic-bezier(.2,1.6,.4,1) both}
-@keyframes pop{from{transform:scale(.2) rotate(-50deg);opacity:0}}
-.hero h1{margin:10px 0 0;font-size:34px;font-weight:800;letter-spacing:.5px}
-.hero p{margin:2px 0 0;font-size:15px;opacity:.92}
-.perk{display:inline-flex;gap:6px;align-items:center;margin-top:12px;background:var(--cream);color:var(--rust);font-weight:800;border-radius:99px;padding:6px 16px;font-size:15px;
-  box-shadow:0 4px 0 var(--rust-d);animation:wob 2.6s ease-in-out infinite}
-@keyframes wob{50%{transform:rotate(-2deg) scale(1.04)}}
-.fall{position:absolute;top:-30px;font-size:22px;animation:fall linear infinite;pointer-events:none;opacity:.8}
-@keyframes fall{to{transform:translateY(330px) rotate(300deg)}}
+/* ---------- SHOP ---------- */
+.shop{max-width:560px;margin:0 auto;position:relative;
+  background:
+    repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 26px,transparent 26px 52px),
+    radial-gradient(120% 60% at 50% 0%,#c4502c 0,var(--rust) 55%,var(--rust-d) 100%);
+  min-height:100vh;padding-bottom:110px;box-shadow:0 0 60px rgba(0,0,0,.4)}
+.awning{height:46px;position:relative;
+  background:repeating-linear-gradient(90deg,var(--cream) 0 34px,var(--rust-d) 34px 68px);}
+.awning::after{content:"";position:absolute;left:0;right:0;bottom:-16px;height:16px;
+  background:radial-gradient(circle at 17px 0,var(--cream) 16px,transparent 17px) 0 0/68px 16px repeat-x,
+             radial-gradient(circle at 51px 0,var(--rust-d) 16px,transparent 17px) 0 0/68px 16px repeat-x;filter:drop-shadow(0 4px 3px rgba(0,0,0,.25))}
+.sign{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:26px 16px 6px}
+.sign .brand{display:flex;align-items:center;gap:10px}
+.sign img{width:52px;height:52px;border-radius:50%;border:3px solid var(--cream);box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.sign h1{margin:0;font-family:'Reem Kufi Fun',sans-serif;color:var(--cream);font-size:24px;line-height:1.1;text-shadow:0 2px 0 var(--rust-dd)}
+.sign small{display:block;color:#ffd9b0;font-size:12.5px;font-weight:500}
+.boxpill{background:var(--cream);color:var(--rust-d);font-weight:800;border-radius:99px;padding:5px 12px;font-size:14px;box-shadow:0 3px 0 var(--rust-dd);white-space:nowrap}
+.boxpill b{background:var(--rust);color:var(--cream);border-radius:99px;padding:0 8px;margin-right:4px}
+.boxpill.bump{animation:bump .35s}
+@keyframes bump{50%{transform:scale(1.18)}}
+.hint{color:#ffe3c2;text-align:center;font-size:14px;margin:2px 16px 30px}
+.hint b{color:#fff}
 
-/* TABS */
-.tabs{position:sticky;top:0;z-index:20;display:flex;gap:7px;overflow-x:auto;padding:10px 12px;margin:-42px auto 0;max-width:700px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;border:0;background:var(--card);color:var(--ink);border-radius:16px;padding:8px 14px;font-size:15px;font-weight:700;box-shadow:0 4px 0 var(--line),0 6px 14px rgba(0,0,0,.08);transition:.15s}
-.tab.on{background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #b97a22;transform:translateY(-2px)}
-main{max-width:700px;margin:0 auto;padding:6px 14px 140px}
-section{display:none;animation:in .35s ease both}
-section.on{display:block}
-@keyframes in{from{opacity:0;transform:translateY(10px)}}
-h2{font-size:22px;margin:14px 2px 6px}
-.sub{color:var(--muted);margin:0 2px 12px;font-size:14.5px}
-.card{background:var(--card);border-radius:22px;padding:14px;box-shadow:0 3px 0 var(--line);margin-bottom:12px}
+/* glass display case */
+.case{position:relative;margin:0 12px;border-radius:150px 150px 14px 14px;padding:26px 12px 4px;
+  background:linear-gradient(180deg,rgba(255,248,234,.55),rgba(255,248,234,.28));
+  border:7px solid var(--rust-dd);border-bottom-width:12px;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.5),inset 0 -30px 40px rgba(255,255,255,.25),0 14px 24px rgba(0,0,0,.3)}
+.case::before{content:"";position:absolute;inset:8px 20% auto 12%;height:58%;border-radius:120px 120px 0 0;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,.55) 0 8%,transparent 8% 16%,rgba(255,255,255,.3) 16% 19%,transparent 19%);z-index:3}
+.case .crest{position:absolute;top:-20px;left:50%;transform:translateX(-50%);background:var(--rust-dd);color:var(--cream);font-family:'Reem Kufi Fun',sans-serif;
+  font-size:13px;padding:2px 14px;border-radius:99px;border:2px solid var(--brass);z-index:4;white-space:nowrap}
+.shelf{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;position:relative;padding:4px 2px 0;margin-bottom:10px}
+.shelf::after{content:"";position:absolute;left:-6px;right:-6px;bottom:-6px;height:9px;border-radius:3px;
+  background:linear-gradient(var(--cream-l),#e9d4aa);box-shadow:0 4px 6px rgba(80,30,10,.25)}
+.it{position:relative;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;z-index:2}
+.it .art{width:76px;height:62px;position:relative;transition:transform .2s}
+.it .art svg{width:100%;height:100%;filter:drop-shadow(0 6px 4px rgba(80,30,10,.3))}
+.it .plate{width:78px;height:10px;border-radius:50%;background:radial-gradient(#fffaf0,#eadbbf);margin-top:-8px;box-shadow:0 2px 2px rgba(0,0,0,.12)}
+.it .tag{margin-top:5px;background:var(--cream-l);border:1.5px solid #e2c99a;border-radius:7px;padding:1px 6px;font-size:11.5px;line-height:1.35;color:var(--ink);font-weight:700;
+  box-shadow:0 2px 0 rgba(0,0,0,.08);min-width:76px}
+.it .tag span{display:block;color:var(--rust);font-weight:800}
+.it:active .art{transform:scale(.92)}
+.it.hop .art{animation:hop .45s}
+@keyframes hop{40%{transform:translateY(-12px) rotate(-6deg)}}
+.it.out{opacity:.45;filter:grayscale(.6)}
+.it .ribbon{position:absolute;top:-4px;right:2px;background:var(--gold);color:var(--ink);font-size:10px;font-weight:800;border-radius:6px;padding:0 5px;z-index:3;transform:rotate(6deg)}
 
-/* MENU */
-.cat{display:flex;gap:6px;overflow-x:auto;margin:6px 0 10px;scrollbar-width:none}
-.cat button{border:2px solid var(--line);background:#fff;border-radius:99px;padding:4px 14px;font-weight:700;color:var(--ink);flex:0 0 auto}
-.cat button.on{background:var(--rust);border-color:var(--rust);color:var(--cream)}
-.items{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.item{background:#fff;border-radius:20px;padding:10px;box-shadow:0 3px 0 var(--line);position:relative;display:flex;flex-direction:column}
-.item .pic{height:96px;border-radius:14px;background:var(--cream);display:grid;place-items:center;margin-bottom:6px;overflow:hidden}
-.item .pic svg{width:86px;height:86px;transition:transform .3s}
-.item:active .pic svg{transform:scale(1.08) rotate(-6deg)}
-.item b{font-size:15.5px;line-height:1.3}
-.item small{color:var(--muted);font-size:12.5px;line-height:1.35;flex:1}
-.row{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
-.price{font-weight:800;color:var(--rust)}
-.add{border:0;background:var(--rust);color:var(--cream);width:34px;height:34px;border-radius:12px;font-size:22px;line-height:1}
-.badge{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--ink);font-size:11.5px;font-weight:800;border-radius:99px;padding:1px 9px;z-index:1}
-.item.out{opacity:.5}.item.out .add{background:#bbb}
-.soldout{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;color:var(--rust-d);font-size:18px;transform:rotate(-12deg)}
+/* counter */
+.counter{position:relative;margin:18px 0 0;padding:16px 12px 18px;
+  background:linear-gradient(170deg,#fffaf0 0,#f4e6cb 60%,#efdcb6 100%);border-top:8px solid #fff;
+  box-shadow:0 -6px 14px rgba(0,0,0,.18)}
+.counter::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;
+  background:linear-gradient(115deg,transparent 30%,rgba(190,150,100,.35) 31%,transparent 33%),linear-gradient(60deg,transparent 62%,rgba(190,150,100,.3) 63%,transparent 64.5%)}
+.ctop{display:grid;grid-template-columns:1.45fr 1fr;gap:10px;align-items:end;position:relative}
 
-/* BUILDER */
-.builder{display:grid;gap:12px}
-.stage{background:radial-gradient(circle at 50% 60%,#fff 0,var(--cream) 70%);border-radius:24px;height:250px;position:relative;display:grid;place-items:center;overflow:hidden}
-.stage svg{width:230px;height:230px;filter:drop-shadow(0 10px 12px rgba(90,40,10,.25))}
-.stage .lbl{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-weight:800;font-size:22px;color:var(--rust)}
-.step{font-weight:800;margin:4px 2px 6px;font-size:16px}
-.step span{background:var(--rust);color:var(--cream);border-radius:50%;width:24px;height:24px;display:inline-grid;place-items:center;font-size:13px;margin-left:6px}
-.chips{display:flex;flex-wrap:wrap;gap:7px}
-.chip{border:2px solid var(--line);background:#fff;border-radius:14px;padding:6px 12px;font-weight:700;color:var(--ink);font-size:14.5px;display:inline-flex;gap:6px;align-items:center}
-.chip.on{border-color:var(--rust);background:#fff1e6;color:var(--rust-d)}
-.chip i{font-style:normal;color:var(--muted);font-size:12px}
-.sw{width:14px;height:14px;border-radius:50%;display:inline-block;border:1.5px solid rgba(0,0,0,.15)}
-.big{border:0;width:100%;background:var(--rust);color:var(--cream);font-size:18px;font-weight:800;border-radius:18px;padding:13px;box-shadow:0 5px 0 var(--rust-d)}
-.big:active{transform:translateY(3px);box-shadow:0 2px 0 var(--rust-d)}
-.big.alt{background:var(--gold);color:var(--ink);box-shadow:0 5px 0 #b97a22}
-.drip{animation:drip .6s ease both}
-@keyframes drip{from{stroke-dashoffset:400}to{stroke-dashoffset:0}}
-.top-in{animation:dropin .45s cubic-bezier(.3,1.6,.5,1) both}
-@keyframes dropin{from{transform:translateY(-80px);opacity:0}}
+/* box */
+.wbox{position:relative;background:var(--rust);border-radius:10px;padding:10px;transform:perspective(500px) rotateX(14deg);transform-origin:bottom;
+  box-shadow:0 10px 0 var(--rust-dd),0 16px 16px rgba(0,0,0,.25)}
+.wbox::before{content:"";position:absolute;left:-2px;right:-2px;top:-30px;height:34px;border-radius:8px 8px 2px 2px;background:var(--rust-d);
+  transform:perspective(300px) rotateX(-42deg);transform-origin:bottom}
+.wbox .lid{position:absolute;top:-28px;left:0;right:0;text-align:center;color:var(--cream);font-family:'Reem Kufi Fun',sans-serif;font-size:13px;z-index:2}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:
+  repeating-linear-gradient(45deg,#f9ecd0 0 8px,#f2dfb9 8px 16px);border-radius:6px;padding:6px}
+.slot{aspect-ratio:1;border-radius:8px;border:2px dashed rgba(170,59,28,.3);display:grid;place-items:center;color:rgba(170,59,28,.45);font-size:12px;font-weight:800;position:relative}
+.slot.full{border:0;cursor:pointer}
+.slot svg{width:100%;height:100%;position:absolute;inset:0}
+.slot .x{position:absolute;top:-6px;left:-6px;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;display:grid;place-items:center;z-index:2}
+.slot .land{animation:land .35s cubic-bezier(.3,1.7,.5,1)}
+@keyframes land{from{transform:scale(1.4)}}
 
-/* COOKIE BOX */
-.box{background:#fff;border-radius:22px;padding:16px;box-shadow:0 3px 0 var(--line)}
-.boxin{background:var(--rust);border-radius:16px;padding:12px;display:grid;gap:10px;position:relative}
-.boxin::before{content:"WAFFORIA";position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--cream);color:var(--rust);font-weight:800;font-size:12px;border-radius:99px;padding:0 10px}
-.slot{aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.14);border:2px dashed rgba(246,231,198,.55);display:grid;place-items:center;font-size:12px;color:var(--cream)}
-.slot svg{width:100%;height:100%;animation:dropin .4s cubic-bezier(.3,1.6,.5,1) both}
-.slot.full{border:0;background:none;cursor:pointer}
-.cookies{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
-.ck{border:2px solid var(--line);background:#fff;border-radius:16px;padding:8px;display:flex;gap:8px;align-items:center;text-align:right}
-.ck svg{width:46px;height:46px;flex:0 0 46px}
-.ck b{display:block;font-size:14px}.ck small{color:var(--muted);font-size:12px}
+/* register */
+.reg{position:relative;text-align:center}
+.reg svg{width:100%;max-width:170px;display:block;margin:0 auto;filter:drop-shadow(0 8px 6px rgba(0,0,0,.25))}
+.reg .screen{position:absolute;top:5%;left:50%;transform:translateX(-50%) rotate(-2deg);background:var(--rust-dd);color:#ffd27a;font-weight:800;
+  border:2px solid var(--brass);border-radius:6px;padding:0 9px;font-size:17px;white-space:nowrap;font-variant-numeric:tabular-nums;box-shadow:0 3px 0 rgba(0,0,0,.3)}
+.reg .screen.tick{animation:tick .3s}
+@keyframes tick{0%{transform:translateX(-50%) rotate(-2deg) translateY(-6px);opacity:.3}}
+.reg.ding svg{animation:ding .4s}
+@keyframes ding{30%{transform:translateY(3px)}}
 
-/* STAMPS */
-.stampcard{background:var(--rust);color:var(--cream);border-radius:24px;padding:18px;position:relative;overflow:hidden}
-.stampcard h3{margin:0;font-size:22px}
-.stamps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0 8px}
-.st{aspect-ratio:1;border-radius:50%;border:2px dashed rgba(246,231,198,.6);display:grid;place-items:center;font-size:20px}
-.st.on{border:0;background:var(--cream);animation:stamp .5s cubic-bezier(.3,1.8,.5,1) both}
-.st.gift{border-color:var(--gold);color:var(--gold)}
-@keyframes stamp{from{transform:scale(2.2) rotate(-30deg);opacity:0}}
+/* sauces */
+.saucehead{font-weight:800;font-size:14.5px;margin:22px 2px 6px;color:var(--rust-d);position:relative}
+.saucehead small{font-weight:500;color:var(--muted)}
+.jars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:relative}
+.jar{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center}
+.jar svg{width:62px;height:62px;filter:drop-shadow(0 5px 3px rgba(0,0,0,.18));transition:transform .2s}
+.jar:active svg{transform:rotate(-18deg) scale(.95)}
+.jar.pour svg{animation:pour .6s}
+@keyframes pour{40%{transform:rotate(-40deg) translateY(-6px)}}
+.jar span{background:#fff;border-radius:99px;padding:0 8px;font-size:12px;font-weight:700;margin-top:2px;box-shadow:0 2px 0 #eadbbf}
+.jar i{font-style:normal;color:var(--rust);font-size:11px;font-weight:800}
+.links{display:flex;gap:8px;justify-content:center;margin-top:20px;position:relative;flex-wrap:wrap}
+.links button{border:2px solid #e2c99a;background:#fff;border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);font-size:14px}
 
-/* TRACK */
-.track{display:flex;justify-content:space-between;margin:14px 0 4px;position:relative}
-.track::before{content:"";position:absolute;top:19px;right:12%;left:12%;height:4px;background:var(--line);border-radius:4px}
-.tk{position:relative;text-align:center;width:33%;font-size:13px;font-weight:700;color:var(--muted)}
-.tk i{display:grid;place-items:center;margin:0 auto 4px;width:40px;height:40px;border-radius:50%;background:#fff;border:3px solid var(--line);font-style:normal;font-size:18px}
-.tk.on{color:var(--rust)}.tk.on i{border-color:var(--rust);background:#fff1e6}
-.tk.now i{animation:beat 1s infinite}
-@keyframes beat{50%{transform:scale(1.15)}}
+/* bottom bar */
+.bar{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(94%,530px);z-index:30;background:var(--ink);color:var(--cream);border-radius:22px;
+  padding:9px 10px 9px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.bar .info{font-size:14px;line-height:1.3}
+.bar .info b{font-size:17px;color:#ffd27a}
+.bar .info s{opacity:.55;font-size:12.5px;margin-right:4px}
+.bar button{border:0;background:var(--cream);color:var(--rust-d);font-weight:800;border-radius:15px;padding:9px 18px;font-size:16px;transition:.2s}
+.bar button:disabled{opacity:.4}
+footer{text-align:center;color:#ffd9b0;font-size:12.5px;padding:14px 14px 0;position:relative}
+footer a{color:#fff;font-weight:700}
 
-/* OWNER */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{background:#fff;border-radius:18px;padding:10px;text-align:center;box-shadow:0 3px 0 var(--line)}
-.stat b{display:block;font-size:22px;color:var(--rust)}.stat small{color:var(--muted);font-size:12px}
-.ord{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1.5px dashed var(--line);padding:10px 0}
-.ord:last-child{border:0}
-.ord small{color:var(--muted);display:block;font-size:12.5px}
-.stbtn{border:0;border-radius:12px;padding:6px 10px;font-weight:800;font-size:13px;flex:0 0 auto}
-.s0{background:#fff1e6;color:var(--rust)}.s1{background:#fff4d6;color:#94620f}.s2{background:#e3f5ea;color:var(--green)}
-.toggle{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1.5px dashed var(--line)}
-.toggle:last-child{border:0}
-.sw2{width:46px;height:26px;border-radius:99px;background:#ccc;border:0;position:relative;transition:.2s}
-.sw2::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
-.sw2.on{background:var(--green)}.sw2.on::after{right:23px}
-.note{background:#fff7e0;border:2px dashed var(--gold);border-radius:18px;padding:10px 12px;font-size:14px}
-
-/* CART */
-.cartbar{position:fixed;bottom:14px;left:50%;transform:translate(-50%,140%);width:min(94%,660px);z-index:30;background:var(--ink);color:var(--cream);border-radius:22px;
-  padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 12px 30px rgba(0,0,0,.3);transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
-.cartbar.show{transform:translate(-50%,0)}
-.cartbar .n{background:var(--gold);color:var(--ink);border-radius:10px;padding:2px 10px;font-weight:800;margin-left:6px}
-.cartbar s{opacity:.6;font-size:13px}
-.cartbar button{border:0;background:var(--cream);color:var(--rust);font-weight:800;border-radius:14px;padding:8px 16px;font-size:16px}
-.bump{animation:bump .4s}
-@keyframes bump{40%{transform:translate(-50%,0) scale(1.06)}}
-.veil{position:fixed;inset:0;background:rgba(40,15,5,.45);opacity:0;pointer-events:none;transition:.25s;z-index:40}
+/* modal */
+.veil{position:fixed;inset:0;background:rgba(40,12,3,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.25s;z-index:40}
 .veil.show{opacity:1;pointer-events:auto}
-.sheet{position:fixed;bottom:0;left:50%;transform:translate(-50%,105%);width:min(100%,700px);max-height:90vh;overflow:auto;background:var(--cream-l);z-index:50;
-  border-radius:26px 26px 0 0;padding:16px 16px 26px;transition:transform .35s cubic-bezier(.3,1.2,.5,1)}
-.sheet.show{transform:translate(-50%,0)}
-.grab{width:46px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 10px}
-.line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1.5px dashed var(--line);gap:8px}
-.line small{color:var(--muted);display:block;font-size:12.5px}
-.qty{display:flex;align-items:center;gap:6px}
-.qty button{border:0;width:28px;height:28px;border-radius:9px;background:var(--cream);color:var(--rust);font-weight:800;font-size:17px}
-.sum{margin:10px 0;font-size:15px}
-.sum div{display:flex;justify-content:space-between;padding:2px 0}
-.sum .save{color:var(--green);font-weight:800}
-.sum .tot{font-size:20px;font-weight:800;color:var(--rust);border-top:2px solid var(--line);padding-top:6px;margin-top:4px}
-.field{width:100%;border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;background:#fff}
-.mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.mode button{border:2px solid var(--line);background:#fff;border-radius:16px;padding:10px 6px;font-weight:800;color:var(--ink);font-size:14.5px}
-.mode button.on{border-color:var(--rust);background:#fff1e6;color:var(--rust-d)}
-.mode small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
-.slots{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
-.slots .chip{flex:0 0 auto}
-.toast{position:fixed;top:14px;left:50%;transform:translate(-50%,-150%);background:var(--ink);color:var(--cream);border-radius:16px;padding:9px 18px;font-weight:700;z-index:80;transition:.3s;max-width:90%;text-align:center}
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-44%) scale(.94);opacity:0;pointer-events:none;width:min(94%,520px);max-height:92vh;overflow:auto;
+  background:var(--cream-l);border-radius:26px;z-index:50;padding:18px 16px;transition:.3s cubic-bezier(.3,1.3,.5,1);box-shadow:0 30px 60px rgba(0,0,0,.4)}
+.modal.show{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
+.close{position:absolute;top:12px;left:12px;width:32px;height:32px;border-radius:50%;border:0;background:#f1dfbd;color:var(--rust-d);font-size:16px;font-weight:800;z-index:2}
+.co{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:start}
+.bag{position:relative}
+.bag svg{width:100%;filter:drop-shadow(0 10px 8px rgba(80,30,10,.25))}
+.bag .bow{transform-origin:60px 52px;transform:scale(0)}
+.bag.tied .bow{animation:bow .8s cubic-bezier(.3,1.7,.5,1) forwards}
+.bag.tied .tails{animation:tails .6s .2s both}
+@keyframes bow{to{transform:scale(1)}}
+@keyframes tails{from{stroke-dashoffset:60}to{stroke-dashoffset:0}}
+.bag.swing svg{animation:swing 1.2s ease-in-out}
+@keyframes swing{25%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}}
+.co h2{font-family:'Reem Kufi Fun',sans-serif;margin:0 0 6px;font-size:22px;color:var(--rust-d);line-height:1.25}
+.lines{max-height:170px;overflow:auto}
+.ln{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1.5px dashed #ead6b0;font-size:14px}
+.ln svg{width:30px;height:30px;flex:0 0 30px}
+.ln div{flex:1;line-height:1.25}.ln small{display:block;color:var(--muted);font-size:12px}
+.ln b{color:var(--rust)}
+.tot{margin-top:6px;font-size:14px}
+.tot div{display:flex;justify-content:space-between}
+.tot .save{color:var(--green);font-weight:800}
+.tot .all{font-size:19px;font-weight:800;color:var(--rust-d);margin-top:3px}
+.when{text-align:center;margin:14px 0 6px;font-weight:800;color:var(--rust-d)}
+.clock{display:flex;justify-content:center;align-items:center;gap:10px}
+.clock .bt{width:38px;height:38px;border-radius:50%;border:0;background:var(--rust);color:var(--cream);font-size:22px;font-weight:800;box-shadow:0 3px 0 var(--rust-dd)}
+.flip{background:linear-gradient(#f4e8d3,#e3d3b4);border-radius:14px;padding:8px 10px 6px;box-shadow:0 6px 0 #c9b38b,0 10px 14px rgba(0,0,0,.18);text-align:center;position:relative;min-width:150px}
+.flip::before,.flip::after{content:"";position:absolute;top:30%;width:8px;height:22px;background:var(--rust);border-radius:3px}
+.flip::before{right:-6px}.flip::after{left:-6px}
+.flip .lab{font-size:9.5px;letter-spacing:2px;color:var(--muted);font-weight:700}
+.digits{display:flex;gap:3px;justify-content:center;direction:ltr;margin:2px 0}
+.dg{background:#2a1408;color:#fff;font-size:30px;font-weight:800;width:30px;height:44px;border-radius:6px;display:grid;place-items:center;position:relative;overflow:hidden;font-variant-numeric:tabular-nums}
+.dg::after{content:"";position:absolute;left:0;right:0;top:50%;height:1.5px;background:rgba(0,0,0,.7)}
+.dg.fl{animation:flp .35s}
+@keyframes flp{0%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+.colon{color:#2a1408;font-size:28px;font-weight:800;align-self:center}
+.flip .nm{font-family:'Reem Kufi Fun',sans-serif;color:var(--rust-d);font-size:12px}
+.whenTxt{text-align:center;color:var(--muted);font-size:12.5px;margin-top:10px}
+.field{width:100%;border:2px solid #ead6b0;border-radius:14px;padding:9px 12px;margin-top:8px;background:#fff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.big{border:0;width:100%;background:var(--rust);color:var(--cream);font-size:17px;font-weight:800;border-radius:99px;padding:12px;box-shadow:0 5px 0 var(--rust-dd);margin-top:12px;position:relative;overflow:hidden}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 var(--rust-dd)}
+.big.busy{background:#c98a6e}
+.big.busy::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 1s infinite}
+@keyframes shine{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+.fine{text-align:center;color:var(--muted);font-size:11.5px;margin-top:6px}
+.wa{display:block;text-align:center;text-decoration:none;background:#25d366;color:#fff;font-weight:800;border-radius:99px;padding:12px;box-shadow:0 5px 0 #1a9e4b;margin-top:12px}
+.stamps{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:12px 0 6px}
+.st{aspect-ratio:1;border-radius:50%;border:2px dashed #d9b98a;display:grid;place-items:center;font-size:18px}
+.st.on{border:0;background:var(--rust);animation:stp .5s cubic-bezier(.3,1.8,.5,1) both}
+.st.gift{border-color:var(--gold)}
+@keyframes stp{from{transform:scale(2) rotate(-30deg);opacity:0}}
+.ord{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1.5px dashed #ead6b0;padding:8px 0;font-size:14px}
+.ord small{display:block;color:var(--muted);font-size:12px}
+.sb{border:0;border-radius:10px;padding:5px 10px;font-weight:800;font-size:12.5px;flex:0 0 auto}
+.s0{background:#fde7dc;color:var(--rust)}.s1{background:#fff1cc;color:#94620f}.s2{background:#dff3e6;color:var(--green)}
+.tg{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px}
+.sw{width:42px;height:24px;border-radius:99px;background:#ccc;border:0;position:relative;transition:.2s}
+.sw::after{content:"";position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on{background:var(--green)}.sw.on::after{right:21px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.kpi{background:#fff;border-radius:14px;padding:8px 4px;text-align:center;box-shadow:0 2px 0 #ead6b0}
+.kpi b{display:block;color:var(--rust);font-size:19px}.kpi small{font-size:11px;color:var(--muted)}
+
+.toast{position:fixed;top:14px;left:50%;transform:translate(-50%,-160%);background:var(--ink);color:var(--cream);border-radius:16px;padding:8px 16px;font-weight:700;z-index:90;transition:.3s;max-width:90%;text-align:center;font-size:14.5px}
 .toast.show{transform:translate(-50%,0)}
-.conf{position:fixed;top:-30px;z-index:90;pointer-events:none;font-size:22px;animation:cf 1.9s ease-in forwards}
+.flyer{position:fixed;z-index:80;pointer-events:none;width:70px;height:70px}
+.flyer svg{width:100%;height:100%}
+.drop{position:fixed;z-index:81;pointer-events:none;width:10px;height:14px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%}
+.conf{position:fixed;top:-30px;z-index:95;pointer-events:none;font-size:22px;animation:cf 2s ease-in forwards}
 @keyframes cf{to{transform:translateY(105vh) rotate(540deg)}}
-.fly{position:fixed;z-index:85;font-size:30px;pointer-events:none;transition:all .7s cubic-bezier(.5,-.4,.7,1)}
-footer{text-align:center;color:var(--muted);font-size:13.5px;padding:10px 14px 110px}
-footer a{color:var(--rust);font-weight:700}
-@media(min-width:560px){.items{grid-template-columns:repeat(3,1fr)}.builder{grid-template-columns:1fr 1fr;align-items:start}.stage{position:sticky;top:70px;height:330px}.stage svg{width:280px;height:280px}}
+@media(min-width:520px){.it .art{width:100px;height:82px}.it .tag{font-size:12.5px}}
 </style>
 </head>
 <body>
 <div class="demo">✦ نسخة تجريبية (ديمو) مقترحة لـ Wafforia — تصميم وتطوير: نرجس العمري ✦</div>
+<div class="shop">
+  <div class="awning"></div>
+  <div class="sign">
+    <div class="brand"><img src="logo.png" alt="Wafforia"><div><h1>ركن وافوريا</h1><small>المدينة المنورة · استلم بنفسك وخذ خصم 15٪</small></div></div>
+    <div class="boxpill" id="pill">🧺 بوكسك <b id="pillN">0</b></div>
+  </div>
+  <p class="hint">اضغط على أي حبة في الفاترينة <b>وتنزل في بوكسك</b> 👇</p>
 
-<header class="hero" id="hero">
-  <div class="grid-bg"></div>
-  <img class="logo" src="logo.png" alt="Wafforia">
-  <h1>ركن وافوريا</h1>
-  <p>Taste the Joy in Every Bite · المدينة المنورة 📍</p>
-  <div class="perk">🛍️ اطلب واستلم بنفسك = خصم 15٪</div>
-</header>
+  <div class="case">
+    <div class="crest">✦ فاترينة اليوم ✦</div>
+    <div id="shelves"></div>
+  </div>
 
-<nav class="tabs">
-  <button class="tab on" data-t="menu">🧇 المنيو</button>
-  <button class="tab" data-t="build">✨ ركّب وافلك</button>
-  <button class="tab" data-t="box">🍪 بوكس الكوكيز</button>
-  <button class="tab" data-t="stamps">⭐ كرت الختم</button>
-  <button class="tab" data-t="owner">🏪 لوحة المحل</button>
-</nav>
-
-<main>
-<section id="menu" class="on">
-  <h2>وش تشتهي اليوم؟</h2>
-  <p class="sub">اطلب من هنا واستلم من المحل بخصم 15٪ — بدون انتظار ولا رسائل.</p>
-  <div id="track"></div>
-  <div class="cat" id="cats"></div>
-  <div class="items" id="items"></div>
-</section>
-
-<section id="build">
-  <h2>ركّب وافلك بطريقتك ✨</h2>
-  <p class="sub">اختار وشوفه يتكوّن قدامك.</p>
-  <div class="builder">
-    <div class="stage"><div id="wsvg"></div><div class="lbl" id="bprice"></div></div>
-    <div>
-      <div class="step"><span>1</span>العجينة</div><div class="chips" id="g-base"></div>
-      <div class="step" style="margin-top:12px"><span>2</span>الصوص</div><div class="chips" id="g-sauce"></div>
-      <div class="step" style="margin-top:12px"><span>3</span>الإضافات <small style="color:var(--muted);font-weight:500">(لين 3)</small></div><div class="chips" id="g-top"></div>
-      <div style="margin-top:16px"><button class="big" id="addBuild">أضف للسلة 🧇</button></div>
+  <div class="counter">
+    <div class="ctop">
+      <div class="wbox"><div class="lid">WAFFORIA</div><div class="slots" id="slots"></div></div>
+      <div class="reg" id="reg">
+        <div class="screen" id="screen">0 ر.س</div>
+        <svg viewBox="0 0 160 150">
+          <rect x="44" y="6" width="72" height="22" rx="4" fill="#7d2a12"/>
+          <path d="M18 52 Q20 34 40 32 H120 Q140 34 142 52 L148 112 H12z" fill="#AA3B1C"/>
+          <path d="M18 52 Q20 34 40 32 H120 Q140 34 142 52" fill="none" stroke="#d9a441" stroke-width="3"/>
+          <rect x="62" y="20" width="36" height="16" rx="2" fill="#fff8ea"/>
+          <g fill="#F6E7C6" stroke="#7d2a12" stroke-width="1.5">
+            <circle cx="40" cy="62" r="7"/><circle cx="60" cy="62" r="7"/><circle cx="80" cy="62" r="7"/><circle cx="100" cy="62" r="7"/>
+            <circle cx="36" cy="82" r="7"/><circle cx="56" cy="82" r="7"/><circle cx="76" cy="82" r="7"/><circle cx="96" cy="82" r="7"/>
+            <circle cx="34" cy="100" r="6.5"/><circle cx="54" cy="100" r="6.5"/><circle cx="74" cy="100" r="6.5"/><circle cx="94" cy="100" r="6.5"/>
+          </g>
+          <g fill="#7d2a12"><rect x="118" y="56" width="10" height="16" rx="3"/><rect x="118" y="78" width="10" height="16" rx="3"/></g>
+          <path d="M142 60 q14 -6 12 -26" stroke="#d9a441" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="154" cy="32" r="6" fill="#7d2a12"/>
+          <rect x="8" y="112" width="144" height="30" rx="5" fill="#7d2a12"/>
+          <rect x="62" y="122" width="36" height="8" rx="4" fill="#d9a441"/>
+        </svg>
+      </div>
     </div>
+    <div class="saucehead">🥄 جرار الصوص <small>— اضغط عليها وتنصب على آخر وافل في بوكسك</small></div>
+    <div class="jars" id="jars"></div>
+    <div class="links">
+      <button id="openStamps">⭐ كرت الختم</button>
+      <button id="openOwner">🏪 لوحة المحل</button>
+    </div>
+    <footer style="color:var(--muted)">الأصناف والأسعار تجريبية للعرض فقط.<br>تصميم وتطوير <a style="color:var(--rust)" href="https://narjes455.github.io/" target="_blank" rel="noopener">نرجس العمري</a> · <a style="color:var(--rust)" href="tel:0556211944">0556211944</a></footer>
   </div>
-</section>
+</div>
 
-<section id="box">
-  <h2>عبّي بوكسك 🍪</h2>
-  <p class="sub">اختار حجم البوكس واضغط على الكوكيز تنزل فيه. اضغط على أي حبة داخل البوكس تشيلها.</p>
-  <div class="box">
-    <div class="chips" id="g-size" style="margin-bottom:18px"></div>
-    <div class="boxin" id="boxin"></div>
-    <div class="cookies" id="cookies"></div>
-    <div style="margin-top:14px"><button class="big" id="addBox">أضف البوكس للسلة</button></div>
-  </div>
-</section>
-
-<section id="stamps">
-  <h2>كرت الختم ⭐</h2>
-  <p class="sub">كل طلب استلام = ختم. الختم السادس عليه وافل كلاسيك هدية.</p>
-  <div class="stampcard">
-    <h3>بطاقة عميل وافوريا</h3>
-    <div class="stamps" id="stampGrid"></div>
-    <div id="stampTxt"></div>
-  </div>
-  <div class="card" style="margin-top:12px">
-    <b>ليش كرت الختم؟</b>
-    <p class="sub" style="margin:4px 0 0">يرجع لكم العميل ويطلب منكم مباشرة بدل التطبيقات، لأن الختم ما ينحسب إلا من هنا.</p>
-  </div>
-  <button class="big alt" id="tryStamp">جرّب: أضف ختم 👆</button>
-</section>
-
-<section id="owner">
-  <h2>لوحة المحل 🏪</h2>
-  <p class="sub">هنا تشوفون الطلبات أول بأول وتغيّرون حالتها، والعميل يشوف التحديث عنده.</p>
-  <div class="stats" id="stats"></div>
-  <div class="card" style="margin-top:12px"><b>طلبات اليوم</b><div id="orders"></div></div>
-  <div class="card"><b>المتوفر الحين</b><p class="sub" style="margin:2px 0 6px">خلص صنف؟ اقفلوه ويختفي من الطلب فورًا.</p><div id="avail"></div></div>
-  <div class="note">📄 المنيو والأسعار تنعدّل من ملف Google Sheets بسيط — تغيّرون السعر هناك ويتحدث هنا مباشرة.</div>
-</section>
-</main>
-
-<footer>
-  الأسعار والأصناف هنا تجريبية للعرض فقط.<br>
-  تصميم وتطوير <a href="https://narjes455.github.io/" target="_blank" rel="noopener">نرجس العمري</a> · <a href="tel:0556211944">0556211944</a>
-</footer>
-
-<div class="cartbar" id="cartbar">
-  <div><span class="n" id="cn">0</span> <b id="ct"></b> <s id="cold"></s></div>
-  <button id="openCart">السلة ←</button>
+<div class="bar">
+  <div class="info"><span id="cnt">0/6</span> · <b id="tot">0 ر.س</b><s id="old"></s></div>
+  <button id="checkout" disabled>اطلب ←</button>
 </div>
 <div class="veil" id="veil"></div>
-<div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
+<div class="modal" id="modal"><button class="close" id="mclose">✕</button><div id="mbody"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 const $=s=>document.querySelector(s);
-const store={get(k,d){try{const v=localStorage.getItem('waf_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('waf_'+k,JSON.stringify(v))}catch(e){}}};
-const DISC=0.15;
-const money=n=>(Math.round(n*100)/100).toString().replace(/\.0+$/,'')+' ر.س';
+const store={get(k,d){try{const v=localStorage.getItem('wafg_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('wafg_'+k,JSON.stringify(v))}catch(e){}}};
+const DISC=.15, MAX=6;
+const money=n=>(Math.round(n*100)/100).toString()+' ر.س';
 
-/* ---------- SVG ART ---------- */
+/* ---------- tiny sounds ---------- */
+let ac;function snd(f=600,d=.08,type='sine',v=.08){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;
+  g.gain.setValueAtTime(v,ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+const pop=()=>{snd(520,.07);setTimeout(()=>snd(780,.09),60)};
+const ching=()=>{snd(1320,.15,'triangle',.07);setTimeout(()=>snd(1760,.25,'triangle',.06),90)};
+
+/* ---------- art ---------- */
 function waffleSVG(o={}){
-  const base=o.base||'#E9A23B', dark=o.dark||'#c27a1d', sauce=o.sauce, tops=o.tops||[], anim=o.anim;
-  let cells='';for(let r=0;r<4;r++)for(let c=0;c<4;c++)cells+=`<rect x="${42+c*30}" y="${42+r*30}" width="22" height="22" rx="4" fill="${dark}" opacity=".55"/>`;
-  let s='';
-  if(sauce){s=`<path class="${anim?'drip':''}" stroke-dasharray="400" d="M38 70 Q60 52 80 72 T120 70 T162 74 M40 110 Q66 92 92 112 T140 108 T165 112 M44 150 Q70 132 96 150 T150 148" fill="none" stroke="${sauce}" stroke-width="9" stroke-linecap="round"/>
-  <path d="M60 160 q3 14 0 18 q-3 -4 0 -18 M118 158 q3 12 0 16 q-3 -4 0 -16" fill="${sauce}"/>`}
-  const pos=[[70,62],[132,80],[96,122],[60,140],[140,138],[100,74]];
-  const t=tops.map((tp,i)=>`<g class="${anim?'top-in':''}" style="animation-delay:${i*.08}s">${topSVG(tp,pos[i%6][0],pos[i%6][1])}${topSVG(tp,pos[(i+3)%6][0],pos[(i+3)%6][1])}</g>`).join('');
-  return `<svg viewBox="0 0 200 200"><rect x="30" y="30" width="140" height="140" rx="22" fill="${base}"/><rect x="30" y="30" width="140" height="140" rx="22" fill="none" stroke="${dark}" stroke-width="5"/>${cells}${s}${t}</svg>`;
+  const base=o.base||'#E9A23B',dark=o.dark||'#c27a1d';
+  let cells='';for(let r=0;r<4;r++)for(let c=0;c<4;c++)cells+=`<rect x="${42+c*30}" y="${42+r*30}" width="22" height="22" rx="4" fill="${dark}" opacity=".5"/>`;
+  const sauce=o.sauce?drizzle(o.sauce):'';
+  const tops=(o.tops||[]).map((t,i)=>topSVG(t,[70,132,98,60,140][i%5],[66,80,120,140,138][i%5])+topSVG(t,[134,64,104][i%3],[138,104,72][i%3])).join('');
+  return `<svg viewBox="20 20 160 160"><rect x="30" y="30" width="140" height="140" rx="22" fill="${base}"/><rect x="30" y="30" width="140" height="140" rx="22" fill="none" stroke="${dark}" stroke-width="5"/>${cells}${sauce}${tops}</svg>`;
 }
-function topSVG(t,x,y){
-  switch(t){
-    case 'straw':return `<g transform="translate(${x} ${y})"><path d="M0 -12 C12 -12 14 4 0 14 C-14 4 -12 -12 0 -12z" fill="#e2384b"/><path d="M-6 -12 l6 5 l6 -5" stroke="#2e8b57" stroke-width="3" fill="none"/><circle cx="-3" cy="0" r="1.2" fill="#ffe08a"/><circle cx="3" cy="4" r="1.2" fill="#ffe08a"/></g>`;
-    case 'banana':return `<g transform="translate(${x} ${y})"><circle r="11" fill="#fff3b0" stroke="#e8cf6a" stroke-width="2"/><circle r="3" fill="#d9bd5a"/></g>`;
-    case 'kitkat':return `<g transform="translate(${x} ${y}) rotate(-20)"><rect x="-6" y="-14" width="12" height="28" rx="3" fill="#6b3518"/><rect x="-6" y="-14" width="12" height="28" rx="3" fill="none" stroke="#4a210c" stroke-width="1.5"/></g>`;
-    case 'oreo':return `<g transform="translate(${x} ${y})"><circle r="12" fill="#2b1b14"/><circle r="8" fill="none" stroke="#4a342a" stroke-width="2"/><rect x="-12" y="-2" width="24" height="4" fill="#fff" opacity=".9"/></g>`;
-    case 'ice':return `<g transform="translate(${x} ${y})"><circle r="15" fill="#fff8ec"/><circle cx="-6" cy="-4" r="7" fill="#fff"/><circle cx="6" cy="5" r="2" fill="#7a3b1a"/><circle cx="-3" cy="7" r="1.6" fill="#7a3b1a"/></g>`;
-    case 'pist':return `<g transform="translate(${x} ${y})"><ellipse rx="7" ry="4.5" fill="#8ab84a" transform="rotate(30)"/><ellipse cx="9" cy="5" rx="5" ry="3.5" fill="#a6cf5f"/></g>`;
-    case 'lotus':return `<g transform="translate(${x} ${y}) rotate(15)"><rect x="-12" y="-8" width="24" height="16" rx="3" fill="#c98a3f"/><rect x="-9" y="-5" width="18" height="10" rx="2" fill="none" stroke="#a46a26" stroke-width="1.5"/></g>`;
-  }return '';
+function drizzle(c){return `<path d="M38 72 Q60 54 80 74 T120 72 T162 76 M40 110 Q66 92 92 112 T140 108 T165 112 M44 148 Q70 130 96 148 T150 146" fill="none" stroke="${c}" stroke-width="9" stroke-linecap="round"/><path d="M62 150 q4 16 0 20 q-4 -4 0 -20 M120 146 q4 14 0 18 q-4 -4 0 -18" fill="${c}"/>`}
+function stickSVG(sauce){return `<svg viewBox="0 0 200 200"><rect x="94" y="120" width="12" height="74" rx="5" fill="#e9cf9c"/><path d="M50 20 h100 a14 14 0 0 1 14 14 v80 a14 14 0 0 1 -14 14 h-100 a14 14 0 0 1 -14 -14 v-80 a14 14 0 0 1 14 -14z" fill="#E9A23B" stroke="#c27a1d" stroke-width="5"/>
+  ${[0,1,2,3].map(r=>[0,1,2].map(c=>`<rect x="${56+c*32}" y="${30+r*23}" width="24" height="16" rx="3" fill="#c27a1d" opacity=".5"/>`).join('')).join('')}
+  <path d="M40 54 Q70 40 100 58 T162 52 M40 92 Q72 78 100 96 T162 88" stroke="${sauce||'#5b2a12'}" stroke-width="9" fill="none" stroke-linecap="round"/></svg>`}
+function topSVG(t,x,y){switch(t){
+  case 'straw':return `<g transform="translate(${x} ${y})"><path d="M0 -12 C12 -12 14 4 0 14 C-14 4 -12 -12 0 -12z" fill="#e2384b"/><path d="M-6 -12 l6 5 l6 -5" stroke="#2e8b57" stroke-width="3" fill="none"/></g>`;
+  case 'banana':return `<g transform="translate(${x} ${y})"><circle r="11" fill="#fff3b0" stroke="#e8cf6a" stroke-width="2"/><circle r="3" fill="#d9bd5a"/></g>`;
+  case 'pist':return `<g transform="translate(${x} ${y})"><ellipse rx="7" ry="4.5" fill="#8ab84a" transform="rotate(30)"/><ellipse cx="9" cy="5" rx="5" ry="3.5" fill="#a6cf5f"/></g>`;
+  case 'lotus':return `<g transform="translate(${x} ${y}) rotate(15)"><rect x="-12" y="-8" width="24" height="16" rx="3" fill="#c98a3f"/><rect x="-9" y="-5" width="18" height="10" rx="2" fill="none" stroke="#a46a26" stroke-width="1.5"/></g>`;
+  case 'oreo':return `<g transform="translate(${x} ${y})"><circle r="12" fill="#2b1b14"/><rect x="-12" y="-2" width="24" height="4" fill="#fff" opacity=".9"/></g>`;
+}return ''}
+function cookieSVG(c,extra){
+  const chips=(c.chips||[]).map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c.chip}"/>`).join('');
+  const fill=c.fill?`<path d="M40 40 C50 32 66 38 66 50 C67 62 54 68 45 63 C35 59 33 47 40 40z" fill="${c.fill}"/><path d="M47 45 C52 42 58 44 59 49" stroke="rgba(255,255,255,.35)" stroke-width="3" fill="none" stroke-linecap="round"/>`:'';
+  const dr=extra?`<path d="M18 40 Q34 30 50 42 T84 40 M20 62 Q38 52 54 64 T84 60" stroke="${extra}" stroke-width="6" fill="none" stroke-linecap="round"/>`:'';
+  return `<svg viewBox="0 0 100 100"><path d="M50 10 C76 10 92 26 90 50 C92 74 74 92 50 90 C26 92 8 74 10 50 C8 26 26 10 50 10z" fill="${c.dough}"/><path d="M50 10 C76 10 92 26 90 50 C92 74 74 92 50 90 C26 92 8 74 10 50 C8 26 26 10 50 10z" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="3"/>${fill}${chips}${dr}</svg>`;
 }
-function cookieSVG(c){
-  let chips='';(c.chips||[]).forEach(([x,y,r])=>chips+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${c.chip}"/>`);
-  const extra=c.fill?`<path d="M40 40 C50 32 66 38 66 50 C67 62 54 68 45 63 C35 59 33 47 40 40z" fill="${c.fill}"/><path d="M47 45 C52 42 58 44 59 49" stroke="rgba(255,255,255,.35)" stroke-width="3" fill="none" stroke-linecap="round"/>`:'';
-  const pretzel=c.pretzel?`<path d="M38 40 q12 -14 24 0 q6 10 -12 16 q-18 -6 -12 -16z M44 46 l12 0" stroke="#7a3b1a" stroke-width="4" fill="none"/>`:'';
-  return `<svg viewBox="0 0 100 100"><path d="M50 10 C76 10 92 26 90 50 C92 74 74 92 50 90 C26 92 8 74 10 50 C8 26 26 10 50 10z" fill="${c.dough}"/><path d="M50 10 C76 10 92 26 90 50 C92 74 74 92 50 90 C26 92 8 74 10 50 C8 26 26 10 50 10z" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="3"/>${extra}${chips}${pretzel}</svg>`;
-}
-const COOKIES=[
-  {id:'patent',name:'كوكيز براءة اختراع',d:'محشي صوص شوكولاتة سايح',dough:'#c98d4f',chip:'#4a210c',fill:'#5b2a12',chips:[[24,56,4],[74,36,5],[64,78,4]],price:14,tag:'المميز'},
-  {id:'chunk',name:'دبل شوكلت تشنك',d:'قطع شوكولاتة كبيرة',dough:'#d9a866',chip:'#4a210c',chips:[[32,34,7],[66,30,6],[52,56,8],[30,68,6],[70,68,7]],price:12},
-  {id:'pretzel',name:'بريتزل كراميل',d:'مالح حلو مع كراميل',dough:'#e0b475',chip:'#a35d1f',chips:[[26,46,4],[72,70,5],[42,76,3]],pretzel:true,price:13},
-  {id:'red',name:'ريد فيلفيت',d:'بقطع شوكولاتة بيضاء',dough:'#a8312f',chip:'#fff3dc',chips:[[30,34,6],[66,30,5],[52,58,6],[30,68,5],[70,66,6]],price:13},
-];
+function jarSVG(c,lbl){return `<svg viewBox="0 0 80 80"><path d="M22 26 h36 v6 q8 4 8 16 v18 q0 8 -8 8 h-36 q-8 0 -8 -8 v-18 q0 -12 8 -16z" fill="#fff8ea" stroke="#e2c99a" stroke-width="2"/>
+  <path d="M16 46 q0 -8 6 -12 h36 q6 4 6 12 v20 q0 6 -6 6 h-36 q-6 0 -6 -6z" fill="${c}"/><path d="M14 46 q12 -6 26 0 t26 0" fill="${c}"/>
+  <rect x="20" y="16" width="40" height="12" rx="4" fill="#AA3B1C"/><rect x="26" y="50" width="28" height="12" rx="3" fill="#fff8ea" opacity=".9"/>
+  <text x="40" y="59" font-size="7" text-anchor="middle" fill="#7d2a12" font-family="sans-serif" font-weight="700">${lbl}</text>
+  <path d="M22 34 q-2 10 0 24" stroke="#fff" stroke-width="3" opacity=".6" fill="none" stroke-linecap="round"/></svg>`}
 
-/* ---------- DATA ---------- */
-const MENU=[
-  {id:'classic',cat:'وافل',name:'وافل كلاسيك',d:'وافل بلجيكي مقرمش مع صوص نوتيلا',price:18,art:{sauce:'#5b2a12',tops:[]},tag:'الأكثر طلبًا'},
-  {id:'mango',cat:'وافل',name:'وافل تشيز كيك مانجو',d:'كريمة تشيز كيك وصوص مانجو طازج',price:24,art:{sauce:'#f2b233',tops:['banana']},tag:'جديد 🥭'},
-  {id:'lotus',cat:'وافل',name:'وافل لوتس',d:'صوص لوتس وقطع بسكويت',price:22,art:{sauce:'#c98a3f',tops:['lotus']}},
-  {id:'pist',cat:'وافل',name:'وافل بستاشيو',d:'صوص بستاشيو وحبات فستق',price:25,art:{sauce:'#9cc25a',tops:['pist']}},
-  {id:'straw',cat:'وافل',name:'وافل فراولة',d:'نوتيلا وفراولة طازجة',price:22,art:{sauce:'#5b2a12',tops:['straw']}},
-  ...COOKIES.map(c=>({id:'ck_'+c.id,cat:'كوكيز',name:c.name,d:c.d,price:c.price,cookie:c,tag:c.tag})),
-  {id:'mix',cat:'بوكسات',name:'بوكس العائلة',d:'4 وافل ميني + 4 كوكيز',price:79,art:{sauce:'#5b2a12',tops:['straw','oreo']},tag:'للجمعات'},
+/* ---------- data ---------- */
+const CK={
+  patent:{dough:'#c98d4f',chip:'#4a210c',fill:'#5b2a12',chips:[[24,56,4],[74,36,5],[64,78,4]]},
+  chunk:{dough:'#d9a866',chip:'#4a210c',chips:[[32,34,7],[66,30,6],[52,56,8],[30,68,6],[70,68,7]]},
+  red:{dough:'#a8312f',chip:'#fff3dc',chips:[[30,34,6],[66,30,5],[52,58,6],[30,68,5],[70,66,6]]},
+};
+const ITEMS=[
+  {id:'classic',name:'وافل كلاسيك',price:18,kind:'w',art:{sauce:'#5b2a12'},tag:'الأشهر'},
+  {id:'mango',name:'تشيز كيك مانجو',price:24,kind:'w',art:{sauce:'#f2b233',tops:['banana']},tag:'جديد'},
+  {id:'stick',name:'وافل ستيك',price:15,kind:'s'},
+  {id:'lotus',name:'وافل لوتس',price:22,kind:'w',art:{sauce:'#c98a3f',tops:['lotus']}},
+  {id:'pist',name:'وافل بستاشيو',price:25,kind:'w',art:{sauce:'#9cc25a',tops:['pist']}},
+  {id:'straw',name:'وافل فراولة',price:22,kind:'w',art:{sauce:'#5b2a12',tops:['straw']}},
+  {id:'patent',name:'كوكيز براءة اختراع',price:14,kind:'c',tag:'المميز'},
+  {id:'chunk',name:'دبل شوكلت تشنك',price:12,kind:'c'},
+  {id:'red',name:'ريد فيلفيت',price:13,kind:'c'},
 ];
-const BASES=[{n:'كلاسيك',c:'#E9A23B',d:'#c27a1d',p:0},{n:'شوكولاتة',c:'#7a3b1a',d:'#4a210c',p:3},{n:'ريد فيلفيت',c:'#a8312f',d:'#721c1a',p:4}];
-const SAUCES=[{n:'نوتيلا',c:'#5b2a12',p:0},{n:'لوتس',c:'#c98a3f',p:2},{n:'بستاشيو',c:'#9cc25a',p:4},{n:'وايت شوكلت',c:'#fff3dc',p:2},{n:'كراميل',c:'#d98a1f',p:2},{n:'مانجو',c:'#f2b233',p:3}];
-const TOPS=[{n:'فراولة',k:'straw',p:4},{n:'موز',k:'banana',p:3},{n:'كيت كات',k:'kitkat',p:4},{n:'أوريو',k:'oreo',p:3},{n:'آيسكريم',k:'ice',p:5},{n:'فستق',k:'pist',p:5},{n:'لوتس',k:'lotus',p:3}];
-const SIZES=[{n:'بوكس 4',k:4,off:4},{n:'بوكس 6',k:6,off:8}];
+const SAUCES=[{id:'nut',name:'نوتيلا',c:'#5b2a12',p:2,l:'NUTELLA'},{id:'lot',name:'لوتس',c:'#c98a3f',p:2,l:'LOTUS'},{id:'pis',name:'بستاشيو',c:'#9cc25a',p:3,l:'PISTACHIO'},{id:'wht',name:'وايت شوكلت',c:'#fff3dc',p:2,l:'WHITE'}];
+const byId=id=>ITEMS.find(i=>i.id===id);
+function artOf(it,sauce){
+  if(it.kind==='c')return cookieSVG(CK[it.id],sauce&&sauce.c);
+  if(it.kind==='s')return stickSVG(sauce&&sauce.c);
+  const a={...it.art};if(sauce)a.sauce=sauce.c;return waffleSVG(a);
+}
 
-let cart=store.get('cart',[]);
+let box=store.get('box',[]);           // [{id,s:sauceId|null}]
 let avail=store.get('avail',{});
-let orders=store.get('orders',null);
 let stamps=store.get('stamps',2);
-let cat='وافل';
-const isOut=id=>avail[id]===false;
+let orders=store.get('orders',null);
+const out=id=>avail[id]===false;
+const sauceOf=b=>SAUCES.find(s=>s.id===b.s);
+const linePrice=b=>byId(b.id).price+(b.s?sauceOf(b).p:0);
+const subtotal=()=>box.reduce((a,b)=>a+linePrice(b),0);
 
-/* ---------- UI helpers ---------- */
-function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2300)}
-function confetti(n=36){const set=['🧇','🍪','✦','🧡','⭐'];for(let i=0;i<n;i++){const s=document.createElement('span');s.className='conf';s.textContent=set[i%set.length];
-  s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),2700)}}
-function fly(btn,emo){const r=btn.getBoundingClientRect();const s=document.createElement('span');s.className='fly';s.textContent=emo;s.style.left=r.left+'px';s.style.top=r.top+'px';
-  document.body.appendChild(s);requestAnimationFrame(()=>{s.style.left='50%';s.style.top=(innerHeight-50)+'px';s.style.transform='scale(.4)';s.style.opacity='.3'});setTimeout(()=>s.remove(),750)}
-function go(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));
-  if(t==='owner')renderOwner();if(t==='stamps')renderStamps();if(t==='menu')renderTrack();window.scrollTo({top:$('.tabs').offsetTop-4,behavior:'smooth'})}
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.t));
-function openSheet(h){$('#sheetBody').innerHTML=h;$('#sheet').classList.add('show');$('#veil').classList.add('show')}
-function closeSheet(){$('#sheet').classList.remove('show');$('#veil').classList.remove('show')}
-$('#veil').onclick=closeSheet;
-// falling bits in hero
-(()=>{const h=$('#hero');['🧇','🍪','🧇','🍪','✦'].forEach((e,i)=>{const s=document.createElement('span');s.className='fall';s.textContent=e;s.style.left=(8+i*20)+'%';s.style.animationDuration=(7+i*1.7)+'s';s.style.animationDelay=(-i*2)+'s';h.appendChild(s)})})();
+/* ---------- ui helpers ---------- */
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2200)}
+function confetti(n=40){const set=['🧇','🍪','✦','🧡','⭐'];for(let i=0;i<n;i++){const s=document.createElement('span');s.className='conf';s.textContent=set[i%5];
+  s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),2800)}}
+function openModal(h){$('#mbody').innerHTML=h;$('#modal').classList.add('show');$('#veil').classList.add('show')}
+function closeModal(){$('#modal').classList.remove('show');$('#veil').classList.remove('show')}
+$('#veil').onclick=closeModal;$('#mclose').onclick=closeModal;
 
-/* ---------- MENU ---------- */
-function renderMenu(){
-  const cats=[...new Set(MENU.map(m=>m.cat))];
-  $('#cats').innerHTML=cats.map(c=>`<button class="${c===cat?'on':''}" data-c="${c}">${c}</button>`).join('');
-  $('#cats').onclick=e=>{const b=e.target.closest('button');if(!b)return;cat=b.dataset.c;renderMenu()};
-  $('#items').innerHTML=MENU.filter(m=>m.cat===cat).map(m=>`<div class="item ${isOut(m.id)?'out':''}">
-    ${m.tag?`<span class="badge">${m.tag}</span>`:''}
-    <div class="pic">${m.cookie?cookieSVG(m.cookie):waffleSVG(m.art)}</div>
-    <b>${m.name}</b><small>${m.d}</small>
-    <div class="row"><span class="price">${m.price} ر.س</span><button class="add" data-id="${m.id}" aria-label="أضف">+</button></div>
-    ${isOut(m.id)?'<div class="soldout">خلص اليوم 💔</div>':''}</div>`).join('');
-  $('#items').onclick=e=>{const b=e.target.closest('.add');if(!b)return;const m=MENU.find(x=>x.id===b.dataset.id);
-    if(isOut(m.id)){toast('هذا الصنف خلص اليوم 💔');return}
-    addToCart({key:m.id,name:m.name,price:m.price,note:''});fly(b,m.cookie?'🍪':'🧇')};
+/* ---------- render ---------- */
+function renderShelves(){
+  let h='';for(let r=0;r<3;r++){h+='<div class="shelf">'+ITEMS.slice(r*3,r*3+3).map(it=>`<button class="it ${out(it.id)?'out':''}" data-id="${it.id}">
+    ${it.tag&&!out(it.id)?`<span class="ribbon">${it.tag}</span>`:''}<div class="art">${artOf(it)}</div><div class="plate"></div>
+    <div class="tag">${it.name}<span>${out(it.id)?'خلص اليوم':it.price+' ر.س'}</span></div></button>`).join('')+'</div>'}
+  $('#shelves').innerHTML=h;
 }
+function renderBox(landIdx){
+  $('#slots').innerHTML=Array.from({length:MAX},(_,i)=>{const b=box[i];if(!b)return `<div class="slot">${i+1}</div>`;
+    return `<div class="slot full" data-i="${i}"><span class="x">✕</span><div class="${i===landIdx?'land':''}" style="position:absolute;inset:0">${artOf(byId(b.id),sauceOf(b))}</div></div>`}).join('');
+  const s=subtotal(),n=box.length;
+  $('#pillN').textContent=n;$('#cnt').textContent=n+'/'+MAX;
+  $('#tot').textContent=money(s*(1-DISC));$('#old').textContent=s?money(s):'';
+  $('#checkout').disabled=!n;
+  const sc=$('#screen');sc.textContent=money(s);sc.classList.remove('tick');void sc.offsetWidth;sc.classList.add('tick');
+  store.set('box',box);
+}
+function renderJars(){$('#jars').innerHTML=SAUCES.map(s=>`<button class="jar" data-id="${s.id}">${jarSVG(s.c,s.l)}<span>${s.name} <i>+${s.p}</i></span></button>`).join('')}
 
-/* ---------- BUILDER ---------- */
-let bState={base:0,sauce:0,tops:[]};
-function chipsHTML(list,sel,multi,sw){return list.map((o,i)=>`<button class="chip ${(multi?sel.includes(i):sel===i)?'on':''}" data-i="${i}">${sw?`<span class="sw" style="background:${o.c}"></span>`:''}${o.n}${o.p?` <i>+${o.p}</i>`:''}</button>`).join('')}
-function bPrice(){return 20+BASES[bState.base].p+SAUCES[bState.sauce].p+bState.tops.reduce((a,i)=>a+TOPS[i].p,0)}
-function renderBuild(anim){
-  $('#g-base').innerHTML=chipsHTML(BASES,bState.base,false,true);
-  $('#g-sauce').innerHTML=chipsHTML(SAUCES,bState.sauce,false,true);
-  $('#g-top').innerHTML=chipsHTML(TOPS,bState.tops,true);
-  const b=BASES[bState.base];
-  $('#wsvg').innerHTML=waffleSVG({base:b.c,dark:b.d,sauce:SAUCES[bState.sauce].c,tops:bState.tops.map(i=>TOPS[i].k),anim});
-  $('#bprice').textContent=bPrice()+' ر.س';
+/* ---------- interactions ---------- */
+function flyTo(fromEl,toEl,html,done){
+  const a=fromEl.getBoundingClientRect(),b=toEl.getBoundingClientRect();
+  const f=document.createElement('div');f.className='flyer';f.innerHTML=html;document.body.appendChild(f);
+  const w=70,x0=a.left+a.width/2-w/2,y0=a.top+a.height/2-w/2,x1=b.left+b.width/2-w/2,y1=b.top+b.height/2-w/2;
+  const mx=(x0+x1)/2,my=Math.min(y0,y1)-90;
+  f.style.left='0';f.style.top='0';
+  const anim=f.animate([
+    {transform:`translate(${x0}px,${y0}px) scale(1) rotate(0)`},
+    {transform:`translate(${mx}px,${my}px) scale(1.15) rotate(-25deg)`,offset:.45},
+    {transform:`translate(${x1}px,${y1}px) scale(${b.width/w}) rotate(0)`}],{duration:650,easing:'cubic-bezier(.45,0,.55,1)'});
+  anim.onfinish=()=>{f.remove();done&&done()};
 }
-$('#g-base').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;bState.base=+c.dataset.i;renderBuild(false)};
-$('#g-sauce').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;bState.sauce=+c.dataset.i;renderBuild(true)};
-$('#g-top').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;const i=+c.dataset.i;
-  if(bState.tops.includes(i))bState.tops=bState.tops.filter(x=>x!==i);else{if(bState.tops.length>=3){toast('لين 3 إضافات بس 😋');return}bState.tops.push(i)}renderBuild(true)};
-$('#addBuild').onclick=e=>{const n=`${BASES[bState.base].n} · ${SAUCES[bState.sauce].n}${bState.tops.length?' · '+bState.tops.map(i=>TOPS[i].n).join('، '):''}`;
-  addToCart({key:'b_'+bState.base+'_'+bState.sauce+'_'+[...bState.tops].sort().join(''),name:'وافل على ذوقك',price:bPrice(),note:n});fly(e.target,'🧇');toast('وافلك صار في السلة 🧇')};
+$('#shelves').onclick=e=>{const btn=e.target.closest('.it');if(!btn)return;const it=byId(btn.dataset.id);
+  if(out(it.id)){toast('هذا الصنف خلص اليوم 💔');return}
+  if(box.length>=MAX){toast('بوكسك امتلى! 🧺 اطلب أو شيل حبة');snd(220,.15,'square',.04);return}
+  btn.classList.remove('hop');void btn.offsetWidth;btn.classList.add('hop');
+  const idx=box.length;box.push({id:it.id,s:null});
+  let target=$('#slots').children[idx];const tr=target.getBoundingClientRect();
+  if(tr.top<0||tr.bottom>innerHeight-80)target=$('#pill');
+  flyTo(btn.querySelector('.art'),target,artOf(it),()=>{renderBox(idx);pop();const p=$('#pill');p.classList.remove('bump');void p.offsetWidth;p.classList.add('bump')});
+  if(box.length===1)setTimeout(()=>toast('حلو! جرّب تضيف صوص من الجرار 🥄'),900);
+};
+$('#slots').onclick=e=>{const s=e.target.closest('.slot.full');if(!s)return;box.splice(+s.dataset.i,1);renderBox();snd(300,.08)};
+$('#jars').onclick=e=>{const j=e.target.closest('.jar');if(!j)return;const sc=SAUCES.find(s=>s.id===j.dataset.id);
+  let i=-1;for(let k=box.length-1;k>=0;k--){if(!box[k].s){i=k;break}}
+  if(!box.length){toast('حط شي في بوكسك أول 😋');return}
+  if(i<0){toast('كل اللي في بوكسك عليه صوص 😄');return}
+  j.classList.remove('pour');void j.offsetWidth;j.classList.add('pour');
+  const target=$('#slots').children[i],a=j.getBoundingClientRect(),b=target.getBoundingClientRect();
+  for(let d=0;d<6;d++){const dr=document.createElement('div');dr.className='drop';dr.style.background=sc.c;dr.style.border='1px solid rgba(0,0,0,.1)';document.body.appendChild(dr);
+    const x0=a.left+a.width/2,y0=a.top+10,x1=b.left+b.width*(.25+Math.random()*.5),y1=b.top+b.height*(.3+Math.random()*.4);
+    dr.animate([{transform:`translate(${x0}px,${y0}px)`},{transform:`translate(${(x0+x1)/2}px,${Math.min(y0,y1)-60}px)`,offset:.5},{transform:`translate(${x1}px,${y1}px)`}],
+      {duration:520,delay:d*45,easing:'ease-in',fill:'forwards'}).onfinish=()=>dr.remove()}
+  setTimeout(()=>{box[i].s=sc.id;renderBox(i);snd(380,.12,'sine',.06)},700);
+};
 
-/* ---------- COOKIE BOX ---------- */
-let size=1,boxItems=[];
-function boxPrice(){return boxItems.reduce((a,i)=>a+COOKIES[i].price,0)-SIZES[size].off}
-function renderBox(){
-  $('#g-size').innerHTML=SIZES.map((s,i)=>`<button class="chip ${i===size?'on':''}" data-i="${i}">${s.n} <i>وفّر ${s.off} ر.س</i></button>`).join('');
-  const k=SIZES[size].k;$('#boxin').style.gridTemplateColumns=`repeat(${k===4?2:3},1fr)`;
-  $('#boxin').innerHTML=Array.from({length:k},(_,i)=>boxItems[i]!==undefined?`<div class="slot full" data-i="${i}">${cookieSVG(COOKIES[boxItems[i]])}</div>`:`<div class="slot">${i+1}</div>`).join('');
-  $('#cookies').innerHTML=COOKIES.map((c,i)=>`<button class="ck" data-i="${i}" ${isOut('ck_'+c.id)?'disabled style="opacity:.45"':''}>${cookieSVG(c)}<span><b>${c.name}</b><small>${isOut('ck_'+c.id)?'خلص اليوم':c.price+' ر.س'}</small></span></button>`).join('');
-  const full=boxItems.length===k;
-  $('#addBox').textContent=full?`أضف البوكس للسلة — ${boxPrice()} ر.س`:`باقي ${k-boxItems.length} حبات`;
-  $('#addBox').style.opacity=full?1:.6;
-}
-$('#g-size').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;size=+c.dataset.i;boxItems=boxItems.slice(0,SIZES[size].k);renderBox()};
-$('#cookies').onclick=e=>{const c=e.target.closest('.ck');if(!c||c.disabled)return;if(boxItems.length>=SIZES[size].k){toast('البوكس امتلى! 🍪');return}boxItems.push(+c.dataset.i);renderBox()};
-$('#boxin').onclick=e=>{const s=e.target.closest('.slot.full');if(!s)return;boxItems.splice(+s.dataset.i,1);renderBox()};
-$('#addBox').onclick=e=>{if(boxItems.length<SIZES[size].k){toast('كمّل تعبئة البوكس أول 😊');return}
-  const cnt={};boxItems.forEach(i=>cnt[COOKIES[i].name]=(cnt[COOKIES[i].name]||0)+1);
-  addToCart({key:'box_'+size+'_'+[...boxItems].sort().join(''),name:SIZES[size].n+' كوكيز',price:boxPrice(),note:Object.entries(cnt).map(([n,c])=>`${c}× ${n}`).join('، ')});
-  fly(e.target,'🍪');boxItems=[];renderBox();toast('البوكس في السلة 🍪')};
-
-/* ---------- CART ---------- */
-function addToCart(it){const ex=cart.find(c=>c.key===it.key);if(ex)ex.q++;else cart.push({...it,q:1});store.set('cart',cart);renderCart();
-  const b=$('#cartbar');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}
-function subtotal(){return cart.reduce((a,c)=>a+c.price*c.q,0)}
-function renderCart(){const n=cart.reduce((a,c)=>a+c.q,0);$('#cartbar').classList.toggle('show',n>0);$('#cn').textContent=n;
-  const s=subtotal();$('#ct').textContent=money(s*(1-DISC));$('#cold').textContent=money(s)}
-let mode='pickup',slot=0;
-function slotList(){const d=new Date();const out=[];let m=Math.ceil((d.getHours()*60+d.getMinutes()+20)/15)*15;
-  for(let i=0;i<8;i++){const t=m+i*15;let h=Math.floor(t/60)%24,mi=t%60;const ap=h>=12?'م':'ص';h=h%12||12;out.push(`${h}:${String(mi).padStart(2,'0')} ${ap}`)}return out}
-function cartHTML(){
-  const s=subtotal(),save=mode==='pickup'?s*DISC:0,sl=slotList();
-  return `<h2 style="margin-top:0">سلتك 🛍️</h2>
-  ${cart.map((c,i)=>`<div class="line"><div><b>${c.name}</b>${c.note?`<small>${c.note}</small>`:''}<small>${c.price} ر.س</small></div>
-    <div class="qty"><button data-a="m" data-i="${i}">−</button><b>${c.q}</b><button data-a="p" data-i="${i}">+</button></div></div>`).join('')}
-  <div class="step" style="margin-top:12px">كيف تبي تستلم؟</div>
-  <div class="mode"><button data-m="pickup" class="${mode==='pickup'?'on':''}">🛍️ استلام من المحل<small>خصم 15٪ مباشر</small></button>
-  <button data-m="app" class="${mode==='app'?'on':''}">🛵 توصيل<small>عبر كيتا أو نينجا</small></button></div>
-  ${mode==='pickup'?`<div class="step">وقت الاستلام</div><div class="slots">${sl.map((t,i)=>`<button class="chip ${i===slot?'on':''}" data-s="${i}">${i===0?'أقرب وقت · ':''}${t}</button>`).join('')}</div>
-  <input class="field" id="cname" placeholder="الاسم" value="${store.get('name','')}"><input class="field" id="cphone" placeholder="رقم الجوال" inputmode="tel" value="${store.get('phone','')}">
-  <div class="sum"><div><span>المجموع</span><span>${money(s)}</span></div><div class="save"><span>خصم الاستلام 15٪ 🎉</span><span>− ${money(save)}</span></div>
-  <div class="tot"><span>الإجمالي</span><span>${money(s-save)}</span></div></div>
-  <div style="font-size:13.5px;color:var(--green);font-weight:700;margin-bottom:10px">⭐ هذا الطلب يضيف لك ختم في كرت وافوريا</div>
-  <button class="big" id="send">أرسل الطلب على الواتساب 📲</button>`
-  :`<div class="note">التوصيل متوفر عن طريق تطبيقات <b>كيتا</b> و<b>نينجا</b>. تبي توفّر 15٪ وتاخذ ختم؟ اختار <b>الاستلام</b> 😉</div>`}`;
-}
-function openCart(){openSheet(cartHTML());const b=$('#sheetBody');
-  b.onclick=e=>{const q=e.target.closest('[data-a]'),m=e.target.closest('[data-m]'),s=e.target.closest('[data-s]');
-    if(q){const i=+q.dataset.i;cart[i].q+=q.dataset.a==='p'?1:-1;if(cart[i].q<=0)cart.splice(i,1);store.set('cart',cart);renderCart();if(!cart.length){closeSheet();return}keep()}
-    if(m){mode=m.dataset.m;keep()}if(s){slot=+s.dataset.s;keep()}
-    if(e.target.id==='send')send()};
-  function keep(){const n=$('#cname')?.value,p=$('#cphone')?.value;if(n!==undefined){store.set('name',n);store.set('phone',p)}$('#sheetBody').innerHTML=cartHTML()}
-}
-$('#openCart').onclick=openCart;
+/* ---------- checkout ---------- */
+let tmin=null;
+function defaultTime(){const d=new Date();return Math.ceil((d.getHours()*60+d.getMinutes()+20)/15)*15}
+function fmt(m){m=((m%1440)+1440)%1440;let h=Math.floor(m/60),mi=m%60;return {h,mi,txt:`${(h%12)||12}:${String(mi).padStart(2,'0')} ${h>=12?'م':'ص'}`}}
+function clockHTML(){const t=fmt(tmin);const hh=String((t.h%12)||12).padStart(2,'0'),mm=String(t.mi).padStart(2,'0');
+  return `<div class="digits"><span class="dg">${hh[0]}</span><span class="dg">${hh[1]}</span><span class="colon">:</span><span class="dg">${mm[0]}</span><span class="dg">${mm[1]}</span></div>`}
+function setClock(d){const before=$('.digits').textContent;tmin+=d*15;const min=defaultTime();if(tmin<min){tmin=min;toast('هذا أقرب وقت نقدر نجهّزه فيه ⏱️')}
+  $('#flipD').innerHTML=clockHTML();const after=$('.digits').textContent;
+  [...$('#flipD').querySelectorAll('.dg')].forEach((g,i)=>{const pos=[0,1,3,4][i];if(before[pos]!==after[pos])g.classList.add('fl')});
+  $('#whenTxt').textContent=whenText();snd(900,.04,'square',.03)}
+function whenText(){const t=fmt(tmin);return `${tmin>=1440?'بكرة':'اليوم'} · ${t.txt} · استلام من المحل`}
+$('#checkout').onclick=()=>{if(!box.length)return;tmin=defaultTime();const s=subtotal();
+  openModal(`<div class="co"><div class="bag" id="bag">${bagSVG()}</div><div>
+    <h2>اللذيذ يجي<br>في كيس وافوريا 🧡</h2>
+    <div class="lines">${box.map(b=>{const it=byId(b.id),sc=sauceOf(b);return `<div class="ln">${artOf(it,sc)}<div>${it.name}${sc?`<small>+ صوص ${sc.name}</small>`:''}</div><b>${linePrice(b)}</b></div>`}).join('')}</div>
+    <div class="tot"><div><span>المجموع</span><span>${money(s)}</span></div><div class="save"><span>خصم الاستلام 15٪ 🎉</span><span>− ${money(s*DISC)}</span></div>
+    <div class="all"><span>الإجمالي </span><span>${money(s*(1-DISC))}</span></div></div></div></div>
+    <div class="when">متى لحظتك الحلوة؟ ⏰</div>
+    <div class="clock"><button class="bt" id="tminus">−</button><div class="flip"><div class="lab">وقت الاستلام</div><div id="flipD">${clockHTML()}</div><div class="nm">WAFFORIA</div></div><button class="bt" id="tplus">+</button></div>
+    <div class="whenTxt" id="whenTxt">${whenText()}</div>
+    <div class="two"><input class="field" id="cname" placeholder="الاسم" value="${store.get('name','')}"><input class="field" id="cphone" placeholder="05xxxxxxxx" inputmode="tel" value="${store.get('phone','')}"></div>
+    <button class="big" id="send">🎀 اربط الشريطة واطلب</button>
+    <div class="fine">⭐ الطلب يضيف ختم في كرتك · الدفع عند الاستلام</div>`);
+  $('#tplus').onclick=()=>setClock(1);$('#tminus').onclick=()=>setClock(-1);$('#send').onclick=send;
+  setTimeout(()=>$('#bag').classList.add('swing'),100);
+};
+function bagSVG(){return `<svg viewBox="0 0 120 150">
+  <path d="M38 42 q0 -30 22 -30 q22 0 22 30" fill="none" stroke="#7d2a12" stroke-width="5"/>
+  <path d="M16 42 h88 l8 100 q0 6 -6 6 h-92 q-6 0 -6 -6z" fill="#AA3B1C"/><path d="M16 42 h88 l2 14 h-92z" fill="#7d2a12" opacity=".5"/>
+  <circle cx="60" cy="96" r="26" fill="#F6E7C6"/><text x="60" y="94" text-anchor="middle" font-size="11" font-weight="800" fill="#AA3B1C" font-family="sans-serif">WAFFORIA</text>
+  <g transform="translate(48 100)"><rect width="24" height="10" rx="2" fill="#E9A23B"/><path d="M6 0v10M12 0v10M18 0v10" stroke="#c27a1d" stroke-width="1.5"/></g>
+  <path class="tails" stroke-dasharray="60" d="M60 52 q-8 18 -16 26 M60 52 q8 18 16 26" stroke="#F6E7C6" stroke-width="5" fill="none" stroke-linecap="round" style="stroke-dashoffset:60"/>
+  <g class="bow"><path d="M60 52 q-26 -22 -26 -6 q0 16 26 6z M60 52 q26 -22 26 -6 q0 16 -26 6z" fill="#F6E7C6" stroke="#e2c99a" stroke-width="1.5"/><circle cx="60" cy="52" r="6" fill="#E9A23B"/></g></svg>`}
 function send(){
-  const name=$('#cname').value.trim(),phone=$('#cphone').value.trim();
+  const name=$('#cname').value.trim(),phone=$('#cphone').value.replace(/\s/g,'');
   if(!name){toast('اكتب اسمك عشان نناديك 😊');$('#cname').focus();return}
-  if(!/^05\d{8}$/.test(phone.replace(/\s/g,''))){toast('رقم الجوال لازم يبدأ بـ 05 ويكون 10 أرقام');$('#cphone').focus();return}
+  if(!/^05\d{8}$/.test(phone)){toast('رقم الجوال لازم يبدأ بـ 05 ويكون 10 أرقام');$('#cphone').focus();return}
   store.set('name',name);store.set('phone',phone);
-  const s=subtotal(),tot=s*(1-DISC),t=slotList()[slot],no=Math.floor(100+Math.random()*900);
-  const txt=`🧇 طلب استلام جديد — وافوريا\nرقم الطلب: #${no}\nالاسم: ${name}\nالجوال: ${phone}\nوقت الاستلام: ${t}\n\n${cart.map(c=>`• ${c.q}× ${c.name}${c.note?` (${c.note})`:''} — ${c.price*c.q} ر.س`).join('\n')}\n\nالمجموع: ${money(s)}\nخصم الاستلام 15٪: −${money(s*DISC)}\nالإجمالي: ${money(tot)}`;
-  const o={no,name,t,items:cart.map(c=>`${c.q}× ${c.name}`).join('، '),total:Math.round(tot*100)/100,st:0,mine:true};
-  orders=getOrders();orders.unshift(o);store.set('orders',orders);store.set('track',no);
-  cart=[];store.set('cart',cart);renderCart();
-  openSheet(`<div style="text-align:center"><div style="font-size:64px;animation:pop .7s both">🧇</div><h2>وصل طلبك يا ${name}!</h2>
-    <p class="sub">رقم طلبك <b>#${no}</b> · الاستلام ${t}<br>وفّرت <b style="color:var(--green)">${money(s*DISC)}</b> لأنك بتستلم 🎉</p>
-    <a class="big" style="display:block;text-decoration:none;background:#25d366;box-shadow:0 5px 0 #1a9e4b" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(txt)}">📲 افتح الواتساب وأرسل</a>
-    <p class="sub" style="font-size:12.5px;margin-top:8px">في النسخة الحقيقية يوصل الطلب لرقم المحل مباشرة.</p>
-    <button class="big alt" style="margin-top:6px" onclick="closeSheet();go('menu')">تابع طلبك 👀</button></div>`);
-  confetti();addStamp(false);
+  const b=$('#send');b.classList.add('busy');b.textContent='نربط الشريطة… 🎀';$('#bag').classList.add('tied');snd(660,.1);
+  setTimeout(()=>{
+    const s=subtotal(),no=Math.floor(100+Math.random()*900),t=fmt(tmin).txt;
+    const txt=`🧇 طلب استلام — وافوريا\nرقم الطلب: #${no}\nالاسم: ${name}\nالجوال: ${phone}\nالاستلام: ${whenText()}\n\n${box.map(x=>`• ${byId(x.id).name}${x.s?` + صوص ${sauceOf(x).name}`:''} — ${linePrice(x)} ر.س`).join('\n')}\n\nالمجموع: ${money(s)}\nخصم الاستلام 15٪: −${money(s*DISC)}\nالإجمالي: ${money(s*(1-DISC))}`;
+    orders=getOrders();orders.unshift({no,name,t,items:box.map(x=>byId(x.id).name).join('، '),total:Math.round(s*(1-DISC)*100)/100,st:0,mine:true});store.set('orders',orders);
+    stamps=stamps>=6?1:stamps+1;store.set('stamps',stamps);
+    box=[];renderBox();ching();const r=$('#reg');r.classList.remove('ding');void r.offsetWidth;r.classList.add('ding');confetti();
+    openModal(`<div style="text-align:center"><div class="bag tied" style="width:130px;margin:0 auto">${bagSVG()}</div>
+      <h2 style="font-family:'Reem Kufi Fun';color:var(--rust-d);margin:8px 0 2px">كيسك جاهز يا ${name}! 🎀</h2>
+      <div style="color:var(--muted)">طلب <b>#${no}</b> · الاستلام ${t}<br>وفّرت <b style="color:var(--green)">${money(s*DISC)}</b> لأنك بتستلم بنفسك</div>
+      ${stampsHTML()}
+      <a class="wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(txt)}">📲 أرسل الطلب على الواتساب</a>
+      <div class="fine">في النسخة الحقيقية يوصل الطلب لرقم المحل مباشرة.</div></div>`);
+  },1300);
 }
 
-/* ---------- TRACK ---------- */
-function renderTrack(){const no=store.get('track',null);const o=no&&getOrders().find(x=>x.no===no);
-  if(!o){$('#track').innerHTML='';return}
-  const steps=[['🧾','استلمنا طلبك'],['🔥','يتحضّر'],['🛍️','جاهز للاستلام']];
-  $('#track').innerHTML=`<div class="card"><b>طلبك #${o.no}</b> <small style="color:var(--muted)">· الاستلام ${o.t}</small>
-  <div class="track">${steps.map((s,i)=>`<div class="tk ${i<=o.st?'on':''} ${i===o.st?'now':''}"><i>${s[0]}</i>${s[1]}</div>`).join('')}</div>
-  ${o.st===2?'<p style="text-align:center;margin:6px 0 0;font-weight:800;color:var(--green)">طلبك جاهز! تعال استلمه 🧡</p>':'<p class="sub" style="text-align:center;margin:6px 0 0">جرّب تغيّر الحالة من «لوحة المحل» وشوفها تتحدث هنا</p>'}</div>`}
-
-/* ---------- STAMPS ---------- */
-function renderStamps(){$('#stampGrid').innerHTML=Array.from({length:6},(_,i)=>i<stamps?`<div class="st on" style="animation-delay:${i*.06}s">🧇</div>`:`<div class="st ${i===5?'gift':''}">${i===5?'🎁':''}</div>`).join('');
-  $('#stampTxt').innerHTML=stamps>=6?'<b>مبروك! وافل كلاسيك هدية في طلبك الجاي 🎉</b>':`باقي <b>${6-stamps}</b> ${6-stamps===1?'طلب':'طلبات'} وتاخذ وافل هدية 🎁`}
-function addStamp(show=true){stamps=stamps>=6?1:stamps+1;store.set('stamps',stamps);renderStamps();if(stamps===6){confetti(50);toast('كمّلت الكرت! وافلك هدية 🎁')}else if(show)toast('انضاف ختم ⭐')}
-$('#tryStamp').onclick=()=>addStamp();
-
-/* ---------- OWNER ---------- */
+/* ---------- stamps & owner ---------- */
+function stampsHTML(){return `<div class="stamps">${Array.from({length:6},(_,i)=>i<stamps?`<div class="st on" style="animation-delay:${i*.07}s">🧇</div>`:`<div class="st ${i===5?'gift':''}">${i===5?'🎁':''}</div>`).join('')}</div>
+  <div style="font-size:14px">${stamps>=6?'<b>كمّلت الكرت! وافل كلاسيك هدية في طلبك الجاي 🎉</b>':`باقي <b>${6-stamps}</b> ${6-stamps===1?'طلب':'طلبات'} وتاخذ وافل هدية 🎁`}</div>`}
+$('#openStamps').onclick=()=>openModal(`<h2 style="font-family:'Reem Kufi Fun';color:var(--rust-d);margin:0 0 4px">⭐ كرت الختم</h2>
+  <div style="color:var(--muted);font-size:14px">كل طلب استلام من هنا = ختم. الختم السادس عليه وافل هدية.</div>${stampsHTML()}
+  <div class="fine" style="text-align:right;margin-top:10px">الختم ما ينحسب إلا من صفحتكم، فيرجع لكم العميل مباشرة بدل التطبيقات.</div>`);
 function getOrders(){if(!orders){orders=[
-  {no:412,name:'ريم',t:'8:15 م',items:'1× وافل تشيز كيك مانجو، 1× بوكس 4 كوكيز',total:61.2,st:1},
-  {no:398,name:'عبدالله',t:'7:45 م',items:'2× وافل كلاسيك',total:30.6,st:2},
-  {no:377,name:'نوف',t:'7:10 م',items:'1× بوكس العائلة',total:67.15,st:2}];store.set('orders',orders)}return orders}
+  {no:412,name:'ريم',t:'8:15 م',items:'تشيز كيك مانجو، كوكيز براءة اختراع',total:32.3,st:1},
+  {no:398,name:'عبدالله',t:'7:45 م',items:'وافل كلاسيك ×2',total:30.6,st:2},
+  {no:377,name:'نوف',t:'7:10 م',items:'وافل بستاشيو، ريد فيلفيت، وافل ستيك',total:45.05,st:2}];store.set('orders',orders)}return orders}
 const ST=['جديد','يتحضّر','جاهز ✓'];
-function renderOwner(){const os=getOrders();const sum=os.reduce((a,o)=>a+o.total,0);
-  $('#stats').innerHTML=`<div class="stat"><b>${os.length}</b><small>طلب اليوم</small></div><div class="stat"><b>${Math.round(sum)}</b><small>ر.س مبيعات</small></div>
-  <div class="stat"><b>${Math.round(sum*0.2)}</b><small>ر.س عمولة ما انخصمت*</small></div>`;
-  $('#orders').innerHTML=os.map((o,i)=>`<div class="ord"><div><b>#${o.no} · ${o.name}</b>${o.mine?' <small style="display:inline;color:var(--rust)">(طلبك)</small>':''}<small>${o.items}</small><small>🛍️ ${o.t} · ${money(o.total)}</small></div>
-    <button class="stbtn s${o.st}" data-i="${i}">${ST[o.st]}</button></div>`).join('')+'<p class="sub" style="font-size:12px;margin:8px 0 0">* تقدير لو نفس الطلبات جت عن طريق تطبيقات التوصيل بعمولة 20٪ تقريبًا.</p>';
-  $('#orders').onclick=e=>{const b=e.target.closest('.stbtn');if(!b)return;const o=os[+b.dataset.i];o.st=(o.st+1)%3;store.set('orders',os);renderOwner();renderTrack();
-    if(o.st===2)toast(`#${o.no} جاهز — يوصل للعميل تنبيه 🔔`)};
-  $('#avail').innerHTML=MENU.map(m=>`<div class="toggle"><span>${m.name}</span><button class="sw2 ${isOut(m.id)?'':'on'}" data-id="${m.id}" aria-label="متوفر"></button></div>`).join('');
-  $('#avail').onclick=e=>{const b=e.target.closest('.sw2');if(!b)return;const id=b.dataset.id;avail[id]=isOut(id);store.set('avail',avail);renderOwner();renderMenu();renderBox();
-    toast(isOut(id)?'انقفل الصنف — ما يقدر أحد يطلبه':'رجع الصنف متوفر ✓')};
+function ownerHTML(){const os=getOrders(),sum=os.reduce((a,o)=>a+o.total,0);
+  return `<h2 style="font-family:'Reem Kufi Fun';color:var(--rust-d);margin:0">🏪 لوحة المحل</h2>
+  <div class="kpis"><div class="kpi"><b>${os.length}</b><small>طلب اليوم</small></div><div class="kpi"><b>${Math.round(sum)}</b><small>ر.س مبيعات</small></div><div class="kpi"><b>${Math.round(sum*.2)}</b><small>ر.س عمولة وفّرتوها*</small></div></div>
+  <div id="ords">${os.map((o,i)=>`<div class="ord"><div><b>#${o.no} · ${o.name}</b>${o.mine?' <small style="display:inline;color:var(--rust)">(طلبك)</small>':''}<small>${o.items}</small><small>🛍️ ${o.t} · ${money(o.total)}</small></div><button class="sb s${o.st}" data-i="${i}">${ST[o.st]}</button></div>`).join('')}</div>
+  <div style="font-weight:800;margin:12px 0 2px">المتوفر في الفاترينة</div><div class="fine" style="text-align:right;margin:0 0 4px">خلص صنف؟ اقفلوه ويختفي من الفاترينة فورًا.</div>
+  <div id="tgs">${ITEMS.map(it=>`<div class="tg"><span>${it.name}</span><button class="sw ${out(it.id)?'':'on'}" data-id="${it.id}"></button></div>`).join('')}</div>
+  <div class="fine" style="text-align:right">* تقدير لو نفس الطلبات جت من تطبيقات التوصيل بعمولة 20٪ تقريبًا. المنيو والأسعار تنعدّل من ملف Google Sheets.</div>`}
+function openOwner(){openModal(ownerHTML());
+  $('#ords').onclick=e=>{const b=e.target.closest('.sb');if(!b)return;const o=getOrders()[+b.dataset.i];o.st=(o.st+1)%3;store.set('orders',orders);openOwner();if(o.st===2)toast(`#${o.no} جاهز — يوصل للعميل تنبيه 🔔`)};
+  $('#tgs').onclick=e=>{const b=e.target.closest('.sw');if(!b)return;const id=b.dataset.id;avail[id]=out(id);store.set('avail',avail);
+    box=box.filter(x=>!out(x.id));renderShelves();renderBox();openOwner();toast(out(id)?'انقفل الصنف من الفاترينة':'رجع الصنف للفاترينة ✓')};
 }
+$('#openOwner').onclick=openOwner;
 
-renderMenu();renderBuild(false);renderBox();renderCart();renderStamps();renderTrack();
+renderShelves();renderJars();renderBox();
 </script>
 </body>
 </html>
