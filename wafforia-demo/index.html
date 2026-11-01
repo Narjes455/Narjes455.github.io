@@ -57,7 +57,7 @@ input{font-family:inherit;font-size:16px;user-select:text;-webkit-user-select:te
 .shelf::after{content:"";position:absolute;left:-6px;right:-6px;bottom:-6px;height:9px;border-radius:3px;
   background:linear-gradient(var(--cream-l),#e9d4aa);box-shadow:0 4px 6px rgba(80,30,10,.25)}
 .it{position:relative;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;z-index:2}
-.it .art{width:76px;height:62px;position:relative;transition:transform .2s}
+.it .art{width:96px;height:80px;position:relative;transition:transform .2s}
 .it .art svg{width:100%;height:100%;filter:drop-shadow(0 6px 4px rgba(80,30,10,.3))}
 .it .plate{width:78px;height:10px;border-radius:50%;background:radial-gradient(#fffaf0,#eadbbf);margin-top:-8px;box-shadow:0 2px 2px rgba(0,0,0,.12)}
 .it .tag{margin-top:5px;background:var(--cream-l);border:1.5px solid #e2c99a;border-radius:7px;padding:1px 6px;font-size:11.5px;line-height:1.35;color:var(--ink);font-weight:700;
@@ -93,15 +93,25 @@ input{font-family:inherit;font-size:16px;user-select:text;-webkit-user-select:te
 @keyframes land{from{transform:scale(1.4)}}
 
 /* register */
-.reg{position:relative;text-align:center}
-.reg svg{width:100%;max-width:170px;display:block;margin:0 auto;filter:drop-shadow(0 8px 6px rgba(0,0,0,.25))}
-.reg .screen{position:absolute;top:5%;left:50%;transform:translateX(-50%) rotate(-2deg);background:var(--rust-dd);color:#ffd27a;font-weight:800;
-  border:2px solid var(--brass);border-radius:6px;padding:0 9px;font-size:17px;white-space:nowrap;font-variant-numeric:tabular-nums;box-shadow:0 3px 0 rgba(0,0,0,.3)}
-.reg .screen.tick{animation:tick .3s}
-@keyframes tick{0%{transform:translateX(-50%) rotate(-2deg) translateY(-6px);opacity:.3}}
-.reg.ding svg{animation:ding .4s}
-@keyframes ding{30%{transform:translateY(3px)}}
-
+.reg{position:relative;text-align:center;padding-top:44px}
+.reg svg{width:100%;max-width:170px;display:block;margin:0 auto;position:relative;z-index:2;filter:drop-shadow(0 8px 6px rgba(0,0,0,.25));overflow:visible}
+.regbadge{position:absolute;z-index:3;left:50%;transform:translateX(-50%);bottom:4px;font-size:11px;color:#ffe3c2;font-weight:700;opacity:.0}
+.k{transform-box:fill-box;transform-origin:center;transition:transform .07s,fill .07s}
+.k.p{transform:translateY(2.5px) scale(.88);fill:#E9A23B}
+#drawer{transition:transform .45s cubic-bezier(.3,1.5,.5,1)}
+.reg.open #drawer{transform:translateY(20px)}
+#lever{transition:transform .35s}
+.reg.pull #lever{transform:rotate(55deg)}
+.rcpt{position:absolute;z-index:1;left:50%;transform:translateX(-50%);width:62%;max-width:104px;bottom:calc(100% - 44px - 12px);background:#fffdf7;
+  box-shadow:0 2px 6px rgba(0,0,0,.18);padding:0 6px;font-size:9.5px;line-height:1.35;color:#3a1a0c;text-align:right;overflow:hidden;height:0;transition:height .45s ease;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  -webkit-mask:linear-gradient(transparent 0,#000 6px);mask:linear-gradient(transparent 0,#000 6px)}
+.rcpt .rh{text-align:center;font-weight:800;font-size:9px;letter-spacing:1px;border-bottom:1px dashed #c9b38b;padding:3px 0 1px;color:#AA3B1C}
+.rl{display:flex;justify-content:space-between;gap:4px;border-bottom:1px dotted #e6d6b6;white-space:nowrap}
+.rl span:first-child{overflow:hidden;text-overflow:ellipsis}
+.rl.new{animation:rin .4s}
+@keyframes rin{from{background:#ffe9b8}}
+.rcpt.tear{transition:transform .6s ease-in,opacity .6s;transform:translateX(-50%) translateY(-60px) rotate(-12deg);opacity:0}
 /* sauces */
 .saucehead{font-weight:800;font-size:14.5px;margin:22px 2px 6px;color:var(--rust-d);position:relative}
 .saucehead small{font-weight:500;color:var(--muted)}
@@ -202,7 +212,7 @@ footer a{color:#fff;font-weight:700}
 .drop{position:fixed;z-index:81;pointer-events:none;width:10px;height:14px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%}
 .conf{position:fixed;top:-30px;z-index:95;pointer-events:none;font-size:22px;animation:cf 2s ease-in forwards}
 @keyframes cf{to{transform:translateY(105vh) rotate(540deg)}}
-@media(min-width:520px){.it .art{width:100px;height:82px}.it .tag{font-size:12.5px}}
+@media(min-width:520px){.it .art{width:112px;height:94px}.it .tag{font-size:12.5px}}
 </style>
 </head>
 <body>
@@ -224,22 +234,21 @@ footer a{color:#fff;font-weight:700}
     <div class="ctop">
       <div class="wbox"><div class="lid">WAFFORIA</div><div class="slots" id="slots"></div></div>
       <div class="reg" id="reg">
-        <div class="screen" id="screen">0 ر.س</div>
-        <svg viewBox="0 0 160 150">
-          <rect x="44" y="6" width="72" height="22" rx="4" fill="#7d2a12"/>
-          <path d="M18 52 Q20 34 40 32 H120 Q140 34 142 52 L148 112 H12z" fill="#AA3B1C"/>
-          <path d="M18 52 Q20 34 40 32 H120 Q140 34 142 52" fill="none" stroke="#d9a441" stroke-width="3"/>
-          <rect x="62" y="20" width="36" height="16" rx="2" fill="#fff8ea"/>
-          <g fill="#F6E7C6" stroke="#7d2a12" stroke-width="1.5">
-            <circle cx="40" cy="62" r="7"/><circle cx="60" cy="62" r="7"/><circle cx="80" cy="62" r="7"/><circle cx="100" cy="62" r="7"/>
-            <circle cx="36" cy="82" r="7"/><circle cx="56" cy="82" r="7"/><circle cx="76" cy="82" r="7"/><circle cx="96" cy="82" r="7"/>
-            <circle cx="34" cy="100" r="6.5"/><circle cx="54" cy="100" r="6.5"/><circle cx="74" cy="100" r="6.5"/><circle cx="94" cy="100" r="6.5"/>
-          </g>
-          <g fill="#7d2a12"><rect x="118" y="56" width="10" height="16" rx="3"/><rect x="118" y="78" width="10" height="16" rx="3"/></g>
-          <path d="M142 60 q14 -6 12 -26" stroke="#d9a441" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="154" cy="32" r="6" fill="#7d2a12"/>
-          <rect x="8" y="112" width="144" height="30" rx="5" fill="#7d2a12"/>
-          <rect x="62" y="122" width="36" height="8" rx="4" fill="#d9a441"/>
+        <div class="rcpt" id="rcpt"><div class="rh">WAFFORIA</div><div id="rlines"></div></div>
+        <svg viewBox="0 0 160 176" id="regsvg">
+          <g id="drawer"><rect x="20" y="112" width="120" height="22" fill="#5a1d08"/>
+            <g><circle cx="40" cy="120" r="6" fill="#e9c25a"/><circle cx="54" cy="118" r="6" fill="#d9a441"/><rect x="70" y="114" width="26" height="9" rx="2" fill="#7fb37a"/><rect x="100" y="115" width="26" height="9" rx="2" fill="#9cc79a"/><circle cx="118" cy="121" r="5" fill="#e9c25a"/></g>
+            <rect x="10" y="132" width="140" height="30" rx="5" fill="#7d2a12"/><rect x="10" y="132" width="140" height="4" fill="#9a3a1a"/><rect x="62" y="143" width="36" height="8" rx="4" fill="#d9a441"/></g>
+          <path d="M18 56 Q20 36 40 34 H120 Q140 36 142 56 L148 134 H12z" fill="#AA3B1C"/>
+          <path d="M18 56 Q20 36 40 34 H120 Q140 36 142 56" fill="none" stroke="#d9a441" stroke-width="3"/>
+          <rect x="52" y="10" width="56" height="10" rx="3" fill="#561a08"/><rect x="58" y="13" width="44" height="3" rx="1.5" fill="#1f0a02"/>
+          <path d="M44 20 h72 l4 16 h-80z" fill="#7d2a12"/>
+          <rect x="30" y="42" width="100" height="24" rx="5" fill="#1f0a02" stroke="#d9a441" stroke-width="2"/>
+          <text id="regTxt" x="80" y="60" text-anchor="middle" font-size="17" font-weight="800" fill="#ffcf5a" font-family="ui-monospace,Menlo,monospace" style="letter-spacing:1px">0.00</text>
+          <g id="keys" fill="#F6E7C6" stroke="#561a08" stroke-width="1.5"></g>
+          <g id="lever" style="transform-origin:146px 70px;transform-box:view-box"><path d="M144 72 q16 -6 14 -30" stroke="#d9a441" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="158" cy="40" r="6" fill="#7d2a12"/></g>
         </svg>
+        <div class="regbadge" id="regBadge">ر.س</div>
       </div>
     </div>
     <div class="saucehead">🥄 جرار الصوص <small>— اضغط عليها وتنصب على آخر وافل في بوكسك</small></div>
@@ -273,29 +282,71 @@ const pop=()=>{snd(520,.07);setTimeout(()=>snd(780,.09),60)};
 const ching=()=>{snd(1320,.15,'triangle',.07);setTimeout(()=>snd(1760,.25,'triangle',.06),90)};
 
 /* ---------- art ---------- */
-function waffleSVG(o={}){
-  const base=o.base||'#E9A23B',dark=o.dark||'#c27a1d';
-  let cells='';for(let r=0;r<4;r++)for(let c=0;c<4;c++)cells+=`<rect x="${42+c*30}" y="${42+r*30}" width="22" height="22" rx="4" fill="${dark}" opacity=".5"/>`;
-  const sauce=o.sauce?drizzle(o.sauce):'';
-  const tops=(o.tops||[]).map((t,i)=>topSVG(t,[70,132,98,60,140][i%5],[66,80,120,140,138][i%5])+topSVG(t,[134,64,104][i%3],[138,104,72][i%3])).join('');
-  return `<svg viewBox="20 20 160 160"><rect x="30" y="30" width="140" height="140" rx="22" fill="${base}"/><rect x="30" y="30" width="140" height="140" rx="22" fill="none" stroke="${dark}" stroke-width="5"/>${cells}${sauce}${tops}</svg>`;
+document.body.insertAdjacentHTML('afterbegin',`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<radialGradient id="wBase" cx="42%" cy="36%" r="75%"><stop offset="0" stop-color="#fbd889"/><stop offset=".5" stop-color="#e9a746"/><stop offset="1" stop-color="#b8661c"/></radialGradient>
+<linearGradient id="wSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b2621c"/><stop offset="1" stop-color="#7d3e0d"/></linearGradient>
+<linearGradient id="wPit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a3a0c"/><stop offset=".55" stop-color="#c0752a"/><stop offset="1" stop-color="#eab060"/></linearGradient>
+<radialGradient id="berry" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#ff7a7a"/><stop offset=".55" stop-color="#d91f38"/><stop offset="1" stop-color="#8a0c1f"/></radialGradient>
+<radialGradient id="banana" cx="45%" cy="40%" r="65%"><stop offset="0" stop-color="#fffdf0"/><stop offset=".7" stop-color="#f8eab0"/><stop offset="1" stop-color="#e6cf78"/></radialGradient>
+<linearGradient id="bisc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9a05a"/><stop offset="1" stop-color="#a8692a"/></linearGradient>
+<radialGradient id="ckA" cx="40%" cy="35%" r="72%"><stop offset="0" stop-color="#ebbd7e"/><stop offset=".65" stop-color="#c98d4f"/><stop offset="1" stop-color="#93582a"/></radialGradient>
+<radialGradient id="ckB" cx="40%" cy="35%" r="72%"><stop offset="0" stop-color="#f3cf93"/><stop offset=".65" stop-color="#d9a866"/><stop offset="1" stop-color="#a5713a"/></radialGradient>
+<radialGradient id="ckR" cx="40%" cy="35%" r="72%"><stop offset="0" stop-color="#d9564f"/><stop offset=".65" stop-color="#a8312f"/><stop offset="1" stop-color="#651616"/></radialGradient>
+<radialGradient id="molten" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#7a3a17"/><stop offset="1" stop-color="#3d1806"/></radialGradient>
+</defs></svg>`);
+const LIGHT={'#fff3dc':1};
+function sauceSVG(c){
+  const hl=LIGHT[c]?'#ffffff':'rgba(255,255,255,.5)';
+  const d="M40 62 C58 42 74 84 96 60 S132 44 160 64 M38 102 C60 84 78 120 100 98 S140 86 162 106 M44 140 C62 122 80 158 102 138 S138 126 158 144";
+  return `<path d="${d}" fill="none" stroke="rgba(60,20,0,.25)" stroke-width="11" stroke-linecap="round" transform="translate(1.5 3.5)"/>
+  <path d="${d}" fill="none" stroke="${c}" stroke-width="10" stroke-linecap="round"/>
+  <path d="${d}" fill="none" stroke="${hl}" stroke-width="2.6" stroke-linecap="round" transform="translate(-1.5 -2.6)" stroke-dasharray="16 20"/>
+  <path d="M62 150 q-5 12 -2 26 q4 7 7 0 q1 -12 -5 -26z M124 152 q-4 9 -1 19 q4 6 6 0 q1 -9 -5 -19z M156 136 q1 11 5 16 q6 3 5 -4 q-3 -9 -10 -12z" fill="${c}"/>
+  <circle cx="63" cy="170" r="1.6" fill="#fff" opacity=".55"/><circle cx="125" cy="165" r="1.3" fill="#fff" opacity=".55"/>`;
 }
-function drizzle(c){return `<path d="M38 72 Q60 54 80 74 T120 72 T162 76 M40 110 Q66 92 92 112 T140 108 T165 112 M44 148 Q70 130 96 148 T150 146" fill="none" stroke="${c}" stroke-width="9" stroke-linecap="round"/><path d="M62 150 q4 16 0 20 q-4 -4 0 -20 M120 146 q4 14 0 18 q-4 -4 0 -18" fill="${c}"/>`}
-function stickSVG(sauce){return `<svg viewBox="0 0 200 200"><rect x="94" y="120" width="12" height="74" rx="5" fill="#e9cf9c"/><path d="M50 20 h100 a14 14 0 0 1 14 14 v80 a14 14 0 0 1 -14 14 h-100 a14 14 0 0 1 -14 -14 v-80 a14 14 0 0 1 14 -14z" fill="#E9A23B" stroke="#c27a1d" stroke-width="5"/>
-  ${[0,1,2,3].map(r=>[0,1,2].map(c=>`<rect x="${56+c*32}" y="${30+r*23}" width="24" height="16" rx="3" fill="#c27a1d" opacity=".5"/>`).join('')).join('')}
-  <path d="M40 54 Q70 40 100 58 T162 52 M40 92 Q72 78 100 96 T162 88" stroke="${sauce||'#5b2a12'}" stroke-width="9" fill="none" stroke-linecap="round"/></svg>`}
-function topSVG(t,x,y){switch(t){
-  case 'straw':return `<g transform="translate(${x} ${y})"><path d="M0 -12 C12 -12 14 4 0 14 C-14 4 -12 -12 0 -12z" fill="#e2384b"/><path d="M-6 -12 l6 5 l6 -5" stroke="#2e8b57" stroke-width="3" fill="none"/></g>`;
-  case 'banana':return `<g transform="translate(${x} ${y})"><circle r="11" fill="#fff3b0" stroke="#e8cf6a" stroke-width="2"/><circle r="3" fill="#d9bd5a"/></g>`;
-  case 'pist':return `<g transform="translate(${x} ${y})"><ellipse rx="7" ry="4.5" fill="#8ab84a" transform="rotate(30)"/><ellipse cx="9" cy="5" rx="5" ry="3.5" fill="#a6cf5f"/></g>`;
-  case 'lotus':return `<g transform="translate(${x} ${y}) rotate(15)"><rect x="-12" y="-8" width="24" height="16" rx="3" fill="#c98a3f"/><rect x="-9" y="-5" width="18" height="10" rx="2" fill="none" stroke="#a46a26" stroke-width="1.5"/></g>`;
-  case 'oreo':return `<g transform="translate(${x} ${y})"><circle r="12" fill="#2b1b14"/><rect x="-12" y="-2" width="24" height="4" fill="#fff" opacity=".9"/></g>`;
+function topSVG(t,x,y,r=0){switch(t){
+  case 'straw':return `<g transform="translate(${x} ${y}) rotate(${r})"><ellipse cx="1" cy="4" rx="13" ry="7" fill="rgba(60,20,0,.22)"/><path d="M0 -14 C15 -14 16 6 0 16 C-16 6 -15 -14 0 -14z" fill="url(#berry)"/>
+    <g fill="#ffe7a0"><circle cx="-5" cy="-4" r="1"/><circle cx="4" cy="-6" r="1"/><circle cx="0" cy="2" r="1"/><circle cx="-6" cy="5" r="1"/><circle cx="6" cy="3" r="1"/><circle cx="1" cy="9" r="1"/></g>
+    <path d="M-8 -13 q4 -7 8 -2 q4 -5 8 2 q-8 3 -16 0z" fill="#3c9a4c"/><ellipse cx="-5" cy="-6" rx="2.5" ry="5" fill="#fff" opacity=".35" transform="rotate(20)"/></g>`;
+  case 'banana':return `<g transform="translate(${x} ${y})"><ellipse cx="1" cy="4" rx="12" ry="6" fill="rgba(60,20,0,.2)"/><circle r="12" fill="url(#banana)" stroke="#e2c86a" stroke-width="1.5"/>
+    <g fill="#c9a447"><circle cx="0" cy="-4" r="1.1"/><circle cx="3.5" cy="2" r="1.1"/><circle cx="-3.5" cy="2" r="1.1"/></g><path d="M-6 -7 q4 -3 8 -2" stroke="#fff" stroke-width="2" fill="none" opacity=".7" stroke-linecap="round"/></g>`;
+  case 'pist':return `<g transform="translate(${x} ${y}) rotate(${r})"><path d="M-6 -3 l5 -4 l6 2 l1 5 l-6 3z" fill="#7fb244"/><path d="M4 4 l5 -2 l3 4 l-4 4 l-5 -2z" fill="#a3cf5e"/><path d="M-10 4 l4 -1 l2 4 l-4 2z" fill="#9b6b8a"/><path d="M-4 -2 l3 -2" stroke="#d6f0a0" stroke-width="1.2"/></g>`;
+  case 'lotus':return `<g transform="translate(${x} ${y}) rotate(${r})"><rect x="-13" y="-7" width="26" height="17" rx="3" fill="rgba(60,20,0,.22)" transform="translate(1 3)"/><rect x="-13" y="-9" width="26" height="17" rx="3" fill="url(#bisc)"/>
+    <rect x="-10" y="-6" width="20" height="11" rx="2" fill="none" stroke="#8a5420" stroke-width="1.2"/><path d="M-6 -1 h12 M-6 2 h12" stroke="#8a5420" stroke-width="1"/></g>`;
 }return ''}
+function sugarSVG(){let s='';const p=[[60,52],[84,70],[120,58],[146,80],[72,118],[110,124],[140,132],[52,150],[96,94],[132,104],[64,88],[150,150]];
+  p.forEach(([x,y],i)=>s+=`<circle cx="${x}" cy="${y}" r="${1.4+(i%3)*.6}" fill="#fff" opacity=".85"/>`);return s}
+function waffleSVG(o={}){
+  let pits='';
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){const x=38+c*31.5,y=36+r*31.5;
+    pits+=`<rect x="${x}" y="${y}" width="25" height="25" rx="5" fill="url(#wPit)"/><path d="M${x+4} ${y+23} h17" stroke="#ffe3a8" stroke-width="1.8" opacity=".6" stroke-linecap="round"/>`}
+  const pos=[[64,60,-15],[136,72,20],[100,112,5],[58,140,-25],[142,136,15]];
+  const tops=(o.tops||[]).map(t=>pos.map(([x,y,r],i)=>i%2===0||t!=='pist'?topSVG(t,x,y,r):'').join('')).join('');
+  return `<svg viewBox="14 12 172 180"><ellipse cx="100" cy="180" rx="74" ry="9" fill="rgba(60,25,5,.28)"/>
+  <rect x="26" y="32" width="148" height="144" rx="26" fill="url(#wSide)"/>
+  <rect x="26" y="24" width="148" height="144" rx="26" fill="url(#wBase)"/>
+  <rect x="29" y="27" width="142" height="138" rx="24" fill="none" stroke="#fff1c4" stroke-width="2" opacity=".55"/>
+  ${pits}<ellipse cx="72" cy="46" rx="30" ry="8" fill="#fff" opacity=".18"/>${o.sauce?sauceSVG(o.sauce):''}${tops}${o.sugar?sugarSVG():''}</svg>`;
+}
+function stickSVG(sauce){
+  let pits='';for(let r=0;r<4;r++)for(let c=0;c<3;c++){const x=62+c*27,y=22+r*25;pits+=`<rect x="${x}" y="${y}" width="21" height="19" rx="4" fill="url(#wPit)"/>`}
+  const c=sauce||'#5b2a12',hl=LIGHT[c]?'#fff':'rgba(255,255,255,.5)';
+  const d="M54 44 C70 32 84 58 100 42 S130 34 146 46 M54 84 C70 72 84 98 100 82 S130 74 146 86";
+  return `<svg viewBox="20 6 160 190"><ellipse cx="100" cy="188" rx="40" ry="5" fill="rgba(60,25,5,.25)"/><rect x="94" y="116" width="12" height="72" rx="5" fill="#ecd6a6"/><rect x="96" y="116" width="3" height="72" fill="#fff" opacity=".5"/>
+  <rect x="52" y="18" width="96" height="108" rx="16" fill="url(#wSide)"/><rect x="52" y="12" width="96" height="108" rx="16" fill="url(#wBase)"/>${pits}
+  <path d="${d}" stroke="rgba(60,20,0,.25)" stroke-width="10" fill="none" stroke-linecap="round" transform="translate(1 3)"/><path d="${d}" stroke="${c}" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="${d}" stroke="${hl}" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-dasharray="14 18" transform="translate(-1 -2.4)"/>
+  <path d="M70 112 q-4 10 0 18 q4 4 5 -1 q0 -9 -5 -17z" fill="${c}"/></svg>`;
+}
 function cookieSVG(c,extra){
-  const chips=(c.chips||[]).map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c.chip}"/>`).join('');
-  const fill=c.fill?`<path d="M40 40 C50 32 66 38 66 50 C67 62 54 68 45 63 C35 59 33 47 40 40z" fill="${c.fill}"/><path d="M47 45 C52 42 58 44 59 49" stroke="rgba(255,255,255,.35)" stroke-width="3" fill="none" stroke-linecap="round"/>`:'';
-  const dr=extra?`<path d="M18 40 Q34 30 50 42 T84 40 M20 62 Q38 52 54 64 T84 60" stroke="${extra}" stroke-width="6" fill="none" stroke-linecap="round"/>`:'';
-  return `<svg viewBox="0 0 100 100"><path d="M50 10 C76 10 92 26 90 50 C92 74 74 92 50 90 C26 92 8 74 10 50 C8 26 26 10 50 10z" fill="${c.dough}"/><path d="M50 10 C76 10 92 26 90 50 C92 74 74 92 50 90 C26 92 8 74 10 50 C8 26 26 10 50 10z" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="3"/>${fill}${chips}${dr}</svg>`;
+  const chunks=(c.chips||[]).map(([x,y,r],i)=>`<path d="M${x-r} ${y} l${r*.6} ${-r} l${r*1.1} ${r*.2} l${r*.4} ${r*.9} l${-r*.9} ${r*.7}z" fill="${c.chip}"/><path d="M${x-r*.5} ${y-r*.4} l${r*.5} ${-r*.4}" stroke="#fff" stroke-width="1.2" opacity=".45"/>`).join('');
+  const cracks=`<path d="M30 38 q8 6 4 14 M66 30 q-4 8 4 12 M70 66 q-8 2 -10 10 M28 66 q8 -2 12 6" stroke="rgba(255,240,210,.55)" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  const molten=c.fill?`<path d="M38 42 C48 30 68 36 68 50 C70 64 54 72 44 66 C32 60 30 48 38 42z" fill="url(#molten)"/><path d="M44 44 C50 40 58 42 60 47" stroke="#fff" stroke-width="2.4" fill="none" opacity=".45" stroke-linecap="round"/><path d="M60 64 q2 8 -1 14 q-4 2 -4 -3 q0 -6 5 -11z" fill="#3d1806"/>`:'';
+  const dr=extra?`<path d="M18 40 Q34 30 50 42 T84 40 M20 62 Q38 52 54 64 T84 60" stroke="${extra}" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M18 40 Q34 30 50 42 T84 40" stroke="#fff" stroke-width="1.6" fill="none" opacity=".5" transform="translate(-1 -2)" stroke-dasharray="10 12"/>`:'';
+  return `<svg viewBox="0 0 100 104"><ellipse cx="50" cy="94" rx="38" ry="6" fill="rgba(60,25,5,.28)"/>
+  <path d="M50 12 C74 10 92 26 90 48 C93 72 74 92 50 90 C24 93 8 74 10 50 C7 26 26 10 50 12z" fill="${c.edge}" transform="translate(0 3)"/>
+  <path d="M50 12 C74 10 92 26 90 48 C93 72 74 92 50 90 C24 93 8 74 10 50 C7 26 26 10 50 12z" fill="url(#${c.g})"/>
+  ${cracks}${molten}${chunks}<ellipse cx="38" cy="26" rx="14" ry="5" fill="#fff" opacity=".2" transform="rotate(-20 38 26)"/>${dr}</svg>`;
 }
 function jarSVG(c,lbl){return `<svg viewBox="0 0 80 80"><path d="M22 26 h36 v6 q8 4 8 16 v18 q0 8 -8 8 h-36 q-8 0 -8 -8 v-18 q0 -12 8 -16z" fill="#fff8ea" stroke="#e2c99a" stroke-width="2"/>
   <path d="M16 46 q0 -8 6 -12 h36 q6 4 6 12 v20 q0 6 -6 6 h-36 q-6 0 -6 -6z" fill="${c}"/><path d="M14 46 q12 -6 26 0 t26 0" fill="${c}"/>
@@ -305,12 +356,12 @@ function jarSVG(c,lbl){return `<svg viewBox="0 0 80 80"><path d="M22 26 h36 v6 q
 
 /* ---------- data ---------- */
 const CK={
-  patent:{dough:'#c98d4f',chip:'#4a210c',fill:'#5b2a12',chips:[[24,56,4],[74,36,5],[64,78,4]]},
-  chunk:{dough:'#d9a866',chip:'#4a210c',chips:[[32,34,7],[66,30,6],[52,56,8],[30,68,6],[70,68,7]]},
-  red:{dough:'#a8312f',chip:'#fff3dc',chips:[[30,34,6],[66,30,5],[52,58,6],[30,68,5],[70,66,6]]},
+  patent:{g:'ckA',edge:'#8a5226',chip:'#3d1806',fill:1,chips:[[24,58,5],[76,36,6],[72,74,5]]},
+  chunk:{g:'ckB',edge:'#9a6630',chip:'#3d1806',chips:[[32,34,7],[66,30,6],[52,56,8],[30,70,6],[72,66,7]]},
+  red:{g:'ckR',edge:'#5a1212',chip:'#fff6e4',chips:[[30,34,6],[66,30,5],[52,58,6],[30,70,5],[72,66,6]]},
 };
 const ITEMS=[
-  {id:'classic',name:'وافل كلاسيك',price:18,kind:'w',art:{sauce:'#5b2a12'},tag:'الأشهر'},
+  {id:'classic',name:'وافل كلاسيك',price:18,kind:'w',art:{sauce:'#5b2a12',sugar:1},tag:'الأشهر'},
   {id:'mango',name:'تشيز كيك مانجو',price:24,kind:'w',art:{sauce:'#f2b233',tops:['banana']},tag:'جديد'},
   {id:'stick',name:'وافل ستيك',price:15,kind:'s'},
   {id:'lotus',name:'وافل لوتس',price:22,kind:'w',art:{sauce:'#c98a3f',tops:['lotus']}},
@@ -359,10 +410,30 @@ function renderBox(landIdx){
   $('#pillN').textContent=n;$('#cnt').textContent=n+'/'+MAX;
   $('#tot').textContent=money(s*(1-DISC));$('#old').textContent=s?money(s):'';
   $('#checkout').disabled=!n;
-  const sc=$('#screen');sc.textContent=money(s);sc.classList.remove('tick');void sc.offsetWidth;sc.classList.add('tick');
+  regUpdate(s);
   store.set('box',box);
 }
 function renderJars(){$('#jars').innerHTML=SAUCES.map(s=>`<button class="jar" data-id="${s.id}">${jarSVG(s.c,s.l)}<span>${s.name} <i>+${s.p}</i></span></button>`).join('')}
+
+
+/* ---------- cash register ---------- */
+(()=>{let h='';const rows=[[40,60,80,100],[36,56,76,96],[34,54,74,94]],ys=[80,98,115];
+  rows.forEach((r,ri)=>r.forEach((x,ci)=>h+=`<g class="k"><circle cx="${x}" cy="${ys[ri]}" r="${ri===2?6.5:7}"/><circle cx="${x-2}" cy="${ys[ri]-2.5}" r="2" fill="#fff" stroke="none" opacity=".7"/></g>`));
+  h+=`<g class="k" fill="#7d2a12"><rect x="114" y="74" width="12" height="16" rx="3"/></g><g class="k" fill="#7d2a12"><rect x="114" y="96" width="12" height="16" rx="3"/></g>`;
+  $('#keys').innerHTML=h})();
+let shown=0,regRaf;
+function pressKeys(n=4){const ks=[...document.querySelectorAll('#keys .k')];for(let i=0;i<n;i++)setTimeout(()=>{const k=ks[Math.floor(Math.random()*ks.length)];k.classList.add('p');snd(1400+Math.random()*300,.03,'square',.025);setTimeout(()=>k.classList.remove('p'),110)},i*85)}
+function regUpdate(to){cancelAnimationFrame(regRaf);const from=shown,t0=performance.now(),dur=500+Math.min(500,Math.abs(to-from)*12);
+  if(to!==from)pressKeys(to>from?4:2);
+  const step=t=>{const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);shown=from+(to-from)*e;$('#regTxt').textContent=shown.toFixed(2);if(k<1)regRaf=requestAnimationFrame(step);else{shown=to;$('#regTxt').textContent=to.toFixed(2)}};
+  regRaf=requestAnimationFrame(step);renderReceipt()}
+let lastLines=0;
+function renderReceipt(){const r=$('#rcpt');r.classList.remove('tear');
+  const lines=box.map(b=>{const it=byId(b.id),sc=sauceOf(b);return `<div class="rl"><span>${it.name}${sc?' +'+sc.name:''}</span><span>${linePrice(b)}</span></div>`});
+  $('#rlines').innerHTML=lines.slice(-5).map((l,i,arr)=>box.length>lastLines&&i===arr.length-1?l.replace('class="rl"','class="rl new"'):l).join('');
+  r.style.height=box.length?Math.min(16+lines.slice(-5).length*13.5,90)+'px':'0px';lastLines=box.length}
+function regCheckout(){const g=$('#reg');g.classList.add('pull');setTimeout(()=>{g.classList.remove('pull');g.classList.add('open');ching()},300);
+  setTimeout(()=>g.classList.remove('open'),2600)}
 
 /* ---------- interactions ---------- */
 function flyTo(fromEl,toEl,html,done){
@@ -445,7 +516,7 @@ function send(){
     const txt=`🧇 طلب استلام — وافوريا\nرقم الطلب: #${no}\nالاسم: ${name}\nالجوال: ${phone}\nالاستلام: ${whenText()}\n\n${box.map(x=>`• ${byId(x.id).name}${x.s?` + صوص ${sauceOf(x).name}`:''} — ${linePrice(x)} ر.س`).join('\n')}\n\nالمجموع: ${money(s)}\nخصم الاستلام 15٪: −${money(s*DISC)}\nالإجمالي: ${money(s*(1-DISC))}`;
     orders=getOrders();orders.unshift({no,name,t,items:box.map(x=>byId(x.id).name).join('، '),total:Math.round(s*(1-DISC)*100)/100,st:0,mine:true});store.set('orders',orders);
     stamps=stamps>=6?1:stamps+1;store.set('stamps',stamps);
-    box=[];renderBox();ching();const r=$('#reg');r.classList.remove('ding');void r.offsetWidth;r.classList.add('ding');confetti();
+    $('#rcpt').classList.add('tear');regCheckout();setTimeout(()=>{box=[];lastLines=0;renderBox()},700);confetti();
     openModal(`<div style="text-align:center"><div class="bag tied" style="width:130px;margin:0 auto">${bagSVG()}</div>
       <h2 style="font-family:'Reem Kufi Fun';color:var(--rust-d);margin:8px 0 2px">كيسك جاهز يا ${name}! 🎀</h2>
       <div style="color:var(--muted)">طلب <b>#${no}</b> · الاستلام ${t}<br>وفّرت <b style="color:var(--green)">${money(s*DISC)}</b> لأنك بتستلم بنفسك</div>
