@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>طاولة لونيا — منيو وطلبات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Josefin+Sans:wght@200;300&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1f1819; --bg2:#2a2122; --card:#2e2526; --line:#3d3233;
+  --cream:#f3ede8; --muted:#a8999a; --soft:#d9cfc8; --gold:#c9a97a; --green:#9fb38a;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Sans Arabic',sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit}
+.wrap{max-width:520px;margin:0 auto;padding:0 18px 120px}
+
+/* demo switch */
+.switch{position:sticky;top:0;z-index:60;background:rgba(31,24,25,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.switch .in{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:8px;padding:10px 18px;font-size:12px;color:var(--muted)}
+.switch .seg{margin-inline-start:auto;display:flex;background:var(--bg2);border-radius:99px;padding:3px}
+.switch .seg button{white-space:nowrap;padding:6px 11px;border-radius:99px;font-size:12px;color:var(--muted)}
+.switch .seg button.on{background:var(--cream);color:var(--bg)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(159,179,138,.2)}
+
+/* header */
+header{text-align:center;padding:38px 0 26px}
+.logo{font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:44px;letter-spacing:10px;padding-inline-start:10px;direction:ltr}
+.sub{font-family:'Josefin Sans';font-weight:300;letter-spacing:3px;font-size:11px;color:var(--muted);margin-top:6px;direction:ltr}
+.table-pill{display:inline-flex;align-items:center;gap:8px;margin-top:20px;border:1px solid var(--line);border-radius:99px;padding:7px 16px;font-size:13px;color:var(--soft)}
+.table-pill b{color:var(--cream);font-weight:600}
+
+/* mood */
+.mood{background:linear-gradient(160deg,#352a2b,#262021);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:26px}
+.mood h3{font-weight:500;font-size:17px}
+.mood p{color:var(--muted);font-size:13px;margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-size:13px;color:var(--soft);transition:.2s}
+.chip.on{background:var(--cream);color:var(--bg);border-color:var(--cream)}
+.rec{display:none;margin-top:16px;border-top:1px dashed var(--line);padding-top:16px}
+.rec.show{display:block;animation:fade .35s}
+.rec .pair{display:flex;gap:10px}
+.rec .pi{flex:1;background:var(--bg);border-radius:14px;padding:12px}
+.rec .pi small{color:var(--gold);font-size:11px}
+.rec .pi div{font-size:14px;margin-top:3px}
+.rec .pi span{color:var(--muted);font-size:12px}
+.rec .why{color:var(--muted);font-size:12.5px;margin:12px 0}
+.btn{display:block;width:100%;background:var(--cream);color:var(--bg);border-radius:14px;padding:13px;font-size:14px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
+
+/* tabs */
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;position:sticky;top:45px;z-index:20;background:var(--bg);padding:10px 0;margin-bottom:6px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;padding:8px 15px;border-radius:99px;font-size:13px;color:var(--muted);border:1px solid transparent}
+.tab.on{border-color:var(--cream);color:var(--cream)}
+.cat-title{text-align:center;margin:26px 0 6px}
+.cat-title .en{font-family:'Cormorant Garamond',serif;font-size:28px;letter-spacing:2px;direction:ltr}
+.cat-title .ar{color:var(--muted);font-size:12px}
+
+/* items */
+.item{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.item .t{flex:1}
+.item .ar{font-size:15px}
+.item .en{font-size:11.5px;color:var(--muted);letter-spacing:.8px;direction:ltr;text-align:right;margin-top:1px}
+.item .meta{font-size:12px;color:var(--muted);margin-top:5px}
+.item .meta b{color:var(--gold);font-weight:500}
+.sizes{display:flex;gap:6px;margin-top:8px}
+.sizes button{font-size:11.5px;border:1px solid var(--line);border-radius:8px;padding:4px 9px;color:var(--muted)}
+.sizes button.on{border-color:var(--gold);color:var(--gold)}
+.add{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);font-size:20px;line-height:1;display:grid;place-items:center;transition:.15s}
+.add:active{transform:scale(.9)}
+.qtyc{display:flex;align-items:center;gap:10px;font-size:14px}
+.qtyc button{width:30px;height:30px;border-radius:10px;background:var(--bg2);font-size:16px}
+.tag{display:inline-block;font-size:10px;background:rgba(201,169,122,.15);color:var(--gold);border-radius:6px;padding:2px 6px;margin-inline-start:6px;vertical-align:middle}
+
+/* cart bar */
+.bar{position:fixed;inset-inline:0;bottom:0;z-index:40;padding:14px 18px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 35%);pointer-events:none}
+.bar button{pointer-events:auto;max-width:484px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--cream);color:var(--bg);border-radius:16px;padding:15px 18px;font-weight:600;font-size:15px;box-shadow:0 10px 30px rgba(0,0,0,.4);transform:translateY(130%);transition:.3s}
+.bar.show button{transform:none}
+.bar .count{background:var(--bg);color:var(--cream);border-radius:8px;padding:2px 9px;font-size:13px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);opacity:0;z-index:45;background:#3a2f30;border:1px solid var(--line);border-radius:14px;padding:11px 14px;font-size:13px;display:flex;gap:10px;align-items:center;transition:.3s;width:calc(100% - 36px);max-width:484px;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{margin-inline-start:auto;background:var(--cream);color:var(--bg);border-radius:9px;padding:6px 11px;font-size:12px;font-weight:600;white-space:nowrap}
+
+/* sheet */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;opacity:0;pointer-events:none;transition:.25s}
+.overlay.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;inset-inline:0;bottom:0;z-index:51;background:var(--bg2);border-radius:24px 24px 0 0;max-height:88vh;overflow:auto;transform:translateY(100%);transition:.3s;padding:10px 20px calc(24px + env(safe-area-inset-bottom))}
+.sheet.show{transform:none;visibility:visible}
+.sheet:not(.show){visibility:hidden;transition:.3s,visibility 0s .3s}
+.sheet .in{max-width:480px;margin:0 auto}
+.grab{width:40px;height:4px;border-radius:4px;background:var(--line);margin:4px auto 16px}
+.sheet h2{font-weight:500;font-size:19px;margin-bottom:6px}
+.line{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.line .t{flex:1}
+.line .t small{display:block;color:var(--muted);font-size:12px}
+label.f{display:block;font-size:12.5px;color:var(--muted);margin:16px 0 6px}
+.inp{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--cream);font-size:14px;outline:none}
+.inp:focus{border-color:var(--gold)}
+.tot{display:flex;justify-content:space-between;margin:18px 0 14px;font-size:15px}
+.tot b{font-size:18px}
+.hint{font-size:11.5px;color:var(--muted);margin-top:6px}
+
+/* loyalty card */
+.loyal{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:14px}
+.loyal .top{display:flex;justify-content:space-between;font-size:13px}
+.loyal .top span{color:var(--gold)}
+.stamps{display:flex;gap:8px;margin-top:12px}
+.stamp{flex:1;aspect-ratio:1;border-radius:50%;border:1px dashed var(--line);display:grid;place-items:center;font-size:15px;color:var(--line)}
+.stamp.full{border:1px solid var(--gold);background:rgba(201,169,122,.15);color:var(--gold)}
+.stamp.gift{border-style:solid;border-color:var(--cream);color:var(--cream)}
+
+/* status */
+.status{text-align:center;padding:10px 0}
+.status .num{font-family:'Josefin Sans';font-weight:200;font-size:54px;letter-spacing:4px;direction:ltr}
+.steps{display:flex;justify-content:space-between;position:relative;margin:26px 6px 10px}
+.steps:before{content:'';position:absolute;top:13px;inset-inline:20px;height:1px;background:var(--line)}
+.st{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;color:var(--muted);flex:1}
+.st i{width:27px;height:27px;border-radius:50%;background:var(--bg2);border:1px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:12px}
+.st.on{color:var(--cream)}
+.st.on i{background:var(--cream);color:var(--bg);border-color:var(--cream)}
+.st.cur i{animation:pulse 1.4s infinite}
+
+/* barista */
+#barista{display:none}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:24px 0 18px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi small{color:var(--muted);font-size:11px}
+.kpi div{font-size:20px;margin-top:4px}
+.kpi div span{font-size:11px;color:var(--muted)}
+.sec{font-size:13px;color:var(--muted);margin:18px 0 10px;display:flex;justify-content:space-between}
+.order{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;animation:fade .35s}
+.order.new{border-color:var(--gold)}
+.order .h{display:flex;align-items:center;gap:8px;font-size:14px}
+.order .h b{font-family:'Josefin Sans';font-weight:300;font-size:18px;direction:ltr}
+.badge{font-size:11px;border-radius:7px;padding:3px 8px;background:var(--bg);color:var(--soft)}
+.badge.t{background:rgba(201,169,122,.15);color:var(--gold)}
+.order .h .time{margin-inline-start:auto;color:var(--muted);font-size:12px}
+.order ul{list-style:none;margin:10px 0;font-size:13.5px;color:var(--soft)}
+.order ul li{padding:3px 0}
+.order .note{font-size:12px;color:var(--gold);margin-bottom:10px}
+.order .acts{display:flex;gap:8px}
+.order .acts button{flex:1;border-radius:11px;padding:10px;font-size:13px;font-weight:600;background:var(--cream);color:var(--bg)}
+.order .acts button.sec2{background:transparent;color:var(--soft);border:1px solid var(--line);font-weight:400}
+.done{opacity:.5}
+.top3 .r{display:flex;justify-content:space-between;font-size:13.5px;padding:9px 0;border-bottom:1px solid var(--line)}
+.top3 .r span{color:var(--muted)}
+.empty{color:var(--muted);text-align:center;font-size:13px;padding:22px 0}
+
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:40px;line-height:1.9}
+footer .made{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px}
+
+/* ===== INTRO ===== */
+#intro{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;
+  clip-path:inset(0 0 0 0);transition:clip-path 1s cubic-bezier(.77,0,.18,1)}
+#intro.out{clip-path:inset(0 0 100% 0)}
+#intro.gone{display:none}
+.chain{position:absolute;top:0;bottom:0;width:16px;transform-origin:top;transform:scaleY(0);
+  background:linear-gradient(var(--cream),var(--cream)) center/3px 100% no-repeat,
+  repeating-linear-gradient(var(--cream) 0 70px,transparent 70px 92px) center/16px 100% no-repeat;opacity:.13;
+  animation:grow 2.4s cubic-bezier(.65,0,.35,1) forwards}
+.chain.c1{right:22px}.chain.c2{right:48px;animation-delay:.2s;transform-origin:bottom}.chain.c3{right:74px;animation-delay:.4s}
+.chain.c4{left:22px;animation-delay:.3s;transform-origin:bottom}.chain.c5{left:48px;animation-delay:.5s}
+.glow{position:absolute;width:340px;height:340px;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-30%) scale(.4);opacity:0;
+  background:radial-gradient(circle,rgba(243,226,200,.28) 0%,rgba(201,169,122,.12) 35%,transparent 70%);
+  animation:rise 2.6s .6s cubic-bezier(.2,.8,.2,1) forwards, breathe 4s 3.2s ease-in-out infinite}
+.moon{position:absolute;width:74px;height:74px;border-radius:50%;top:50%;left:50%;margin:-185px 0 0 -37px;opacity:0;
+  box-shadow:inset -14px 6px 0 0 var(--cream);transform:rotate(-30deg) translateY(30px);
+  animation:moon 1.6s 1s cubic-bezier(.2,.8,.2,1) forwards}
+.ilogo{position:relative;font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:58px;direction:ltr;display:flex}
+.ilogo span{display:inline-block;opacity:0;filter:blur(12px);transform:translateY(18px);margin:0 9px;
+  animation:letter 1.1s cubic-bezier(.2,.8,.2,1) forwards}
+.ilogo span:nth-child(1){animation-delay:1.3s}.ilogo span:nth-child(2){animation-delay:1.42s}
+.ilogo span:nth-child(3){animation-delay:1.54s}.ilogo span:nth-child(4){animation-delay:1.66s}.ilogo span:nth-child(5){animation-delay:1.78s}
+.iline{width:0;height:1px;background:var(--gold);margin:18px auto 14px;animation:line 1s 2.3s ease forwards}
+.iar,.ien,.itable,.igo{opacity:0;transform:translateY(10px);animation:up .9s cubic-bezier(.2,.8,.2,1) forwards;text-align:center}
+.iar{font-size:15px;color:var(--soft);animation-delay:2.5s}
+.ien{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--gold);margin-top:8px;animation-delay:2.8s;direction:ltr}
+.itable{margin-top:34px;font-size:13px;color:var(--muted);animation-delay:3.3s}
+.itable b{color:var(--cream)}
+.igo{margin-top:16px;animation-delay:3.6s;border:1px solid var(--cream);border-radius:99px;padding:12px 30px;font-size:14px;color:var(--cream);position:relative;overflow:hidden}
+.igo:after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(243,237,232,.25),transparent 70%);transform:translateX(-120%);animation:shine 2.4s 4.4s infinite}
+.iskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));font-size:11px;color:var(--muted);letter-spacing:1px;opacity:0;animation:up .6s 1s forwards}
+.steam{position:absolute;bottom:-40px;width:2px;height:120px;background:linear-gradient(transparent,rgba(243,237,232,.08),transparent);border-radius:2px;animation:steam 6s linear infinite}
+
+/* menu entrance after intro */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+header .logo span{display:inline-block}
+
+@keyframes grow{to{transform:scaleY(1)}}
+@keyframes rise{to{opacity:1;transform:translate(-50%,-62%) scale(1)}}
+@keyframes breathe{50%{filter:brightness(1.35)}}
+@keyframes moon{to{opacity:.9;transform:rotate(-30deg) translateY(0)}}
+@keyframes letter{to{opacity:1;filter:blur(0);transform:none}}
+@keyframes line{to{width:120px}}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes shine{0%{transform:translateX(-120%)}40%,100%{transform:translateX(120%)}}
+@keyframes steam{from{transform:translateY(0)}to{transform:translateY(-110vh)}}
+@media (prefers-reduced-motion:reduce){#intro *{animation-duration:.01s!important;animation-delay:0s!important}}
+.switch .in>button{white-space:nowrap}
+@media(max-width:430px){.switch .lbl{display:none}}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(243,237,232,.15)}}
+</style>
+</head>
+<body>
+
+<div id="intro" onclick="endIntro()">
+  <div class="chain c1"></div><div class="chain c2"></div><div class="chain c3"></div>
+  <div class="chain c4"></div><div class="chain c5"></div>
+  <div class="steam" style="left:30%;animation-delay:0s"></div>
+  <div class="steam" style="left:55%;animation-delay:2s"></div>
+  <div class="steam" style="left:72%;animation-delay:4s"></div>
+  <div class="glow"></div>
+  <div class="moon"></div>
+  <div class="ilogo"><span>L</span><span>U</span><span>N</span><span>Y</span><span>A</span></div>
+  <div class="iline"></div>
+  <div class="iar">لونيا · قهوة وجلسة</div>
+  <div class="ien">Sip under the Lunya glow</div>
+  <div class="itable">طاولة <b id="iT">5</b> جاهزة لك</div>
+  <button class="igo" onclick="event.stopPropagation();endIntro()">افتح المنيو</button>
+  <div class="iskip">اضغط في أي مكان للتخطي</div>
+</div>
+
+<div class="switch"><div class="in">
+  <span class="dot"></span><span class="lbl">نسخة تجريبية</span>
+  <button onclick="replayIntro()" style="font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 10px">↺ الانترو</button>
+  <div class="seg">
+    <button id="mC" class="on" onclick="mode('c')">شاشة الزبون</button>
+    <button id="mB" onclick="mode('b')">شاشة الباريستا <span id="bCount"></span></button>
+  </div>
+</div></div>
+
+<!-- ============ CUSTOMER ============ -->
+<div id="customer" class="wrap">
+  <header>
+    <div class="logo">LUNYA</div>
+    <div class="sub">CAFE AND SOCIAL</div>
+    <div class="table-pill">أنت على طاولة <b id="tNum">5</b> · اطلب وحنا نجيبه لك</div>
+  </header>
+
+  <div class="mood">
+    <h3>وش مزاجك اليوم؟</h3>
+    <p>اختر، ونقترح لك مشروب وحلا يناسبونك</p>
+    <div class="chips" id="chips"></div>
+    <div class="rec" id="rec"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="menu"></div>
+
+  <footer>
+    شوران – شارع الفضل بن عيسى (خلف بوليفارد قباء)<br>
+    يومياً من ٦:٣٠ صباحاً حتى ١ صباحاً
+    <div class="made">نموذج تجريبي مقترح للونيا · تصميم وتنفيذ نرجس العمري · 0556211944</div>
+  </footer>
+</div>
+
+<!-- ============ BARISTA ============ -->
+<div id="barista" class="wrap">
+  <header style="padding-bottom:0">
+    <div class="logo" style="font-size:30px">LUNYA</div>
+    <div class="sub">BAR SCREEN · شاشة الطلبات</div>
+  </header>
+  <div class="kpis">
+    <div class="kpi"><small>طلبات اليوم</small><div id="kO">0</div></div>
+    <div class="kpi"><small>المبيعات</small><div id="kS">0 <span>ر.س</span></div></div>
+    <div class="kpi"><small>متوسط الطلب</small><div id="kA">0 <span>ر.س</span></div></div>
+  </div>
+  <div class="sec"><span>الطلبات الحالية</span><span id="liveN"></span></div>
+  <div id="orders"></div>
+  <div class="sec"><span>الأكثر طلباً اليوم</span></div>
+  <div class="top3" id="top3"></div>
+  <div class="sec"><span>طلبات منتهية</span></div>
+  <div id="doneList"></div>
+  <p class="hint" style="text-align:center;margin-top:24px">في النسخة الفعلية: كل طلب يوصل تنبيه للبار ويتسجل في Google Sheets، والمنيو والأسعار تتعدل من الشيت بدون مبرمج.</p>
+</div>
+
+<!-- cart bar -->
+<div class="bar" id="bar"><button onclick="openCart()"><span>عرض الطلب <span class="count" id="cCount">0</span></span><span id="cTot">0 ر.س</span></button></div>
+<div class="toast" id="toast"><span id="toastTxt"></span><button id="toastBtn">أضفه</button></div>
+
+<div class="overlay" id="ov" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet"><div class="in" id="sheetIn"></div></div>
+
+<script>
+const MENU=[
+ {id:'black',en:'BLACK COFFEE',ar:'القهوة السوداء',items:[
+  {id:'cod',ar:'قهوة اليوم',en:'Coffee of the Day',p:9,c:3},
+  {id:'icod',ar:'قهوة اليوم باردة',en:'Ice Coffee of the Day',sizes:[['صغير',10],['كبير',13]],c:3},
+  {id:'drip',ar:'قهوة مقطرة',en:'Drip Coffee',p:18,c:3},
+  {id:'idrip',ar:'قهوة مقطرة باردة',en:'Ice Drip Coffee',p:18,c:3},
+  {id:'esp',ar:'إسبريسو',en:'Espresso',p:12,c:3},
+  {id:'alf',ar:'ألفريدو إسبريسو',en:'Alfredo Espresso',p:12,c:3},
+  {id:'ame',ar:'أمريكانو',en:'Americano',p:13,c:3},
+  {id:'iame',ar:'آيس أمريكانو',en:'Ice Americano',p:18,c:3},
+ ]},
+ {id:'milk',en:'ESPRESSO & MILK',ar:'إسبريسو وحليب',items:[
+  {id:'lat',ar:'لاتيه',en:'Latte',p:18,c:130},
+  {id:'cap',ar:'كابتشينو',en:'Cappuccino',p:17,c:90},
+  {id:'fw',ar:'فلات وايت',en:'Flat White',p:16,c:56},
+  {id:'cor',ar:'كورتادو',en:'Cortado',p:14,c:50},
+  {id:'sp',ar:'سبانيش لاتيه',en:'Spanish Latte',p:20,c:230,tag:'مفضّل'},
+  {id:'isp',ar:'آيس سبانيش لاتيه',en:'Ice Spanish Latte',p:24,c:90},
+  {id:'ifw',ar:'آيس فلات وايت',en:'Ice Flat White',p:17,c:56},
+  {id:'iwm',ar:'آيس شيكن وايت موكا',en:'Ice Shaken White Mocha',p:23,c:190},
+ ]},
+ {id:'matcha',en:'MATCHA',ar:'ماتشا',items:[
+  {id:'mst',ar:'آيس مستكا ماتشا',en:'Ice Matcha Mastic',p:25,c:150,tag:'من لونيا'},
+  {id:'swm',ar:'آيس سويت ماتشا',en:'Ice Sweet Matcha',p:24,c:245},
+  {id:'clm',ar:'آيس كلاسيك ماتشا',en:'Ice Classic Matcha',p:21,c:8},
+  {id:'frm',ar:'فرابتشينو ماتشا',en:'Frappuccino Matcha',p:24,c:190},
+  {id:'mlt',ar:'آيس ماتشا لاتيه',en:'Ice Matcha Latte',p:22,c:180},
+ ]},
+ {id:'sweets',en:'SWEETS',ar:'الحلويات',items:[
+  {id:'mil',ar:'ميلكي كيك',en:'Milky Cake',p:20,c:230,sweet:1},
+  {id:'pud',ar:'بودينج الشوكولاتة',en:'Chocolate Pudding',p:25,c:372,sweet:1},
+  {id:'tir',ar:'تيراميسو',en:'Tiramisu',p:19,c:180,sweet:1,tag:'يناسب القهوة'},
+  {id:'rr',ar:'روكي رود',en:'Rocky Road',p:12,c:190,sweet:1},
+ ]},
+];
+const ALL={};MENU.forEach(c=>c.items.forEach(i=>ALL[i.id]=i));
+
+const MOODS=[
+ {k:'focus',l:'🎧 أبي أركز',d:'drip',s:'rr',w:'قهوة مقطرة صافية تصحّيك بهدوء، وروكي رود خفيف ما يشغلك عن شغلك.'},
+ {k:'calm',l:'🌙 رايق',d:'fw',s:'tir',w:'فلات وايت متوازن مع تيراميسو، أحلى شي لجلسة رايقة.'},
+ {k:'sweet',l:'🍫 أبي شي حالي',d:'sp',s:'pud',w:'سبانيش لاتيه مع بودينج الشوكولاتة. يوم حالي من أوله لآخره.'},
+ {k:'fresh',l:'🍃 أبي شي منعش',d:'mst',s:'mil',w:'آيس مستكا ماتشا منعش ومختلف، ومعه ميلكي كيك ناعمة.'},
+ {k:'friends',l:'👥 جاي مع ربعي',d:'iwm',s:'mil',w:'آيس وايت موكا يرضي الكل، وميلكي كيك للمشاركة.'},
+];
+
+let cart={}; // key -> {id,size,price,q}
+let size={icod:0};
+let tableNo=5, orders=[], seq=41, myOrder=null;
+let loyal={phone:'',stamps:3};
+try{const s=localStorage.getItem('lunya_loyal');if(s)loyal=JSON.parse(s)}catch(e){}
+const h=location.hash.match(/table-(\d+)/); if(h) tableNo=+h[1];
+document.getElementById('tNum').textContent=tableNo;
+
+const $=id=>document.getElementById(id);
+const price=i=>i.sizes?i.sizes[size[i.id]][1]:i.p;
+const key=i=>i.sizes?i.id+'_'+size[i.id]:i.id;
+const ar=n=>String(n);
+
+function renderTabs(){
+ $('tabs').innerHTML=MENU.map((c,i)=>`<button class="tab${i?'':' on'}" onclick="go('${c.id}',this)">${c.ar}</button>`).join('');
+}
+function go(id,b){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));b.classList.add('on');
+ const el=$('cat-'+id);window.scrollTo({top:el.getBoundingClientRect().top+scrollY-100,behavior:'smooth'})}
+
+function renderMenu(){
+ $('menu').innerHTML=MENU.map(c=>`
+  <div id="cat-${c.id}">
+   <div class="cat-title"><div class="en">${c.en}</div><div class="ar">${c.ar}</div></div>
+   ${c.items.map(itemHTML).join('')}
+  </div>`).join('');
+}
+function itemHTML(i){
+ const k=key(i), q=cart[k]?cart[k].q:0;
+ return `<div class="item" id="it-${i.id}">
+  <div class="t">
+   <div class="ar">${i.ar}${i.tag?`<span class="tag">${i.tag}</span>`:''}</div>
+   <div class="en">${i.en.toUpperCase()}</div>
+   <div class="meta"><b>${price(i)} ر.س</b> · ${i.c} سعرة</div>
+   ${i.sizes?`<div class="sizes">${i.sizes.map((s,x)=>`<button class="${size[i.id]==x?'on':''}" onclick="setSize('${i.id}',${x})">${s[0]} ${s[1]}</button>`).join('')}</div>`:''}
+  </div>
+  ${q?`<div class="qtyc"><button onclick="chg('${k}',-1)">−</button>${q}<button onclick="add('${i.id}')">+</button></div>`
+     :`<button class="add" onclick="add('${i.id}')">+</button>`}
+ </div>`;
+}
+function refreshItem(id){const el=$('it-'+id);if(el)el.outerHTML=itemHTML(ALL[id])}
+function setSize(id,x){size[id]=x;refreshItem(id)}
+
+function add(id,silent){
+ const i=ALL[id],k=key(i);
+ cart[k]=cart[k]||{id,size:i.sizes?size[id]:null,price:price(i),q:0};
+ cart[k].q++; refreshItem(id); updBar();
+ if(!silent) suggest(i);
+}
+function chg(k,d){const id=cart[k].id;cart[k].q+=d;if(cart[k].q<=0)delete cart[k];refreshItem(id);updBar();if($('sheet').classList.contains('show')&&!myOrder)openCart()}
+function totals(){let n=0,t=0;Object.values(cart).forEach(l=>{n+=l.q;t+=l.q*l.price});return{n,t}}
+function updBar(){const{n,t}=totals();$('cCount').textContent=ar(n);$('cTot').textContent=ar(t)+' ر.س';$('bar').classList.toggle('show',n>0)}
+
+let tT;
+function suggest(i){
+ const hasSweet=Object.values(cart).some(l=>ALL[l.id].sweet);
+ if(i.sweet||hasSweet) return;
+ const pick=i.id.includes('m')&&MENU[2].items.includes(i)?'mil':'tir';
+ const s=ALL[pick];
+ $('toastTxt').innerHTML=`تكمّلها بـ<b>${s.ar}</b>؟ ${s.p} ر.س`;
+ $('toastBtn').onclick=()=>{add(pick,true);hideToast()};
+ $('toast').classList.add('show');clearTimeout(tT);tT=setTimeout(hideToast,4500);
+}
+function hideToast(){$('toast').classList.remove('show')}
+
+function renderMoods(){
+ $('chips').innerHTML=MOODS.map(m=>`<button class="chip" data-k="${m.k}" onclick="pickMood('${m.k}')">${m.l}</button>`).join('');
+}
+function pickMood(k){
+ document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.k==k));
+ const m=MOODS.find(x=>x.k==k),d=ALL[m.d],s=ALL[m.s];
+ $('rec').innerHTML=`<div class="pair">
+   <div class="pi"><small>المشروب</small><div>${d.ar}</div><span>${price(d)} ر.س</span></div>
+   <div class="pi"><small>معه</small><div>${s.ar}</div><span>${s.p} ر.س</span></div></div>
+   <p class="why">${m.w}</p>
+   <button class="btn" onclick="add('${m.d}',true);add('${m.s}',true);toastMsg('انضافوا لطلبك ✓')">أضف الاثنين · ${price(d)+s.p} ر.س</button>`;
+ $('rec').classList.add('show');
+}
+function toastMsg(t){$('toastTxt').innerHTML=t;$('toastBtn').style.display='none';$('toast').classList.add('show');clearTimeout(tT);tT=setTimeout(()=>{hideToast();$('toastBtn').style.display=''},1800)}
+
+function lineName(l){const i=ALL[l.id];return i.ar+(i.sizes?' ('+i.sizes[l.size][0]+')':'')}
+function stampsHTML(n){
+ let s='';for(let x=0;x<6;x++)s+=x==5?`<div class="stamp gift ${n>=5?'full':''}">🎁</div>`:`<div class="stamp ${x<n?'full':''}">${x<n?'☕':''}</div>`;
+ return s;
+}
+function openCart(){
+ myOrder=null;
+ const lines=Object.entries(cart),{t}=totals();
+ if(!lines.length){closeSheet();return}
+ const cups=lines.filter(([k,l])=>!ALL[l.id].sweet).reduce((a,[k,l])=>a+l.q,0);
+ $('sheetIn').innerHTML=`<div class="grab"></div><h2>طلبك · طاولة ${tableNo}</h2>
+  ${lines.map(([k,l])=>`<div class="line"><div class="t">${lineName(l)}<small>${l.price} ر.س</small></div>
+   <div class="qtyc"><button onclick="chg('${k}',-1)">−</button>${l.q}<button onclick="chg('${k}',1)">+</button></div></div>`).join('')}
+  <label class="f">ملاحظة للباريستا (اختياري)</label>
+  <input class="inp" id="note" placeholder="مثلاً: بدون سكر، حليب شوفان…">
+  <div class="loyal">
+   <div class="top"><b>بطاقة لونيا</b><span>كل 5 أكواب، السادس علينا</span></div>
+   <div class="stamps">${stampsHTML(loyal.stamps)}</div>
+   <label class="f" style="margin-top:12px">رقم جوالك لجمع الأختام</label>
+   <input class="inp" id="phone" inputmode="tel" placeholder="05xxxxxxxx" value="${loyal.phone}">
+   <p class="hint">هذا الطلب يضيف ${ar(cups)} ختم${cups>1?'':''} — بدون تطبيق ولا تسجيل.</p>
+  </div>
+  <div class="tot"><span>الإجمالي</span><b>${ar(t)} ر.س</b></div>
+  <button class="btn" onclick="send()">أرسل الطلب للبار</button>
+  <p class="hint" style="text-align:center">الدفع عند الكاشير أو عند وصول الطلب</p>`;
+ $('ov').classList.add('show');$('sheet').classList.add('show');
+}
+function closeSheet(){$('ov').classList.remove('show');$('sheet').classList.remove('show')}
+
+function send(){
+ const phone=$('phone').value.trim(),note=$('note').value.trim();
+ const lines=Object.values(cart).map(l=>({...l})),{t}=totals();
+ const cups=lines.filter(l=>!ALL[l.id].sweet).reduce((a,l)=>a+l.q,0);
+ if(phone){loyal.phone=phone;loyal.stamps=Math.min(5,loyal.stamps+cups);try{localStorage.setItem('lunya_loyal',JSON.stringify(loyal))}catch(e){}}
+ const o={no:++seq,table:tableNo,lines,total:t,note,st:0,time:new Date(),mine:true,isNew:true};
+ orders.unshift(o);myOrder=o;cart={};renderMenu();updBar();renderBar();showStatus();
+}
+function showStatus(){
+ const o=myOrder;if(!o)return;
+ const S=['استلمنا طلبك','يتحضّر','جاهز'];
+ $('sheetIn').innerHTML=`<div class="grab"></div><div class="status">
+   <p style="color:var(--muted);font-size:13px">رقم طلبك</p><div class="num">#${o.no}</div>
+   <div class="steps">${S.map((s,x)=>`<div class="st ${x<=o.st?'on':''} ${x==o.st&&x<2?'cur':''}"><i>${x<o.st||o.st==2?'✓':x+1}</i>${s}</div>`).join('')}</div>
+   <p style="font-size:14px;margin:18px 0 6px">${o.st==2?'طلبك جاهز وفي الطريق لطاولتك ☕':'خلك مرتاح، بنجيبه لطاولة '+o.table}</p>
+   ${loyal.phone?`<div class="loyal" style="text-align:right"><div class="top"><b>أختامك</b><span>${loyal.stamps>=5?'كوبك الجاي علينا 🎁':'باقي '+ar(5-loyal.stamps)+' وتاخذ كوب مجاني'}</span></div><div class="stamps">${stampsHTML(loyal.stamps)}</div></div>`:''}
+   <p class="hint" style="margin-top:16px">جرّبي: افتحي «شاشة الباريستا» وغيّري حالة الطلب، وتتحدث هنا مباشرة.</p>
+   <button class="btn ghost" style="margin-top:14px" onclick="closeSheet()">رجوع للمنيو</button></div>`;
+ $('ov').classList.add('show');$('sheet').classList.add('show');
+}
+
+/* barista */
+function mode(m){
+ $('customer').style.display=m=='c'?'block':'none';$('barista').style.display=m=='b'?'block':'none';
+ $('mC').classList.toggle('on',m=='c');$('mB').classList.toggle('on',m=='b');
+ $('bar').style.display=m=='c'?'':'none';closeSheet();hideToast();
+ if(m=='b'){renderBar();setTimeout(()=>{orders.forEach(o=>o.isNew=false)},2500)}
+ else if(myOrder) showStatus();
+ window.scrollTo(0,0);
+}
+function ago(d){const m=Math.max(0,Math.round((Date.now()-d)/60000));return m?('قبل '+ar(m)+' د'):'الحين'}
+function renderBar(){
+ const live=orders.filter(o=>o.st<2),done=orders.filter(o=>o.st==2);
+ $('bCount').textContent=live.length?'('+ar(live.length)+')':'';
+ $('liveN').textContent=ar(live.length)+' طلب';
+ $('orders').innerHTML=live.length?live.map(o=>`<div class="order ${o.isNew?'new':''}">
+   <div class="h"><b>#${o.no}</b><span class="badge t">طاولة ${ar(o.table)}</span>${o.st==1?'<span class="badge">يتحضّر</span>':'<span class="badge">جديد</span>'}<span class="time">${ago(o.time)}</span></div>
+   <ul>${o.lines.map(l=>`<li>${ar(l.q)} × ${lineName(l)}</li>`).join('')}</ul>
+   ${o.note?`<div class="note">📝 ${o.note}</div>`:''}
+   <div class="acts">${o.st==0?`<button onclick="adv(${o.no})">بدأنا التحضير</button>`:`<button onclick="adv(${o.no})">جاهز ✓</button>`}
+   <button class="sec2">${ar(o.total)} ر.س</button></div></div>`).join(''):'<div class="empty">ما فيه طلبات حالياً</div>';
+ $('doneList').innerHTML=done.length?done.map(o=>`<div class="order done"><div class="h"><b>#${o.no}</b><span class="badge t">طاولة ${ar(o.table)}</span><span class="time">${ar(o.total)} ر.س</span></div></div>`).join(''):'<div class="empty">—</div>';
+ const all=orders,sum=all.reduce((a,o)=>a+o.total,0)+BASE.s,cnt=all.length+BASE.o;
+ $('kO').textContent=ar(cnt);$('kS').innerHTML=ar(sum)+' <span>ر.س</span>';$('kA').innerHTML=ar(Math.round(sum/cnt))+' <span>ر.س</span>';
+ const tally={...BASE.top};all.forEach(o=>o.lines.forEach(l=>tally[l.id]=(tally[l.id]||0)+l.q));
+ $('top3').innerHTML=Object.entries(tally).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([id,n],x)=>`<div class="r">${(x+1)}. ${ALL[id].ar}<span>${ar(n)} مرة</span></div>`).join('');
+}
+function adv(no){const o=orders.find(x=>x.no==no);o.st++;o.isNew=false;renderBar()}
+
+/* seed: earlier orders today so the bar screen isn't empty */
+const BASE={o:37,s:742,top:{sp:14,mst:11,tir:9,lat:7}};
+orders.push(
+ {no:40,table:3,lines:[{id:'mst',q:2,price:25},{id:'mil',q:1,price:20}],total:70,note:'',st:1,time:new Date(Date.now()-4*60000)},
+ {no:39,table:8,lines:[{id:'isp',q:1,price:24},{id:'tir',q:1,price:19}],total:43,note:'سكر خفيف',st:0,time:new Date(Date.now()-2*60000)},
+ {no:38,table:1,lines:[{id:'cod',q:2,price:9}],total:18,note:'',st:2,time:new Date(Date.now()-11*60000)}
+);
+orders.sort((a,b)=>b.no-a.no);
+
+renderTabs();renderMenu();renderMoods();renderBar();
+
+/* ===== intro control ===== */
+$('iT').textContent=tableNo;
+const introHTML=$('intro').innerHTML;
+let introTimer=setTimeout(endIntro,7000), introDone=false;
+document.body.style.overflow='hidden';
+function endIntro(){
+ if(introDone)return;introDone=true;clearTimeout(introTimer);
+ window.scrollTo(0,0);
+ $('intro').classList.add('out');document.body.style.overflow='';
+ setTimeout(()=>{$('intro').classList.add('gone');revealAll()},1000);
+ setTimeout(revealAll,350);
+}
+function replayIntro(){
+ mode('c');const el=$('intro');el.innerHTML=introHTML;$('iT').textContent=tableNo;
+ el.classList.remove('out','gone');introDone=false;document.body.style.overflow='hidden';
+ resetReveal();introTimer=setTimeout(endIntro,7000);
+}
+/* staggered entrance for the page underneath */
+let io;
+function resetReveal(){
+ document.querySelectorAll('#customer header > *, .mood, .tabs, .cat-title, .item').forEach(e=>{e.classList.add('rv');e.classList.remove('in')});
+}
+function revealAll(){
+ const els=[...document.querySelectorAll('#customer .rv:not(.in)')];
+ let d=0;
+ els.forEach(e=>{const r=e.getBoundingClientRect();
+  if(r.top<innerHeight){setTimeout(()=>e.classList.add('in'),d);d+=90}
+  else{io&&io.observe(e)}});
+}
+if('IntersectionObserver' in window){
+ io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+}
+resetReveal();
+setInterval(()=>{if($('barista').style.display=='block')renderBar()},30000);
+</script>
+</body>
+</html>
