@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fraya | حجز الكيترنق والفوتوبوث</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cormorant+Garamond:wght@500;600;700&family=El+Messiri:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wine:#4a0a14; --wine2:#6b1626; --rose:#f6d7dd; --rose2:#fbe9ec; --pink:#e88fa0; --pink2:#f3b8c3;
+  --gold:#c9a24e; --gold2:#e6c97f; --ink:#3a0c14; --muted:#8a5a63; --line:#ecc6cd; --white:#fffafb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Almarai',sans-serif;background:var(--rose2);color:var(--ink);line-height:1.7;overflow-x:hidden}
+button,input,select,textarea{font-family:inherit}
+.latin{font-family:'Cormorant Garamond',serif}
+h1,h2,h3{font-family:'El Messiri',sans-serif;line-height:1.3}
+
+/* ===== Intro ===== */
+#intro{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 45%,#6b1626 0%,#3d0811 60%,#22040a 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .9s ease, visibility .9s}
+#intro.hide{opacity:0;visibility:hidden}
+.intro-ring{width:240px;height:240px;border-radius:50%;border:1px solid rgba(230,201,127,.35);display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;animation:ring 1.6s ease both}
+.intro-ring::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px solid rgba(230,201,127,.15);animation:spin 12s linear infinite;border-top-color:rgba(230,201,127,.7)}
+.intro-logo{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:500;background:linear-gradient(100deg,#b8893a 0%,#f2d998 35%,#c9a24e 55%,#f7e3ad 75%,#b8893a 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 2.4s ease .4s both, rise 1.2s ease .3s both;letter-spacing:2px}
+.intro-sub{font-family:'Cormorant Garamond',serif;color:var(--gold2);letter-spacing:7px;font-size:12px;margin-top:-6px;animation:fade 1s ease 1.1s both}
+.intro-bow{margin-top:26px;animation:fade 1s ease 1.5s both}
+.intro-tag{color:#f3c9d1;margin-top:14px;font-size:15px;animation:fade 1s ease 1.8s both}
+.sparkle{position:absolute;color:var(--gold2);opacity:0;animation:twinkle 2.6s ease-in-out infinite}
+@keyframes ring{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shine{from{background-position:120% 0}to{background-position:-20% 0}}
+@keyframes rise{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ===== Header ===== */
+header{position:sticky;top:0;z-index:20;background:rgba(74,10,20,.96);backdrop-filter:blur(8px);color:#fff}
+.nav{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.brand .mark{width:42px;height:42px;border-radius:50%;background:var(--wine);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;color:var(--gold2);font-size:20px}
+.brand b{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold2);font-weight:600;letter-spacing:1px}
+.brand small{display:block;font-size:10px;letter-spacing:3px;color:#d9b8be;margin-top:-6px}
+.nav-links{display:flex;gap:6px}
+.nav-links a{color:#f7dfe4;text-decoration:none;font-size:14px;padding:6px 12px;border-radius:20px}
+.nav-links a:hover{background:rgba(255,255,255,.08)}
+.btn-book{background:linear-gradient(135deg,var(--pink2),var(--pink));color:var(--wine)!important;font-weight:700}
+@media(max-width:640px){.nav-links a:not(.btn-book){display:none}}
+
+/* ===== Hero ===== */
+.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,#fbe2e7 0%,var(--rose2) 100%);padding:60px 18px 70px;text-align:center}
+.hero .stripes{position:absolute;top:0;left:0;right:0;height:46px;background:repeating-linear-gradient(90deg,#f0a9b6 0 34px,#fbdde3 34px 68px);-webkit-mask:radial-gradient(circle at 17px 46px,transparent 16px,#000 17px) 0 0/34px 46px;mask:radial-gradient(circle at 17px 46px,transparent 16px,#000 17px) 0 0/34px 46px;opacity:.9}
+.hero h1{font-size:clamp(34px,7vw,60px);color:var(--wine);margin-top:30px}
+.hero h1 .latin{font-size:1.1em;font-weight:600}
+.hero p{color:var(--muted);font-size:17px;max-width:560px;margin:10px auto 0}
+.hero-cta{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.cta{border:none;cursor:pointer;padding:14px 26px;border-radius:40px;font-size:16px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .2s, box-shadow .2s}
+.cta:hover{transform:translateY(-2px)}
+.cta.primary{background:var(--wine);color:#fff;box-shadow:0 10px 24px -10px rgba(74,10,20,.7)}
+.cta.ghost{background:#fff;color:var(--wine);border:1px solid var(--line)}
+.hero-icons{display:flex;justify-content:center;gap:28px;margin-top:40px}
+.hero-icons div{width:96px;height:96px;border-radius:28px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px -18px rgba(107,22,38,.5);animation:float 4s ease-in-out infinite}
+.hero-icons div:nth-child(2){animation-delay:.6s}
+.hero-icons div:nth-child(3){animation-delay:1.2s}
+.badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:30px}
+.badge{background:#fff;border:1px solid var(--line);border-radius:30px;padding:6px 14px;font-size:13px;color:var(--wine2)}
+
+/* ===== Sections ===== */
+section{padding:60px 18px}
+.wrap{max-width:1100px;margin:auto}
+.sec-title{text-align:center;margin-bottom:34px}
+.sec-title .star{color:var(--wine2);font-size:20px}
+.sec-title h2{font-size:32px;color:var(--wine)}
+.sec-title p{color:var(--muted)}
+.grid{display:grid;gap:18px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;position:relative}
+.pkg{text-align:center;transition:transform .25s, box-shadow .25s}
+.pkg:hover{transform:translateY(-4px);box-shadow:0 20px 40px -24px rgba(107,22,38,.5)}
+.pkg h3{font-size:19px}
+.pkg .en{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--wine)}
+.pkg .shots{font-size:30px;font-weight:800;margin:10px 0 4px;color:var(--ink)}
+.pkg .price{display:inline-block;background:var(--rose);color:var(--wine);padding:6px 20px;border-radius:30px;font-size:22px;font-weight:800}
+.pkg.pop{border:2px solid var(--wine2)}
+.pkg.pop::before{content:"الأكثر طلبًا";position:absolute;top:-13px;right:50%;transform:translateX(50%);background:var(--wine);color:#fff;font-size:12px;padding:3px 14px;border-radius:20px}
+.incl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:22px}
+.incl div{background:#fff;border:1px dashed var(--pink2);border-radius:16px;padding:12px;display:flex;align-items:center;gap:10px;font-size:14px}
+.coffee-box{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:stretch}
+@media(max-width:760px){.coffee-box{grid-template-columns:1fr}}
+table.tiers{width:100%;border-collapse:collapse;font-size:16px}
+.tiers th{background:var(--rose);color:var(--wine);padding:10px}
+.tiers td{padding:10px;text-align:center;border-top:1px solid var(--line);font-weight:700}
+.tiers tr:nth-child(even) td{background:#fff6f8}
+.cup-card{background:linear-gradient(160deg,var(--wine) 0%,#2b050c 100%);color:#fff;border-radius:22px;padding:28px;display:flex;flex-direction:column;justify-content:center;gap:12px;position:relative;overflow:hidden}
+.cup-card h3{font-size:30px;color:var(--gold2)}
+.cup-card ul{list-style:none;display:grid;gap:8px}
+.cup-card li::before{content:"✦ ";color:var(--pink2)}
+.gift{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+@media(max-width:760px){.gift{grid-template-columns:1fr}}
+.gift-card{background:#fff7f9;border:2px solid var(--gold);border-radius:18px;padding:30px 24px;text-align:center;box-shadow:0 0 0 6px #fff, 0 0 0 7px var(--line);position:relative}
+.gift-card .lbl{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--wine2)}
+.gift-card h3{font-size:38px;color:var(--wine);margin:4px 0 10px}
+.gift-card .ln{text-align:right;border-bottom:1px dotted var(--pink);padding:10px 0;color:var(--muted);font-size:15px}
+
+/* ===== Booking ===== */
+#book{background:linear-gradient(180deg,var(--rose2),#fbdfe5)}
+.booker{max-width:760px;margin:auto;background:#fff;border-radius:28px;border:1px solid var(--line);box-shadow:0 30px 60px -40px rgba(74,10,20,.6);overflow:hidden}
+.steps{display:flex;background:var(--wine);padding:16px 14px;gap:4px}
+.step-dot{flex:1;text-align:center;color:#c99aa3;font-size:12px;position:relative}
+.step-dot span{display:flex;width:30px;height:30px;margin:0 auto 4px;border-radius:50%;align-items:center;justify-content:center;border:1px solid #8c4250;font-weight:700;transition:.3s}
+.step-dot.on{color:#fff}
+.step-dot.on span{background:var(--pink2);color:var(--wine);border-color:var(--pink2)}
+.step-dot.done span{background:var(--gold);border-color:var(--gold);color:var(--wine)}
+.panel{padding:26px 24px 10px;display:none;animation:fade .45s ease}
+.panel.on{display:block}
+.panel h3{font-size:22px;color:var(--wine);margin-bottom:4px}
+.panel .hint{color:var(--muted);font-size:14px;margin-bottom:18px}
+.choices{display:grid;gap:12px}
+.c3{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.choice{border:1.5px solid var(--line);border-radius:18px;padding:16px;cursor:pointer;background:#fff;text-align:center;transition:.2s;position:relative;color:var(--ink)}
+.choice:hover{border-color:var(--pink)}
+.choice.sel{border-color:var(--wine2);background:#fff3f6;box-shadow:0 0 0 3px rgba(232,143,160,.25)}
+.choice.sel::after{content:"✓";position:absolute;top:8px;left:10px;width:22px;height:22px;border-radius:50%;background:var(--wine);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center}
+.choice b{display:block;font-size:16px}
+.choice small{color:var(--muted)}
+.choice .p{color:var(--wine2);font-weight:800;margin-top:4px;display:block}
+.sub-h{font-weight:800;color:var(--wine2);margin:22px 0 10px;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:#fff;padding:8px 14px;border-radius:30px;cursor:pointer;font-size:14px;color:var(--ink);transition:.2s}
+.chip.sel{background:var(--wine);border-color:var(--wine);color:#fff}
+.chip.off{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.toggle{display:flex;align-items:center;gap:12px;border:1.5px dashed var(--pink2);border-radius:16px;padding:14px;cursor:pointer;margin-top:18px}
+.toggle input{width:20px;height:20px;accent-color:var(--wine)}
+
+.cal{border:1px solid var(--line);border-radius:20px;padding:14px}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-head button{background:var(--rose);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;color:var(--wine);font-size:18px}
+.cal-head b{font-size:17px;color:var(--wine)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.cal-grid .dn{font-size:11px;color:var(--muted);padding:4px 0}
+.day{aspect-ratio:1;border:none;border-radius:12px;background:#fff6f8;cursor:pointer;font-weight:700;font-size:14px;color:var(--ink);position:relative;transition:.15s}
+.day:hover:not(:disabled){background:var(--rose)}
+.day:disabled{background:transparent;color:#d6b9bf;cursor:not-allowed}
+.day.full{background:repeating-linear-gradient(45deg,#f7e4e8 0 4px,#fff 4px 8px);color:#c49aa3}
+.day.few::after{content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.day.sel{background:var(--wine)!important;color:#fff}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:4px;vertical-align:middle}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:14px;font-weight:700;margin-bottom:6px;color:var(--wine2)}
+.field input,.field select,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px;background:#fffafb;color:var(--ink);outline:none;transition:.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--pink);background:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+.err{color:#c0334d;font-size:13px;margin-top:8px;min-height:18px}
+
+.summary{background:#fff6f8;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
+.summary .ln{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.summary .ln:last-child{border:none}
+.summary .tot{font-size:19px;font-weight:800;color:var(--wine)}
+.bank{background:var(--wine);color:#fff;border-radius:18px;padding:16px;margin-bottom:14px;font-size:14px}
+.bank .iban{font-family:monospace;font-size:15px;letter-spacing:1px;background:rgba(255,255,255,.08);padding:8px 10px;border-radius:10px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:8px;direction:ltr}
+.bank button{background:var(--gold);border:none;border-radius:8px;padding:4px 10px;cursor:pointer;color:var(--wine);font-weight:700;font-family:'Almarai'}
+.demo-note{font-size:11px;color:#e3b9c1;margin-top:6px}
+.upload{border:2px dashed var(--pink);border-radius:18px;padding:22px;text-align:center;cursor:pointer;background:#fffafb;transition:.2s;display:block}
+.upload:hover{background:#fff1f4}
+.upload.ok{border-style:solid;border-color:#3d9a6a;background:#f1fbf5}
+.upload img{max-height:140px;border-radius:10px;margin-top:10px}
+
+.foot-btns{display:flex;justify-content:space-between;gap:10px;padding:16px 24px 24px;border-top:1px solid var(--line);margin-top:14px;align-items:center}
+.foot-btns .live{font-size:13px;color:var(--muted)}
+.foot-btns .live b{color:var(--wine);font-size:17px}
+.btn{border:none;cursor:pointer;padding:12px 24px;border-radius:30px;font-weight:700;font-size:15px}
+.btn.next{background:var(--wine);color:#fff}
+.btn.back{background:var(--rose);color:var(--wine)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+.success{text-align:center;padding:40px 24px}
+.success .check{width:90px;height:90px;border-radius:50%;margin:0 auto 16px;background:var(--wine);display:flex;align-items:center;justify-content:center;animation:ring .6s ease}
+.success h3{font-size:28px;color:var(--wine)}
+.ticket{border:2px dashed var(--pink);border-radius:18px;padding:16px;margin:18px auto;max-width:420px;text-align:right;background:#fff6f8}
+.ticket .code{font-family:monospace;font-size:20px;color:var(--wine);font-weight:700;text-align:center;letter-spacing:2px}
+.wa{background:#25D366;color:#fff;text-decoration:none;padding:14px 26px;border-radius:30px;font-weight:700;display:inline-flex;gap:8px;align-items:center}
+
+/* ===== Reviews / FAQ ===== */
+.faq details{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin-bottom:10px}
+.faq summary{cursor:pointer;font-weight:700;color:var(--wine)}
+.faq p{color:var(--muted);margin-top:8px;font-size:15px}
+
+footer{background:var(--wine);color:#e9c7ce;text-align:center;padding:36px 18px;font-size:14px}
+footer .lg{font-family:'Cormorant Garamond',serif;font-size:40px;color:var(--gold2)}
+footer a{color:var(--gold2)}
+.credit{margin-top:18px;font-size:12px;opacity:.75}
+
+/* ===== Admin ===== */
+#admin{display:none;min-height:100vh;background:#fdf2f4}
+body.admin-mode #site{display:none}
+body.admin-mode #admin{display:block}
+.adm-head{background:var(--wine);color:#fff;padding:16px 18px}
+.adm-head .wrap{display:flex;justify-content:space-between;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:22px 0}
+.stat{background:#fff;border-radius:18px;padding:16px;border:1px solid var(--line)}
+.stat small{color:var(--muted)}
+.stat b{display:block;font-size:26px;color:var(--wine)}
+.bk{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:10px}
+.bk h4{color:var(--wine);font-size:16px}
+.bk .meta{font-size:13px;color:var(--muted)}
+.st{font-size:12px;padding:4px 12px;border-radius:20px;font-weight:700;border:none;cursor:pointer}
+.st.new{background:#fff1d6;color:#9a6a00}
+.st.ok{background:#e3f5ea;color:#22784a}
+.st.done{background:#ece6f7;color:#5b3d99}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<!-- ===== Intro ===== -->
+<div id="intro" aria-hidden="true">
+  <span class="sparkle" style="top:22%;right:24%;font-size:22px">✦</span>
+  <span class="sparkle" style="top:30%;left:20%;font-size:14px;animation-delay:.8s">✦</span>
+  <span class="sparkle" style="bottom:26%;right:18%;font-size:16px;animation-delay:1.4s">✦</span>
+  <span class="sparkle" style="bottom:20%;left:28%;font-size:24px;animation-delay:.4s">✦</span>
+  <div class="intro-ring">
+    <div class="intro-logo">Fraya</div>
+    <div class="intro-sub">PREMIUM COFFEE</div>
+  </div>
+  <div class="intro-bow" id="introBow"></div>
+  <div class="intro-tag">نصنع القهوة، ونخلّد اللحظة</div>
+</div>
+
+<div id="site">
+<header>
+  <nav class="nav">
+    <a href="#top" class="brand"><div class="mark">F</div><div><b>Fraya</b><small>PREMIUM COFFEE</small></div></a>
+    <div class="nav-links">
+      <a href="#booth">الفوتوبوث</a>
+      <a href="#coffee">الكيترنق</a>
+      <a href="#gift">بطاقات الإهداء</a>
+      <a href="#book" class="btn-book">احجز الآن</a>
+    </div>
+  </nav>
+</header>
+
+<div class="hero" id="top">
+  <div class="stripes"></div>
+  <h1>كيترنق وفوتوبوث <span class="latin">Fraya</span></h1>
+  <p>تفاصيل راقية لمناسباتكم في المدينة المنورة — احجز قهوتك وفوتوبوثك بخطوات بسيطة، واختر موعدك من التقويم مباشرة.</p>
+  <div class="hero-cta">
+    <a href="#book" class="cta primary">احجز مناسبتك ✦</a>
+    <a href="#booth" class="cta ghost">تصفّح الباقات</a>
+  </div>
+  <div class="hero-icons">
+    <div id="ic1"></div><div id="ic2"></div><div id="ic3"></div>
+  </div>
+  <div class="badges">
+    <span class="badge">📍 المدينة المنورة</span>
+    <span class="badge">🚚 شامل التوصيل</span>
+    <span class="badge">☕ شامل الأكواب والتجهيز</span>
+    <span class="badge">📸 صور فورية مطبوعة</span>
+  </div>
+</div>
+
+<!-- ===== Booth ===== -->
+<section id="booth">
+  <div class="wrap">
+    <div class="sec-title"><div class="star">✦</div><h2>باقات <span class="latin">Fraya</span> للتصوير</h2><p>فوتوبوث بكاميرا فورية وصور مطبوعة يأخذها ضيوفك معهم</p></div>
+    <div class="grid g3" id="boothCards"></div>
+    <div class="sub-h" style="text-align:center;margin-top:30px">✦ جميع الباقات تشمل ✦</div>
+    <div class="incl">
+      <div>📷 كاميرا فورية</div>
+      <div>🖼️ استاند التصوير</div>
+      <div>🎀 إكسسوارات للتصوير</div>
+      <div>💡 إضاءة صغيرة للجوال</div>
+      <div>🖨️ صور فورية مطبوعة</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Coffee ===== -->
+<section id="coffee" style="background:#fff">
+  <div class="wrap">
+    <div class="sec-title"><div class="star">✦</div><h2>كيترنق القهوة</h2><p>قهوة مختارة بعناية تحضر بطريقة V60 لتكن لك تجربة مثالية في مناسبتك</p></div>
+    <div class="coffee-box">
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="tiers"><thead><tr><th>عدد الأكواب</th><th>السعر</th></tr></thead><tbody id="tierRows"></tbody></table>
+      </div>
+      <div class="cup-card">
+        <div id="cupIcon"></div>
+        <h3><span class="latin">V60</span> حار</h3>
+        <p style="color:#f3c9d1">نكهة متوازنة وقوام غني</p>
+        <ul>
+          <li>الأسعار شاملة الأكواب والتجهيز</li>
+          <li>شامل التوصيل داخل المدينة</li>
+          <li>مناسبات - ميلاد - اجتماعات - فعاليات - ضيافة</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Gift ===== -->
+<section id="gift">
+  <div class="wrap gift">
+    <div>
+      <div class="sec-title" style="text-align:right;margin-bottom:14px"><div class="star">✦</div><h2>بطاقات الإهداء</h2></div>
+      <p style="color:var(--muted);font-size:16px">أضف لمسة خاصة: بطاقة «إهداء خاص» من <span class="latin">Fraya Photo Booth</span> يكتب فيها ضيوفك رسائلهم بجانب صورهم. اكتب الإهداء وقت الحجز ونجهّزه لك.</p>
+      <a href="#book" class="cta primary" style="margin-top:18px">أضفها لحجزي</a>
+    </div>
+    <div class="gift-card">
+      <div class="lbl">Fraya Photo Booth</div>
+      <h3>إهداء خاص</h3>
+      <div id="giftBow" style="margin-bottom:6px"></div>
+      <div class="ln">مـن: <span id="gFrom"></span></div>
+      <div class="ln">إلـى: <span id="gTo"></span></div>
+      <div class="ln">رسالة: <span id="gMsg"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Booking ===== -->
+<section id="book">
+  <div class="sec-title"><div class="star">✦</div><h2>احجز مناسبتك</h2><p>خمس خطوات وحجزك جاهز</p></div>
+  <div class="booker" id="booker">
+    <div class="steps" id="steps"></div>
+
+    <!-- 1 -->
+    <div class="panel on" data-step="0">
+      <h3>وش تحتاج لمناسبتك؟</h3>
+      <p class="hint">اختر خدمة أو اجمعهم مع بعض</p>
+      <div class="choices c3" id="svcChoices">
+        <div class="choice" data-svc="coffee"><div id="sv1"></div><b>كيترنق القهوة</b><small>V60 حار</small></div>
+        <div class="choice" data-svc="booth"><div id="sv2"></div><b>فوتوبوث</b><small>كاميرا فورية + صور مطبوعة</small></div>
+        <div class="choice" data-svc="both"><div id="sv3"></div><b>الاثنين معًا</b><small>قهوة + فوتوبوث</small></div>
+      </div>
+      <div class="sub-h">نوع المناسبة</div>
+      <div class="chips" id="occChips"></div>
+      <div class="err" id="e0"></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="panel" data-step="1">
+      <h3>اختر التفاصيل</h3>
+      <p class="hint">السعر يتحدّث معك مباشرة</p>
+      <div id="coffeeOpts">
+        <div class="sub-h" style="margin-top:0">☕ عدد أكواب القهوة</div>
+        <div class="chips" id="cupChips"></div>
+      </div>
+      <div id="boothOpts">
+        <div class="sub-h">📸 باقة الفوتوبوث</div>
+        <div class="choices c3" id="pkgChoices"></div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="giftToggle"><div><b>أضف بطاقات الإهداء</b><br><small style="color:var(--muted)">يتم تأكيد تفاصيلها وسعرها معك عبر الواتساب</small></div></label>
+      <div id="giftFields" style="display:none;margin-top:12px">
+        <div class="row2">
+          <div class="field"><label>من</label><input id="gfFrom" placeholder="مثال: عائلة أبو محمد"></div>
+          <div class="field"><label>إلى</label><input id="gfTo" placeholder="مثال: ضيوفنا الكرام"></div>
+        </div>
+        <div class="field"><label>نص الإهداء</label><input id="gfMsg" placeholder="شكرًا لحضوركم ومشاركتنا فرحتنا"></div>
+      </div>
+      <div class="err" id="e1"></div>
+    </div>
+
+    <!-- 3 -->
+    <div class="panel" data-step="2">
+      <h3>اختر موعد المناسبة</h3>
+      <p class="hint">الحجز قبل المناسبة بيومين على الأقل</p>
+      <div class="cal">
+        <div class="cal-head"><button id="prevM" aria-label="الشهر السابق">›</button><b id="mTitle"></b><button id="nextM" aria-label="الشهر التالي">‹</button></div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="legend"><span><i style="background:#fff6f8;border:1px solid var(--line)"></i>متاح</span><span><i style="background:var(--gold)"></i>أماكن محدودة</span><span><i style="background:#f1dde2"></i>محجوز بالكامل</span></div>
+      </div>
+      <div class="sub-h">وقت بداية المناسبة</div>
+      <div class="chips" id="timeChips"></div>
+      <div class="err" id="e2"></div>
+    </div>
+
+    <!-- 4 -->
+    <div class="panel" data-step="3">
+      <h3>بياناتك ومكان المناسبة</h3>
+      <p class="hint">نتواصل معك على هالرقم لتأكيد الحجز</p>
+      <div class="row2">
+        <div class="field"><label>الاسم</label><input id="fName" placeholder="الاسم الكريم"></div>
+        <div class="field"><label>رقم الجوال</label><input id="fPhone" inputmode="numeric" placeholder="05xxxxxxxx" maxlength="10"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>الحي</label><select id="fDist"></select></div>
+        <div class="field"><label>عدد الضيوف التقريبي</label><input id="fGuests" inputmode="numeric" placeholder="مثال: 30"></div>
+      </div>
+      <div class="field"><label>رابط الموقع أو وصف المكان</label><input id="fLoc" placeholder="رابط قوقل ماب أو: قاعة… / استراحة… / بيت"></div>
+      <div class="field"><label>ملاحظات (اختياري)</label><textarea id="fNotes" rows="2" placeholder="ثيم المناسبة، ألوان، أي طلب خاص…"></textarea></div>
+      <div class="err" id="e3"></div>
+    </div>
+
+    <!-- 5 -->
+    <div class="panel" data-step="4">
+      <h3>مراجعة الحجز والدفع</h3>
+      <p class="hint">حوّل المبلغ وارفع صورة الإيصال لتأكيد الحجز</p>
+      <div class="summary" id="sumBox"></div>
+      <div class="bank">
+        <b>التحويل البنكي</b>
+        <div>اسم المستفيد: مؤسسة فرايا</div>
+        <div class="iban"><span id="iban">SA00 0000 0000 0000 0000 0000</span><button id="copyIban">نسخ</button></div>
+        <div class="demo-note">* بيانات تجريبية للعرض — تُستبدل ببيانات الحساب الفعلية</div>
+      </div>
+      <label class="upload" id="upBox">
+        <input type="file" id="receipt" accept="image/*,.pdf" hidden>
+        <div id="upTxt"><b style="color:var(--wine)">📎 ارفع صورة إيصال التحويل</b><br><small style="color:var(--muted)">إلزامي لتأكيد الحجز</small></div>
+      </label>
+      <label style="display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:13px;color:var(--muted);cursor:pointer"><input type="checkbox" id="agree" style="accent-color:var(--wine);margin-top:4px">أوافق على أن الحجز يُعتبر مؤكدًا بعد مراجعة الإيصال، وأن تعديل الموعد يكون قبل المناسبة بـ 48 ساعة.</label>
+      <div class="err" id="e4"></div>
+    </div>
+
+    <!-- success -->
+    <div class="panel" data-step="5">
+      <div class="success">
+        <div class="check"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#e6c97f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
+        <h3>تم استلام حجزك 🎀</h3>
+        <p style="color:var(--muted)">بنراجع الإيصال ونأكد لك على الواتساب</p>
+        <div class="ticket" id="ticket"></div>
+        <a class="wa" id="waBtn" href="#" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 01-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.3-.3-.3-.5-.4z"/></svg>
+          أرسل الحجز على الواتساب
+        </a>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px">أو تواصل على: 0545801699</p>
+        <button class="btn back" style="margin-top:18px" id="newBook">حجز جديد</button>
+      </div>
+    </div>
+
+    <div class="foot-btns" id="footBtns">
+      <button class="btn back" id="backBtn">السابق</button>
+      <div class="live">الإجمالي: <b id="liveTotal">0 ريال</b></div>
+      <button class="btn next" id="nextBtn">التالي</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section style="background:#fff">
+  <div class="wrap faq" style="max-width:760px">
+    <div class="sec-title"><div class="star">✦</div><h2>أسئلة متكررة</h2></div>
+    <details><summary>هل الأسعار تشمل التوصيل؟</summary><p>نعم، أسعار كيترنق القهوة شاملة التوصيل والأكواب والتجهيز داخل المدينة المنورة.</p></details>
+    <details><summary>متى يتأكد حجزي؟</summary><p>بعد رفع إيصال التحويل ومراجعته، يوصلك تأكيد على الواتساب برقم الحجز.</p></details>
+    <details><summary>أقدر أجمع القهوة والفوتوبوث في حجز واحد؟</summary><p>أكيد، اختر «الاثنين معًا» في أول خطوة واختر عدد الأكواب وباقة التصوير.</p></details>
+    <details><summary>كم صورة مطبوعة أحصل عليها؟</summary><p>حسب الباقة: Mini عشرين صورة، Classic ثلاثين صورة، Premium أربعين صورة.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="lg">Fraya</div>
+  <div style="letter-spacing:4px;font-size:11px;margin-top:-8px;color:var(--gold2)">PREMIUM COFFEE</div>
+  <p style="margin-top:14px">كيترنق وفوتوبوث ☕📸 — المدينة المنورة 📍</p>
+  <p>للتواصل: 0545801699 · تيك توك <a href="https://www.tiktok.com/@fraya_sa" target="_blank" rel="noopener">@fraya_sa</a></p>
+  <p style="margin-top:10px"><a href="#admin" style="font-size:12px;opacity:.7">دخول صاحبة المشروع</a></p>
+  <div class="credit">ديمو من تصميم وتطوير <a href="https://narjes455.github.io/" target="_blank" rel="noopener">نرجس العمري</a></div>
+</footer>
+</div>
+
+<!-- ===== Admin ===== -->
+<div id="admin">
+  <div class="adm-head"><div class="wrap"><div class="brand"><div class="mark">F</div><div><b>Fraya</b><small>لوحة الحجوزات</small></div></div><a href="#top" style="color:var(--gold2);font-size:14px">← رجوع للموقع</a></div></div>
+  <div class="wrap" style="padding:0 18px 40px">
+    <div class="stats" id="stats"></div>
+    <div class="filters" id="filters"></div>
+    <div style="margin-top:14px" id="bkList"></div>
+    <p style="font-size:12px;color:var(--muted);margin-top:16px">* في هذا الديمو تظهر حجوزات تجريبية + الحجوزات اللي تسوّينها من هذا الجهاز. في النسخة الفعلية تُربط الحجوزات بقوقل شيت ويوصل إشعار لكل حجز جديد.</p>
+  </div>
+</div>
+
+<script>
+/* ---------- SVG helpers ---------- */
+const bow=(w=60,c='#e88fa0',c2='#6b1626')=>`<svg width="${w}" height="${w*.62}" viewBox="0 0 100 62" fill="none"><path d="M50 30C38 14 14 2 8 10s2 30 14 32 22-6 28-12z" fill="${c}" stroke="${c2}" stroke-width="2.5"/><path d="M50 30c12-16 36-28 42-20s-2 30-14 32-22-6-28-12z" fill="${c}" stroke="${c2}" stroke-width="2.5"/><path d="M46 34l-14 26 8-2 6 4 4-26zM54 34l14 26-8-2-6 4-4-26z" fill="${c}" stroke="${c2}" stroke-width="2.5" stroke-linejoin="round"/><circle cx="50" cy="31" r="7" fill="${c2}"/></svg>`;
+const cam=(w=56)=>`<svg width="${w}" height="${w}" viewBox="0 0 64 64" fill="none"><rect x="8" y="14" width="48" height="40" rx="10" fill="#f6c9d2" stroke="#6b1626" stroke-width="2.5"/><circle cx="32" cy="36" r="12" fill="#fff" stroke="#6b1626" stroke-width="2.5"/><circle cx="32" cy="36" r="5.5" fill="#3a0c14"/><rect x="14" y="20" width="7" height="9" rx="2" fill="#fff" stroke="#6b1626" stroke-width="2"/><circle cx="47" cy="22" r="2.2" fill="#6b1626"/><path d="M40 8l2 4M44 6l-1 5" stroke="#c9a24e" stroke-width="2" stroke-linecap="round"/></svg>`;
+const cup=(w=56)=>`<svg width="${w}" height="${w}" viewBox="0 0 64 64" fill="none"><path d="M24 4c-2 4 2 6 0 10M32 4c-2 4 2 6 0 10M40 4c-2 4 2 6 0 10" stroke="#c9a24e" stroke-width="2" stroke-linecap="round"/><path d="M12 20h36l-4 34a6 6 0 01-6 5H22a6 6 0 01-6-5z" fill="#f6c9d2" stroke="#6b1626" stroke-width="2.5"/><path d="M47 26h4a6 6 0 010 12h-5" stroke="#6b1626" stroke-width="2.5"/><path d="M30 44c-6-4-6-9-2-9 2 0 2 2 2 2s0-2 2-2c4 0 4 5-2 9z" fill="#6b1626"/></svg>`;
+const heart=(w=56)=>`<svg width="${w}" height="${w}" viewBox="0 0 64 64"><path d="M32 54C10 40 6 28 10 20c4-8 16-10 22 0 6-10 18-8 22 0 4 8 0 20-22 34z" fill="#6b1626"/></svg>`;
+const sparks=(w=56)=>`<svg width="${w}" height="${w}" viewBox="0 0 64 64" fill="#6b1626"><path d="M36 8l4 14 14 4-14 4-4 14-4-14-14-4 14-4z"/><path d="M16 36l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>`;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+$('#introBow').innerHTML=bow(70,'#f3b8c3','#e6c97f');
+$('#ic1').innerHTML=cup(54);$('#ic2').innerHTML=bow(60);$('#ic3').innerHTML=cam(54);
+$('#cupIcon').innerHTML=cup(60);$('#giftBow').innerHTML=bow(70);
+$('#sv1').innerHTML=cup(44);$('#sv2').innerHTML=cam(44);$('#sv3').innerHTML=bow(54);
+
+/* ---------- Intro ---------- */
+window.addEventListener('load',()=>setTimeout(()=>$('#intro').classList.add('hide'),2900));
+$('#intro').addEventListener('click',()=>$('#intro').classList.add('hide'));
+
+/* ---------- Data ---------- */
+const TIERS=[[15,240],[20,280],[25,310],[30,340],[35,370],[40,400],[42,430]];
+const PKGS=[
+  {id:'mini',ar:'الباقة الأولى',en:'Mini',shots:20,price:199,icon:heart},
+  {id:'classic',ar:'الباقة الثانية',en:'Classic',shots:30,price:279,icon:bow,pop:true},
+  {id:'premium',ar:'الباقة الثالثة',en:'Premium',shots:40,price:349,icon:sparks}];
+const OCC=['مناسبة','ميلاد','اجتماع','فعالية','ضيافة','تخرج','عقد قران'];
+const TIMES=['10:00 ص','1:00 م','4:00 م','6:00 م','8:00 م','9:30 م'];
+const DISTS=['العزيزية','قباء','العوالي','الرانوناء','شوران','الخالدية','الملك فهد','سلطانة','العيون','الحرة الشرقية','الأصفيرين','الدفاع','بني حارثة','الجرف','حي آخر'];
+const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const fmt=n=>n.toLocaleString('en-US')+' ريال';
+
+/* ---------- Render public sections ---------- */
+$('#boothCards').innerHTML=PKGS.map(p=>`<div class="card pkg ${p.pop?'pop':''}"><h3>${p.ar}</h3><div style="margin:8px 0">${p.icon(50)}</div><div class="en">${p.en}</div><div class="shots">${p.shots} صورة</div><div class="price">${p.price} ريال</div><div style="margin-top:14px"><a href="#book" class="cta ghost" style="padding:8px 18px;font-size:14px" onclick="quickPick('booth','${p.id}')">احجز الباقة</a></div></div>`).join('');
+$('#tierRows').innerHTML=TIERS.map(([c,p])=>`<tr><td>${c} كوب</td><td>${p} ريال</td></tr>`).join('');
+$('#fDist').innerHTML='<option value="">اختر الحي</option>'+DISTS.map(d=>`<option>${d}</option>`).join('');
+
+/* ---------- Booking state ---------- */
+const S={step:0,svc:null,occ:null,cups:null,pkg:null,gift:false,date:null,time:null,receipt:null};
+const STEP_NAMES=['الخدمة','التفاصيل','الموعد','بياناتك','الدفع'];
+$('#steps').innerHTML=STEP_NAMES.map((n,i)=>`<div class="step-dot" data-i="${i}"><span>${i+1}</span>${n}</div>`).join('');
+
+$('#occChips').innerHTML=OCC.map(o=>`<button class="chip" data-occ="${o}">${o}</button>`).join('');
+$('#cupChips').innerHTML=TIERS.map(([c,p])=>`<button class="chip" data-cups="${c}">${c} كوب · ${p}</button>`).join('');
+$('#pkgChoices').innerHTML=PKGS.map(p=>`<div class="choice" data-pkg="${p.id}"><b class="latin" style="font-size:22px">${p.en}</b><small>${p.shots} صورة مطبوعة</small><span class="p">${p.price} ريال</span></div>`).join('');
+
+function single(container,attr,key,cb){
+  $(container).addEventListener('click',e=>{
+    const el=e.target.closest(`[data-${attr}]`); if(!el||el.classList.contains('off'))return;
+    $$(`${container} [data-${attr}]`).forEach(x=>x.classList.remove('sel')); el.classList.add('sel');
+    S[key]=el.dataset[attr]; cb&&cb(); update();
+  });
+}
+single('#svcChoices','svc','svc');
+single('#occChips','occ','occ');
+single('#cupChips','cups','cups');
+single('#pkgChoices','pkg','pkg');
+single('#timeChips','time','time');
+
+$('#giftToggle').addEventListener('change',e=>{S.gift=e.target.checked;$('#giftFields').style.display=S.gift?'block':'none';});
+
+function total(){
+  let t=0;
+  if(S.svc!=='booth'&&S.cups){t+=TIERS.find(x=>x[0]==S.cups)[1]}
+  if(S.svc!=='coffee'&&S.pkg){t+=PKGS.find(x=>x.id==S.pkg).price}
+  return t;
+}
+function update(){
+  $('#liveTotal').textContent=fmt(total());
+  $('#coffeeOpts').style.display=S.svc==='booth'?'none':'block';
+  $('#boothOpts').style.display=S.svc==='coffee'?'none':'block';
+}
+window.quickPick=(svc,pkg)=>{
+  goStep(0);
+  $$('#svcChoices .choice').forEach(x=>x.classList.toggle('sel',x.dataset.svc===svc));S.svc=svc;
+  if(pkg){$$('#pkgChoices .choice').forEach(x=>x.classList.toggle('sel',x.dataset.pkg===pkg));S.pkg=pkg;}
+  update();
+};
+
+/* ---------- Calendar ---------- */
+const today=new Date();today.setHours(0,0,0,0);
+const minDate=new Date(today);minDate.setDate(minDate.getDate()+2);
+let view=new Date(today.getFullYear(),today.getMonth(),1);
+function busy(d){ // deterministic demo availability
+  const k=d.getDate()*7+d.getMonth()*13;
+  if(d.getDay()===4&&k%3===0)return 'full';
+  if(k%11===0)return 'full';
+  if(d.getDay()===4||d.getDay()===5||k%5===0)return 'few';
+  return '';
+}
+function takenTimes(d){const k=d.getDate()+d.getMonth();return busy(d)==='few'?[TIMES[k%TIMES.length],TIMES[(k+3)%TIMES.length]]:[]}
+function renderCal(){
+  $('#mTitle').textContent=MONTHS[view.getMonth()]+' '+view.getFullYear();
+  let h=['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'].map(d=>`<div class="dn">${d}</div>`).join('');
+  const first=view.getDay(), days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+  for(let i=0;i<first;i++)h+='<div></div>';
+  for(let d=1;d<=days;d++){
+    const dt=new Date(view.getFullYear(),view.getMonth(),d), b=busy(dt);
+    const dis=dt<minDate||b==='full';
+    const sel=S.date&&dt.getTime()===S.date.getTime();
+    h+=`<button class="day ${dt>=minDate?b:''} ${sel?'sel':''}" ${dis?'disabled':''} data-d="${d}">${d}</button>`;
+  }
+  $('#calGrid').innerHTML=h;
+  $('#prevM').disabled=view<=new Date(today.getFullYear(),today.getMonth(),1);
+}
+$('#calGrid').addEventListener('click',e=>{
+  const b=e.target.closest('.day');if(!b||b.disabled)return;
+  S.date=new Date(view.getFullYear(),view.getMonth(),+b.dataset.d);S.time=null;renderCal();renderTimes();
+});
+$('#prevM').onclick=()=>{view.setMonth(view.getMonth()-1);renderCal()};
+$('#nextM').onclick=()=>{view.setMonth(view.getMonth()+1);renderCal()};
+function renderTimes(){
+  const off=S.date?takenTimes(S.date):[];
+  $('#timeChips').innerHTML=S.date?TIMES.map(t=>`<button class="chip ${off.includes(t)?'off':''} ${S.time===t?'sel':''}" data-time="${t}">${t}</button>`).join(''):'<span style="color:var(--muted);font-size:14px">اختر اليوم أولًا</span>';
+}
+renderCal();renderTimes();
+
+/* ---------- Receipt ---------- */
+$('#receipt').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;S.receipt=f.name;
+  $('#upBox').classList.add('ok');
+  if(f.type.startsWith('image/')){
+    const r=new FileReader();r.onload=()=>{$('#upTxt').innerHTML=`<b style="color:#22784a">✓ تم إرفاق الإيصال</b><br><img src="${r.result}" alt="الإيصال">`};r.readAsDataURL(f);
+  }else $('#upTxt').innerHTML=`<b style="color:#22784a">✓ تم إرفاق: ${f.name}</b>`;
+});
+$('#copyIban').onclick=async e=>{e.preventDefault();try{await navigator.clipboard.writeText($('#iban').textContent);e.target.textContent='تم ✓'}catch(_){e.target.textContent='انسخ يدويًا'}setTimeout(()=>e.target.textContent='نسخ',1500)};
+
+/* ---------- Steps ---------- */
+const dateStr=d=>d?`${['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`:'';
+function validate(i){
+  const E=m=>{$('#e'+i).textContent=m;return false};$('#e'+i).textContent='';
+  if(i===0){if(!S.svc)return E('اختر الخدمة');if(!S.occ)return E('اختر نوع المناسبة')}
+  if(i===1){if(S.svc!=='booth'&&!S.cups)return E('اختر عدد الأكواب');if(S.svc!=='coffee'&&!S.pkg)return E('اختر باقة الفوتوبوث')}
+  if(i===2){if(!S.date)return E('اختر يوم المناسبة');if(!S.time)return E('اختر وقت البداية')}
+  if(i===3){
+    if($('#fName').value.trim().length<2)return E('اكتب الاسم');
+    if(!/^05\d{8}$/.test($('#fPhone').value.trim()))return E('رقم الجوال لازم يبدأ بـ 05 ويتكون من 10 أرقام');
+    if(!$('#fDist').value)return E('اختر الحي');
+    if(!$('#fLoc').value.trim())return E('اكتب موقع المناسبة');
+  }
+  if(i===4){if(!S.receipt)return E('رفع إيصال التحويل إلزامي');if(!$('#agree').checked)return E('وافق على الشروط للمتابعة')}
+  return true;
+}
+function summaryLines(){
+  const L=[['الخدمة',{coffee:'كيترنق القهوة',booth:'فوتوبوث',both:'كيترنق + فوتوبوث'}[S.svc]],['المناسبة',S.occ]];
+  if(S.svc!=='booth')L.push([`قهوة V60 حار (${S.cups} كوب)`,fmt(TIERS.find(x=>x[0]==S.cups)[1])]);
+  if(S.svc!=='coffee'){const p=PKGS.find(x=>x.id==S.pkg);L.push([`فوتوبوث ${p.en} (${p.shots} صورة)`,fmt(p.price)])}
+  if(S.gift)L.push(['بطاقات الإهداء','يُحدد بالتواصل']);
+  L.push(['الموعد',dateStr(S.date)+' - '+S.time],['المكان','حي '+$('#fDist').value]);
+  return L;
+}
+function goStep(i){
+  S.step=i;
+  $$('.panel').forEach(p=>p.classList.toggle('on',+p.dataset.step===i));
+  $$('.step-dot').forEach((d,k)=>{d.classList.toggle('on',k===i);d.classList.toggle('done',k<i)});
+  $('#backBtn').style.visibility=i===0?'hidden':'visible';
+  $('#nextBtn').textContent=i===4?'تأكيد الحجز ✦':'التالي';
+  $('#footBtns').style.display=i===5?'none':'flex';
+  if(i===4){$('#sumBox').innerHTML=summaryLines().map(([a,b])=>`<div class="ln"><span>${a}</span><b>${b}</b></div>`).join('')+`<div class="ln tot"><span>الإجمالي</span><span>${fmt(total())}</span></div>`}
+}
+$('#nextBtn').onclick=()=>{
+  if(!validate(S.step))return;
+  if(S.step<4){goStep(S.step+1);$('#booker').scrollIntoView({behavior:'smooth',block:'start'});return}
+  finish();
+};
+$('#backBtn').onclick=()=>goStep(S.step-1);
+goStep(0);
+
+function store(){try{return JSON.parse(localStorage.getItem('fraya_bookings')||'[]')}catch(_){return[]}}
+function save(a){try{localStorage.setItem('fraya_bookings',JSON.stringify(a))}catch(_){}}
+
+function finish(){
+  const code='FR-'+String(Date.now()).slice(-5);
+  const lines=summaryLines();
+  const b={code,name:$('#fName').value.trim(),phone:$('#fPhone').value.trim(),svc:S.svc,occ:S.occ,cups:S.cups,pkg:S.pkg,gift:S.gift,
+    date:S.date.toISOString(),time:S.time,dist:$('#fDist').value,loc:$('#fLoc').value.trim(),guests:$('#fGuests').value,total:total(),status:'new',
+    giftText:S.gift?{from:$('#gfFrom').value,to:$('#gfTo').value,msg:$('#gfMsg').value}:null,notes:$('#fNotes').value};
+  const all=store();all.unshift(b);save(all);
+  $('#ticket').innerHTML=`<div class="code">${code}</div><div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:8px">رقم الحجز</div>`+lines.map(([a,v])=>`<div style="display:flex;justify-content:space-between;font-size:14px;padding:3px 0"><span>${a}</span><b>${v}</b></div>`).join('')+`<div style="display:flex;justify-content:space-between;font-weight:800;color:var(--wine);margin-top:6px;border-top:1px dashed var(--pink);padding-top:6px"><span>الإجمالي</span><span>${fmt(b.total)}</span></div>`;
+  let msg=`السلام عليكم Fraya 🎀\nحجز جديد رقم ${code}\n\n`+lines.map(([a,v])=>`• ${a}: ${v}`).join('\n')+`\n• الإجمالي: ${fmt(b.total)}\n\nالاسم: ${b.name}\nالجوال: ${b.phone}\nالموقع: ${b.loc}`+(b.guests?`\nعدد الضيوف: ${b.guests}`:'')+(b.giftText?`\nالإهداء: من ${b.giftText.from||'-'} إلى ${b.giftText.to||'-'} — ${b.giftText.msg||'-'}`:'')+(b.notes?`\nملاحظات: ${b.notes}`:'')+`\n\n✅ تم تحويل المبلغ وإرفاق الإيصال (سأرسله هنا)`;
+  $('#waBtn').href='https://wa.me/966545801699?text='+encodeURIComponent(msg);
+  goStep(5);
+  $('#booker').scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('#newBook').onclick=()=>{
+  Object.assign(S,{svc:null,occ:null,cups:null,pkg:null,gift:false,date:null,time:null,receipt:null});
+  $$('#booker .sel').forEach(x=>x.classList.remove('sel'));
+  $$('#booker input, #booker textarea').forEach(x=>{if(x.type==='checkbox')x.checked=false;else if(x.type!=='file')x.value='';else x.value=''});
+  $('#fDist').value='';$('#giftFields').style.display='none';
+  $('#upBox').classList.remove('ok');$('#upTxt').innerHTML='<b style="color:var(--wine)">📎 ارفع صورة إيصال التحويل</b><br><small style="color:var(--muted)">إلزامي لتأكيد الحجز</small>';
+  renderCal();renderTimes();update();goStep(0);
+};
+
+/* gift preview typing */
+['From','To','Msg'].forEach(k=>$('#gf'+k).addEventListener('input',e=>$('#g'+k).textContent=e.target.value));
+
+/* ---------- Admin ---------- */
+const SAMPLE=(()=>{const d=n=>{const x=new Date(today);x.setDate(x.getDate()+n);return x.toISOString()};return[
+ {code:'FR-10231',name:'أم فيصل',phone:'0550000001',svc:'both',occ:'ميلاد',cups:'30',pkg:'classic',date:d(3),time:'6:00 م',dist:'العزيزية',total:619,status:'ok'},
+ {code:'FR-10228',name:'شركة رواد',phone:'0550000002',svc:'coffee',occ:'اجتماع',cups:'42',date:d(5),time:'10:00 ص',dist:'الملك فهد',total:430,status:'new'},
+ {code:'FR-10219',name:'نورة',phone:'0550000003',svc:'booth',occ:'تخرج',pkg:'premium',date:d(-2),time:'8:00 م',dist:'قباء',total:349,status:'done'}]})();
+const STL={new:['جديد','new'],ok:['مؤكد','ok'],done:['منفّذ','done']};
+let filt='all';
+function renderAdmin(){
+  const mine=store(), all=[...mine,...SAMPLE];
+  const sum=all.reduce((a,b)=>a+(+b.total||0),0);
+  const cups=all.reduce((a,b)=>a+(b.svc!=='booth'?(+b.cups||0):0),0);
+  $('#stats').innerHTML=`<div class="stat"><small>كل الحجوزات</small><b>${all.length}</b></div><div class="stat"><small>بانتظار التأكيد</small><b>${all.filter(b=>b.status==='new').length}</b></div><div class="stat"><small>إجمالي المبيعات</small><b>${fmt(sum)}</b></div><div class="stat"><small>أكواب مطلوبة</small><b>${cups}</b></div>`;
+  $('#filters').innerHTML=[['all','الكل'],['new','جديد'],['ok','مؤكد'],['done','منفّذ']].map(([k,n])=>`<button class="chip ${filt===k?'sel':''}" data-f="${k}">${n}</button>`).join('');
+  const list=all.filter(b=>filt==='all'||b.status===filt).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  $('#bkList').innerHTML=list.map(b=>{
+    const p=PKGS.find(x=>x.id==b.pkg);
+    const what=[b.svc!=='booth'?`☕ ${b.cups} كوب`:'',b.svc!=='coffee'&&p?`📸 ${p.en}`:'',b.gift?'🎀 إهداء':''].filter(Boolean).join(' · ');
+    const isMine=mine.some(m=>m.code===b.code);
+    return `<div class="bk"><div><h4>${b.name} · ${b.occ} <span style="font-size:12px;color:var(--muted)">${b.code}</span></h4><div class="meta">${dateStr(new Date(b.date))} - ${b.time} · حي ${b.dist}</div><div class="meta">${what}</div><div class="meta">📞 ${b.phone}</div></div><div style="text-align:left"><b style="color:var(--wine)">${fmt(+b.total)}</b><br><button class="st ${STL[b.status][1]}" data-code="${b.code}" ${isMine?'':'data-sample="1"'} title="اضغط لتغيير الحالة">${STL[b.status][0]}</button></div></div>`}).join('')||'<p style="color:var(--muted)">لا توجد حجوزات</p>';
+}
+$('#filters').addEventListener('click',e=>{const c=e.target.closest('[data-f]');if(!c)return;filt=c.dataset.f;renderAdmin()});
+$('#bkList').addEventListener('click',e=>{
+  const b=e.target.closest('.st');if(!b)return;
+  const order=['new','ok','done'], next=s=>order[(order.indexOf(s)+1)%3];
+  if(b.dataset.sample){const s=SAMPLE.find(x=>x.code===b.dataset.code);s.status=next(s.status)}
+  else{const a=store();const s=a.find(x=>x.code===b.dataset.code);s.status=next(s.status);save(a)}
+  renderAdmin();
+});
+function route(){
+  const adm=location.hash==='#admin';
+  document.body.classList.toggle('admin-mode',adm);
+  if(adm){$('#intro').classList.add('hide');renderAdmin();window.scrollTo(0,0)}
+}
+window.addEventListener('hashchange',route);route();
+</script>
+</body>
+</html>
