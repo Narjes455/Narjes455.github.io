@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>NOA MATCHA — المنيو والطلبات</title>
+<meta name="theme-color" content="#f9c6ec">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700;800&family=Pacifico&family=Shrikhand&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff0fa; --pink:#fbd3f0; --pink2:#f6b3e2; --rose:#e98cc6; --mag:#b0347f; --deep:#7d1a55;
+  --yel:#faf6a8; --butter:#fff6c4; --sun:#f4c04a; --green:#86ad45; --ink:#4a1235; --card:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif}
+body{min-height:100vh;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit}
+.app{max-width:480px;margin:0 auto;position:relative;padding-bottom:110px;
+  background:repeating-linear-gradient(90deg,#fff0fa 0 26px,#fde3f5 26px 40px,#fff0fa 40px 58px,#fbd9f1 58px 64px);
+  background-attachment:fixed}
+
+/* ============ INTRO ============ */
+#intro{position:fixed;inset:0;z-index:100;overflow:hidden;display:grid;place-items:center;
+  background:#fde3f5;transition:transform .9s cubic-bezier(.77,0,.18,1), border-radius .9s}
+#intro.out{transform:translateY(-105%);border-radius:0 0 50% 50%}
+.stripes{position:absolute;inset:0;display:flex}
+.stripes i{flex:1;transform:translateY(-102%);animation:drop .7s cubic-bezier(.2,.8,.2,1) forwards}
+.stripes i:nth-child(odd){background:#f8c3ea}
+.stripes i:nth-child(even){background:#fde8f7}
+.stripes i:nth-child(4n){background:#e9a0d2}
+@keyframes drop{to{transform:none}}
+.burst{position:absolute;width:190vmax;height:190vmax;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,#fbd0ef 0 7deg,#fff8c9 7deg 14deg,#fff 14deg 21deg);
+  opacity:0;transform:scale(.2) rotate(0);animation:burstIn 1s .45s cubic-bezier(.2,.9,.3,1.2) forwards, spin 26s 1.4s linear infinite}
+@keyframes burstIn{to{opacity:.95;transform:scale(1) rotate(40deg)}}
+@keyframes spin{from{transform:scale(1) rotate(40deg)}to{transform:scale(1) rotate(400deg)}}
+.introCore{position:relative;text-align:center;z-index:2}
+.badge{width:min(74vw,320px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:repeating-conic-gradient(#fbcdee 0 10deg,#f6f3e8 10deg 20deg,#fbf6b9 20deg 30deg,#f6f3e8 30deg 40deg);
+  box-shadow:0 0 0 8px #fff,0 0 0 13px #f6b3e2,0 24px 60px rgba(125,26,85,.35);
+  transform:scale(0) rotate(-200deg);animation:badgeIn .9s .8s cubic-bezier(.3,1.5,.5,1) forwards}
+@keyframes badgeIn{to{transform:none}}
+.ring{position:absolute;inset:-14px;border-radius:50%;
+  background:conic-gradient(#3fd0f0,#2ee6b0,#3fd0f0);-webkit-mask:radial-gradient(circle,transparent 63%,#000 64%);mask:radial-gradient(circle,transparent 63%,#000 64%);z-index:-1}
+.logoTxt{line-height:.9}
+.noa{font-family:'Shrikhand',serif;font-size:clamp(58px,19vw,92px);color:#f7b6e6;letter-spacing:2px;
+  -webkit-text-stroke:2px #e58fcc;display:flex;justify-content:center;direction:ltr}
+.noa span{display:inline-block;opacity:0;transform:translateY(-140px) scale(.4)}
+#intro.go .noa span{animation:letter .7s cubic-bezier(.3,1.6,.5,1) forwards}
+#intro.go .noa span:nth-child(1){animation-delay:1.35s}
+#intro.go .noa span:nth-child(2){animation-delay:1.5s}
+#intro.go .noa span:nth-child(3){animation-delay:1.65s}
+@keyframes letter{to{opacity:1;transform:none}}
+.mt{font-family:'Shrikhand',serif;font-size:clamp(40px,13vw,64px);color:var(--mag);direction:ltr;
+  opacity:0;transform:scale(2.4) rotate(-8deg);filter:blur(6px)}
+#intro.go .mt{animation:mt .7s 1.95s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes mt{to{opacity:1;transform:rotate(-3deg);filter:none}}
+.spark{position:absolute;color:#fff;font-size:26px;opacity:0;filter:drop-shadow(0 0 6px #fff7a8)}
+#intro.go .spark{animation:tw 1.4s ease-in-out infinite}
+.spark.s1{top:14%;left:18%;animation-delay:2.1s!important}
+.spark.s2{top:22%;right:12%;animation-delay:2.4s!important;color:#fff59a}
+.spark.s3{bottom:18%;left:12%;animation-delay:2.25s!important;color:#fff59a}
+.spark.s4{bottom:12%;right:22%;animation-delay:2.55s!important}
+@keyframes tw{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(90deg)}}
+.tag{margin-top:34px;font-family:'Lalezar';font-size:24px;color:var(--deep);opacity:0;transform:translateY(16px)}
+#intro.go .tag{animation:up .6s 2.4s forwards}
+@keyframes up{to{opacity:1;transform:none}}
+.fillCup{width:54px;margin:14px auto 0;opacity:0}
+#intro.go .fillCup{animation:up .5s 2.5s forwards}
+.fillCup .liq{transform:translateY(100%);animation:fill 1.1s 2.7s ease-out forwards}
+@keyframes fill{to{transform:translateY(0)}}
+.skip{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:3;font-size:13px;color:var(--deep);
+  background:rgba(255,255,255,.75);padding:7px 16px;border-radius:30px;font-weight:700;opacity:0;animation:up .4s 1s forwards}
+.floaty{position:absolute;font-size:28px;opacity:0;z-index:1}
+#intro.go .floaty{animation:floatUp 4s linear infinite}
+@keyframes floatUp{0%{opacity:0;transform:translateY(40px)}15%{opacity:1}100%{opacity:0;transform:translateY(-60vh) rotate(25deg)}}
+
+/* ============ HEADER ============ */
+header{padding:26px 18px 10px;text-align:center;position:relative}
+.miniBadge{width:118px;height:118px;margin:0 auto;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:repeating-conic-gradient(#fbcdee 0 10deg,#f6f3e8 10deg 20deg,#fbf6b9 20deg 30deg,#f6f3e8 30deg 40deg);
+  box-shadow:0 0 0 4px #fff,0 0 0 7px #f6b3e2,0 12px 30px rgba(125,26,85,.25);animation:bob 4s ease-in-out infinite}
+.miniBadge .noa{font-size:40px;-webkit-text-stroke:1px #e58fcc}
+.miniBadge .noa span{opacity:1;transform:none}
+.miniBadge .mt{font-size:26px;opacity:1;transform:rotate(-3deg);filter:none}
+@keyframes bob{50%{transform:translateY(-6px) rotate(2deg)}}
+.hTitle{font-family:'Lalezar';font-size:30px;color:var(--deep);margin-top:16px}
+.hSub{font-size:14px;color:#8a4672;margin-top:2px}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.chip{background:#fff;border:2px solid var(--pink2);border-radius:30px;padding:6px 12px;font-size:12.5px;font-weight:700;color:var(--deep)}
+.mode{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-radius:20px;padding:5px;margin:16px 18px 0;
+  box-shadow:0 6px 18px rgba(176,52,127,.12);position:relative;border:2px solid var(--pink)}
+.mode button{padding:12px 6px;border-radius:15px;font-weight:800;font-size:15px;position:relative;z-index:1;transition:color .3s}
+.mode button.on{color:#fff}
+.mode .pill{position:absolute;top:5px;bottom:5px;width:calc(50% - 5px);right:5px;border-radius:15px;
+  background:linear-gradient(135deg,var(--rose),var(--mag));transition:right .35s cubic-bezier(.4,1.4,.5,1)}
+.mode.pick .pill{right:50%}
+.modeNote{font-size:12.5px;text-align:center;color:#8a4672;margin:8px 18px 0;min-height:18px}
+
+/* tabs */
+.tabs{position:sticky;top:0;z-index:20;display:flex;gap:8px;overflow-x:auto;padding:12px 14px;margin-top:8px;
+  background:rgba(255,240,250,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:9px 16px;border-radius:30px;background:#fff;font-weight:800;font-size:14px;color:var(--mag);border:2px solid var(--pink);transition:.25s}
+.tab.on{background:var(--mag);color:#fff;border-color:var(--mag);transform:scale(1.04)}
+
+/* sections */
+section{padding:6px 14px 10px;scroll-margin-top:62px}
+.secHead{text-align:center;margin:22px 0 14px;position:relative}
+.secHead h2{font-family:'Pacifico',cursive;font-weight:400;font-size:44px;color:#e48bc5;
+  text-shadow:2px 3px 0 #b0347f33;line-height:1.1}
+.secHead p{font-family:'Lalezar';font-size:18px;color:var(--deep);margin-top:-2px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.item{background:var(--card);border-radius:24px;padding:10px 10px 12px;position:relative;text-align:center;
+  box-shadow:0 8px 22px rgba(176,52,127,.10);border:2px solid #fde3f5;overflow:hidden;
+  opacity:0;transform:translateY(24px);transition:opacity .5s,transform .5s}
+.item.show{opacity:1;transform:none}
+.item:active{transform:scale(.97)}
+.item .art{height:118px;display:grid;place-items:center;position:relative}
+.item .art::before{content:"";position:absolute;width:92px;height:28px;bottom:6px;border-radius:50%;background:var(--yel)}
+.item .art svg{position:relative;height:112px;width:auto;filter:drop-shadow(0 6px 6px rgba(0,0,0,.08))}
+.item h3{font-family:'Lalezar';font-weight:400;font-size:18px;color:var(--deep);margin-top:4px;line-height:1.3}
+.item .en{font-family:'Pacifico';font-size:13px;color:#d77ab7;direction:ltr}
+.item .desc{font-size:11.5px;color:#8a4672;margin-top:3px;line-height:1.5}
+.price{position:absolute;top:10px;left:8px;background:var(--pink2);color:var(--deep);font-family:'Lalezar';font-size:16px;
+  padding:3px 12px 1px 10px;clip-path:polygon(0 0,82% 0,100% 50%,82% 100%,0 100%);padding-left:8px;padding-right:16px}
+.add{margin-top:8px;width:100%;padding:9px;border-radius:14px;background:linear-gradient(135deg,#f7b7e3,#e98cc6);color:#fff;font-weight:800;font-size:14px;
+  box-shadow:0 4px 0 #c2649f}
+.add:active{transform:translateY(3px);box-shadow:0 1px 0 #c2649f}
+.wide{grid-column:1/-1;display:flex;align-items:center;gap:10px;text-align:right}
+.wide .art{width:120px;flex:none}
+.wide .body{flex:1}
+.ribbon{position:absolute;top:12px;right:-30px;transform:rotate(35deg);background:var(--sun);color:var(--deep);font-size:11px;font-weight:800;padding:3px 34px}
+
+.bouq{background:linear-gradient(135deg,#fff7d9,#ffe9a8);border-radius:26px;padding:16px;border:2px dashed #f0b93a}
+.bouq h3{font-family:'Lalezar';font-size:24px;color:var(--mag);font-weight:400}
+.bRow{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:16px;padding:10px 12px;margin-top:8px}
+.bRow b{font-family:'Lalezar';font-weight:400;font-size:18px;color:var(--deep)}
+.bRow .pp{font-family:'Lalezar';color:var(--mag);font-size:18px;margin-inline-start:auto;margin-inline-end:10px}
+.mini{background:var(--mag);color:#fff;border-radius:12px;width:36px;height:36px;font-size:22px;font-weight:800;line-height:1}
+
+.info{margin:18px 14px 0;background:linear-gradient(135deg,#fde58f,#f7c34d);border-radius:26px;padding:18px;text-align:center;position:relative;overflow:hidden}
+.info::before{content:"";position:absolute;inset:-50%;background:repeating-conic-gradient(#ffffff22 0 10deg,transparent 10deg 20deg);animation:spin2 40s linear infinite}
+@keyframes spin2{to{transform:rotate(360deg)}}
+.info *{position:relative}
+.info h4{font-family:'Lalezar';font-weight:400;font-size:22px;color:var(--deep)}
+.info p{font-weight:700;color:#7a2b55;font-size:14px;margin-top:4px}
+.stamp{display:inline-block;background:#fff6c4;border:3px solid var(--deep);border-radius:50%;padding:8px 14px;font-family:'Lalezar';font-size:22px;color:var(--mag);margin:8px 0;transform:rotate(-6deg)}
+footer{text-align:center;font-size:12px;color:#a0618a;padding:24px 10px 10px}
+
+/* cart bar */
+.cartBar{position:fixed;bottom:14px;left:50%;transform:translate(-50%,140%);width:min(452px,calc(100% - 28px));z-index:40;
+  background:linear-gradient(135deg,var(--mag),var(--deep));color:#fff;border-radius:22px;padding:12px 16px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 14px 34px rgba(125,26,85,.45);transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.cartBar.show{transform:translate(-50%,0)}
+.cartBar .cnt{background:#fff;color:var(--mag);font-weight:800;min-width:32px;height:32px;border-radius:50%;display:grid;place-items:center}
+.cartBar .lbl{flex:1;font-weight:800}
+.cartBar .tot{font-family:'Lalezar';font-size:20px}
+.cartBar.bump{animation:bump .4s}
+@keyframes bump{40%{transform:translate(-50%,0) scale(1.06)}}
+
+/* sheet */
+.veil{position:fixed;inset:0;background:rgba(74,18,53,.45);z-index:60;opacity:0;pointer-events:none;transition:.3s}
+.veil.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;width:min(480px,100%);max-height:92vh;overflow:auto;z-index:61;background:#fff7fc;
+  border-radius:30px 30px 0 0;transform:translate(-50%,105%);transition:transform .45s cubic-bezier(.3,1.1,.4,1);padding:10px 18px 24px}
+.sheet.on{transform:translate(-50%,0)}
+.grab{width:46px;height:5px;border-radius:5px;background:var(--pink2);margin:4px auto 10px}
+.sHead{display:flex;align-items:center;gap:12px}
+.sHead .art{width:96px;height:120px;display:grid;place-items:center;background:var(--butter);border-radius:22px;flex:none}
+.sHead .art svg{height:108px;transition:.3s}
+.sHead h3{font-family:'Lalezar';font-weight:400;font-size:24px;color:var(--deep)}
+.close{position:absolute;top:14px;left:14px;width:34px;height:34px;border-radius:50%;background:var(--pink);color:var(--deep);font-size:18px;font-weight:800}
+.grp{margin-top:16px}
+.grp > label,.grp .gl{display:block;font-weight:800;font-size:14.5px;color:var(--mag);margin-bottom:8px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{padding:8px 13px;border-radius:14px;background:#fff;border:2px solid var(--pink);font-weight:700;font-size:13.5px;transition:.2s}
+.opt.on{background:var(--pink);border-color:var(--mag);color:var(--deep)}
+.opt small{color:var(--mag);font-weight:800}
+.sw{width:40px;height:40px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--pink);transition:.2s}
+.sw.on{box-shadow:0 0 0 3px var(--mag);transform:scale(1.12)}
+.field{width:100%;padding:12px 14px;border-radius:14px;border:2px solid var(--pink);background:#fff;font-size:15px;color:var(--ink);outline:none}
+.field:focus{border-color:var(--rose)}
+textarea.field{resize:none;height:70px}
+.qty{display:flex;align-items:center;gap:14px}
+.qty button{width:40px;height:40px;border-radius:13px;background:var(--pink);font-size:22px;font-weight:800;color:var(--deep)}
+.qty span{font-family:'Lalezar';font-size:22px;min-width:24px;text-align:center}
+.cta{width:100%;margin-top:20px;padding:15px;border-radius:18px;background:linear-gradient(135deg,var(--rose),var(--mag));color:#fff;
+  font-weight:800;font-size:16.5px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 6px 0 var(--deep)}
+.cta:active{transform:translateY(4px);box-shadow:0 2px 0 var(--deep)}
+.cta.wa{background:linear-gradient(135deg,#2bd46a,#119a4a);box-shadow:0 6px 0 #0b6e34;justify-content:center;gap:10px;text-decoration:none}
+.line{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--pink2)}
+.line .t{flex:1}
+.line .t b{font-family:'Lalezar';font-weight:400;font-size:17px;color:var(--deep)}
+.line .t div{font-size:12px;color:#8a4672}
+.line .p{font-family:'Lalezar';color:var(--mag);font-size:17px}
+.line .qty button{width:30px;height:30px;font-size:18px;border-radius:10px}
+.line .qty span{font-size:17px}
+.sum{background:#fff;border-radius:18px;padding:12px 14px;margin-top:14px;border:2px solid var(--pink)}
+.sum div{display:flex;justify-content:space-between;padding:4px 0;font-weight:700}
+.sum .big{font-family:'Lalezar';font-size:21px;color:var(--mag);font-weight:400;border-top:2px dashed var(--pink2);margin-top:6px;padding-top:8px}
+.alert{background:#fff3c4;border:2px solid #f0c33c;border-radius:14px;padding:10px 12px;font-size:13px;font-weight:700;color:#7a4a00;margin-top:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.err{color:#d62a5f;font-size:12.5px;font-weight:700;margin-top:6px;display:none}
+.done{text-align:center;padding:18px 0 4px}
+.done .big{font-size:64px;animation:pop .6s cubic-bezier(.3,1.8,.5,1)}
+@keyframes pop{from{transform:scale(0)}}
+.done h3{font-family:'Lalezar';font-weight:400;font-size:28px;color:var(--deep);margin-top:6px}
+.preview{white-space:pre-wrap;background:#e9fbe9;border-radius:16px;padding:12px;font-size:12.5px;text-align:right;margin-top:12px;max-height:200px;overflow:auto;border:2px solid #bfeccc}
+.toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-150%);background:#fff;color:var(--deep);font-weight:800;padding:10px 18px;border-radius:30px;z-index:90;
+  box-shadow:0 8px 24px rgba(125,26,85,.25);transition:transform .4s cubic-bezier(.3,1.5,.5,1);border:2px solid var(--pink2)}
+.toast.on{transform:translate(-50%,0)}
+.heart{position:fixed;z-index:95;pointer-events:none;font-size:26px;transition:all .75s cubic-bezier(.5,-.3,.7,.6)}
+</style>
+</head>
+<body>
+
+<!-- ============ INTRO ============ -->
+<div id="intro">
+  <div class="stripes" id="stripes"></div>
+  <div class="burst"></div>
+  <span class="floaty" style="left:12%;bottom:0;animation-delay:2s">🌷</span>
+  <span class="floaty" style="left:78%;bottom:0;animation-delay:2.6s">🍵</span>
+  <span class="floaty" style="left:45%;bottom:0;animation-delay:3.1s">💗</span>
+  <div class="introCore">
+    <div class="badge">
+      <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span><span class="spark s4">✦</span>
+      <div class="logoTxt">
+        <div class="noa"><span>N</span><span>O</span><span>A</span></div>
+        <div class="mt">Matcha</div>
+      </div>
+    </div>
+    <div class="tag">كوفي سحابي 🇸🇦 · ورد 🌷</div>
+    <svg class="fillCup" viewBox="0 0 60 80">
+      <defs><clipPath id="fc"><path d="M8 14 H52 L46 76 H14 Z"/></clipPath></defs>
+      <g clip-path="url(#fc)"><g class="liq"><rect x="0" y="22" width="60" height="60" fill="#86ad45"/><rect x="0" y="16" width="60" height="12" fill="#fff" opacity=".85"/></g></g>
+      <path d="M8 14 H52 L46 76 H14 Z" fill="none" stroke="#b0347f" stroke-width="3" stroke-linejoin="round"/>
+      <line x1="36" y1="16" x2="44" y2="0" stroke="#4a1235" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <button class="skip" id="skip">تخطّي ←</button>
+</div>
+
+<div class="app">
+  <header>
+    <div class="miniBadge">
+      <div class="logoTxt"><div class="noa"><span>N</span><span>O</span><span>A</span></div><div class="mt">Matcha</div></div>
+    </div>
+    <div class="hTitle">نوا ماتشا ⭐</div>
+    <div class="hSub">كوفي سحابي - ورد 🌷 · المدينة المنورة</div>
+    <div class="chips">
+      <span class="chip">🚚 توصيل لكل الأحياء 15 ر.س</span>
+      <span class="chip">🏠 استلام من حي الحزام</span>
+      <span class="chip">⚡ الطلبات بنفس اليوم</span>
+    </div>
+  </header>
+
+  <div class="mode" id="mode">
+    <div class="pill"></div>
+    <button class="on" data-m="delivery">🛵 توصيل</button>
+    <button data-m="pickup">🛍️ استلام</button>
+  </div>
+  <div class="modeNote" id="modeNote">التوصيل لجميع أحياء المدينة عدا أطرافها — 15 ريال</div>
+
+  <nav class="tabs" id="tabs"></nav>
+  <main id="menu"></main>
+
+  <div class="info">
+    <h4>التوصيل لجامعة طيبة وجامعة السلام 🎓</h4>
+    <div class="stamp">15 ريال</div>
+    <p>الطلبات الكبيرة وطلبات الورد تكون قبلها بيوم 🌷</p>
+  </div>
+  <footer>﴿ وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ ﴾<br><br>نموذج تجريبي · تصميم وتطوير نرجس العمري</footer>
+</div>
+
+<button class="cartBar" id="cartBar"><span class="cnt" id="cCnt">0</span><span class="lbl">عرض السلة وإكمال الطلب</span><span class="tot" id="cTot">0 ر.س</span></button>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== DATA ================== */
+const WA = '966581938591';
+const FEE = 15;
+const MILK = [{n:'حليب عادي',p:0},{n:'شوفان',p:3},{n:'خالي من اللاكتوز',p:2},{n:'لوز',p:3},{n:'جوز الهند',p:3}];
+const SUGAR = ['سكر عادي','سكر خفيف','بدون سكر'];
+const FOAM = [{n:'وردي',c:'#f9a9d9'},{n:'أصفر',c:'#fbe96f'},{n:'أخضر',c:'#b9de7c'},{n:'أبيض',c:'#ffffff'},{n:'بنفسجي',c:'#c9a5f0'},{n:'أزرق',c:'#9fd6f7'}];
+const M = '#83ad42', MILKC='#f4f7e8';
+const CATS = [
+ {id:'matcha',t:'Matcha',ar:'الماتشا 🍵'},
+ {id:'special',t:'Specials',ar:'السبيشل ✨'},
+ {id:'coffee',t:'Coffee',ar:'القهوة ☕'},
+ {id:'flowers',t:'Flowers',ar:'باقات الورد 🌷'},
+ {id:'addons',t:'Add ons',ar:'الإضافات 💗'}
+];
+const ITEMS = [
+ {id:'m1',cat:'matcha',ar:'ماتشا كلاسيك',en:'Classic',p:24,art:{t:'cup',base:M,mid:MILKC},o:['milk','sugar']},
+ {id:'m2',cat:'matcha',ar:'ماتشا فانيلا',en:'Vanilla',p:24,art:{t:'cup',base:M,mid:'#fffbe8',top:'#fff'},o:['milk','sugar']},
+ {id:'m3',cat:'matcha',ar:'ماتشا مانجو',en:'Mango',p:26,art:{t:'cup',base:M,mid:MILKC,top:'#ffc23d'},o:['milk','sugar']},
+ {id:'m4',cat:'matcha',ar:'ماتشا فراولة',en:'Strawberry',p:26,art:{t:'cup',base:M,mid:'#fde0ea',top:'#f2a4b9',dr:'#c8233f'},o:['milk','sugar']},
+ {id:'m5',cat:'matcha',ar:'ماتشا سولتد كراميل',en:'Salted caramel',p:25,art:{t:'cup',base:M,mid:'#fff3df',top:'#fff',dr:'#c98a3a'},o:['milk','sugar']},
+ {id:'m6',cat:'matcha',ar:'ماتشا قرفة',en:'Cinnamon',p:25,art:{t:'cup',base:M,mid:'#f8efe0',top:'#fff',dust:'#b5652b'},o:['milk','sugar']},
+ {id:'m7',cat:'matcha',ar:'ماتشا ورد محمدي',en:'Madinah rose',p:25,art:{t:'cup',base:M,mid:'#fde4ef',top:'#f8b6d2'},o:['milk','sugar'],hot:'طعم المدينة 🌹'},
+ {id:'m8',cat:'matcha',ar:'ماتشا كراميل',en:'Caramel',p:24,art:{t:'cup',base:M,mid:MILKC,dr:'#c98a3a'},o:['milk','sugar']},
+ {id:'m9',cat:'matcha',ar:'ماتشا تمر',en:'Dates',p:24,art:{t:'cup',base:M,mid:'#efe6d8',dr:'#5b2f14'},o:['milk','sugar']},
+
+ {id:'s1',cat:'special',ar:'بيرثداي ماتشا',en:'Birthday matcha',p:34,wide:1,art:{t:'bday',base:M,mid:MILKC,foam:'#ffffff'},
+  desc:'ماتشا من اختيارك · لون فوم من اختيارك · حدايا ميلاد وشمعة',o:['flavor','foam1','milk'],hot:'صمّميها بنفسك'},
+ {id:'s2',cat:'special',ar:'الرسم على الماتشا',en:'Customise ur matcha',p:28,wide:1,art:{t:'draw',base:M,mid:MILKC,foam:'#f9a9d9',foam2:'#fbe96f'},
+  desc:'ماتشا من اختيارك · لونين فوم · استيكرز',o:['flavor','foam1','foam2','milk']},
+ {id:'s3',cat:'special',ar:'ماتشا لاتيه — 1 لتر',en:'Matcha latte 1L',p:95,art:{t:'bottle',c:'#7fae3e'},desc:'تكفي 5 أكواب',o:['milk'],big:1},
+ {id:'s4',cat:'special',ar:'قهوة سوداء مثلجة — 1 لتر',en:'Iced black coffee 1L',p:55,art:{t:'bottle',c:'#4a2414'},desc:'تكفي 5 أكواب',o:[],big:1},
+
+ {id:'c1',cat:'coffee',ar:'قهوة مقطرة',en:'V60',p:18,art:{t:'hot'},o:[]},
+ {id:'c2',cat:'coffee',ar:'ايس فانيلا لاتيه',en:'Iced vanilla latte',p:18,art:{t:'cup',base:'#8a5634',mid:'#f2e2cf',top:'#fff'},o:['milk','sugar']},
+ {id:'c3',cat:'coffee',ar:'ايس سولتد كراميل',en:'Iced salted caramel',p:19,art:{t:'cup',base:'#8a5634',mid:'#f2e2cf',top:'#fff',dr:'#c98a3a'},o:['milk','sugar']},
+ {id:'c4',cat:'coffee',ar:'ايس سينمون لاتيه',en:'Iced cinnamon latte',p:18,art:{t:'cup',base:'#8a5634',mid:'#f2e2cf',top:'#fff',dust:'#b5652b'},o:['milk','sugar']},
+
+ {id:'f1',cat:'flowers',ar:'بيبي روز — 10 أغصان',p:75,art:{t:'flower',c:'#f6a7c9'},o:['card'],adv:1,group:'بيبي روز'},
+ {id:'f2',cat:'flowers',ar:'بيبي روز — 20 غصن',p:150,art:{t:'flower',c:'#f6a7c9'},o:['card'],adv:1,group:'بيبي روز'},
+ {id:'f3',cat:'flowers',ar:'ورد جوري — 5 وردات',p:38,art:{t:'flower',c:'#e2355f'},o:['card'],adv:1,group:'ورد جوري'},
+ {id:'f4',cat:'flowers',ar:'ورد جوري — 10 وردات',p:55,art:{t:'flower',c:'#e2355f'},o:['card'],adv:1,group:'ورد جوري'},
+ {id:'f5',cat:'flowers',ar:'ورد جوري — 20 وردة',p:98,art:{t:'flower',c:'#e2355f'},o:['card'],adv:1,group:'ورد جوري'},
+
+ {id:'a1',cat:'addons',ar:'إضافة خمس وردات',en:'5 roses',p:25,art:{t:'flower',c:'#f39bc6'},o:['card'],adv:1},
+ {id:'a2',cat:'addons',ar:'إضافة عشر وردات',en:'10 roses',p:50,art:{t:'flower',c:'#e2355f'},o:['card'],adv:1},
+ {id:'a3',cat:'addons',ar:'إضافة كيكة من فوندو',en:'Fondo cake',p:38,wide:1,art:{t:'cake'},o:['card'],desc:'كيكة صغيرة تكمّل هديتك 🎂'},
+];
+const FLAVORS = ITEMS.filter(i=>i.cat==='matcha');
+
+/* ================== ART (inline SVG) ================== */
+let uid=0;
+function art(a){
+  const k='g'+(uid++);
+  if(a.t==='bottle') return `<svg viewBox="0 0 70 130"><rect x="27" y="4" width="16" height="12" rx="3" fill="#2b1420"/><path d="M24 16h22v8c8 4 12 10 12 18v74a10 10 0 0 1-10 10H22a10 10 0 0 1-10-10V42c0-8 4-14 12-18z" fill="${a.c}"/><path d="M18 46h6v66h-6z" fill="#fff" opacity=".25"/><rect x="16" y="58" width="38" height="40" rx="8" fill="#fff" stroke="#e98cc6" stroke-width="3"/><text x="35" y="76" text-anchor="middle" font-family="Shrikhand" font-size="11" fill="#e98cc6">NOA</text><text x="35" y="89" text-anchor="middle" font-family="Pacifico" font-size="8" fill="#b0347f">1 liter</text></svg>`;
+  if(a.t==='hot') return `<svg viewBox="0 0 100 130"><path d="M40 20c-6 8 6 10 0 18M54 16c-6 8 6 10 0 18" stroke="#e7b3d4" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M18 44h64l-7 74a6 6 0 0 1-6 6H31a6 6 0 0 1-6-6z" fill="#fff" stroke="#f0d6e6" stroke-width="2"/><rect x="14" y="38" width="72" height="10" rx="5" fill="#f6eef3"/><ellipse cx="50" cy="52" rx="28" ry="5" fill="#3b1c0f"/><rect x="24" y="76" width="52" height="20" fill="#f9c6ec"/><text x="50" y="91" text-anchor="middle" font-family="Pacifico" font-size="11" fill="#b0347f">V60</text></svg>`;
+  if(a.t==='flower'){
+    const pos=[[50,30],[34,40],[66,40],[42,22],[58,22],[50,46],[30,26],[70,26]];
+    return `<svg viewBox="0 0 100 130"><path d="M50 60 L30 116 Q50 124 70 116Z" fill="#fde6f4" stroke="#f2b6db" stroke-width="2"/><path d="M50 60 L22 112 L38 112Z" fill="#f9d0ec"/><path d="M50 60 L78 112 L62 112Z" fill="#f9d0ec"/>${[[40,58,30,40],[60,58,70,40],[50,62,50,40]].map(l=>`<line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}" stroke="#6aa04a" stroke-width="2.5"/>`).join('')}${pos.map(([x,y])=>`<g transform="translate(${x} ${y})"><circle r="9" fill="${a.c}"/><circle r="5.5" fill="#fff" opacity=".28"/><path d="M-4 0a4 4 0 0 1 8 0" stroke="#fff" stroke-width="1.4" fill="none" opacity=".6"/></g>`).join('')}<path d="M36 92 Q50 100 64 92 L60 104 Q50 108 40 104Z" fill="#b0347f"/><circle cx="50" cy="96" r="4" fill="#fbe96f"/></svg>`;
+  }
+  if(a.t==='cake') return `<svg viewBox="0 0 110 120"><ellipse cx="55" cy="108" rx="44" ry="8" fill="#f9d0ec"/><rect x="18" y="60" width="74" height="44" rx="10" fill="#6b3a24"/><path d="M18 70 Q26 82 34 70 Q42 84 50 70 Q58 84 66 70 Q74 84 82 70 Q88 80 92 70 V64 a8 8 0 0 0 -8 -8 H26 a8 8 0 0 0 -8 8z" fill="#f7b6e3"/><rect x="18" y="86" width="74" height="5" fill="#f7b6e3" opacity=".7"/><rect x="52" y="30" width="6" height="24" rx="2" fill="#fbe96f" stroke="#e98cc6"/><path d="M55 16c4 6 4 10 0 13c-4-3-4-7 0-13z" fill="#ffb53d"><animate attributeName="d" dur=".6s" repeatCount="indefinite" values="M55 16c4 6 4 10 0 13c-4-3-4-7 0-13z;M55 14c5 7 3 11 0 15c-4-3-5-8 0-15z;M55 16c4 6 4 10 0 13c-4-3-4-7 0-13z"/></path>${[[30,62,'#fbe96f'],[44,58,'#9fd6f7'],[66,60,'#b9de7c'],[80,62,'#fff']].map(c=>`<circle cx="${c[0]}" cy="${c[1]}" r="2.4" fill="${c[2]}"/>`).join('')}</svg>`;
+  // cups: cup / bday / draw
+  const foam=a.foam||a.top, foam2=a.foam2;
+  const cupPath='M18 34 H82 L74 122 Q73 126 69 126 H31 Q27 126 26 122 Z';
+  let layers=`<rect x="0" y="66" width="100" height="70" fill="${a.base}"/>
+   <path d="M0 50 Q12 44 25 50 T50 50 T75 50 T100 50 V72 Q87 66 75 72 T50 72 T25 72 T0 72Z" fill="${a.mid}"/>
+   <path d="M0 60 Q20 54 40 64 T100 58 V76 Q80 70 60 78 T0 74Z" fill="${a.base}" opacity=".55"/>`;
+  if(foam) layers+=`<path d="M0 34 H100 V48 Q87 54 75 48 T50 48 T25 48 T0 48Z" fill="${foam}"/>`;
+  if(a.dr) layers+=`<path d="M30 40 Q34 70 28 100 M70 40 Q64 66 72 98 M48 40 Q52 60 46 84" stroke="${a.dr}" stroke-width="4" fill="none" opacity=".9" stroke-linecap="round"/>`;
+  if(a.dust) layers+=[...Array(14)].map((_,i)=>`<circle cx="${24+(i*37)%54}" cy="${36+(i*7)%10}" r="1.6" fill="${a.dust}"/>`).join('');
+  if(foam2) layers+=`<path d="M26 42 Q40 36 52 44 T76 40" stroke="${foam2}" stroke-width="5" fill="none" stroke-linecap="round"/><text x="50" y="62" text-anchor="middle" font-size="12">💗</text>`;
+  const ice=[[34,80],[58,88],[44,104],[64,108]].map(([x,y],i)=>`<rect x="${x}" y="${y}" width="13" height="13" rx="3" fill="#fff" opacity=".35" transform="rotate(${i*17} ${x+6} ${y+6})"/>`).join('');
+  let extra='';
+  if(a.t==='bday'){
+    extra=`<path d="M16 34 Q14 18 28 18 Q32 6 46 10 Q54 0 64 10 Q78 6 80 20 Q90 22 84 34Z" fill="${foam||'#fff'}" stroke="#f3d5e8" stroke-width="1.5"/>`+
+      [[30,22,'#f25c8c'],[42,16,'#5ab7f2'],[56,14,'#fbd13c'],[68,20,'#7bcf5a'],[36,28,'#b07bf2'],[60,26,'#f25c8c'],[74,28,'#5ab7f2'],[48,24,'#7bcf5a']].map(s=>`<rect x="${s[0]}" y="${s[1]}" width="5" height="2" rx="1" fill="${s[2]}" transform="rotate(${s[0]} ${s[0]} ${s[1]})"/>`).join('')+
+      `<rect x="30" y="-6" width="5" height="22" rx="2" fill="#f25c8c"/><path d="M32.5 -16c3 5 3 8 0 10c-3-2-3-5 0-10z" fill="#ffb53d"><animate attributeName="opacity" dur=".5s" repeatCount="indefinite" values="1;.6;1"/></path>`;
+  }
+  const strawLine=a.t==='bday'?`<line x1="62" y1="24" x2="74" y2="-10" stroke="#2b1420" stroke-width="5" stroke-linecap="round"/>`:`<line x1="58" y1="40" x2="72" y2="-4" stroke="#2b1420" stroke-width="5" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 -22 100 152" overflow="visible"><defs><clipPath id="${k}"><path d="${cupPath}"/></clipPath></defs>
+   ${a.t!=='bday'?strawLine:''}
+   <g clip-path="url(#${k})">${layers}${ice}<rect x="22" y="30" width="7" height="96" fill="#fff" opacity=".35"/></g>
+   <path d="${cupPath}" fill="none" stroke="#ffffffcc" stroke-width="2"/>
+   <rect x="14" y="30" width="72" height="6" rx="3" fill="#ffffffd9"/>
+   ${extra}${a.t==='bday'?strawLine:''}</svg>`;
+}
+
+/* ================== STATE ================== */
+let cart=[]; let mode='delivery';
+const $=s=>document.querySelector(s);
+const money=n=>n+' ر.س';
+
+/* ================== RENDER MENU ================== */
+function renderMenu(){
+  $('#tabs').innerHTML=CATS.map((c,i)=>`<button class="tab ${i?'':'on'}" data-c="${c.id}">${c.ar}</button>`).join('');
+  $('#menu').innerHTML=CATS.map(c=>{
+    const list=ITEMS.filter(i=>i.cat===c.id);
+    let body;
+    if(c.id==='flowers'){
+      const groups=[...new Set(list.map(i=>i.group))];
+      body=groups.map(g=>{const its=list.filter(i=>i.group===g);return `<div class="bouq item" style="margin-bottom:12px"><div style="display:flex;align-items:center;gap:10px"><div class="art" style="width:90px;height:100px">${art(its[0].art)}</div><div><h3>${g}</h3><div class="desc">تُطلب قبلها بيوم 🌷 · مع كرت إهداء مجاني</div></div></div>${its.map(i=>`<div class="bRow"><b>${i.ar.split('— ')[1]}</b><span class="pp">${money(i.p)}</span><button class="mini" data-id="${i.id}">+</button></div>`).join('')}</div>`}).join('');
+    }else{
+      body=`<div class="grid">${list.map(i=>`<div class="item ${i.wide?'wide':''}" data-id="${i.id}">
+        ${i.hot?`<span class="ribbon">${i.hot}</span>`:''}
+        <span class="price">${i.p}sr</span>
+        <div class="art">${art(i.art)}</div>
+        <div class="body"><h3>${i.ar}</h3>${i.en?`<div class="en">${i.en}</div>`:''}${i.desc?`<div class="desc">${i.desc}</div>`:''}
+        <button class="add" data-id="${i.id}">+ أضف للسلة</button></div></div>`).join('')}</div>`;
+      if(c.id==='matcha') body+=`<div class="alert" style="background:#fff;border-color:var(--pink2);color:var(--deep);margin-top:14px">🥛 تقدر تغيّر الحليب: شوفان +3 · خالي من اللاكتوز +2 · لوز +3 · جوز الهند +3</div>`;
+    }
+    return `<section id="sec-${c.id}"><div class="secHead"><h2>${c.t}</h2><p>${c.ar}</p></div>${body}</section>`;
+  }).join('');
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');io.unobserve(e.target)}}),{threshold:.15});
+  document.querySelectorAll('.item').forEach((el,i)=>{el.style.transitionDelay=(i%2)*80+'ms';io.observe(el)});
+  // tab spy
+  const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const id=e.target.id.slice(4);document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.c===id));const on=$(`.tab[data-c="${id}"]`);on&&on.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'})}}),{rootMargin:'-40% 0px -55% 0px'});
+  document.querySelectorAll('section').forEach(s=>spy.observe(s));
+}
+
+/* ================== SHEET ================== */
+function openSheet(html){$('#sheet').innerHTML='<div class="grab"></div><button class="close" onclick="closeSheet()">✕</button>'+html;$('#sheet').scrollTop=0;$('#sheet').classList.add('on');$('#veil').classList.add('on')}
+function closeSheet(){$('#sheet').classList.remove('on');$('#veil').classList.remove('on')}
+$('#veil').onclick=closeSheet;
+
+let cur=null;
+function openItem(id,ev){
+  const it=ITEMS.find(i=>i.id===id);
+  cur={it,q:1,milk:0,sugar:0,flavor:0,foam1:0,foam2:1,card:''};
+  if(!it.o.length && !it.adv){ addToCart(ev); return; }
+  const o=it.o;
+  let h=`<div class="sHead"><div class="art" id="pv">${art(it.art)}</div><div><h3>${it.ar}</h3>${it.desc?`<div class="desc" style="font-size:13px;color:#8a4672">${it.desc}</div>`:''}<div style="font-family:Lalezar;font-size:22px;color:var(--mag);margin-top:4px">${money(it.p)}</div></div></div>`;
+  if(o.includes('flavor')) h+=`<div class="grp"><span class="gl">اختاري نكهة الماتشا</span><div class="opts" data-k="flavor">${FLAVORS.map((f,i)=>`<button class="opt ${i?'':'on'}" data-v="${i}">${f.ar.replace('ماتشا ','')}</button>`).join('')}</div></div>`;
+  if(o.includes('foam1')) h+=`<div class="grp"><span class="gl">${o.includes('foam2')?'لون الفوم الأول':'لون الفوم'}</span><div class="opts" data-k="foam1">${FOAM.map((f,i)=>`<button class="sw ${i?'':'on'}" data-v="${i}" style="background:${f.c}" title="${f.n}"></button>`).join('')}</div></div>`;
+  if(o.includes('foam2')) h+=`<div class="grp"><span class="gl">لون الفوم الثاني</span><div class="opts" data-k="foam2">${FOAM.map((f,i)=>`<button class="sw ${i===1?'on':''}" data-v="${i}" style="background:${f.c}" title="${f.n}"></button>`).join('')}</div></div>`;
+  if(o.includes('milk')) h+=`<div class="grp"><span class="gl">نوع الحليب</span><div class="opts" data-k="milk">${MILK.map((m,i)=>`<button class="opt ${i?'':'on'}" data-v="${i}">${m.n}${m.p?` <small>+${m.p}</small>`:''}</button>`).join('')}</div></div>`;
+  if(o.includes('sugar')) h+=`<div class="grp"><span class="gl">السكر</span><div class="opts" data-k="sugar">${SUGAR.map((s,i)=>`<button class="opt ${i?'':'on'}" data-v="${i}">${s}</button>`).join('')}</div></div>`;
+  if(o.includes('card')) h+=`<div class="grp"><label>💌 كرت إهداء (اختياري)</label><textarea class="field" id="card" placeholder="مثال: كل عام وانتي بخير يا أحلى صديقة 💗"></textarea></div>`;
+  if(it.adv||it.big) h+=`<div class="alert">📅 هذا الطلب يُجهَّز قبلها بيوم — بنثبّت لك موعد بكرة أو بعده</div>`;
+  h+=`<div class="grp"><span class="gl">الكمية</span><div class="qty"><button id="qm">−</button><span id="qv">1</span><button id="qp">+</button></div></div>
+  <button class="cta" id="addBtn"><span>أضف للسلة</span><span id="addP">${money(it.p)}</span></button>`;
+  openSheet(h);
+  $('#sheet').querySelectorAll('.opts').forEach(g=>g.onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;g.querySelectorAll('[data-v]').forEach(x=>x.classList.remove('on'));b.classList.add('on');cur[g.dataset.k]=+b.dataset.v;livePreview();upd()});
+  $('#qm').onclick=()=>{cur.q=Math.max(1,cur.q-1);upd()};$('#qp').onclick=()=>{cur.q++;upd()};
+  $('#addBtn').onclick=e=>{const c=$('#card');if(c)cur.card=c.value.trim();addToCart(e)};
+  function upd(){$('#qv').textContent=cur.q;$('#addP').textContent=money(unit()*cur.q)}
+}
+function unit(){return cur.it.p+(cur.it.o.includes('milk')?MILK[cur.milk].p:0)}
+function livePreview(){
+  const it=cur.it; if(!it.o.includes('flavor')) return;
+  const f=FLAVORS[cur.flavor].art;
+  const a={...f,t:it.art.t,foam:FOAM[cur.foam1].c};
+  if(it.o.includes('foam2')) a.foam2=FOAM[cur.foam2].c;
+  $('#pv').innerHTML=art(a);
+}
+function describe(c){
+  const it=c.it,o=it.o,d=[];
+  if(o.includes('flavor')) d.push('نكهة: '+FLAVORS[c.flavor].ar.replace('ماتشا ',''));
+  if(o.includes('foam1')) d.push('فوم: '+FOAM[c.foam1].n+(o.includes('foam2')?' + '+FOAM[c.foam2].n:''));
+  if(o.includes('milk')&&c.milk) d.push('حليب '+MILK[c.milk].n);
+  if(o.includes('sugar')&&c.sugar) d.push(SUGAR[c.sugar]);
+  if(c.card) d.push('💌 '+c.card);
+  return d.join(' · ');
+}
+function addToCart(ev){
+  const it=cur.it,desc=describe(cur),key=it.id+'|'+desc;
+  const ex=cart.find(c=>c.key===key);
+  if(ex) ex.q+=cur.q; else cart.push({key,id:it.id,name:it.ar,desc,unit:unit(),q:cur.q,adv:!!(it.adv||it.big)});
+  closeSheet(); flyHeart(ev); refreshBar(); toast('انضافت للسلة 💗');
+}
+function flyHeart(ev){
+  if(!ev) return; const h=document.createElement('div');h.className='heart';h.textContent='💗';
+  h.style.left=ev.clientX+'px';h.style.top=ev.clientY+'px';document.body.appendChild(h);
+  const r=$('#cartBar').getBoundingClientRect();
+  requestAnimationFrame(()=>{h.style.left=(r.right-40)+'px';h.style.top=(r.top+6)+'px';h.style.transform='scale(.5)';h.style.opacity='.4'});
+  setTimeout(()=>h.remove(),800);
+}
+const sub=()=>cart.reduce((s,c)=>s+c.unit*c.q,0);
+const count=()=>cart.reduce((s,c)=>s+c.q,0);
+function refreshBar(){
+  const b=$('#cartBar');$('#cCnt').textContent=count();$('#cTot').textContent=money(sub());
+  b.classList.toggle('show',cart.length>0);b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');
+}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1600)}
+
+/* ================== CHECKOUT ================== */
+let ck={area:0,day:null,slot:0,pay:0};
+const AREAS=[{n:'داخل أحياء المدينة',p:FEE},{n:'جامعة طيبة',p:FEE},{n:'جامعة السلام',p:FEE},{n:'أطراف المدينة (بالتنسيق)',p:null}];
+const SLOTS=['12 – 3 الظهر','3 – 6 العصر','6 – 9 المغرب','9 – 12 الليل'];
+const PAYS=['تحويل بنكي','كاش عند الاستلام'];
+const needAdv=()=>cart.some(c=>c.adv)||count()>=8;
+function days(){
+  const out=[],now=new Date(),names=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  for(let i=0;i<5;i++){const d=new Date(now);d.setDate(now.getDate()+i);out.push({i,lbl:i===0?'اليوم':i===1?'بكرة':names[d.getDay()],sub:d.getDate()+'/'+(d.getMonth()+1)})}
+  return out;
+}
+function fee(){return mode==='pickup'?0:(AREAS[ck.area].p||0)}
+function openCart(){
+  if(!cart.length) return;
+  const adv=needAdv(); if(ck.day===null||(adv&&ck.day===0)) ck.day=adv?1:0;
+  let h=`<h3 style="font-family:Lalezar;font-weight:400;font-size:26px;color:var(--deep);text-align:center">سلتك 🛍️</h3>`;
+  h+=cart.map((c,i)=>`<div class="line"><div class="t"><b>${c.name}</b>${c.desc?`<div>${c.desc}</div>`:''}<div class="p">${money(c.unit*c.q)}</div></div><div class="qty"><button data-i="${i}" data-d="-1">−</button><span>${c.q}</span><button data-i="${i}" data-d="1">+</button></div></div>`).join('');
+  h+=`<div class="mode" id="mode2" style="margin:16px 0 0" ><div class="pill"></div><button data-m="delivery">🛵 توصيل</button><button data-m="pickup">🛍️ استلام</button></div>`;
+  if(mode==='delivery'){
+    h+=`<div class="grp"><span class="gl">منطقة التوصيل</span><div class="opts" data-k="area">${AREAS.map((a,i)=>`<button class="opt ${i===ck.area?'on':''}" data-v="${i}">${a.n} ${a.p?`<small>${a.p} ر.س</small>`:''}</button>`).join('')}</div></div>
+    <div class="grp"><label>الحي والعنوان</label><input class="field" id="addr" placeholder="مثال: حي العزيزية — شارع ... — بيت رقم ..."></div>
+    <div class="grp"><label>رابط الموقع (اختياري)</label><input class="field" id="loc" placeholder="الصقي رابط قوقل ماب"></div>`;
+  }else{
+    h+=`<div class="alert" style="background:#fff;border-color:var(--pink2);color:var(--deep)">📍 الاستلام من حي الحزام — يوصلك اللوكيشن على الواتس بعد تأكيد الطلب</div>`;
+  }
+  h+=`<div class="grp"><span class="gl">يوم ${mode==='delivery'?'التوصيل':'الاستلام'}</span><div class="opts" data-k="day">${days().map(d=>`<button class="opt ${d.i===ck.day?'on':''}" data-v="${d.i}" ${adv&&d.i===0?'disabled style="opacity:.35;text-decoration:line-through"':''}>${d.lbl} <small>${d.sub}</small></button>`).join('')}</div>
+  ${adv?`<div class="alert">🌷 طلبك فيه ورد أو كمية كبيرة، فيُجهَّز قبلها بيوم</div>`:''}</div>
+  <div class="grp"><span class="gl">الوقت المناسب</span><div class="opts" data-k="slot">${SLOTS.map((s,i)=>`<button class="opt ${i===ck.slot?'on':''}" data-v="${i}">${s}</button>`).join('')}</div></div>
+  <div class="two grp"><div><label style="display:block;font-weight:800;font-size:14.5px;color:var(--mag);margin-bottom:8px">الاسم</label><input class="field" id="nm" placeholder="اسمك"></div>
+  <div><label style="display:block;font-weight:800;font-size:14.5px;color:var(--mag);margin-bottom:8px">الجوال</label><input class="field" id="ph" inputmode="tel" placeholder="05xxxxxxxx" dir="ltr"></div></div>
+  <div class="grp"><span class="gl">طريقة الدفع</span><div class="opts" data-k="pay">${PAYS.map((p,i)=>`<button class="opt ${i===ck.pay?'on':''}" data-v="${i}">${p}</button>`).join('')}</div></div>
+  <div class="grp"><label>ملاحظات</label><textarea class="field" id="nt" placeholder="أي طلب خاص؟"></textarea></div>
+  <div class="sum"><div><span>المجموع</span><span>${money(sub())}</span></div>
+  <div><span>${mode==='delivery'?'التوصيل':'الاستلام'}</span><span>${mode==='pickup'?'مجاني':AREAS[ck.area].p===null?'يحدد بالتنسيق':money(fee())}</span></div>
+  <div class="big"><span>الإجمالي</span><span>${money(sub()+fee())}</span></div></div>
+  <div class="err" id="err">فضلاً أكملي الاسم ورقم الجوال${mode==='delivery'?' والعنوان':''}</div>
+  <button class="cta" id="send"><span>تأكيد الطلب</span><span>${money(sub()+fee())}</span></button>`;
+  const keep=saveFields(); openSheet(h); restoreFields(keep);
+  const m2=$('#mode2'); m2.classList.toggle('pick',mode==='pickup'); m2.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);b.onclick=()=>{setMode(b.dataset.m);openCart()}});
+  $('#sheet').querySelectorAll('.qty button').forEach(b=>b.onclick=()=>{const c=cart[b.dataset.i];c.q+= +b.dataset.d;if(c.q<1)cart.splice(b.dataset.i,1);refreshBar();cart.length?openCart():closeSheet()});
+  $('#sheet').querySelectorAll('.opts').forEach(g=>g.onclick=e=>{const b=e.target.closest('[data-v]');if(!b||b.disabled)return;ck[g.dataset.k]=+b.dataset.v;openCart()});
+  $('#send').onclick=send;
+}
+let fieldCache={};
+function saveFields(){['addr','loc','nm','ph','nt'].forEach(k=>{const e=document.getElementById(k);if(e)fieldCache[k]=e.value});return fieldCache}
+function restoreFields(c){Object.keys(c).forEach(k=>{const e=document.getElementById(k);if(e)e.value=c[k]})}
+function send(){
+  saveFields();
+  const nm=$('#nm').value.trim(),ph=$('#ph').value.trim(),addr=$('#addr')?$('#addr').value.trim():'';
+  if(!nm||ph.length<9||(mode==='delivery'&&!addr)){$('#err').style.display='block';$('#err').scrollIntoView({behavior:'smooth',block:'center'});return}
+  const no='NOA-'+Math.floor(100+Math.random()*900);
+  const d=days()[ck.day];
+  let msg=`🌸 طلب جديد — NOA MATCHA\nرقم الطلب: ${no}\n\n`;
+  msg+=cart.map(c=>`• ${c.q}× ${c.name} — ${c.unit*c.q} ر.س${c.desc?`\n   (${c.desc})`:''}`).join('\n');
+  msg+=`\n\n🚚 ${mode==='delivery'?'توصيل — '+AREAS[ck.area].n:'استلام من حي الحزام'}`;
+  if(mode==='delivery'){msg+=`\n📍 ${addr}`;const l=$('#loc').value.trim();if(l)msg+=`\n🗺️ ${l}`}
+  msg+=`\n📅 ${d.lbl} ${d.sub} · ${SLOTS[ck.slot]}\n💳 ${PAYS[ck.pay]}`;
+  msg+=`\n\nالمجموع: ${sub()} ر.س\n${mode==='delivery'?'التوصيل: '+(AREAS[ck.area].p===null?'بالتنسيق':fee()+' ر.س')+'\n':''}الإجمالي: ${sub()+fee()} ر.س`;
+  msg+=`\n\n👤 ${nm} — ${ph}`;const nt=$('#nt').value.trim();if(nt)msg+=`\n📝 ${nt}`;
+  const url='https://wa.me/'+WA+'?text='+encodeURIComponent(msg);
+  openSheet(`<div class="done"><div class="big">🍵</div><h3>طلبك جاهز يا ${nm}!</h3><p style="color:#8a4672;font-weight:700">رقم طلبك <b style="color:var(--mag)">${no}</b> — اضغطي الزر عشان يوصل الطلب لنوا ماتشا على الواتساب</p></div>
+  <a class="cta wa" href="${url}" target="_blank" rel="noopener" id="waBtn"><span style="font-size:22px">💬</span><span>إرسال الطلب على واتساب</span></a>
+  <div class="preview">${msg.replace(/</g,'&lt;')}</div>
+  <button class="cta" style="background:#fff;color:var(--mag);box-shadow:0 4px 0 var(--pink2);justify-content:center;border:2px solid var(--pink2)" onclick="newOrder()">طلب جديد</button>`);
+}
+function newOrder(){cart=[];refreshBar();closeSheet()}
+
+/* ================== MODE ================== */
+function setMode(m){
+  mode=m;const el=$('#mode');el.classList.toggle('pick',m==='pickup');
+  el.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  $('#modeNote').textContent=m==='delivery'?'التوصيل لجميع أحياء المدينة عدا أطرافها — 15 ريال':'الاستلام من حي الحزام — بدون رسوم 💗';
+}
+$('#mode').onclick=e=>{const b=e.target.closest('button');if(b)setMode(b.dataset.m)};
+
+/* ================== EVENTS ================== */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('.tab');
+  if(t){$('#sec-'+t.dataset.c).scrollIntoView({behavior:'smooth'});return}
+  const b=e.target.closest('[data-id]');
+  if(b&&!e.target.closest('.sheet')) openItem(b.dataset.id,e);
+});
+$('#cartBar').onclick=openCart;
+
+/* ================== INTRO ================== */
+const st=$('#stripes');for(let i=0;i<14;i++){const s=document.createElement('i');s.style.animationDelay=(i*0.035)+'s';st.appendChild(s)}
+requestAnimationFrame(()=>$('#intro').classList.add('go'));
+function endIntro(){const i=$('#intro');if(i.classList.contains('out'))return;i.classList.add('out');setTimeout(()=>i.remove(),1000)}
+const it=setTimeout(endIntro,4300);
+$('#skip').onclick=()=>{clearTimeout(it);endIntro()};
+renderMenu();
+</script>
+</body>
+</html>
