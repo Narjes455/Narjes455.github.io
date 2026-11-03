@@ -157,6 +157,35 @@ body.xray .name,body.xray h2,body.xray h3{letter-spacing:0}
 #xtoast.show{transform:translate(-50%,0)}
 #xtoast code{color:var(--mint)}
 
+/* ========== REVIEWS ========== */
+#reviews{background:linear-gradient(180deg,#EEFBF6,var(--bg))}
+.revs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;max-width:1150px;margin:auto}
+.rvw{background:var(--c);border-radius:30px;padding:28px 24px 22px;position:relative;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.rvw:hover{transform:translateY(-6px) rotate(-1deg)}
+.rvw:before{content:"”";position:absolute;top:-6px;left:18px;font-family:'Lalezar';font-size:90px;line-height:1;color:rgba(255,255,255,.9)}
+.rvw p{font-weight:600;font-size:17px;white-space:pre-line;word-break:break-word}
+.rvw .who{display:flex;align-items:center;gap:10px;margin-top:16px}
+.rvw .av{width:42px;height:42px;border-radius:50%;background:#fff;display:grid;place-items:center;font-family:'Lalezar';font-size:20px;flex:none}
+.rvw b{display:block;line-height:1.3}
+.rvw small{color:var(--soft);font-weight:700}
+.revempty{text-align:center;color:var(--soft);font-weight:700;font-size:18px;grid-column:1/-1;background:#fff;border:2px dashed var(--lilac);border-radius:30px;padding:34px}
+#reviews .btns{margin-top:34px}
+#rmodal{position:fixed;inset:0;z-index:200;background:rgba(42,33,64,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px}
+#rmodal.on{display:flex}
+#rmodal form{background:#fff;border-radius:30px;padding:30px 26px;width:100%;max-width:460px;box-shadow:0 30px 80px rgba(0,0,0,.25);animation:pop .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.8);opacity:0}}
+#rmodal h3{font-family:'Lalezar';font-weight:400;font-size:30px;margin-bottom:14px}
+#rmodal label{display:block;font-weight:800;font-size:15px;margin:12px 0 5px}
+#rmodal label i{font-style:normal;font-weight:600;color:var(--soft);font-size:13px}
+#rmodal input,#rmodal textarea{width:100%;font-family:inherit;font-size:16px;color:var(--plum);border:2px solid #ECE5FF;border-radius:16px;padding:11px 14px;background:var(--bg);outline:0;transition:border-color .2s}
+#rmodal input:focus,#rmodal textarea:focus{border-color:var(--lilacD)}
+#rmodal textarea{min-height:120px;resize:vertical}
+#rmodal .cnt{text-align:left;font-size:12px;color:var(--soft);font-weight:700}
+#rmodal .row{display:flex;gap:10px;margin-top:18px}
+#rmodal .row .btn{flex:1;justify-content:center}
+#rmsg{margin-top:12px;font-weight:700;text-align:center;min-height:1.5em}
+.hp{position:absolute;left:-9999px;opacity:0}
+
 @media(max-width:760px){
   nav a.l{display:none}
   section{padding:85px 5vw}
@@ -182,6 +211,7 @@ body.xray .name,body.xray h2,body.xray h3{letter-spacing:0}
   <div class="logo">نرجس</div>
   <a class="l" href="#ideas">آلة الأفكار</a>
   <a class="l" href="#work">أعمالي</a>
+  <a class="l" href="#reviews">آراء</a>
   <a class="l" href="#about">عنّي</a>
   <a class="l" href="#contact">تواصل</a>
   <button id="xbtn">👀 وراء الكواليس</button>
@@ -236,6 +266,29 @@ body.xray .name,body.xray h2,body.xray h3{letter-spacing:0}
   <div class="filters" id="filters"></div>
   <div class="projs" id="projs"></div>
 </section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="head rv"><span class="tagp" style="background:var(--pink)">آراء</span><h2 class="lz">وش قالوا عن شغلي؟</h2><p>كلام كتبه بنفسه اللي اشتغلوا معي</p></div>
+  <div class="revs" id="revs"><div class="revempty">⏳ جاري التحميل…</div></div>
+  <div class="btns rv"><button class="btn main" id="rbtn" type="button">✍️ اشتغلنا سوا؟ اكتب رأيك</button></div>
+</section>
+
+<div id="rmodal" role="dialog" aria-modal="true" aria-labelledby="rmt">
+  <form id="rform" novalidate>
+    <h3 id="rmt">اكتب رأيك 💬</h3>
+    <label for="rname">الاسم</label>
+    <input id="rname" maxlength="40" required autocomplete="name" placeholder="اسمك أو اسم محلك">
+    <label for="rwork">وش الشغل اللي سويناه سوا؟ <i>(اختياري)</i></label>
+    <input id="rwork" maxlength="60" placeholder="مثلاً: منيو إلكتروني لكوفي">
+    <label for="rtext">رأيك</label>
+    <textarea id="rtext" maxlength="500" required placeholder="كيف كانت تجربتك؟"></textarea>
+    <div class="cnt"><span id="rcnt">0</span>/500</div>
+    <input class="hp" id="rhp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div class="row"><button class="btn main" type="submit" id="rsend">إرسال</button><button class="btn ghost" type="button" id="rclose">إلغاء</button></div>
+    <div id="rmsg"></div>
+  </form>
+</div>
 
 <!-- ABOUT -->
 <section id="about">
@@ -476,5 +529,10 @@ function anim(){
 $$(".btn:not(#lever)").forEach(b=>b.addEventListener("click",e=>burst(e.clientX,e.clientY,80)));
 new IntersectionObserver((es,o)=>es.forEach(e=>{if(e.isIntersecting){burst(innerWidth/2,innerHeight/2,160);o.disconnect()}}),{threshold:.6}).observe($("#contact"));
 </script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="reviews.js"></script>
 </body>
 </html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>مراجعة الآراء</title>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFCF7;--plum:#3B2E5A;--soft:#7A6F94;--pinkD:#F472B6;--lilacD:#8B6CF0;--mintD:#22B88A}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--plum);padding:30px 5vw;line-height:1.7}
+h1{font-family:'Lalezar';font-weight:400;font-size:40px}
+.sub{color:var(--soft);font-weight:700;margin-bottom:22px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:99px;font-weight:800;font-size:15px;border:0;cursor:pointer;font-family:inherit}
+.main{background:linear-gradient(90deg,var(--pinkD),var(--lilacD));color:#fff}
+.ok{background:var(--mintD);color:#fff}
+.no{background:#fff;color:#c0392b;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:8px;margin:18px 0}
+.tabs button{background:#fff;color:var(--plum);box-shadow:0 4px 14px rgba(59,46,90,.1)}
+.tabs button.on{background:var(--plum);color:#fff}
+.list{display:grid;gap:14px;max-width:760px}
+.it{background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 8px 24px rgba(59,46,90,.08)}
+.it p{white-space:pre-line;word-break:break-word;font-weight:600;margin:6px 0 12px}
+.it small{color:var(--soft);font-weight:700}
+.it .acts{display:flex;gap:8px;flex-wrap:wrap}
+.box{background:#fff;border-radius:22px;padding:22px;max-width:760px;box-shadow:0 8px 24px rgba(59,46,90,.08)}
+code{direction:ltr;display:inline-block;background:#F3EFFF;padding:4px 10px;border-radius:8px;font-size:14px;word-break:break-all}
+.empty{color:var(--soft);font-weight:700}
+</style>
+</head>
+<body>
+<h1>مراجعة الآراء 💬</h1>
+<div class="sub">الآراء الجديدة ما تظهر في موقعك إلا بعد ما توافقين عليها هنا</div>
+<div id="app" class="box">جاري التحميل…</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const CFG={apiKey:"AIzaSyCUwlu7RRaewC-SHPOVrYwAxE1TkYvlskI",authDomain:"samra-b4ccc.firebaseapp.com",databaseURL:"https://samra-b4ccc-default-rtdb.europe-west1.firebasedatabase.app",projectId:"samra-b4ccc",storageBucket:"samra-b4ccc.firebasestorage.app",messagingSenderId:"680912932157",appId:"1:680912932157:web:23e5fb315db8dfa66dc954"};
+firebase.initializeApp(CFG);
+const auth=firebase.auth(), db=firebase.database(), app=document.getElementById("app");
+const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=t=>t?new Date(t).toLocaleString("ar-SA-u-ca-gregory",{dateStyle:"medium",timeStyle:"short"}):"";
+let tab="pending", off=null;
+
+function login(){
+  app.innerHTML=`<p style="margin-bottom:14px;font-weight:700">سجّلي دخول بحساب Google حقك</p><button class="btn main" id="g">الدخول بـ Google</button><div id="e" class="empty" style="margin-top:10px"></div>`;
+  document.getElementById("g").onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>{document.getElementById("e").textContent="ما زبط الدخول: "+e.code});
+}
+
+auth.onAuthStateChanged(async u=>{
+  if(!u||u.isAnonymous){login();return}
+  let admin=false;
+  try{admin=(await db.ref("admins/"+u.uid).get()).val()===true}catch(e){}
+  if(!admin){
+    app.innerHTML=`<p style="font-weight:700">دخلتِ كـ ${esc(u.email)} بس هذا الحساب ما عنده صلاحية للحين.</p>
+    <p style="margin:10px 0">انسخي هذا الرقم وحطّيه في Firebase (الخطوة في الرسالة اللي أرسلتها لك):</p>
+    <code>${esc(u.uid)}</code>
+    <div style="margin-top:16px"><button class="btn no" onclick="auth.signOut()">تسجيل خروج</button></div>`;
+    return;
+  }
+  render();
+});
+
+function render(){
+  app.className="";
+  app.innerHTML=`<div class="tabs"><button class="btn" data-t="pending">بانتظار الموافقة</button><button class="btn" data-t="reviews">المنشورة</button><button class="btn no" style="margin-inline-start:auto" onclick="auth.signOut()">خروج</button></div><div class="list" id="list"></div>`;
+  app.querySelectorAll("[data-t]").forEach(b=>{b.onclick=()=>{tab=b.dataset.t;show()}});
+  show();
+}
+
+function show(){
+  app.querySelectorAll("[data-t]").forEach(b=>b.classList.toggle("on",b.dataset.t===tab));
+  if(off)off();
+  const path=tab==="pending"?"reviews_pending":"reviews", ref=db.ref(path), list=document.getElementById("list");
+  const h=ref.on("value",s=>{
+    const a=[];s.forEach(c=>{a.push([c.key,c.val()])});a.sort((x,y)=>(y[1].t||0)-(x[1].t||0));
+    list.innerHTML=a.length?a.map(([k,r])=>`<div class="it"><b>${esc(r.name)}</b> <small>${esc(r.work||"")}${r.work?" · ":""}${fmt(r.t)}</small><p>${esc(r.text)}</p><div class="acts">${
+      tab==="pending"?`<button class="btn ok" data-ok="${esc(k)}">✅ انشري</button><button class="btn no" data-del="${esc(k)}">🗑️ احذفي</button>`:`<button class="btn no" data-hide="${esc(k)}">إخفاء من الموقع</button>`
+    }</div></div>`).join(""):`<p class="empty">${tab==="pending"?"ما فيه آراء جديدة 🌿":"ما فيه آراء منشورة للحين"}</p>`;
+    const byKey=Object.fromEntries(a);
+    list.querySelectorAll("[data-ok]").forEach(b=>b.onclick=()=>approve(b.dataset.ok,byKey[b.dataset.ok]));
+    list.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{if(confirm("تحذفين هذا الرأي؟"))db.ref("reviews_pending/"+b.dataset.del).remove()});
+    list.querySelectorAll("[data-hide]").forEach(b=>b.onclick=()=>{if(confirm("تخفين هذا الرأي من الموقع؟"))db.ref("reviews/"+b.dataset.hide).remove()});
+  },e=>{list.innerHTML=`<p class="empty">خطأ: ${esc(e.code||e.message)}</p>`});
+  off=()=>ref.off("value",h);
+}
+
+function approve(k,r){
+  const id=db.ref("reviews").push().key, pub={name:r.name,text:r.text,t:r.t||Date.now()};
+  if(r.work)pub.work=r.work;
+  db.ref().update({["reviews/"+id]:pub,["reviews_pending/"+k]:null}).catch(e=>alert("ما زبط: "+e.code));
+}
+</script>
+</body>
+</html>
