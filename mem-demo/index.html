@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MEM Matcha · اطلبي ماتشاك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Lalezar&family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#fbf8f1; --paper:#fffdf8; --matcha:#7fa04a; --matcha-d:#55703a; --frame:#5d7449;
+  --pink:#e9769c; --pink-l:#fbe3ea; --pink-d:#c9517a; --brown:#8a6a55; --ink:#3d3a32; --muted:#8b877b;
+  --line:#ece6d8; --shadow:0 8px 24px rgba(85,112,58,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--frame)}
+body{font-family:'Readex Pro',sans-serif;color:var(--ink);min-height:100vh}
+button,input,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+.app{max-width:480px;margin:0 auto;background:var(--cream);min-height:100vh;position:relative;overflow-x:hidden;
+  background-image:radial-gradient(circle at 10% 0%,#eef3e1 0,transparent 40%),radial-gradient(circle at 100% 30%,#fdeef2 0,transparent 35%);padding-bottom:110px}
+.latin{font-family:'Fredoka',sans-serif}
+.disp{font-family:'Lalezar',sans-serif;font-weight:400}
+
+/* ===== INTRO ===== */
+#intro{position:fixed;inset:0;z-index:100;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .7s,transform .7s;overflow:hidden}
+#intro.out{opacity:0;transform:scale(1.08);pointer-events:none}
+.petal{position:absolute;top:-30px;width:14px;height:18px;border-radius:70% 0 70% 0;background:var(--pink);opacity:.75;animation:fall linear infinite}
+.petal.g{background:#b7cf8a;border-radius:0 70% 0 70%}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg) translateX(40px)}}
+.intro-cup{width:150px;height:190px;animation:pop .7s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes pop{from{transform:scale(.3) rotate(-10deg);opacity:0}}
+.fill{animation:fillUp 1.6s .4s cubic-bezier(.5,0,.3,1) both}
+@keyframes fillUp{from{transform:translateY(100px)}}
+.whisk{transform-origin:60px 10px;animation:whisk .25s .4s 6 alternate ease-in-out both}
+@keyframes whisk{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+.intro-title{direction:ltr;font-family:'Fredoka';font-weight:700;font-size:44px;margin-top:14px;display:flex;gap:2px}
+.intro-title span{display:inline-block;opacity:0;animation:letter .5s cubic-bezier(.3,1.7,.5,1) forwards}
+@keyframes letter{from{opacity:0;transform:translateY(20px) scale(.5)}to{opacity:1;transform:none}}
+.intro-tag{font-family:'Fredoka';color:var(--pink);font-size:17px;letter-spacing:2px;margin-top:6px;opacity:0;animation:fadeUp .6s 2.1s forwards}
+.intro-skip{position:absolute;bottom:34px;font-size:12px;color:var(--muted);opacity:0;animation:fadeUp .5s 2.4s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ===== HEADER ===== */
+header{position:sticky;top:0;z-index:20;background:rgba(251,248,241,.9);backdrop-filter:blur(10px);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.logo{font-family:'Fredoka';font-weight:700;font-size:24px;line-height:1}
+.logo .m{color:var(--pink)} .logo .t{color:var(--brown)}
+.logo small{display:block;font-size:10px;color:var(--matcha-d);letter-spacing:1.5px;font-weight:500;margin-top:2px}
+.cats-mini{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:30px;padding:5px 10px 5px 6px;font-size:12px;font-weight:600}
+.cats-mini svg{width:24px;height:24px}
+
+/* ===== HERO / MOOD ===== */
+.hero{padding:22px 18px 8px;text-align:center}
+.hero .script{font-family:'Fredoka';color:var(--pink);font-size:15px;letter-spacing:1px}
+.hero h1{font-family:'Lalezar';font-size:30px;color:var(--matcha-d);margin:4px 0 2px;font-weight:400}
+.hero p{font-size:13px;color:var(--muted)}
+.mood{margin:16px 18px 6px;background:var(--paper);border-radius:24px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.mood h3{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.mood h3 b{color:var(--pink)}
+.moods{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 4px;scrollbar-width:none}
+.moods::-webkit-scrollbar{display:none}
+.mchip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:18px;background:#f5f1e6;font-size:12px;font-weight:500;transition:.25s;border:2px solid transparent;min-width:72px}
+.mchip .e{font-size:24px;transition:transform .3s}
+.mchip.on{background:var(--pink-l);border-color:var(--pink);color:var(--pink-d)}
+.mchip.on .e{transform:scale(1.25) rotate(-8deg)}
+.mood-res{display:none;align-items:center;gap:12px;margin-top:10px;padding:12px;background:linear-gradient(135deg,#eff5e2,#fdf0f4);border-radius:18px;animation:fadeUp .4s}
+.mood-res.show{display:flex}
+.mood-res .cup{width:70px;flex:0 0 70px;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+.mood-res .why{font-size:12px;color:var(--muted);margin:2px 0 8px}
+.mood-res b{font-size:16px}
+.btn{background:var(--matcha-d);color:#fff;border-radius:14px;padding:10px 16px;font-weight:600;font-size:14px;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn.pink{background:var(--pink)}
+.btn.sm{padding:7px 12px;font-size:12px;border-radius:11px}
+.btn.ghost{background:#fff;color:var(--matcha-d);border:1.5px solid var(--matcha)}
+
+/* ===== TABS ===== */
+.tabs{position:sticky;top:57px;z-index:15;background:rgba(251,248,241,.94);backdrop-filter:blur(8px);display:flex;gap:6px;padding:10px 18px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;padding:8px 14px;border-radius:30px;font-size:13px;font-weight:500;background:#fff;border:1px solid var(--line);transition:.2s}
+.tab.on{background:var(--matcha-d);color:#fff;border-color:var(--matcha-d)}
+section{padding:14px 18px 6px;scroll-margin-top:110px}
+.sec-h{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.sec-h h2{font-family:'Lalezar';font-weight:400;font-size:22px;color:var(--matcha-d)}
+.sec-h .heart{color:var(--pink)}
+.sec-h small{color:var(--muted);font-size:12px;margin-inline-start:auto}
+
+/* ===== GRID ===== */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--paper);border-radius:22px;padding:12px 12px 12px;border:1px solid var(--line);position:relative;text-align:center;transition:transform .2s,box-shadow .2s;overflow:hidden}
+.card:active{transform:scale(.97)}
+.card .cupbox{height:128px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:6px;position:relative}
+.card .cupbox svg{height:124px}
+.card .cupbox::after{content:"";position:absolute;bottom:2px;width:60%;height:10px;border-radius:50%;background:rgba(85,112,58,.12);z-index:0}
+.card .cupbox svg{position:relative;z-index:1;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.card:hover .cupbox svg{transform:translateY(-4px) rotate(-3deg)}
+.card h4{font-size:14px;font-weight:600}
+.card .row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.price{font-family:'Fredoka';font-weight:700;font-size:18px;color:var(--ink)}
+.price small{font-size:10px;font-weight:600;color:var(--muted);margin-inline-start:2px}
+.plus{width:34px;height:34px;border-radius:12px;background:var(--pink);color:#fff;font-size:22px;line-height:34px;font-weight:500}
+.badge{position:absolute;top:10px;inset-inline-start:10px;background:var(--pink-l);color:var(--pink-d);font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;z-index:2}
+.badge.g{background:#e8f0d8;color:var(--matcha-d)}
+.qtydot{position:absolute;top:10px;inset-inline-end:10px;background:var(--matcha-d);color:#fff;font-size:11px;font-weight:700;min-width:22px;height:22px;border-radius:11px;line-height:22px;z-index:2;font-family:'Fredoka'}
+
+/* dalla */
+.dalla{background:linear-gradient(135deg,#fde7ee 0%,#fff7f9 60%,#eef4e2 100%);border-radius:26px;padding:16px;display:flex;align-items:center;gap:10px;border:1px solid #f6d3de;position:relative;overflow:hidden}
+.dalla svg{width:120px;flex:0 0 120px}
+.dalla h3{font-family:'Lalezar';font-weight:400;font-size:26px;line-height:1.1}
+.dalla p{font-size:12px;color:var(--muted);margin:2px 0 8px}
+.dalla .price{font-size:26px}
+
+/* addons */
+.addons{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:12px 8px}
+.addon{text-align:center;font-size:10.5px;line-height:1.35}
+.addon .ic{width:40px;height:40px;margin:0 auto 4px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.addon b{display:block;font-family:'Fredoka';color:var(--pink-d);font-size:13px;margin-top:2px}
+
+/* cats */
+.catsbox{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:16px;text-align:center}
+.catrow{display:flex;justify-content:center;gap:6px;margin:12px 0 10px}
+.catslot{width:54px;height:62px;border-radius:16px;background:#f5f1e6;display:flex;align-items:center;justify-content:center;position:relative}
+.catslot svg{width:46px;height:52px}
+.catslot.got{background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.catslot.got svg{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-3px)}}
+.progress{height:8px;background:#efe9db;border-radius:8px;overflow:hidden;margin:4px 20px 8px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--matcha),var(--pink));border-radius:8px;transition:width .6s}
+.catsbox p{font-size:12.5px;color:var(--muted)}
+.catsbox .free{display:none;margin-top:10px;background:var(--pink-l);color:var(--pink-d);padding:10px;border-radius:14px;font-weight:600;font-size:13px}
+.catsbox.full .free{display:block}
+
+/* policy */
+.policy{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:6px 14px}
+.pol{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px dashed var(--line);font-size:13px;line-height:1.6}
+.pol:last-child{border:none}
+.pol .i{width:34px;height:34px;flex:0 0 34px;border-radius:12px;background:#eef3e1;display:flex;align-items:center;justify-content:center;font-size:17px}
+footer{text-align:center;padding:24px 18px 10px;font-family:'Fredoka';color:var(--pink);letter-spacing:2px;font-size:13px}
+footer small{display:block;color:var(--muted);font-family:'Readex Pro';letter-spacing:0;font-size:11px;margin-top:6px}
+
+/* ===== CART BAR ===== */
+.cartbar{position:fixed;bottom:14px;left:50%;transform:translate(-50%,140%);width:calc(100% - 28px);max-width:452px;z-index:30;background:var(--matcha-d);color:#fff;border-radius:20px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 30px rgba(50,70,30,.35);transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.cartbar.show{transform:translate(-50%,0)}
+.cartbar .cnt{background:#fff;color:var(--matcha-d);font-family:'Fredoka';font-weight:700;width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.cartbar .lbl{flex:1;font-weight:600;font-size:14px}
+.cartbar .tot{font-family:'Fredoka';font-weight:700;font-size:18px}
+.cartbar.bump{animation:bump .4s}
+@keyframes bump{40%{transform:translate(-50%,0) scale(1.05)}}
+
+/* ===== SHEETS ===== */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(40,45,30,.45);opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:100%;max-width:480px;z-index:60;background:var(--cream);border-radius:28px 28px 0 0;max-height:92vh;overflow-y:auto;transition:transform .4s cubic-bezier(.3,1.1,.4,1);padding:10px 18px 24px}
+.sheet.show{transform:translate(-50%,0)}
+.grab{width:42px;height:5px;border-radius:5px;background:#d9d2c0;margin:2px auto 10px}
+.x{position:absolute;top:14px;inset-inline-start:16px;width:34px;height:34px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:18px}
+.p-top{text-align:center;padding:6px 0 4px;background:radial-gradient(circle at 50% 70%,#eaf1db 0,transparent 60%)}
+.p-top svg{height:190px}
+.p-name{font-family:'Lalezar';font-weight:400;font-size:28px;text-align:center;color:var(--matcha-d)}
+.p-desc{text-align:center;color:var(--muted);font-size:13px;margin-bottom:10px}
+.blk{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-top:10px}
+.blk h5{font-size:13.5px;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between}
+.blk h5 span{font-weight:400;color:var(--muted);font-size:11px}
+.opt{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f3eee2;font-size:13.5px;cursor:pointer}
+.opt:last-child{border:none}
+.opt input{display:none}
+.box{width:22px;height:22px;border-radius:7px;border:2px solid #d5cdb9;display:flex;align-items:center;justify-content:center;transition:.2s;flex:0 0 22px}
+.opt.rad .box{border-radius:50%}
+.opt input:checked + .box{background:var(--pink);border-color:var(--pink)}
+.opt input:checked + .box::after{content:"✓";color:#fff;font-size:13px;font-weight:700}
+.opt.rad input:checked + .box::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+.opt .op{margin-inline-start:auto;font-family:'Fredoka';font-weight:600;color:var(--pink-d);font-size:13px}
+.field{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:11px 12px;font-size:14px;outline:none;transition:border .2s}
+.field:focus{border-color:var(--matcha)}
+textarea.field{resize:none;height:64px}
+.qty{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:4px}
+.qty button{width:34px;height:34px;border-radius:10px;background:#f3efe4;font-size:18px;font-weight:600}
+.qty b{font-family:'Fredoka';font-size:17px;min-width:18px;text-align:center}
+.addrow{display:flex;gap:10px;align-items:center;margin-top:14px;position:sticky;bottom:-24px;background:var(--cream);padding:10px 0 4px}
+.addrow .btn{flex:1;padding:14px;font-size:15px;display:flex;justify-content:space-between}
+.addrow .btn span{font-family:'Fredoka'}
+
+/* cart */
+.ci{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1ecdf}
+.ci svg{width:44px;height:56px;flex:0 0 44px}
+.ci .info{flex:1;min-width:0}
+.ci .info b{font-size:14px;display:block}
+.ci .info small{color:var(--muted);font-size:11.5px;display:block;line-height:1.5}
+.ci .qty{padding:2px;gap:8px}
+.ci .qty button{width:28px;height:28px;font-size:15px}
+.sum{font-size:13.5px}
+.sum div{display:flex;justify-content:space-between;padding:4px 0}
+.sum .g{font-weight:700;font-size:17px;border-top:1px dashed var(--line);margin-top:6px;padding-top:10px}
+.sum .g span:last-child,.sum span.n{font-family:'Fredoka'}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:10px;font-size:12.5px;text-align:start;transition:.2s;line-height:1.4}
+.chip b{display:block;font-size:13.5px}
+.chip small{color:var(--muted)}
+.chip.on{border-color:var(--pink);background:var(--pink-l)}
+.note{font-size:12px;color:var(--muted);line-height:1.6;background:#f6f2e7;border-radius:12px;padding:9px 11px;margin-top:8px}
+.err{color:#c9473f;font-size:12px;margin-top:6px;display:none}
+.lbl2{font-size:12.5px;font-weight:500;margin:10px 0 5px;display:block}
+.freecup{display:none}
+.freecup.show{display:block}
+
+/* done */
+.done-top{text-align:center;padding:10px 0}
+.done-top .ok{width:74px;height:74px;border-radius:50%;background:#eaf1db;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:36px;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+.done-top h3{font-family:'Lalezar';font-weight:400;font-size:26px;color:var(--matcha-d)}
+.ordno{font-family:'Fredoka';font-weight:700;color:var(--pink-d);font-size:20px;letter-spacing:1px}
+.steps{display:flex;justify-content:space-between;margin:14px 4px 4px;position:relative}
+.steps::before{content:"";position:absolute;top:13px;right:10%;left:10%;height:3px;background:#e7e1d1}
+.st{flex:1;text-align:center;font-size:10.5px;color:var(--muted);position:relative}
+.st i{width:28px;height:28px;border-radius:50%;background:#e7e1d1;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-style:normal;font-size:13px;color:#fff}
+.st.on i{background:var(--pink)}
+.st.on{color:var(--ink);font-weight:500}
+.wa{display:flex;align-items:center;justify-content:center;gap:8px;background:#25a35a;color:#fff;border-radius:16px;padding:15px;font-weight:600;text-decoration:none;font-size:15px;margin-top:12px}
+pre.msg{white-space:pre-wrap;font-family:inherit;font-size:12px;line-height:1.7;color:var(--ink);max-height:170px;overflow:auto}
+
+/* reveal */
+#reveal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;flex-direction:column;background:var(--cream);text-align:center;padding:24px;padding-top:120px}
+#reveal.show{display:flex}
+.giftbox{width:150px;height:150px;position:relative;cursor:pointer}
+.giftbox .lid{transition:transform .6s cubic-bezier(.3,1.5,.5,1)}
+.giftbox.shake{animation:shake .5s infinite}
+@keyframes shake{25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.giftbox.open .lid{transform:translate(-30px,-60px) rotate(-30deg)}
+.newcat{width:120px;height:136px;margin-top:-136px;opacity:0;transform:translateY(40px) scale(.4)}
+.giftbox.open + .newcat{animation:catUp .8s .25s cubic-bezier(.3,1.7,.5,1) forwards}
+@keyframes catUp{to{opacity:1;transform:translateY(-95px) scale(1)}}
+.rv-t{font-family:'Lalezar';font-size:26px;color:var(--matcha-d);margin-top:18px;opacity:0;transition:opacity .4s .6s}
+.rv-s{font-size:14px;color:var(--muted);margin:6px 0 16px;opacity:0;transition:opacity .4s .7s;max-width:300px;line-height:1.7}
+#reveal.opened .rv-t,#reveal.opened .rv-s,#reveal.opened .rv-b{opacity:1}
+.rv-b{opacity:0;transition:opacity .4s .9s}
+.rv-hint{font-size:13px;color:var(--pink-d);margin-top:14px;font-weight:500}
+#reveal.opened .rv-hint{display:none}
+.confetti{position:fixed;width:8px;height:12px;top:-20px;z-index:95;animation:fall 2.6s linear forwards}
+
+.toast{position:fixed;top:70px;left:50%;transform:translate(-50%,-30px);opacity:0;z-index:80;background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-size:13px;transition:.35s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.flycup{position:fixed;z-index:70;width:50px;pointer-events:none;transition:all .7s cubic-bezier(.5,-0.3,.6,1)}
+.demo-tag{position:fixed;top:8px;left:8px;z-index:40;font-size:10px;background:rgba(61,58,50,.75);color:#fff;padding:3px 8px;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- INTRO -->
+<div id="intro">
+  <div id="petals"></div>
+  <svg class="intro-cup" viewBox="0 0 120 150">
+    <defs><clipPath id="icl"><path d="M22 38 L98 38 L90 142 L30 142 Z"/></clipPath></defs>
+    <g class="whisk"><path d="M60 -10 L60 30" stroke="#b08a5a" stroke-width="4" stroke-linecap="round"/><path d="M52 28 Q60 60 68 28" fill="none" stroke="#c9a978" stroke-width="2.5"/><path d="M55 28 Q60 54 65 28" fill="none" stroke="#c9a978" stroke-width="2"/></g>
+    <path d="M22 38 L98 38 L90 142 L30 142 Z" fill="#fff" stroke="#e7e0cf" stroke-width="2"/>
+    <g clip-path="url(#icl)"><g class="fill"><rect x="10" y="62" width="100" height="90" fill="#86a84f"/><path d="M10 62 Q35 54 60 62 T110 62 L110 72 L10 72Z" fill="#9dbd63"/><rect x="10" y="84" width="100" height="22" fill="#fbe3ea" opacity=".55"/></g></g>
+    <rect x="18" y="32" width="84" height="8" rx="4" fill="#e9e3d4"/>
+  </svg>
+  <div class="intro-title" id="introTitle"></div>
+  <div class="intro-tag">GOOD MATCHA · GOOD MOOD</div>
+  <div class="intro-skip">اضغطي للدخول</div>
+</div>
+
+<div class="demo-tag">نسخة عرض</div>
+
+<header>
+  <div class="logo"><span class="m">MEM</span> <span class="t">Matcha</span><small>MORE THAN MATCHA</small></div>
+  <button class="cats-mini" onclick="go('cats')" aria-label="قططي"><span id="miniCat"></span><span id="miniCnt">0/5</span></button>
+</header>
+
+<div class="hero">
+  <div class="script">Good Matcha · Good Mood ♡</div>
+  <h1>وش مزاجك اليوم؟</h1>
+  <p>اختاري مزاجك ونقترح لك الكوب المناسب</p>
+</div>
+
+<div class="mood">
+  <h3>مقياس المود <b>♡</b></h3>
+  <div class="moods" id="moods"></div>
+  <div class="mood-res" id="moodRes"></div>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-t="drinks">المشروبات</button>
+  <button class="tab" data-t="dalla">دلة الجمعة</button>
+  <button class="tab" data-t="addons">الإضافات</button>
+  <button class="tab" data-t="cats">اجمعي القطط</button>
+  <button class="tab" data-t="policy">سياسة الطلب</button>
+</nav>
+
+<section id="drinks">
+  <div class="sec-h"><span class="heart">♥</span><h2>المنيو</h2><small>اضغطي على الكوب لتخصيصه</small></div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="dalla">
+  <div class="sec-h"><span class="heart">♥</span><h2>دلة الجمعة</h2></div>
+  <div class="dalla" onclick="openDalla()">
+    <div style="flex:1">
+      <h3>دلة الجمعة</h3>
+      <p>تكفي 4 أشخاص · مع أكوابها وماصاتها</p>
+      <div class="price">70<small>ر.س</small></div>
+      <button class="btn pink sm" style="margin-top:8px">اطلبي الدلة</button>
+    </div>
+    <div id="dallaArt"></div>
+  </div>
+</section>
+
+<section id="addons">
+  <div class="sec-h"><span class="heart">♥</span><h2>إضافاتك المفضلة</h2><small>تُختار من صفحة الكوب</small></div>
+  <div class="addons" id="addonsList"></div>
+</section>
+
+<section id="cats">
+  <div class="sec-h"><span class="heart">♥</span><h2>اجمعي 5 قطط</h2></div>
+  <div class="catsbox" id="catsBox">
+    <p>مع كل طلب تفتحين صندوق مفاجأة وتطلع لك قطة جديدة<br>اجمعي الخمس واحصلي على <b style="color:var(--pink-d)">كوب ماتشا مجاني</b></p>
+    <div class="catrow" id="catRow"></div>
+    <div class="progress"><i id="catProg"></i></div>
+    <p id="catTxt"></p>
+    <div class="free">🎉 كملتي المجموعة! فعّلي كوبك المجاني من السلة</div>
+  </div>
+</section>
+
+<section id="policy">
+  <div class="sec-h"><span class="heart">♥</span><h2>سياسة الطلب</h2></div>
+  <div class="policy">
+    <div class="pol"><div class="i">💬</div><div>الطلب يوصلنا مباشرة على رقم التواصل الموجود في البايو.</div></div>
+    <div class="pol"><div class="i">🛵</div><div>التوصيل داخل بطحاء قريش بـ 5 ريال، وباقي الأحياء تختلف حسب الموقع.</div></div>
+    <div class="pol"><div class="i">🏦</div><div>يتم تأكيد الطلب بعد التحويل البنكي.</div></div>
+    <div class="pol"><div class="i">🏠</div><div>يتوفر الاستلام من المنزل، بالإضافة لخدمة التوصيل عبر تطبيق ذا شيفز.</div></div>
+  </div>
+</section>
+
+<footer>SIP MATCHA ♥ SPREAD HAPPINESS<small>تصميم وتطوير: نرجس العمري · 0556211944</small></footer>
+
+<!-- CART BAR -->
+<button class="cartbar" id="cartbar" onclick="openCart()">
+  <span class="cnt" id="cbCnt">0</span><span class="lbl">عرض السلة</span><span class="tot" id="cbTot">0</span>
+</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSheets()"></div>
+<div class="sheet" id="pSheet"></div>
+<div class="sheet" id="cSheet"></div>
+
+<div id="reveal">
+  <div class="giftbox" id="gift" onclick="openGift()">
+    <svg viewBox="0 0 150 150" width="150" height="150">
+      <rect x="22" y="62" width="106" height="80" rx="10" fill="#e9769c"/>
+      <rect x="66" y="62" width="18" height="80" fill="#fbe3ea"/>
+      <g class="lid"><rect x="14" y="44" width="122" height="26" rx="8" fill="#c9517a"/><rect x="66" y="44" width="18" height="26" fill="#fbe3ea"/>
+      <path d="M75 44 C55 20 40 34 58 44 M75 44 C95 20 110 34 92 44" fill="none" stroke="#7fa04a" stroke-width="7" stroke-linecap="round"/></g>
+    </svg>
+  </div>
+  <div class="newcat" id="newCat"></div>
+  <div class="rv-t" id="rvT"></div>
+  <div class="rv-s" id="rvS"></div>
+  <div class="rv-hint">اضغطي على الصندوق 🎁</div>
+  <button class="btn rv-b" onclick="closeReveal()">رجوع للمنيو</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ إعدادات المشروع (تُعدّل من هنا أو تُربط بقوقل شيت) ============ */
+const CONFIG = {
+  whatsapp: "",            // رقم واتساب المحل بصيغة 9665XXXXXXXX — فارغ في الديمو
+  deliveryInside: 5,       // توصيل داخل بطحاء قريش
+  insideArea: "بطحاء قريش",
+  chefzNote: "تقدرين تطلبين عن طريق تطبيق ذا شيفز وتوصلك بنفس اليوم"
+};
+const DRINKS = [
+  {id:"vanilla", name:"فانيلا ماتشا", price:18, top:"jelly", acc:"vanilla", desc:"ماتشا بالفانيلا مع مكعبات ماتشا على الوجه"},
+  {id:"honey", name:"عسل ماتشا", price:19, top:"jelly", acc:"honey", desc:"ماتشا محلّاة بالعسل مع مكعبات ماتشا"},
+  {id:"cinnamon", name:"سينامون ماتشا", price:22, top:"cream", acc:"cinnamon", desc:"ماتشا بالقرفة مع كريمة ورشة سينامون"},
+  {id:"brulee", name:"كريم بروليه ماتشا", price:22, top:"brulee", acc:"", desc:"طبقة كريم بروليه مكرملة فوق الماتشا", badge:"الأكثر طلبًا"},
+  {id:"caramel", name:"كراميل ماتشا", price:21, top:"cream", acc:"caramel", desc:"ماتشا بالكراميل مع كريمة وصوص كراميل"},
+  {id:"cloudy", name:"كلاودي ماتشا", price:20, top:"cream", acc:"cloud", desc:"غيمة كريمة خفيفة مرشوشة بالماتشا"},
+  {id:"grad", name:"قرادويت ماتشا", price:30, top:"party", acc:"grad", desc:"كوب التخرج — نكتب اسم الخريجة على التوبر", celebrate:"grad", badge:"مناسبات"},
+  {id:"bday", name:"بيرثدي ماتشا", price:30, top:"party", acc:"bday", desc:"كوب عيد الميلاد — نكتب اسم صاحبة اليوم على التوبر", celebrate:"bday", badge:"مناسبات"}
+];
+const ADDONS = [
+  {id:"wcream", name:"كريمة مخفوقة بيضاء", price:2, color:"#ffffff"},
+  {id:"pcream", name:"كريمة مخفوقة وردية", price:2, color:"#f6a9c2"},
+  {id:"alpv", name:"حليب البرو فانيلا", price:3, color:"#f3e2b8"},
+  {id:"alpc", name:"حليب البرو جوز الهند", price:3, color:"#e3eef3"},
+  {id:"vsyr", name:"سيروب فانيلا", price:2, color:"#7a4a2a"}
+];
+const DALLA = {id:"dalla", name:"دلة الجمعة", price:70,
+  extras:[{id:"foam", name:"فوم", price:5}],
+  milk:[{id:"none",name:"بدون",price:0},{id:"alpv",name:"حليب البرو فانيلا",price:10},{id:"alpc",name:"حليب البرو جوز الهند",price:10}]};
+const MOODS = [
+  {e:"😌", t:"رايقة", d:"vanilla", why:"هدوء الفانيلا يكمّل روقانك"},
+  {e:"🥱", t:"تعبانة", d:"honey", why:"العسل طاقة لطيفة ترجّع لك نشاطك"},
+  {e:"🍮", t:"أبي حلا", d:"brulee", why:"كريم بروليه = حلا وماتشا بكوب واحد"},
+  {e:"☁️", t:"سرحانة", d:"cloudy", why:"كوب خفيف كأنه غيمة"},
+  {e:"🍂", t:"أبي دفا", d:"cinnamon", why:"القرفة تعطي إحساس دافي"},
+  {e:"🍬", t:"مدلّعة", d:"caramel", why:"الكراميل لأيام الدلع"},
+  {e:"🎓", t:"متخرجة!", d:"grad", why:"مبروك! كوب يليق بيومك"},
+  {e:"🎂", t:"عيد ميلاد", d:"bday", why:"كل عام وأنتِ بخير — نكتب اسمك على الكوب"},
+  {e:"👯‍♀️", t:"مع البنات", d:"dalla", why:"دلة الجمعة تكفي 4 — جمعة البنات"}
+];
+const CATS = [
+  {id:"black", name:"القطة السوداء", body:"#3d3838", belly:"#5a5454", bib:"#f2c8d6"},
+  {id:"white", name:"القطة البيضاء", body:"#f6efe6", belly:"#fffaf3", bib:"#e9769c"},
+  {id:"yellow", name:"القطة الصفراء", body:"#f4cf3c", belly:"#f9e07d", bib:"#9b7ad1"},
+  {id:"pink", name:"القطة الوردية", body:"#f4a090", belly:"#f8bdb1", bib:"#7cb4e0"},
+  {id:"blue", name:"القطة الزرقاء", body:"#aac0e2", belly:"#c6d6ee", bib:"#e9769c"}
+];
+
+/* ============ رسم الأكواب (رسومات أصلية) ============ */
+function cupSVG(d, opt={}){
+  const u = Math.random().toString(36).slice(2,7);
+  let top = "";
+  if(d.top==="jelly"){
+    top = `<g>${[[34,30],[48,24],[62,27],[76,23],[40,18],[56,14],[70,17],[84,30],[50,34]].map(([x,y],i)=>`<rect x="${x}" y="${y}" width="15" height="13" rx="3" fill="${i%2?'#6f9440':'#82a84e'}" stroke="#5b7c33" stroke-width="1"/><rect x="${x+3}" y="${y+2}" width="5" height="3" rx="1.5" fill="#b6d37f" opacity=".8"/>`).join("")}</g>`;
+  } else if(d.top==="cream" || d.top==="party"){
+    const c = opt.pink? "#f8bfd0" : "#fffdf9";
+    top = `<g stroke="#ebe4d6" stroke-width="1.2" fill="${c}">
+      <ellipse cx="60" cy="38" rx="42" ry="10"/>
+      <path d="M22 36 Q24 20 40 22 Q44 8 60 10 Q76 8 80 22 Q96 20 98 36 Z"/>
+      <path d="M38 24 Q48 4 60 2 Q72 4 82 24 Q70 18 60 20 Q50 18 38 24Z"/>
+      <path d="M52 6 Q60 -8 68 6 Q60 2 52 6Z"/></g>`;
+    if(d.acc==="cinnamon") top += [[40,26],[52,16],[66,20],[76,28],[58,8],[46,32],[70,10],[84,32],[30,32]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#9a5b34"/>`).join("") + `<g transform="translate(92,108) rotate(-30)"><rect width="30" height="7" rx="3.5" fill="#a0603a"/><rect y="7" width="30" height="6" rx="3" fill="#8a4f2e"/></g>`;
+    if(d.acc==="caramel") top += `<path d="M30 30 Q40 16 50 26 Q58 10 68 22 Q78 12 88 28" fill="none" stroke="#c98a3c" stroke-width="3.5" stroke-linecap="round"/><path d="M44 34 Q56 24 76 34" fill="none" stroke="#d99a4c" stroke-width="2.5" stroke-linecap="round"/><g transform="translate(94,118)"><rect width="14" height="14" rx="3" fill="#d9954a"/><rect x="8" y="8" width="13" height="13" rx="3" fill="#c98035"/></g>`;
+    if(d.acc==="cloud") top += [[40,24],[50,14],[62,10],[72,18],[80,28],[56,26],[66,30],[34,32],[86,34],[60,4]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.4" fill="#8fb35a" opacity=".85"/>`).join("") + `<g fill="#f8c9d8" opacity=".9"><circle cx="8" cy="78" r="7"/><circle cx="15" cy="72" r="8"/><circle cx="21" cy="80" r="6"/><circle cx="104" cy="70" r="6"/><circle cx="111" cy="64" r="7"/><circle cx="116" cy="72" r="5"/></g>`;
+    if(d.top==="party"){
+      const cols=["#e9769c","#7fa04a","#f4cf3c","#7cb4e0","#f39a8c","#9b7ad1"];
+      top += Array.from({length:22},(_,i)=>{const x=28+((i*37)%64),y=8+((i*23)%28);return `<rect x="${x}" y="${y}" width="5" height="2" rx="1" fill="${cols[i%6]}" transform="rotate(${(i*47)%180} ${x} ${y})"/>`}).join("");
+      top += `<circle cx="30" cy="22" r="5" fill="#cfd3d6"/><circle cx="28" cy="20" r="1.6" fill="#fff"/>`;
+      if(d.acc==="bday") top += `<rect x="68" y="-26" width="6" height="30" rx="2" fill="#e9769c"/><rect x="68" y="-18" width="6" height="3" fill="#fff"/><rect x="68" y="-8" width="6" height="3" fill="#fff"/><path d="M71 -40 Q76 -32 71 -28 Q66 -32 71 -40Z" fill="#f4b23c"/>`;
+      if(d.acc==="grad") top += `<line x1="70" y1="6" x2="70" y2="-14" stroke="#555" stroke-width="2"/><path d="M50 -18 L72 -28 L96 -18 L72 -8 Z" fill="#2e2e2e"/><rect x="62" y="-14" width="20" height="8" fill="#2e2e2e"/><path d="M94 -18 L94 -4" stroke="#f4cf3c" stroke-width="2"/><circle cx="94" cy="-3" r="2.5" fill="#f4cf3c"/>`;
+      const nm = (opt.name||"").trim();
+      if(nm){
+        top += `<line x1="38" y1="18" x2="38" y2="-34" stroke="#c9a978" stroke-width="2"/><path d="M38 -36 L4 -36 Q0 -28 4 -20 L38 -20 Z" fill="#fff" stroke="#e9769c" stroke-width="1.5"/><text x="21" y="-25" text-anchor="middle" font-family="Readex Pro" font-size="${nm.length>6?7:10}" font-weight="600" fill="#c9517a">${esc(nm.slice(0,12))}</text>`;
+      }
+    }
+  } else if(d.top==="brulee"){
+    top = `<ellipse cx="60" cy="36" rx="40" ry="11" fill="#fff4dc" stroke="#ebe0c4"/><ellipse cx="60" cy="32" rx="36" ry="10" fill="url(#br${u})"/>
+      ${[[46,30],[60,28],[72,33],[52,35],[66,30]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="4" ry="1.6" fill="#6a3a12" opacity=".55"/>`).join("")}
+      <g transform="translate(90,112)"><path d="M0 4 L28 4 L25 20 L3 20Z" fill="#f6b3c6"/><ellipse cx="14" cy="4" rx="14" ry="4" fill="#d58a3a"/></g>`;
+  } else if(d.acc==="vanilla"){}
+  if(d.acc==="vanilla") top += `<g transform="translate(-8,128) rotate(-12)"><rect width="40" height="4" rx="2" fill="#3b2a1e"/></g><g transform="translate(104,118)" fill="#fff" stroke="#eadfc8"><ellipse cx="0" cy="-7" rx="4" ry="7"/><ellipse cx="7" cy="0" rx="7" ry="4"/><ellipse cx="0" cy="7" rx="4" ry="7"/><ellipse cx="-7" cy="0" rx="7" ry="4"/><circle r="2.5" fill="#f4cf3c" stroke="none"/></g>`;
+  if(d.acc==="honey") top += `<path d="M98 92 Q96 104 99 112 Q102 104 100 92Z" fill="#e8a52a"/><g transform="translate(96,70) rotate(35)"><rect x="-2" y="-30" width="4" height="30" fill="#b9874e"/><rect x="-7" y="0" width="14" height="16" rx="6" fill="#d39a52"/><line x1="-7" y1="5" x2="7" y2="5" stroke="#a87038"/><line x1="-7" y1="10" x2="7" y2="10" stroke="#a87038"/></g>`;
+  const vb = d.top==="party"? "-2 -44 124 196" : "-6 -10 132 160";
+  return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lq${u}" x1="0" x2="1"><stop offset="0" stop-color="#7b9f45"/><stop offset=".5" stop-color="#93b65c"/><stop offset="1" stop-color="#729640"/></linearGradient>
+    <radialGradient id="br${u}" cx=".45" cy=".4"><stop offset="0" stop-color="#e9a64a"/><stop offset=".7" stop-color="#b8661f"/><stop offset="1" stop-color="#8a4512"/></radialGradient>
+    <clipPath id="cc${u}"><path d="M20 40 L100 40 L91 146 L29 146 Z"/></clipPath>
+  </defs>
+  <g clip-path="url(#cc${u})">
+    <rect x="0" y="40" width="120" height="110" fill="url(#lq${u})"/>
+    ${opt.milk? `<rect x="0" y="40" width="120" height="16" fill="${opt.milk}" opacity=".55"/>`:""}
+    <rect x="25" y="66" width="70" height="56" rx="6" fill="#fffdf6"/>
+    <path d="M32 72 Q40 68 46 72 M74 72 Q80 68 88 72" stroke="#7fa04a" stroke-width="1.6" fill="none"/>
+    <circle cx="60" cy="71" r="2.2" fill="#e9769c"/>
+    <text x="60" y="88" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="11"><tspan fill="#e9769c">MEM</tspan><tspan fill="#8a6a55"> Matcha</tspan></text>
+    <g transform="translate(60,104)"><path d="M0 4 C-10 -4 -8 -12 0 -7 C8 -12 10 -4 0 4Z" fill="#f4a9c0"/></g>
+    ${[[32,116,"#f4a9c0"],[44,118,"#fff"],[76,117,"#f4a9c0"],[88,115,"#cfe0a8"]].map(([x,y,c])=>`<circle cx="${x}" cy="${y}" r="3" fill="${c}" stroke="#e8c7d1" stroke-width=".6"/>`).join("")}
+    <rect x="22" y="40" width="10" height="110" fill="#fff" opacity=".18"/>
+  </g>
+  <path d="M20 40 L100 40 L91 146 L29 146 Z" fill="none" stroke="#5f8036" stroke-width="1.5" opacity=".5"/>
+  <rect x="16" y="35" width="88" height="8" rx="4" fill="#f2efe6" stroke="#ddd6c4"/>
+  ${d.top==="jelly"?`<rect x="57" y="-8" width="6" height="45" rx="3" fill="#f6b6c9" transform="rotate(10 60 30)"/>`:""}
+  ${top}
+</svg>`;
+}
+function dallaSVG(){
+  return `<svg viewBox="0 0 150 150"><g>
+    <path d="M60 34 Q75 6 90 34Z" fill="#c9ccd0"/><circle cx="75" cy="12" r="5" fill="#b6b9bd"/>
+    <path d="M58 36 L92 36 L98 50 L52 50 Z" fill="#d7dade"/>
+    <path d="M52 50 L98 50 L120 128 Q75 140 30 128 Z" fill="#86a84f"/>
+    <path d="M52 50 L60 50 L40 128 Q34 127 30 128 Z" fill="#fff" opacity=".2"/>
+    <rect x="50" y="80" width="50" height="34" rx="6" fill="#fffdf6"/>
+    <text x="75" y="96" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="9"><tspan fill="#e9769c">MEM</tspan><tspan fill="#8a6a55"> Matcha</tspan></text>
+    <path d="M75 108 C68 102 69 97 75 100 C81 97 82 102 75 108Z" fill="#f4a9c0"/>
+    <path d="M98 56 Q128 52 122 92 L112 96" fill="none" stroke="#c9ccd0" stroke-width="7" stroke-linecap="round"/>
+    <path d="M54 62 Q22 54 14 40" fill="none" stroke="#c9ccd0" stroke-width="8" stroke-linecap="round"/>
+    <path d="M118 134 L126 104 L148 104 L142 136Z" fill="#fff" opacity=".7" stroke="#e5e0d4"/>
+    <path d="M132 104 L138 70 M138 104 L146 72" stroke="#e9769c" stroke-width="3"/>
+  </g></svg>`;
+}
+function catSVG(c, empty){
+  const b = empty? "#e3dccb":c.body, be = empty? "#ebe5d6":c.belly, bib = empty? "#ddd5c2":c.bib, ink = empty? "#d3cab5":"#3a2f2f";
+  return `<svg viewBox="0 0 100 112">
+    <ellipse cx="50" cy="106" rx="30" ry="5" fill="#000" opacity="${empty?0:.07}"/>
+    <ellipse cx="50" cy="80" rx="32" ry="26" fill="${b}"/>
+    <ellipse cx="50" cy="86" rx="20" ry="16" fill="${be}"/>
+    <path d="M22 34 L26 8 L42 24Z M78 34 L74 8 L58 24Z" fill="${b}"/>
+    <path d="M27 28 L28 15 L37 24Z M73 28 L72 15 L63 24Z" fill="${empty?b:'#f6b5c4'}"/>
+    <ellipse cx="50" cy="40" rx="34" ry="28" fill="${b}"/>
+    <path d="M20 60 Q50 74 80 60 L74 70 Q50 80 26 70Z" fill="${bib}"/>
+    <circle cx="50" cy="72" r="4" fill="${empty?bib:'#f4cf3c'}"/>
+    <path d="M78 62 Q92 44 86 30" stroke="${b}" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <circle cx="86" cy="28" r="8" fill="${b}"/>
+    ${empty?"":`<circle cx="84" cy="30" r="2" fill="#f6b5c4"/><circle cx="88" cy="26" r="1.4" fill="#f6b5c4"/>`}
+    <path d="M34 40 Q38 36 42 40 M58 40 Q62 36 66 40" stroke="${ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <path d="M47 48 Q50 51 53 48" stroke="${ink}" stroke-width="2" fill="none" stroke-linecap="round"/>
+    ${empty?"":`<ellipse cx="32" cy="48" rx="5" ry="3" fill="#f6a4b8" opacity=".7"/><ellipse cx="68" cy="48" rx="5" ry="3" fill="#f6a4b8" opacity=".7"/><path d="M48 18 Q50 14 52 18" stroke="#f4cf3c" stroke-width="2" fill="none"/>`}
+    <ellipse cx="34" cy="102" rx="9" ry="6" fill="${b}"/><ellipse cx="66" cy="102" rx="9" ry="6" fill="${b}"/>
+    ${empty?`<text x="50" y="90" text-anchor="middle" font-family="Fredoka" font-size="18" font-weight="700" fill="#cfc6b0">?</text>`:""}
+  </svg>`;
+}
+
+/* ============ الحالة ============ */
+let cart = [];
+let current = null;
+let delivery = "inside";
+let useFree = false;
+let collected = loadCats();
+function loadCats(){ try{ return JSON.parse(localStorage.getItem("mem_cats")||"[]") }catch(e){ return [] } }
+function saveCats(){ try{ localStorage.setItem("mem_cats", JSON.stringify(collected)) }catch(e){} }
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const byId = id => id==="dalla"? DALLA : DRINKS.find(d=>d.id===id);
+
+/* ============ INTRO ============ */
+(function intro(){
+  const t = "MEM Matcha"; const box = $("#introTitle");
+  [...t].forEach((ch,i)=>{ const s=document.createElement("span"); s.textContent = ch===" "?" ":ch; s.style.color = i<3? "var(--pink)":"var(--brown)"; s.style.animationDelay = (1.2+i*.07)+"s"; box.appendChild(s); });
+  const p = $("#petals");
+  for(let i=0;i<18;i++){ const e=document.createElement("div"); e.className="petal"+(i%3===0?" g":""); e.style.left=Math.random()*100+"%"; e.style.animationDuration=(4+Math.random()*4)+"s"; e.style.animationDelay=(Math.random()*3)+"s"; e.style.transform=`scale(${.6+Math.random()*.7})`; p.appendChild(e); }
+  const close=()=>{ $("#intro").classList.add("out"); setTimeout(()=>$("#intro").remove(),800) };
+  $("#intro").addEventListener("click", close);
+  setTimeout(close, 3600);
+})();
+
+/* ============ RENDER ============ */
+function renderMenu(){
+  $("#grid").innerHTML = DRINKS.map(d=>{
+    const q = cart.filter(c=>c.id===d.id).reduce((a,c)=>a+c.qty,0);
+    return `<div class="card" onclick="openProduct('${d.id}')">
+      ${d.badge?`<span class="badge ${d.celebrate?'':'g'}">${d.badge}</span>`:""}
+      ${q?`<span class="qtydot">${q}</span>`:""}
+      <div class="cupbox" id="cup-${d.id}">${cupSVG(d)}</div>
+      <h4>${d.name}</h4>
+      <div class="row"><div class="price">${d.price}<small>ر.س</small></div><button class="plus" aria-label="إضافة">+</button></div>
+    </div>`}).join("");
+}
+function renderAddons(){
+  $("#addonsList").innerHTML = ADDONS.map(a=>`<div class="addon"><div class="ic" style="background:${a.color};border:1px solid #eadfcd">${a.id==='vsyr'?'<span style="color:#fff;font-size:16px">💧</span>':''}</div>${a.name}<b>${a.price} ر.س</b></div>`).join("");
+}
+function renderMoods(){
+  $("#moods").innerHTML = MOODS.map((m,i)=>`<button class="mchip" data-i="${i}"><span class="e">${m.e}</span>${m.t}</button>`).join("");
+  $("#moods").onclick = e=>{
+    const b = e.target.closest(".mchip"); if(!b) return;
+    document.querySelectorAll(".mchip").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+    const m = MOODS[b.dataset.i], d = byId(m.d);
+    const art = m.d==="dalla"? dallaSVG() : cupSVG(d);
+    $("#moodRes").innerHTML = `<div class="cup">${art}</div><div style="flex:1"><b>${d.name}</b><div class="why">${m.why}</div><button class="btn pink sm" onclick="${m.d==='dalla'?'openDalla()':`openProduct('${d.id}')`}">جربيها · ${d.price} ر.س</button></div>`;
+    $("#moodRes").classList.remove("show"); void $("#moodRes").offsetWidth; $("#moodRes").classList.add("show");
+  };
+}
+function renderCats(){
+  const n = Math.min(collected.length,5);
+  $("#catRow").innerHTML = CATS.map(c=>{ const got = collected.includes(c.id); return `<div class="catslot ${got?'got':''}" title="${c.name}">${catSVG(c,!got)}</div>`}).join("");
+  $("#catProg").style.width = (n/5*100)+"%";
+  $("#catTxt").textContent = n>=5? "المجموعة كاملة 🎉" : `جمعتي ${n} من 5 — باقي ${5-n} ${5-n===1?'قطة':'قطط'}`;
+  $("#catsBox").classList.toggle("full", n>=5);
+  $("#miniCnt").textContent = n+"/5";
+  $("#miniCat").innerHTML = catSVG(CATS[3], n===0);
+}
+$("#dallaArt").innerHTML = dallaSVG();
+
+/* ============ PRODUCT SHEET ============ */
+function openProduct(id){
+  const d = byId(id);
+  current = {id, qty:1, addons:[], name:"", note:""};
+  $("#pSheet").innerHTML = `<div class="grab"></div><button class="x" onclick="closeSheets()">✕</button>
+    <div class="p-top" id="pCup">${cupSVG(d)}</div>
+    <div class="p-name">${d.name}</div><div class="p-desc">${d.desc}</div>
+    ${d.celebrate?`<div class="blk"><h5>${d.celebrate==='grad'?'اسم الخريجة على التوبر':'اسم صاحبة عيد الميلاد'} <span>شوفي المعاينة فوق ↑</span></h5>
+      <input class="field" id="pName" maxlength="12" placeholder="${d.celebrate==='grad'?'مثال: ريم':'مثال: سارة'}"></div>`:""}
+    <div class="blk"><h5>إضافاتك المفضلة <span>اختياري</span></h5>
+      ${ADDONS.map(a=>`<label class="opt"><input type="checkbox" value="${a.id}"><span class="box"></span>${a.name}<span class="op">+${a.price}</span></label>`).join("")}
+    </div>
+    <div class="blk"><h5>ملاحظة على الكوب <span>اختياري</span></h5><textarea class="field" id="pNote" placeholder="مثال: سكر خفيف"></textarea></div>
+    <div class="addrow"><div class="qty"><button onclick="pQty(1)">+</button><b id="pQ">1</b><button onclick="pQty(-1)">−</button></div>
+      <button class="btn pink" id="pAdd" onclick="addCurrent()"><span>أضيفي للسلة</span><span id="pTot"></span></button></div>`;
+  $("#pSheet").querySelectorAll("input[type=checkbox]").forEach(ch=>ch.onchange=()=>{
+    current.addons=[...$("#pSheet").querySelectorAll("input:checked")].map(x=>x.value); pUpdate(true);
+  });
+  const nm = $("#pName"); if(nm) nm.oninput=()=>{ current.name=nm.value; pUpdate(true) };
+  pUpdate(); openSheet("#pSheet");
+}
+function openDalla(){
+  current = {id:"dalla", qty:1, addons:[], milk:"none", note:""};
+  $("#pSheet").innerHTML = `<div class="grab"></div><button class="x" onclick="closeSheets()">✕</button>
+    <div class="p-top">${dallaSVG().replace('<svg','<svg style="height:180px"')}</div>
+    <div class="p-name">دلة الجمعة</div><div class="p-desc">تكفي 4 أشخاص — مثالية لجمعة البنات</div>
+    <div class="blk"><h5>الإضافات <span>اختياري</span></h5>
+      <label class="opt"><input type="checkbox" value="foam"><span class="box"></span>فوم<span class="op">+5</span></label></div>
+    <div class="blk"><h5>نوع الحليب</h5>
+      ${DALLA.milk.map((m,i)=>`<label class="opt rad"><input type="radio" name="milk" value="${m.id}" ${i===0?'checked':''}><span class="box"></span>${m.name}${m.price?`<span class="op">+${m.price}</span>`:''}</label>`).join("")}</div>
+    <div class="blk"><h5>ملاحظة <span>اختياري</span></h5><textarea class="field" id="pNote" placeholder="مثال: نبيها لبعد العصر"></textarea></div>
+    <div class="addrow"><div class="qty"><button onclick="pQty(1)">+</button><b id="pQ">1</b><button onclick="pQty(-1)">−</button></div>
+      <button class="btn pink" onclick="addCurrent()"><span>أضيفي للسلة</span><span id="pTot"></span></button></div>`;
+  $("#pSheet").querySelectorAll("input").forEach(i=>i.onchange=()=>{
+    current.addons = [...$("#pSheet").querySelectorAll("input[type=checkbox]:checked")].map(x=>x.value);
+    current.milk = $("#pSheet").querySelector("input[name=milk]:checked").value; pUpdate();
+  });
+  pUpdate(); openSheet("#pSheet");
+}
+function unitPrice(it){
+  if(it.id==="dalla") return DALLA.price + it.addons.reduce((a,x)=>a+(DALLA.extras.find(e=>e.id===x)||{price:0}).price,0) + DALLA.milk.find(m=>m.id===it.milk).price;
+  return byId(it.id).price + it.addons.reduce((a,x)=>a+ADDONS.find(e=>e.id===x).price,0);
+}
+function itemArt(it){
+  if(it.id==="dalla") return dallaSVG();
+  const milk = it.addons.includes("alpc")? "#eef5f7" : it.addons.includes("alpv")? "#f6ebcd" : null;
+  return cupSVG(byId(it.id), {name:it.name, pink:it.addons.includes("pcream"), milk});
+}
+function pUpdate(redraw){
+  $("#pQ").textContent = current.qty;
+  $("#pTot").textContent = unitPrice(current)*current.qty + " ر.س";
+  if(redraw && current.id!=="dalla") $("#pCup").innerHTML = itemArt(current);
+}
+function pQty(n){ current.qty = Math.max(1, current.qty+n); pUpdate() }
+function addCurrent(){
+  if(current.celebrate===undefined && byId(current.id).celebrate && !current.name.trim()){
+    const f=$("#pName"); f.style.borderColor="var(--pink)"; f.focus(); toast("اكتبي الاسم اللي ينكتب على التوبر"); return;
+  }
+  current.note = ($("#pNote")||{}).value||"";
+  const key = JSON.stringify([current.id,current.addons.slice().sort(),current.milk||"",current.name||"",current.note]);
+  const ex = cart.find(c=>c.key===key);
+  if(ex) ex.qty += current.qty; else cart.push({...current, key});
+  flyToCart(current.id);
+  closeSheets(); renderMenu(); updateBar(true);
+  toast("انضافت للسلة ♡");
+}
+function flyToCart(id){
+  const src = document.getElementById("cup-"+id) || $("#dallaArt");
+  if(!src) return; const r = src.getBoundingClientRect();
+  const f = document.createElement("div"); f.className="flycup"; f.innerHTML = id==="dalla"?dallaSVG():cupSVG(byId(id));
+  f.style.left=(r.left+r.width/2-25)+"px"; f.style.top=(r.top+20)+"px"; document.body.appendChild(f);
+  requestAnimationFrame(()=>{ const b=$("#cartbar").getBoundingClientRect(); f.style.left=(b.right-60)+"px"; f.style.top=(b.top-10)+"px"; f.style.transform="scale(.3) rotate(-20deg)"; f.style.opacity=".4" });
+  setTimeout(()=>f.remove(),750);
+}
+
+/* ============ CART ============ */
+const count = ()=>cart.reduce((a,c)=>a+c.qty,0);
+const subtotal = ()=>cart.reduce((a,c)=>a+unitPrice(c)*c.qty,0);
+function freeDiscount(){
+  if(!useFree || collected.length<5) return 0;
+  const cups = cart.filter(c=>c.id!=="dalla"); if(!cups.length) return 0;
+  return Math.min(...cups.map(c=>byId(c.id).price));
+}
+function delFee(){ return delivery==="inside"? CONFIG.deliveryInside : 0 }
+function total(){ return subtotal() - freeDiscount() + delFee() }
+function updateBar(bump){
+  const n = count(); $("#cartbar").classList.toggle("show", n>0);
+  $("#cbCnt").textContent = n; $("#cbTot").textContent = subtotal()+" ر.س";
+  if(bump){ $("#cartbar").classList.remove("bump"); void $("#cartbar").offsetWidth; $("#cartbar").classList.add("bump") }
+}
+function describe(it){
+  const parts=[];
+  if(it.id==="dalla"){ if(it.addons.includes("foam")) parts.push("فوم"); const m=DALLA.milk.find(x=>x.id===it.milk); if(m.price) parts.push(m.name); }
+  else parts.push(...it.addons.map(a=>ADDONS.find(x=>x.id===a).name));
+  if(it.name) parts.push("الاسم: "+it.name);
+  if(it.note) parts.push("ملاحظة: "+it.note);
+  return parts.join(" · ");
+}
+function openCart(){ renderCart(); openSheet("#cSheet") }
+function renderCart(){
+  if(!cart.length){ closeSheets(); return }
+  const hasFree = collected.length>=5;
+  const saved = window._form||{};
+  $("#cSheet").innerHTML = `<div class="grab"></div><button class="x" onclick="closeSheets()">✕</button>
+  <div class="p-name" style="margin-top:4px">سلتك</div>
+  <div class="blk">${cart.map((c,i)=>`<div class="ci">${itemArt(c)}<div class="info"><b>${byId(c.id).name}</b><small>${esc(describe(c))||'—'}</small><small style="color:var(--pink-d);font-family:Fredoka;font-weight:600">${unitPrice(c)*c.qty} ر.س</small></div>
+      <div class="qty"><button onclick="cQty(${i},1)">+</button><b>${c.qty}</b><button onclick="cQty(${i},-1)">−</button></div></div>`).join("")}</div>
+
+  ${hasFree?`<div class="blk" style="background:var(--pink-l);border-color:#f6cdd9"><label class="opt" style="border:none"><input type="checkbox" id="freeT" ${useFree?'checked':''}><span class="box"></span><span>🐱 استخدمي كوبك المجاني (5/5 قطط)</span></label></div>`:""}
+
+  <div class="blk"><h5>طريقة الاستلام</h5>
+    <div class="chips" id="dChips">
+      <button class="chip ${delivery==='inside'?'on':''}" data-d="inside"><b>🛵 توصيل</b><small>داخل ${CONFIG.insideArea} · ${CONFIG.deliveryInside} ر.س</small></button>
+      <button class="chip ${delivery==='other'?'on':''}" data-d="other"><b>🗺️ حي آخر</b><small>الرسوم حسب الموقع</small></button>
+      <button class="chip ${delivery==='pickup'?'on':''}" data-d="pickup"><b>🏠 استلام</b><small>من المنزل · مجانًا</small></button>
+      <button class="chip ${delivery==='chefz'?'on':''}" data-d="chefz"><b>📱 ذا شيفز</b><small>عبر التطبيق</small></button>
+    </div>
+    ${delivery==='other'?`<label class="lbl2">اسم الحي</label><input class="field" id="fDist" placeholder="مثال: العزيزية" value="${esc(saved.dist||'')}"><div class="note">بنرد عليك برسوم التوصيل لحيّك قبل التحويل.</div>`:""}
+    ${delivery==='chefz'?`<div class="note">${CONFIG.chefzNote}. تقدرين تكملين هنا وتختارين الاستلام، أو تطلبين من التطبيق مباشرة.</div>`:""}
+  </div>
+
+  <div class="blk"><h5>بياناتك</h5>
+    <label class="lbl2">الاسم</label><input class="field" id="fName" placeholder="اسمك" value="${esc(saved.name||'')}">
+    <label class="lbl2">رقم الجوال</label><input class="field" id="fPhone" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(saved.phone||'')}" dir="ltr" style="text-align:right">
+    <label class="lbl2">الوقت</label>
+    <div class="chips" id="tChips"><button class="chip ${saved.when!=='later'?'on':''}" data-w="now"><b>بأقرب وقت</b></button><button class="chip ${saved.when==='later'?'on':''}" data-w="later"><b>وقت محدد</b></button></div>
+    ${saved.when==='later'?`<input class="field" id="fTime" type="time" style="margin-top:8px" value="${esc(saved.time||'')}">`:""}
+    <div class="err" id="fErr"></div>
+  </div>
+
+  <div class="blk sum">
+    <div><span>المجموع</span><span class="n">${subtotal()} ر.س</span></div>
+    ${freeDiscount()?`<div style="color:var(--pink-d)"><span>كوب مجاني 🐱</span><span class="n">−${freeDiscount()} ر.س</span></div>`:""}
+    <div><span>التوصيل</span><span class="n">${delivery==='inside'?CONFIG.deliveryInside+' ر.س':delivery==='other'?'يُحدد لاحقًا':'—'}</span></div>
+    <div class="g"><span>الإجمالي</span><span>${total()} ر.س${delivery==='other'?' + التوصيل':''}</span></div>
+    <div class="note">🏦 الدفع بالتحويل البنكي — يتأكد طلبك بعد التحويل.</div>
+  </div>
+  <button class="btn pink" style="width:100%;padding:15px;font-size:15px;margin-top:12px" onclick="checkout()">تأكيد الطلب</button>`;
+  $("#dChips").onclick = e=>{ const b=e.target.closest(".chip"); if(!b) return; keepForm(); delivery=b.dataset.d; renderCart() };
+  $("#tChips").onclick = e=>{ const b=e.target.closest(".chip"); if(!b) return; keepForm(); window._form.when=b.dataset.w; renderCart() };
+  const ft=$("#freeT"); if(ft) ft.onchange=()=>{ keepForm(); useFree=ft.checked; renderCart() };
+}
+function keepForm(){
+  window._form = window._form||{};
+  const v=id=>{const e=document.getElementById(id); return e?e.value:undefined};
+  ["name:fName","phone:fPhone","dist:fDist","time:fTime"].forEach(p=>{const [k,id]=p.split(":"); const x=v(id); if(x!==undefined) window._form[k]=x});
+}
+function cQty(i,n){ keepForm(); cart[i].qty+=n; if(cart[i].qty<=0) cart.splice(i,1); renderMenu(); updateBar(); renderCart() }
+
+/* ============ CHECKOUT ============ */
+let lastOrder = null;
+function checkout(){
+  keepForm(); const f = window._form, err=$("#fErr");
+  const show=m=>{ err.textContent=m; err.style.display="block" };
+  if(!(f.name||"").trim()) return show("اكتبي اسمك");
+  if(!/^05\d{8}$/.test((f.phone||"").replace(/\s/g,""))) return show("رقم الجوال لازم يبدأ بـ 05 ويكون 10 أرقام");
+  if(delivery==="other" && !(f.dist||"").trim()) return show("اكتبي اسم الحي");
+  if(f.when==="later" && !f.time) return show("اختاري الوقت");
+  const no = "MEM-" + Math.floor(1000+Math.random()*9000);
+  const how = {inside:`توصيل داخل ${CONFIG.insideArea} (${CONFIG.deliveryInside} ر.س)`, other:`توصيل لحي ${f.dist} (الرسوم حسب الموقع)`, pickup:"استلام من المنزل", chefz:"ذا شيفز"}[delivery];
+  const lines = cart.map(c=>`• ${c.qty} × ${byId(c.id).name} — ${unitPrice(c)*c.qty} ر.س${describe(c)?`\n   (${describe(c)})`:""}`).join("\n");
+  const msg = `طلب جديد من موقع MEM Matcha 🍵💗
+رقم الطلب: ${no}
+
+${lines}
+
+المجموع: ${subtotal()} ر.س${freeDiscount()?`\nكوب مجاني (5 قطط): −${freeDiscount()} ر.س`:""}
+الاستلام: ${how}
+الإجمالي: ${total()} ر.س${delivery==='other'?' + التوصيل':''}
+الوقت: ${f.when==="later"? f.time : "بأقرب وقت"}
+
+الاسم: ${f.name}
+الجوال: ${f.phone}
+
+بانتظار بيانات التحويل البنكي لتأكيد الطلب 🙏`;
+  const wa = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+  lastOrder = {no, usedFree: !!freeDiscount()};
+  $("#cSheet").innerHTML = `<div class="grab"></div>
+   <div class="done-top"><div class="ok">💚</div><h3>طلبك جاهز للإرسال</h3><div class="ordno">${no}</div></div>
+   <div class="steps"><div class="st on"><i>✓</i>الطلب</div><div class="st"><i>2</i>واتساب</div><div class="st"><i>3</i>التحويل</div><div class="st"><i>4</i>التحضير</div></div>
+   <a class="wa" id="waBtn" href="${wa}" target="_blank" rel="noopener">إرسال الطلب على واتساب</a>
+   <div class="note" style="text-align:center">بعد الإرسال يوصلك رقم الحساب، وبعد التحويل يتأكد طلبك وتبدأ تحضيراتنا 🍵</div>
+   <div class="blk"><h5>نص الطلب <span>يرسل تلقائيًا</span></h5><pre class="msg">${esc(msg)}</pre></div>`;
+  $("#waBtn").addEventListener("click", ()=>{ setTimeout(()=>{ finishOrder() }, 600) });
+}
+function finishOrder(){
+  if(lastOrder.usedFree){ collected=[]; useFree=false }
+  const remaining = CATS.filter(c=>!collected.includes(c.id));
+  const cat = remaining[Math.floor(Math.random()*remaining.length)] || CATS[0];
+  if(!collected.includes(cat.id)) collected.push(cat.id);
+  saveCats();
+  cart=[]; window._form = {name:window._form.name, phone:window._form.phone};
+  closeSheets(); renderMenu(); updateBar(); renderCats();
+  showReveal(cat);
+}
+
+/* ============ CAT REVEAL ============ */
+function showReveal(cat){
+  const n = collected.length;
+  $("#newCat").innerHTML = catSVG(cat,false);
+  $("#rvT").textContent = "طلعت لك " + cat.name + "!";
+  $("#rvS").innerHTML = n>=5? "🎉 كملتي الخمس قطط! طلبك الجاي فيه <b>كوب ماتشا مجاني</b>" : `صار عندك ${n} من 5 — باقي ${5-n} وتاخذين كوب مجاني 💗<br><small>تنضاف القطة رسميًا بعد تأكيد التحويل</small>`;
+  const g=$("#gift"); g.className="giftbox shake"; $("#reveal").className="show";
+}
+function openGift(){
+  const g=$("#gift"); if(g.classList.contains("open")) return;
+  g.classList.remove("shake"); g.classList.add("open"); $("#reveal").classList.add("opened");
+  const cols=["#e9769c","#7fa04a","#f4cf3c","#7cb4e0","#f39a8c"];
+  for(let i=0;i<40;i++){ const c=document.createElement("div"); c.className="confetti"; c.style.left=Math.random()*100+"vw"; c.style.background=cols[i%5]; c.style.animationDelay=Math.random()*.6+"s"; c.style.animationDuration=(2+Math.random()*1.5)+"s"; document.body.appendChild(c); setTimeout(()=>c.remove(),4500) }
+}
+function closeReveal(){ $("#reveal").className=""; go("cats") }
+
+/* ============ UI ============ */
+function openSheet(s){ closeSheets(true); $("#overlay").classList.add("show"); $(s).classList.add("show"); $(s).scrollTop=0 }
+function closeSheets(keep){ document.querySelectorAll(".sheet").forEach(x=>x.classList.remove("show")); if(!keep) $("#overlay").classList.remove("show") }
+function toast(t){ const e=$("#toast"); e.textContent=t; e.classList.add("show"); clearTimeout(e._t); e._t=setTimeout(()=>e.classList.remove("show"),1800) }
+function go(id){ document.getElementById(id).scrollIntoView({behavior:"smooth"}) }
+$("#tabs").onclick = e=>{ const b=e.target.closest(".tab"); if(b) go(b.dataset.t) };
+const obs = new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on", t.dataset.t===en.target.id)) } }),{rootMargin:"-45% 0px -50% 0px"});
+document.querySelectorAll("section").forEach(s=>obs.observe(s));
+
+renderMenu(); renderAddons(); renderMoods(); renderCats(); updateBar();
+</script>
+</body>
+</html>
