@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بطاطس بالفخاره</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#140b07; --bg2:#1f120b; --card:#2a1810; --line:#3d2416;
+  --clay:#c8643a; --clay2:#a24d29; --flame:#ff8a1f; --cheese:#ffc94a;
+  --red:#d6283a; --cream:#f6e6cf; --muted:#b59a82; --gold:#ffd24a; --silver:#d8d8d8; --bronze:#d08a4e;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--cream);font-family:'Tajawal',sans-serif}
+body{min-height:100vh;padding-bottom:84px;background:radial-gradient(120% 60% at 50% -10%,#3a1a0c 0%,transparent 60%),var(--bg)}
+button{font-family:inherit;cursor:pointer;border:0}
+input{font-family:inherit}
+.display{font-family:'Lalezar',sans-serif;font-weight:400}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+
+/* Intro */
+#intro{position:fixed;inset:0;z-index:100;background:#0c0604;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;transition:opacity .7s,visibility .7s}
+#intro.gone{opacity:0;visibility:hidden}
+.pot-stage{position:relative;width:230px;height:250px}
+.flames{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);width:260px;height:120px;filter:blur(1px)}
+.fl{position:absolute;bottom:0;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 50% 80%,#fff3b0 0%,var(--cheese) 25%,var(--flame) 55%,rgba(214,40,58,0) 75%);animation:flick 1.1s ease-in-out infinite alternate;transform-origin:50% 100%;opacity:.9}
+.fl.b{background:radial-gradient(circle at 50% 85%,#8fd3ff 0%,#3a7bff 35%,rgba(58,123,255,0) 70%);opacity:.75}
+@keyframes flick{0%{transform:scaleY(.8) skewX(-4deg)}50%{transform:scaleY(1.15) skewX(3deg)}100%{transform:scaleY(.9) skewX(-2deg)}}
+.ipot{position:absolute;bottom:20px;left:50%;transform:translateX(-50%) translateY(40px);opacity:0;animation:potIn 1s .3s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes potIn{to{transform:translateX(-50%) translateY(0);opacity:1}}
+.steam{position:absolute;top:0;left:50%;width:14px;height:60px;border-radius:50%;background:linear-gradient(to top,rgba(255,255,255,.35),transparent);filter:blur(5px);animation:steam 2.4s ease-in infinite;opacity:0}
+.steam.s2{left:40%;animation-delay:.8s}.steam.s3{left:60%;animation-delay:1.5s}
+@keyframes steam{0%{transform:translateY(60px);opacity:0}30%{opacity:.8}100%{transform:translateY(-30px) scaleX(2.2);opacity:0}}
+.intro-txt{margin-top:18px;opacity:0;animation:fadeUp .6s 1.3s forwards}
+.intro-title{font-size:54px;line-height:1.1;background:linear-gradient(180deg,var(--cheese),var(--flame));-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro-sub{color:var(--cream);margin-top:8px;font-size:18px;font-weight:700}
+.intro-sub2{color:var(--muted);margin-top:4px;font-size:14px}
+.enter{margin-top:22px;background:linear-gradient(135deg,var(--flame),var(--red));color:#fff;font-weight:900;font-size:17px;padding:14px 34px;border-radius:40px;opacity:0;animation:fadeUp .6s 1.9s forwards;box-shadow:0 10px 30px rgba(255,138,31,.35)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+header{padding:18px 0 4px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 50% 35%,var(--clay),var(--clay2));display:grid;place-items:center;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--flame)}
+.brand h1{font-size:28px;line-height:1}
+.brand small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+
+.view{display:none;animation:fadeUp .35s}
+.view.on{display:block}
+h2.sec{font-size:28px;margin:16px 0 2px}
+p.lead{color:var(--muted);font-size:14px;line-height:1.7}
+
+/* ===== Builder pot ===== */
+.stage{position:sticky;top:0;z-index:10;background:linear-gradient(var(--bg) 85%,transparent);padding:10px 0 14px}
+.potbox{position:relative;width:200px;height:200px;margin:0 auto}
+.pot-glow{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:230px;height:40px;border-radius:50%;background:radial-gradient(var(--flame),transparent 70%);opacity:.45;filter:blur(6px);animation:glow 1.6s ease-in-out infinite alternate}
+@keyframes glow{to{opacity:.75;width:250px}}
+.pot{position:absolute;inset:18px 10px 0;border-radius:14% 14% 46% 46%/12% 12% 42% 42%;overflow:hidden;
+  background:linear-gradient(90deg,#7a3316,#d9773f 45%,#7a3316);box-shadow:inset 0 -14px 24px rgba(0,0,0,.35)}
+.window{position:absolute;inset:14px 18px 18px;border-radius:10% 10% 44% 44%/10% 10% 40% 40%;overflow:hidden;background:#3b1a0b;
+  box-shadow:inset 0 0 0 3px rgba(0,0,0,.25),inset 0 0 18px rgba(0,0,0,.6);display:flex;flex-direction:column-reverse}
+.layer{width:100%;flex:none;animation:drop .5s cubic-bezier(.2,1.4,.4,1);position:relative}
+@keyframes drop{from{transform:translateY(-160px);opacity:0}}
+.rim{position:absolute;top:8px;left:4px;right:4px;height:22px;border-radius:50%;background:#6b2c12;box-shadow:inset 0 4px 6px rgba(0,0,0,.4)}
+.drip{position:absolute;top:12px;width:12px;border-radius:0 0 8px 8px;background:var(--cheese);transition:height .6s;z-index:3}
+.steamB{position:absolute;top:-30px;left:50%;width:12px;height:50px;border-radius:50%;background:linear-gradient(to top,rgba(255,255,255,.3),transparent);filter:blur(5px);animation:steam 2.4s ease-in infinite;opacity:0}
+.price-pill{text-align:center;margin-top:10px}
+.price-pill b{display:inline-block;background:var(--cream);color:var(--bg);font-weight:900;font-size:18px;padding:6px 18px;border-radius:30px;transition:transform .2s}
+.price-pill b.bump{transform:scale(1.15)}
+
+/* steps */
+.dots{display:flex;justify-content:center;gap:6px;margin-top:10px}
+.dots i{width:8px;height:8px;border-radius:8px;background:var(--line);transition:.3s}
+.dots i.on{width:22px;background:var(--flame)}
+.dots i.done{background:var(--cheese)}
+.step{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin-top:6px}
+.step .k{color:var(--flame);font-size:13px;font-weight:900}
+.step h3{font-size:22px;font-weight:900;margin:2px 0 12px}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chip{background:var(--bg2);color:var(--cream);border:1.5px solid var(--line);border-radius:16px;padding:12px;text-align:right;transition:.15s;display:flex;align-items:center;gap:10px}
+.chip .em{font-size:24px}
+.chip b{display:block;font-size:15px}
+.chip small{color:var(--muted);font-size:12px}
+.chip.on{border-color:var(--flame);background:rgba(255,138,31,.12)}
+.chip.on small{color:var(--cheese)}
+.chip:active{transform:scale(.97)}
+.nav-row{display:flex;gap:10px;margin-top:16px}
+.btn{display:inline-block;background:linear-gradient(135deg,var(--flame),var(--red));color:#fff;font-weight:900;padding:14px 22px;border-radius:40px;font-size:16px;text-decoration:none;text-align:center}
+.btn.ghost{background:var(--bg2);border:1px solid var(--line);color:var(--cream)}
+.btn.full{display:block;width:100%}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.nav-row .btn{flex:1}
+.nav-row .btn.ghost{flex:none;padding:14px 18px}
+input.field{width:100%;background:var(--bg2);border:1.5px solid var(--line);color:var(--cream);border-radius:14px;padding:14px;font-size:17px;font-weight:700}
+input.field:focus{outline:none;border-color:var(--flame)}
+.sugg{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sugg button{background:var(--bg2);color:var(--cheese);border:1px dashed var(--line);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:700}
+.recipe{background:var(--bg2);border-radius:16px;padding:12px 14px;margin-top:14px;font-size:14px;line-height:2}
+.recipe span{color:var(--muted)}
+.total{display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin:14px 0 4px}
+.note{font-size:12px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:10px;margin-top:12px;line-height:1.7}
+
+/* card result */
+.made{background:linear-gradient(160deg,#3a1a0c,#1f0e07);border:1.5px solid var(--flame);border-radius:22px;padding:18px;text-align:center;margin-top:6px}
+.made .nm{font-size:30px;color:var(--cheese)}
+.made .by{color:var(--muted);font-size:13px}
+
+/* ===== Ranking ===== */
+.live{background:linear-gradient(135deg,#3b0a12,#1d0709);border:1px solid #5a1520;border-radius:22px;padding:18px;margin-top:12px;text-align:center}
+.live .tag{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;font-weight:900;font-size:12px;padding:4px 12px;border-radius:20px}
+.live .tag i{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+.cd{display:flex;justify-content:center;gap:8px;margin-top:12px;direction:ltr}
+.cd div{background:rgba(0,0,0,.35);border-radius:12px;padding:8px 0;width:62px}
+.cd b{display:block;font-size:26px;font-family:'Lalezar'}
+.cd span{font-size:11px;color:#f1a7b0}
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:8px;margin-top:22px}
+.pd{text-align:center}
+.pd .who{font-size:13px;font-weight:900;line-height:1.3;min-height:34px}
+.pd .who small{display:block;color:var(--muted);font-weight:500;font-size:11px}
+.pd .blk{border-radius:16px 16px 6px 6px;margin-top:8px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.pd .medal{font-size:30px}
+.pd .prize{font-size:12px;font-weight:900;color:#2a1810;background:rgba(255,255,255,.85);border-radius:10px;padding:4px 6px;line-height:1.4}
+.p1 .blk{height:170px;background:linear-gradient(var(--gold),#c99a12)}
+.p2 .blk{height:140px;background:linear-gradient(var(--silver),#9a9a9a)}
+.p3 .blk{height:118px;background:linear-gradient(var(--bronze),#8a5226)}
+.p3 .prize{background:repeating-linear-gradient(45deg,#fff 0 6px,#f3e3cf 6px 12px)}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.how div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 4px;text-align:center;font-size:11.5px;font-weight:700;line-height:1.4}
+.how div b{display:block;font-size:22px;margin-bottom:4px}
+.lb{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-top:10px;display:flex;gap:12px;align-items:center}
+.lb.mine{border-color:var(--flame)}
+.lb .rk{width:32px;height:32px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:900;background:var(--bg2)}
+.lb .rk.r1{background:var(--gold);color:#2a1810}.lb .rk.r2{background:var(--silver);color:#2a1810}.lb .rk.r3{background:var(--bronze);color:#fff}
+.lb .n{flex:1;min-width:0}
+.lb .n b{font-size:15px}
+.lb .n small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .sc{text-align:center;flex:none}
+.lb .sc b{display:block;color:var(--cheese);font-size:17px}
+.lb .sc small{font-size:10px;color:var(--muted)}
+.lb .try{background:var(--bg2);color:var(--cheese);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;font-weight:900;flex:none}
+
+.seg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.seg2 button{background:var(--bg2);color:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:10px;font-weight:700}
+.seg2 button.on{border-color:var(--flame);color:var(--cheese)}
+.slotgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;max-height:220px;overflow:auto}
+.slotgrid button{background:var(--bg2);color:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:8px 4px;font-weight:900;font-size:14px}
+.slotgrid button small{display:block;font-size:10.5px;font-weight:500;color:var(--muted);margin-top:2px}
+.slotgrid button.on{border-color:var(--flame);background:rgba(255,138,31,.15)}
+.slotgrid button.on small{color:var(--cheese)}
+.slotgrid button.full{opacity:.35;text-decoration:line-through}
+/* owner */
+.owner{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:12px}
+.owner .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.owner .row3 div{background:var(--bg2);border-radius:14px;padding:10px 4px;text-align:center}
+.owner .row3 b{display:block;font-size:22px;color:var(--cheese);font-family:'Lalezar'}
+.owner .row3 span{font-size:11px;color:var(--muted)}
+.bar{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px}
+.bar span{width:64px;flex:none;color:var(--muted)}
+.bar i{display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--cheese),var(--flame))}
+.ocard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:8px}
+.ocard.mine{border-color:var(--flame)}
+.ocard .oh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ost{font-size:11px;font-weight:900;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.ost.s0{background:#3a2a10;color:var(--cheese)}.ost.s1{background:#4a1a0c;color:var(--flame)}.ost.s2{background:#0f3a22;color:#4ee08f}.ost.s3{background:var(--bg2);color:var(--muted)}
+.ocard .oi{font-size:13px;margin-top:6px;line-height:1.6}
+.ocard .om{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);margin-top:6px;align-items:center}
+.ocard .om b{margin-right:auto;color:var(--cheese);font-size:14px}
+.cnt2{background:var(--bg2);border-radius:10px;padding:1px 8px;font-size:13px;color:var(--muted)}
+.autoadv{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-top:12px}
+.avl{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer}
+.avl input{display:none}
+.avl i{width:42px;height:24px;border-radius:20px;background:var(--line);position:relative;transition:.2s;flex:none}
+.avl i::after{content:"";position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.avl input:checked+i{background:#2fbf71}
+.avl input:checked+i::after{right:21px}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(20,11,7,.95);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:30}
+nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav button{background:none;color:var(--muted);padding:10px 0 14px;font-size:13px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button .ic{font-size:22px;filter:grayscale(1);opacity:.7}
+nav button.on{color:var(--cheese)}
+nav button.on .ic{filter:none;opacity:1}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-150%);background:var(--cream);color:var(--bg);font-weight:900;padding:12px 20px;border-radius:30px;z-index:200;transition:.35s;box-shadow:0 10px 30px rgba(0,0,0,.4);white-space:nowrap}
+#toast.on{transform:translateX(-50%) translateY(0)}
+.demo-badge{position:fixed;top:10px;left:10px;z-index:40;background:rgba(0,0,0,.6);color:var(--muted);font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--line)}
+footer{text-align:center;color:var(--muted);font-size:12px;margin:24px 0 10px;line-height:1.8}
+/* ===== v4: menu, cart, checkout, live ===== */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.hero button{border-radius:20px;padding:14px;text-align:right;color:#fff;font-weight:900;font-size:15px;line-height:1.4;position:relative;overflow:hidden}
+.hero button small{display:block;font-weight:500;font-size:12px;opacity:.85;margin-top:4px}
+.hero .h1{background:linear-gradient(135deg,var(--flame),var(--red))}
+.hero .h2{background:linear-gradient(135deg,#5a1520,#2b0a10);border:1px solid #6a1d28}
+.hero .big{font-size:30px;display:block;margin-bottom:4px}
+.cats{display:flex;gap:8px;margin:14px 0 10px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:9;background:var(--bg);padding:8px 0}
+.cats button{background:var(--card);color:var(--cream);padding:8px 16px;border-radius:30px;font-weight:700;font-size:14px;white-space:nowrap;border:1px solid var(--line)}
+.cats button.on{background:var(--cream);color:var(--bg)}
+.mi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;display:flex;gap:12px;align-items:center}
+.mi .th{width:66px;height:66px;flex:none;border-radius:16px;display:grid;place-items:center;font-size:32px;background:radial-gradient(circle at 50% 40%,#4a2715,#24130a)}
+.mi .in2{flex:1;min-width:0}
+.mi h3{font-size:16px;font-weight:900}
+.mi .meta{font-size:12px;color:var(--muted);margin-top:3px}
+.mi .badge{display:inline-block;background:rgba(255,201,74,.15);color:var(--cheese);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:5px}
+.mi .sz{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.mi .sz button{background:var(--bg2);color:var(--cream);border:1px solid var(--line);border-radius:12px;padding:7px 10px;font-size:13px;font-weight:700}
+.mi .sz button b{color:var(--cheese)}
+.mi .sz button:active{transform:scale(.94)}
+#cartBar{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(300%);visibility:hidden;width:calc(100% - 32px);max-width:528px;background:linear-gradient(135deg,var(--flame),var(--red));color:#fff;border-radius:18px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:900;z-index:25;transition:transform .35s cubic-bezier(.2,1.3,.4,1);box-shadow:0 12px 30px rgba(0,0,0,.5)}
+#cartBar.show{transform:translateX(-50%) translateY(0);visibility:visible}
+#cartBar .cnt{background:rgba(0,0,0,.25);border-radius:10px;padding:2px 10px}
+.ci{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px;display:flex;gap:10px;align-items:center}
+.ci .em{font-size:26px}
+.ci .t{flex:1;min-width:0}
+.ci .t b{font-size:15px}
+.ci .t small{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.qty{display:flex;align-items:center;gap:8px;flex:none}
+.qty button{width:30px;height:30px;border-radius:50%;background:var(--bg2);color:var(--cream);font-weight:900;border:1px solid var(--line);font-size:16px}
+.sumbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:14px}
+.sumbox .r{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;color:var(--muted)}
+.sumbox .r.tot{color:var(--cream);font-size:19px;font-weight:900;border-top:1px dashed var(--line);margin-top:6px;padding-top:10px}
+.lbl2{font-weight:900;font-size:16px;margin:18px 0 8px}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pay button{background:var(--bg2);color:var(--cream);border:1.5px solid var(--line);border-radius:14px;padding:14px 10px;font-weight:900;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:center}
+.pay button.on{border-color:var(--flame);background:rgba(255,138,31,.12)}
+.pay .ap{background:#000;color:#fff;border-radius:6px;padding:1px 6px;font-size:12px}
+.pay .md{background:#fff;color:#0a5b9b;border-radius:6px;padding:1px 6px;font-size:12px;font-weight:900}
+#payOv{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:20px}
+#payOv.on{display:flex}
+.paycard{background:var(--cream);color:#2a1810;border-radius:24px;padding:24px;width:100%;max-width:360px;text-align:center}
+.spin{width:54px;height:54px;border-radius:50%;border:5px solid #e8d1b0;border-top-color:var(--flame);margin:10px auto;animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.check{width:64px;height:64px;border-radius:50%;background:#2fbf71;color:#fff;font-size:34px;display:grid;place-items:center;margin:6px auto;animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.2)}}
+.track{margin-top:16px}
+.tstep{display:flex;gap:12px;align-items:flex-start;position:relative;padding-bottom:20px}
+.tstep:last-child{padding-bottom:0}
+.tstep::before{content:"";position:absolute;right:15px;top:32px;bottom:0;width:2px;background:var(--line)}
+.tstep:last-child::before{display:none}
+.tstep .c{width:32px;height:32px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--bg2);border:2px solid var(--line);font-size:15px;z-index:1;transition:.4s}
+.tstep.on .c{background:var(--flame);border-color:var(--flame)}
+.tstep.on b{color:var(--cheese)}
+.tstep small{display:block;color:var(--muted);font-size:12px}
+/* live */
+.livebar{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:12px;font-size:13px;overflow:hidden}
+.livebar .dot{width:9px;height:9px;border-radius:50%;background:var(--red);flex:none;animation:blink 1s infinite}
+.livebar #feed{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.livebar #feed span{display:inline-block;animation:fadeUp .4s}
+.lb{transition:transform .6s cubic-bezier(.2,1,.3,1)}
+.lb.flash{animation:flash 1s}
+@keyframes flash{0%{box-shadow:0 0 0 0 rgba(255,138,31,.9);border-color:var(--flame)}100%{box-shadow:0 0 0 14px rgba(255,138,31,0)}}
+.sc b.bump{animation:pop .5s}
+.pd .blk{transition:height .6s}
+
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="pot-stage">
+    <div class="steam"></div><div class="steam s2"></div><div class="steam s3"></div>
+    <div class="flames">
+      <div class="fl b" style="left:20px;width:60px;height:50px"></div>
+      <div class="fl b" style="right:20px;width:60px;height:50px;animation-delay:.3s"></div>
+      <div class="fl" style="left:0;width:80px;height:110px;animation-delay:.2s"></div>
+      <div class="fl" style="right:0;width:80px;height:120px;animation-delay:.5s"></div>
+      <div class="fl" style="left:70px;width:120px;height:90px;animation-delay:.1s"></div>
+    </div>
+    <svg class="ipot" width="170" height="190" viewBox="0 0 170 190">
+      <defs>
+        <linearGradient id="clay" x1="0" x2="1"><stop offset="0" stop-color="#8a3c1c"/><stop offset=".45" stop-color="#d9773f"/><stop offset="1" stop-color="#7a3316"/></linearGradient>
+        <radialGradient id="ch" cx=".5" cy=".4"><stop offset="0" stop-color="#fff2b8"/><stop offset=".6" stop-color="#ffc94a"/><stop offset="1" stop-color="#c9781e"/></radialGradient>
+      </defs>
+      <path d="M40 40 Q20 70 22 115 Q26 175 85 182 Q144 175 148 115 Q150 70 130 40 Z" fill="url(#clay)"/>
+      <ellipse cx="85" cy="40" rx="50" ry="13" fill="#6b2c12"/>
+      <path d="M38 40 Q50 18 70 30 Q85 10 100 28 Q120 16 132 40 Q110 52 85 50 Q60 52 38 40Z" fill="url(#ch)"/>
+      <path d="M58 46 Q60 70 56 88" stroke="#ffd36a" stroke-width="7" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="intro-txt">
+    <div class="intro-title display">بطاطس بالفخاره</div>
+    <div class="intro-sub">ابنِ فخارتك… وخلّها تنافس 🏆</div>
+    <div class="intro-sub2">المدينة المنورة · عند الاستاد الرياضي بالعزيزية</div>
+  </div>
+  <button class="enter" onclick="document.getElementById('intro').classList.add('gone')">يلا نبدأ 🔥</button>
+</div>
+
+<div class="demo-badge">نسخة تجريبية</div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo"><svg width="28" height="28" viewBox="0 0 170 190"><path d="M40 40 Q20 70 22 115 Q26 175 85 182 Q144 175 148 115 Q150 70 130 40 Z" fill="#f6e6cf"/><path d="M38 40 Q50 18 70 30 Q85 10 100 28 Q120 16 132 40 Q110 52 85 50 Q60 52 38 40Z" fill="#ffc94a"/></svg></div>
+      <div><h1 class="display">بطاطس بالفخاره</h1><small>📍 الترك الأصفر cj62 · عند الاستاد</small></div>
+    </div>
+  </header>
+
+  <!-- MENU -->
+  <section class="view on" id="v-menu">
+    <div class="hero">
+      <button class="h1" onclick="go('build')"><span class="big">🏺</span>ابنِ فخارتك<small>اختار طبقاتها وسمّها باسمك</small></button>
+      <button class="h2" onclick="go('rank')"><span class="big">🏆</span>ترتيب الأسبوع<small>🔴 مباشر الحين</small></button>
+    </div>
+    <div class="livebar" onclick="go('rank')"><span class="dot"></span><div id="feed"><span>جاري التحديث…</span></div></div>
+    <div class="cats" id="cats"></div>
+    <div id="menuList"></div>
+  </section>
+
+  <!-- BUILD -->
+  <section class="view" id="v-build">
+    <div class="stage">
+      <div class="potbox">
+        <div class="pot-glow"></div>
+        <div class="pot"><div class="window" id="win"></div></div>
+        <div class="rim"></div>
+        <div id="drips"></div>
+        <div class="steamB"></div><div class="steamB" style="left:38%;animation-delay:.9s"></div>
+      </div>
+      <div class="price-pill"><b id="price">١٥ ر.س</b></div>
+      <div class="dots" id="dots"></div>
+    </div>
+    <div id="stepBox"></div>
+  </section>
+
+  <!-- CART -->
+  <section class="view" id="v-cart">
+    <h2 class="sec display">سلتك 🛒</h2>
+    <div id="cartList"></div>
+  </section>
+
+  <!-- CHECKOUT -->
+  <section class="view" id="v-checkout">
+    <h2 class="sec display">إتمام الطلب</h2>
+    <div id="coBox"></div>
+  </section>
+
+  <!-- DONE -->
+  <section class="view" id="v-done">
+    <div id="doneBox"></div>
+  </section>
+
+  <!-- RANK -->
+  <section class="view" id="v-rank">
+    <div class="live">
+      <span class="tag"><i></i> مباشر</span>
+      <h2 class="display" style="font-size:30px;margin-top:8px">ترتيب الأسبوع</h2>
+      <p style="color:#f1a7b0;font-size:14px">يتحدث لحظة بلحظة مع كل طلب · الفائزين يتعلنون في بث الخميس ٩ مساءً</p>
+      <div class="cd" id="cd"></div>
+    </div>
+    <div class="livebar"><span class="dot"></span><div id="feed2"><span>…</span></div></div>
+    <div class="podium" id="podium"></div>
+    <h2 class="sec display" style="margin-top:22px">كيف تفوز؟</h2>
+    <div class="how">
+      <div><b>🏺</b>ابنِ فخارتك وسمّها</div>
+      <div><b>📲</b>شارك اسمها مع ربعك</div>
+      <div><b>🔥</b>كل طلب لها = نقطة لك</div>
+      <div><b>🔴</b>الفائزين في البث</div>
+    </div>
+    <h2 class="sec display" style="margin-top:22px">الترتيب المباشر</h2>
+    <p class="lead">عجبتك فخارة أحد؟ أضفها لسلتك بنفس التشكيلة، وتنحسب له نقطة أول ما تطلب.</p>
+    <div id="list" style="position:relative"></div>
+    <div class="note">الأسماء والأرقام هنا تجريبية، والطلبات «المباشرة» محاكاة للعرض. في النسخة الحقيقية الترتيب يتحدث من الطلبات الفعلية عند كل العملاء، ويتصفّر كل أسبوع بعد البث.</div>
+  </section>
+
+  <!-- OWNER -->
+  <section class="view" id="v-owner">
+    <h2 class="sec display">لوحة المحل 🔥</h2>
+    <p class="lead">شاشة لصاحب المحل والكاشير. الطلبات توصل هنا أول ما العميل يدفع.</p>
+    <div class="seg2" style="margin-top:12px"><button id="ot1" class="on" onclick="oTab='orders';renderOwner()">🧾 الطلبات</button><button id="ot2" onclick="oTab='admin';renderOwner()">📊 الإدارة</button></div>
+    <div id="ownerBox"></div>
+  </section>
+
+  <footer>بطاطس بالفخاره · 📍 المدينة المنورة · الاستاد الرياضي بالعزيزية<br>تيك توك @v.vtm · للتواصل 0501940281<br><span style="opacity:.8">نسخة تجريبية مقدّمة لبطاطس بالفخاره — تصميم وتطوير: نرجس العمري · 0556211944</span></footer>
+</div>
+
+<div id="cartBar" onclick="go('cart')"><span class="cnt" id="cbCount">٠</span><span>عرض السلة</span><span id="cbTotal">٠ ر.س</span></div>
+
+<nav><div class="in">
+  <button data-v="menu" class="on" onclick="go('menu')"><span class="ic">🍟</span>المنيو</button>
+  <button data-v="build" onclick="go('build')"><span class="ic">🏺</span>ابنِ فخارتك</button>
+  <button data-v="rank" onclick="go('rank')"><span class="ic">🏆</span>الترتيب</button>
+  <button data-v="owner" onclick="go('owner')"><span class="ic">📊</span>لوحة المحل</button>
+</div></nav>
+<div id="payOv"><div class="paycard" id="payCard"></div></div>
+<div id="toast"></div>
+
+<script>
+const PHONE='966501940281';
+const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2200)}
+
+/* ================= MENU ================= */
+const MENU=[
+ {c:'فخار',n:'بطاطس دجاج بالفخارة',e:'🏺',cal:550,b:'الأكثر طلبًا',p:[['صغير',15],['وسط',18],['كبير',22]]},
+ {c:'فخار',n:'باستا بالدجاج بالفخارة',e:'🍝',cal:520,p:[['',17]]},
+ {c:'بطاطس',n:'بطاطس مقلي فريش',e:'🍟',cal:312,p:[['صغير',6],['وسط',10]]},
+ {c:'بطاطس',n:'بطاطس عمان',e:'🥔',cal:291,p:[['',10]]},
+ {c:'بطاطس',n:'بطاطس دوريتوس',e:'🌶️',cal:418,p:[['',10]]},
+ {c:'بطاطس',n:'بطاطس حلزوني',e:'🌀',cal:430,p:[['',10]]},
+ {c:'ساندويتش',n:'سندوتش دجاج مدخن',e:'🥪',cal:340,p:[['',11]]},
+ {c:'حلا',n:'حلا أم علي بالفخار',e:'🍮',b:'جديد',p:[['',15]],demo:true},
+ {c:'مشروبات',n:'عصير برتقال بالفخار',e:'🍊',p:[['',10]]},
+ {c:'مشروبات',n:'موهيتو ريد بالفراولة',e:'🍓',p:[['',10]]},
+ {c:'مشروبات',n:'عصير جي',e:'🥤',p:[['',12]]},
+ {c:'مشروبات',n:'عصيرات',e:'🧃',p:[['',3]]},
+ {c:'مشروبات',n:'حمضيات',e:'🥫',p:[['',3]]},
+];
+const CATS=['الكل','فخار','بطاطس','ساندويتش','حلا','مشروبات'];
+let cat='الكل';
+function renderMenu(){
+  document.getElementById('cats').innerHTML=CATS.map(c=>`<button class="${c===cat?'on':''}" onclick="cat='${c}';renderMenu()">${c}</button>`).join('');
+  document.getElementById('menuList').innerHTML=MENU.map((m,i)=>({...m,i})).filter(m=>cat==='الكل'||m.c===cat).map(m=>`
+   <div class="mi"><div class="th">${m.e}</div><div class="in2">
+     <h3>${m.n}</h3>
+     ${m.cal?`<div class="meta">${ar(m.cal)} سعرة حرارية</div>`:''}
+     ${m.b?`<span class="badge">🔥 ${m.b}</span>`:''}${m.demo?`<span class="badge" style="color:var(--muted);background:var(--bg2)">السعر تجريبي</span>`:''}
+     <div class="sz">${SOLD[m.i]?'<span class="badge" style="background:rgba(214,40,58,.2);color:#ff8a95">نفد اليوم</span>':m.p.map((p,j)=>`<button onclick="addMenu(${m.i},${j})">${p[0]?p[0]+' · ':'أضف · '}<b>${ar(p[1])} ر.س</b></button>`).join('')}</div>
+   </div></div>`).join('');
+}
+
+/* ================= CART ================= */
+let cart=store.get('fk_cart')||[];
+function saveCart(){store.set('fk_cart',cart);updateBar()}
+function addMenu(i,j){
+  const m=MENU[i],p=m.p[j],id='m'+i+'-'+j,f=cart.find(x=>x.id===id);
+  if(f)f.q++;else cart.push({id,e:m.e,n:m.n+(p[0]?' ('+p[0]+')':''),d:'',u:p[1],q:1});
+  saveCart();toast('انضافت للسلة 🛒');
+}
+function addPot(name,by,pk){
+  const id='p'+name+JSON.stringify(pk),f=cart.find(x=>x.id===id);
+  const u=potPrice(pk,false), dr=STEPS[6].o[pk.drink];
+  if(f)f.q++;else cart.push({id,e:'🏺',n:'فخارة «'+name+'»',d:'تشكيلة '+by+' · '+recipeText(pk),u,q:1,pot:{name,by}});
+  if(dr.p){const di=MENU.findIndex(m=>m.n===dr.n); if(di>=0){addMenuSilent(di,0)}}
+  saveCart();toast('انضافت فخارة «'+name+'» للسلة 🛒');
+}
+function addMenuSilent(i,j){const m=MENU[i],p=m.p[j],id='m'+i+'-'+j,f=cart.find(x=>x.id===id);if(f)f.q++;else cart.push({id,e:m.e,n:m.n+(p[0]?' ('+p[0]+')':''),d:'',u:p[1],q:1})}
+const sub=()=>cart.reduce((s,x)=>s+x.u*x.q,0);
+function updateBar(){
+  const n=cart.reduce((s,x)=>s+x.q,0), v=document.querySelector('.view.on');
+  const hide=['v-cart','v-checkout','v-done'].includes(v&&v.id);
+  document.getElementById('cartBar').classList.toggle('show',n>0&&!hide);
+  document.getElementById('cbCount').textContent=ar(n);
+  document.getElementById('cbTotal').textContent=ar(sub())+' ر.س';
+}
+function chq(k,d){const x=cart.find(c=>c.id===k);if(!x)return;x.q+=d;if(x.q<=0)cart=cart.filter(c=>c!==x);saveCart();renderCart()}
+function renderCart(){
+  const b=document.getElementById('cartList');
+  if(!cart.length){b.innerHTML=`<div class="qcard step" style="text-align:center;margin-top:14px"><div style="font-size:44px">🛒</div><h3 style="font-size:18px;margin:8px 0">سلتك فاضية</h3><p class="lead">ابدأ من المنيو أو ابنِ فخارتك بنفسك.</p><div class="nav-row"><button class="btn" onclick="go('menu')">المنيو</button><button class="btn ghost" style="flex:1" onclick="go('build')">ابنِ فخارتك</button></div></div>`;return}
+  b.innerHTML=cart.map(x=>`<div class="ci"><span class="em">${x.e}</span><div class="t"><b>${esc(x.n)}</b>${x.d?`<small>${esc(x.d)}</small>`:''}<small style="color:var(--cheese)">${ar(x.u)} ر.س</small></div>
+    <div class="qty"><button onclick="chq('${esc(x.id)}',-1)">−</button><b>${ar(x.q)}</b><button onclick="chq('${esc(x.id)}',1)">+</button></div></div>`).join('')+
+   `<button class="btn ghost full" style="margin-top:12px" onclick="go('menu')">+ أضف أصناف ثانية</button>
+    <div class="sumbox"><div class="r"><span>المجموع</span><span>${ar(sub())} ر.س</span></div><div class="r"><span>شامل ضريبة القيمة المضافة</span><span>✓</span></div>
+    <div class="r tot"><span>الإجمالي</span><span>${ar(sub())} ر.س</span></div></div>
+    <button class="btn full" style="margin-top:14px" onclick="go('checkout')">إتمام الطلب ←</button>`;
+}
+
+/* ================= CHECKOUT ================= */
+let co=store.get('fk_co')||{name:'',phone:'',car:''};
+let pk={mode:'now',day:0,slot:null}, payM='apple';
+const OPEN_H=16, CLOSE_H=25;
+function slotLabel(m){m=((m%1440)+1440)%1440;let h=Math.floor(m/60),mi=m%60;return ar(h%12||12)+':'+ar(String(mi).padStart(2,'0'))+(h>=12?' م':' ص')}
+function slots(day){
+  const now=new Date(), nowM=now.getHours()*60+now.getMinutes()+(now.getHours()<2?1440:0), out=[];
+  for(let m=OPEN_H*60;m<CLOSE_H*60;m+=30){
+    if(day===0&&m<nowM+40)continue;
+    out.push({m,left:[0,4,6,2,8,5,1,7,3][(m/30+day*7)%9]});
+  }
+  return out;
+}
+function renderCheckout(){
+  if(!cart.length){go('cart');return}
+  const sl=slots(pk.day);
+  document.getElementById('coBox').innerHTML=`
+   <div class="lbl2">👤 بياناتك</div>
+   <input class="field" placeholder="الاسم" value="${esc(co.name)}" oninput="co.name=this.value">
+   <input class="field" style="margin-top:10px;direction:ltr;text-align:right" inputmode="tel" placeholder="05xxxxxxxx" value="${esc(co.phone)}" oninput="co.phone=this.value">
+   <div class="lbl2">⏰ متى تستلم؟</div>
+   <div class="chips">
+     <button class="chip ${pk.mode==='now'?'on':''}" onclick="pk.mode='now';pk.slot=null;renderCheckout()"><span class="em">🔥</span><span><b>الحين</b><small>جاهزة خلال ٢٥ دقيقة تقريبًا</small></span></button>
+     <button class="chip ${pk.mode==='pre'?'on':''}" onclick="pk.mode='pre';renderCheckout()"><span class="em">📅</span><span><b>طلب مسبق</b><small>حدد وقتك وتلقاها جاهزة</small></span></button>
+   </div>
+   ${pk.mode==='pre'?`<div class="seg2">${['اليوم','بكرة'].map((d,i)=>`<button class="${pk.day===i?'on':''}" onclick="pk.day=${i};pk.slot=null;renderCheckout()">${d}</button>`).join('')}</div>
+   <div class="slotgrid">${sl.length?sl.map(s=>`<button class="${pk.slot===s.m?'on':''} ${s.left?'':'full'}" ${s.left?`onclick="pk.slot=${s.m};renderCheckout()"`:'disabled'}>${slotLabel(s.m)}<small>${s.left?(s.left<=2?'باقي '+ar(s.left)+' 🔥':'متاح'):'ممتلئ'}</small></button>`).join(''):'<p class="lead">خلصت أوقات اليوم، اختار بكرة 🙏</p>'}</div>`:''}
+   <input class="field" style="margin-top:12px;font-size:15px;font-weight:500" maxlength="40" placeholder="🚗 لون السيارة ونوعها (نوصلها لك)" value="${esc(co.car)}" oninput="co.car=this.value">
+   <div class="lbl2">💳 طريقة الدفع</div>
+   <div class="pay">
+     ${[['apple','<span class="ap"> Pay</span> Apple Pay'],['mada','<span class="md">مدى</span> مدى'],['card','💳 بطاقة ائتمانية'],['cash','💵 كاش عند الاستلام']].map(p=>`<button class="${payM===p[0]?'on':''}" onclick="payM='${p[0]}';renderCheckout()">${p[1]}</button>`).join('')}
+   </div>
+   <div class="sumbox">
+     ${cart.map(x=>`<div class="r"><span>${ar(x.q)}× ${esc(x.n)}</span><span>${ar(x.u*x.q)}</span></div>`).join('')}
+     <div class="r tot"><span>الإجمالي</span><span>${ar(sub())} ر.س</span></div>
+   </div>
+   <button class="btn full" style="margin-top:14px" onclick="placeOrder()">${payM==='cash'?'أكّد الطلب':'ادفع '+ar(sub())+' ر.س'}</button>
+   <button class="btn ghost full" style="margin-top:10px" onclick="go('cart')">→ رجوع للسلة</button>`;
+}
+function placeOrder(){
+  if(!co.name.trim()){toast('اكتب اسمك ✍️');return}
+  if(!/^05\d{8}$/.test(co.phone.replace(/\s/g,''))){toast('اكتب رقم جوال صحيح 05xxxxxxxx');return}
+  if(pk.mode==='pre'&&pk.slot==null){toast('اختار وقت الاستلام ⏰');return}
+  store.set('fk_co',co);
+  if(payM==='cash'){finishOrder();return}
+  const ov=document.getElementById('payOv'),c=document.getElementById('payCard');
+  const nm={apple:'Apple Pay',mada:'مدى',card:'البطاقة الائتمانية'}[payM];
+  c.innerHTML=`<div style="font-weight:900;font-size:17px">الدفع عبر ${nm}</div><div class="spin"></div><div style="font-size:22px;font-weight:900">${ar(sub())} ر.س</div><div style="font-size:12px;color:#7a5a44;margin-top:8px">بوابة دفع تجريبية: ما فيه أي مبلغ حقيقي ينخصم</div>`;
+  ov.classList.add('on');
+  setTimeout(()=>{c.innerHTML=`<div class="check">✓</div><div style="font-weight:900;font-size:18px">تم الدفع بنجاح</div>`;setTimeout(()=>{ov.classList.remove('on');finishOrder()},900)},1600);
+}
+let lastOrder=null;
+function finishOrder(){
+  const no=Math.floor(100+Math.random()*900), now=new Date(), nowM=now.getHours()*60+now.getMinutes();
+  const t=pk.mode==='pre'?pk.slot:nowM+25;
+  lastOrder={no,items:JSON.parse(JSON.stringify(cart)),total:sub(),pre:pk.mode==='pre',day:pk.day,t,pay:payM,name:co.name.trim(),car:co.car.trim()};
+  // points to pots
+  cart.filter(x=>x.pot).forEach(x=>{for(let k=0;k<x.q;k++)bump(x.pot.name,co.name.trim(),true)});
+  lastOrder.st=0;
+  if(!lastOrder.pre||lastOrder.day===0){
+    ORDERS.push({no,name:lastOrder.name,items:lastOrder.items.map(x=>x.n+(x.q>1?' ×'+ar(x.q):'')).join(' · '),total:lastOrder.total,t,car:lastOrder.car,st:0,pre:lastOrder.pre,pay:{apple:'Apple Pay',mada:'مدى',card:'بطاقة',cash:'كاش'}[payM],mine:true});
+  }
+  cart=[];saveCart();pk={mode:'now',day:0,slot:null};
+  go('done');
+}
+function renderDone(){
+  const o=lastOrder;if(!o){go('menu');return}
+  const when=o.pre?`${['اليوم','بكرة'][o.day]} الساعة ${slotLabel(o.t)}`:`تقريبًا الساعة ${slotLabel(o.t)}`;
+  document.getElementById('doneBox').innerHTML=`<div class="made" style="margin-top:16px">
+    <div class="check">✓</div>
+    <div class="nm display">انطلب! 🔥</div>
+    <div class="by">رقم الطلب #${ar(o.no)} · ${o.pay==='cash'?'الدفع كاش عند الاستلام':'مدفوع ✓'}</div>
+    <div class="recipe" style="text-align:right">${o.items.map(x=>`${ar(x.q)}× ${esc(x.n)}`).join('<br>')}<br><span>الإجمالي:</span> ${ar(o.total)} ر.س<br><span>الاستلام:</span> ${when}${o.car?`<br><span>السيارة:</span> ${esc(o.car)}`:''}</div>
+    <div class="track" style="text-align:right">
+      ${[['📝','استلمنا طلبك',''],['🔥','فخارتك في الفرن',o.pre?'قبل موعدك بـ٢٥ دقيقة':''],['✅','جاهزة للاستلام',o.car?'نوصلها لسيارتك':'']].map((s,i)=>`<div class="tstep" id="ts${i}"><div class="c">${s[0]}</div><div><b>${s[1]}</b><small>${s[2]}</small></div></div>`).join('')}
+    </div>
+    <button class="btn full" style="margin-top:16px" onclick="go('rank')">🏆 شوف الترتيب المباشر</button>
+    <button class="btn ghost full" style="margin-top:10px" onclick="go('owner')">📊 شوف طلبك في لوحة المحل</button>
+    <button class="btn ghost full" style="margin-top:10px" onclick="go('menu')">رجوع للمنيو</button>
+  </div>`;
+  updateTrack();
+}
+
+function updateTrack(){const o=lastOrder;if(!o)return;const st=Math.min(2,o.st||0);[0,1,2].forEach(i=>{const e=document.getElementById('ts'+i);if(e)e.classList.toggle('on',i<=st)})}
+/* ================= BUILDER ================= */
+const STEPS=[
+ {id:'size',t:'اختار الحجم',o:[{n:'صغير',e:'🏺',p:15,h:.72,s:'١٥ ر.س'},{n:'وسط',e:'🏺',p:18,h:.86,s:'١٨ ر.س'},{n:'كبير',e:'🏺',p:22,h:1,s:'٢٢ ر.س'}]},
+ {id:'base',t:'القاعدة',o:[{n:'بطاطس كلاسيك',e:'🍟',p:0,c:'#f2c14e',tx:'fries'},{n:'بطاطس حلزوني',e:'🌀',p:2,c:'#e9a93a',tx:'curly'},{n:'بطاطس عمان',e:'🥔',p:1,c:'#f5d77a',tx:'chips'},{n:'دوريتوس',e:'🌶️',p:2,c:'#e8792b',tx:'chips'}]},
+ {id:'protein',t:'البروتين',o:[{n:'دجاج',e:'🍗',p:0,c:'#c98b4f'},{n:'دجاج مدخن',e:'🔥',p:3,c:'#8f5a33'},{n:'بدون',e:'🚫',p:0,c:null}]},
+ {id:'cheese',t:'الجبن',o:[{n:'موزاريلا',e:'🧀',p:0,c:'#fff1c2',d:1},{n:'شيدر',e:'🧀',p:0,c:'#ffb52e',d:1},{n:'مزيج ٣ أجبان',e:'🧀',p:3,c:'#ffd56a',d:2},{n:'دبل جبن (يسيل)',e:'🫠',p:4,c:'#ffcf3a',d:3}]},
+ {id:'sauce',t:'الصوص',o:[{n:'ثوم',e:'🧄',p:0,c:'#fbf3e4'},{n:'حار',e:'🌶️',p:0,c:'#d6283a'},{n:'رانش',e:'🥛',p:0,c:'#eef3e2'},{n:'باربكيو',e:'🍖',p:0,c:'#6b2a12'},{n:'بدون',e:'🚫',p:0,c:null}]},
+ {id:'top',t:'اللمسة الأخيرة',sub:'اختار اللي تبي (+١ ر.س للواحدة)',multi:true,o:[{n:'هالبينو',e:'🫑',p:1,c:'#3ba34a'},{n:'دوريتوس مكسر',e:'🔺',p:1,c:'#ff7a1a'},{n:'ذرة',e:'🌽',p:1,c:'#ffe14d'},{n:'زيتون',e:'🫒',p:1,c:'#2b2b2b'},{n:'فلفل ملون',e:'🌈',p:1,c:'#e23b3b'},{n:'بقدونس',e:'🌿',p:1,c:'#2f8f3a'}]},
+ {id:'drink',t:'تبي مشروب معها؟',o:[{n:'موهيتو ريد بالفراولة',e:'🍓',p:10},{n:'عصير برتقال بالفخار',e:'🍊',p:10},{n:'عصير جي',e:'🥤',p:12},{n:'لا شكرًا',e:'🙅',p:0}]},
+ {id:'name',t:'سمّ فخارتك'}
+];
+const NAMES=['البركان الذهبي','فخارة الاستاد','الحارّة الهادية','الجبن السايل','قنبلة العزيزية','فخارة الأبطال','المدخّنة الملكية','سيل الشيدر'];
+const DEF=()=>({size:2,base:0,protein:0,cheese:0,sauce:1,top:[],drink:3});
+let pick=DEF(), step=0, pname='', creator=(store.get('fk_co')||{}).name||'';
+function texture(tx,c){
+  if(tx==='fries')return `repeating-linear-gradient(80deg,${c} 0 9px,#d99a2b 9px 11px,${c} 11px 18px)`;
+  if(tx==='curly')return `radial-gradient(circle at 25% 50%,transparent 6px,${c} 7px 10px,transparent 11px),radial-gradient(circle at 75% 50%,transparent 6px,${c} 7px 10px,transparent 11px),#c9832a`;
+  return `radial-gradient(ellipse 14px 8px at 30% 40%,${c} 90%,transparent),radial-gradient(ellipse 14px 8px at 70% 65%,${c} 90%,transparent),radial-gradient(ellipse 14px 8px at 50% 20%,${c} 90%,transparent),#b9772a`;
+}
+function renderPot(){
+  const S=STEPS,sz=S[0].o[pick.size],win=document.getElementById('win');let L=[];
+  const done=id=>S.findIndex(s=>s.id===id)<=step;
+  if(done('base')){const b=S[1].o[pick.base];L.push({k:'b'+pick.base,h:42,bg:texture(b.tx,b.c)})}
+  if(done('protein')){const p=S[2].o[pick.protein];if(p.c)L.push({k:'p'+pick.protein,h:16,bg:`radial-gradient(circle at 20% 50%,${p.c} 7px,transparent 8px) 0 0/28px 100%,radial-gradient(circle at 70% 30%,#a8703f 6px,transparent 7px) 0 0/34px 100%,${p.c}cc`})}
+  if(done('cheese')){const c=S[3].o[pick.cheese];L.push({k:'c'+pick.cheese,h:10+c.d*4,bg:`radial-gradient(circle at 30% 30%,#c9781e55 4px,transparent 5px) 0 0/22px 100%,linear-gradient(${c.c},#f2b33a)`,wave:1})}
+  if(done('sauce')){const s=S[4].o[pick.sauce];if(s.c)L.push({k:'s'+pick.sauce,h:6,bg:`repeating-linear-gradient(110deg,${s.c} 0 6px,transparent 6px 14px)`})}
+  if(done('top')&&pick.top.length)L.push({k:'t'+pick.top.join(''),h:9,bg:pick.top.map((t,i)=>`radial-gradient(circle,${S[5].o[t].c} 3px,transparent 4px) ${i*9}px ${i%2*5}px/22px 14px`).join(',')});
+  const prev=[...win.children].map(x=>x.dataset.k);
+  win.parentElement.style.transform=`scale(${.8+sz.h*.2})`;
+  win.innerHTML=L.map(l=>`<div class="layer" data-k="${l.k}" style="height:${l.h}%;background:${l.bg};${prev.includes(l.k)?'animation:none;':''}${l.wave?'border-top-left-radius:40% 30%;border-top-right-radius:40% 30%':''}"></div>`).join('');
+  const d=done('cheese')?S[3].o[pick.cheese].d:0;
+  document.getElementById('drips').innerHTML=[30,70,120,150].slice(0,d?d+1:0).map((x,i)=>`<div class="drip" style="left:${x}px;height:${[26,40,22,34][i]}px;background:${S[3].o[pick.cheese].c}"></div>`).join('');
+}
+function potPrice(p,withDrink=true){const S=STEPS;return S[0].o[p.size].p+S[1].o[p.base].p+S[2].o[p.protein].p+S[3].o[p.cheese].p+p.top.length+(withDrink?S[6].o[p.drink].p:0)}
+function renderPrice(){const el=document.getElementById('price');el.textContent=ar(potPrice(pick))+' ر.س';el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),200)}
+function renderDots(){document.getElementById('dots').innerHTML=STEPS.map((s,i)=>`<i class="${i===step?'on':i<step?'done':''}"></i>`).join('')}
+function renderStep(){
+  const S=STEPS[step],box=document.getElementById('stepBox');
+  if(S.id==='name')return renderName();
+  box.innerHTML=`<div class="step"><div class="k">الخطوة ${ar(step+1)} من ${ar(STEPS.length)}</div><h3>${S.t}</h3>${S.sub?`<p class="lead" style="margin:-8px 0 12px">${S.sub}</p>`:''}
+   <div class="chips">${S.o.map((o,i)=>{const on=S.multi?pick.top.includes(i):pick[S.id]===i;const sb=S.id==='size'?o.s:(o.p?'+'+ar(o.p)+' ر.س':'بدون زيادة');
+     return `<button class="chip ${on?'on':''}" onclick="choose(${i})"><span class="em">${o.e}</span><span><b>${o.n}</b><small>${sb}</small></span></button>`}).join('')}</div>
+   <div class="nav-row">${step>0?'<button class="btn ghost" onclick="back()">→</button>':''}<button class="btn" onclick="next()">التالي ←</button></div></div>`;
+}
+function choose(i){const S=STEPS[step];if(S.multi)pick.top=pick.top.includes(i)?pick.top.filter(x=>x!==i):[...pick.top,i];else pick[S.id]=i;renderStep();renderPot();renderPrice()}
+function next(){if(step<STEPS.length-1){step++;renderAll();scrollTo({top:0,behavior:'smooth'})}}
+function back(){if(step>0){step--;renderAll()}}
+function renderAll(){renderDots();renderStep();renderPot();renderPrice()}
+function recipeText(p){const S=STEPS;return [S[0].o[p.size].n,S[1].o[p.base].n,p.protein!==2?S[2].o[p.protein].n:null,S[3].o[p.cheese].n,p.sauce!==4?'صوص '+S[4].o[p.sauce].n:null,...p.top.map(t=>S[5].o[t].n)].filter(Boolean).join(' · ')}
+function renderName(){
+  const dr=STEPS[6].o[pick.drink];
+  document.getElementById('stepBox').innerHTML=`<div class="step"><div class="k">الخطوة الأخيرة</div><h3>سمّ فخارتك 🏷️</h3>
+   <input class="field" id="pn" maxlength="24" placeholder="مثلاً: البركان الذهبي" value="${esc(pname)}" oninput="pname=this.value">
+   <div class="sugg">${[...NAMES].sort(()=>Math.random()-.5).slice(0,4).map(n=>`<button onclick="pname='${n}';document.getElementById('pn').value=pname">${n}</button>`).join('')}</div>
+   <input class="field" style="margin-top:12px;font-size:15px;font-weight:500" maxlength="20" placeholder="اسمك (يطلع في الترتيب)" value="${esc(creator)}" oninput="creator=this.value">
+   <div class="recipe"><span>تشكيلتك:</span> ${recipeText(pick)}${dr.p?`<br><span>المشروب:</span> ${dr.n}`:''}</div>
+   <div class="total"><span>المجموع</span><span>${ar(potPrice(pick))} ر.س</span></div>
+   <div class="nav-row"><button class="btn ghost" onclick="back()">→</button><button class="btn" onclick="finishPot()">أضف للسلة وادخل المنافسة 🔥</button></div>
+   <div class="note">أسعار الإضافات تجريبية للعرض.</div></div>`;
+}
+function finishPot(){
+  pname=(pname||'').trim();creator=(creator||'').trim();
+  if(!pname){toast('سمّ فخارتك أول ✍️');return}
+  if(!creator){toast('اكتب اسمك عشان يطلع في الترتيب');return}
+  let r=rows.find(x=>x.name===pname);
+  if(!r){rows.push({name:pname,by:creator,score:0,pick:JSON.parse(JSON.stringify(pick)),mine:true});saveMine()}
+  addPot(pname,creator,pick);
+  document.getElementById('stepBox').innerHTML=`<div class="made"><div style="font-size:13px;color:var(--flame);font-weight:900">🎉 فخارتك في السلة ودخلت الترتيب</div>
+    <div class="nm display">«${esc(pname)}»</div><div class="by">تشكيلة ${esc(creator)}</div>
+    <div class="recipe" style="text-align:right">${recipeText(pick)}</div>
+    <button class="btn full" style="margin-top:14px" onclick="go('cart')">🛒 روح للسلة واطلب</button>
+    <button class="btn ghost full" style="margin-top:10px" onclick="share()">📲 انسخ رسالة لربعك</button>
+    <button class="btn ghost full" style="margin-top:10px;font-size:13px" onclick="restart()">ابنِ فخارة جديدة</button></div>`;
+  step=STEPS.length;renderDots();
+}
+function share(){const t=`سويت فخارتي في بطاطس بالفخاره واسمها «${pname}» 🔥 اطلبوها باسمها عشان أفوز في ترتيب الأسبوع 🏆`;
+  if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>toast('انتسخت الرسالة ✅'),()=>toast('ما قدرت أنسخ'));else toast('ما قدرت أنسخ')}
+function restart(){pick=DEF();step=0;pname='';renderAll()}
+
+/* ================= LIVE RANKING ================= */
+let rows=[
+ {name:'البركان الذهبي',by:'أبو فهد',score:47,pick:{size:2,base:3,protein:1,cheese:3,sauce:1,top:[0,1],drink:3}},
+ {name:'فخارة الاستاد',by:'ريم',score:44,pick:{size:2,base:0,protein:0,cheese:2,sauce:3,top:[2],drink:0}},
+ {name:'سيل الشيدر',by:'عبدالله',score:41,pick:{size:1,base:1,protein:0,cheese:1,sauce:0,top:[],drink:3}},
+ {name:'الحارّة الهادية',by:'جود',score:38,pick:{size:1,base:2,protein:1,cheese:0,sauce:1,top:[0],drink:1}},
+ {name:'المدخّنة الملكية',by:'سلطان',score:33,pick:{size:0,base:0,protein:1,cheese:2,sauce:3,top:[4,5],drink:3}},
+ {name:'فخارة الأبطال',by:'نوف',score:29,pick:{size:2,base:1,protein:0,cheese:3,sauce:2,top:[1,2],drink:3}},
+];
+(store.get('fk_mine')||[]).forEach(m=>{if(!rows.find(r=>r.name===m.name))rows.push(m)});
+function saveMine(){store.set('fk_mine',rows.filter(r=>r.mine))}
+const PRIZES=['فخارة مجانية 🏺','حلا أم علي 🍮','جائزة مفاجأة ❓'];
+const sorted=()=>[...rows].sort((a,b)=>b.score-a.score);
+let flashName=null;
+const BUYERS=['خالد','سارة','منيرة','فهد','ليان','عمر','ماجد','رهف','تركي','هيا','بندر','شهد'];
+function bump(name,buyer,real){
+  const r=rows.find(x=>x.name===name);if(!r)return;
+  r.score++;flashName=name;if(r.mine)saveMine();
+  const msg=`🔥 ${buyer} طلب «${name}» ${real?'الحين':'قبل لحظات'}`;
+  ['feed','feed2'].forEach(id=>{const f=document.getElementById(id);if(f)f.innerHTML=`<span>${esc(msg)}</span>`});
+  if(document.getElementById('v-rank').classList.contains('on'))renderRank();
+}
+function simulate(){
+  const s=sorted(), pool=s.filter(r=>!r.mine);
+  // weighted toward the chasers so the ranks actually move
+  const r=pool[Math.random()*Math.min(5,pool.length)|0];
+  bump(r.name,BUYERS[Math.random()*BUYERS.length|0],false);
+  setTimeout(simulate,4000+Math.random()*4000);
+}
+function renderRank(){
+  const s=sorted(), list=document.getElementById('list');
+  const before={};list.querySelectorAll('.lb').forEach(e=>before[e.dataset.k]=e.getBoundingClientRect().top);
+  const pd=(r,i,cls)=>r?`<div class="pd ${cls}"><div class="who">${esc(r.name)}<small>${esc(r.by)}</small></div><div class="blk"><span class="medal">${['🥇','🥈','🥉'][i]}</span><b style="color:#2a1810">${ar(r.score)} طلب</b><span class="prize">${PRIZES[i]}</span></div></div>`:'<div></div>';
+  document.getElementById('podium').innerHTML=pd(s[1],1,'p2')+pd(s[0],0,'p1')+pd(s[2],2,'p3');
+  list.innerHTML=s.map((r,i)=>`<div class="lb ${r.mine?'mine':''} ${r.name===flashName?'flash':''}" data-k="${esc(r.name)}">
+    <div class="rk ${i<3?'r'+(i+1):''}">${ar(i+1)}</div>
+    <div class="n"><b>${esc(r.name)}${r.mine?' (فخارتك)':''}</b><small>${esc(r.by)} · ${recipeText(r.pick)}</small></div>
+    <div class="sc"><b class="${r.name===flashName?'bump':''}">${ar(r.score)}</b><small>طلب</small></div>
+    <button class="try" onclick="tryIt('${esc(r.name).replace(/'/g,'&#39;')}')">+ للسلة</button></div>`).join('');
+  list.querySelectorAll('.lb').forEach(e=>{const b=before[e.dataset.k];if(b==null)return;const d=b-e.getBoundingClientRect().top;if(d){e.style.transition='none';e.style.transform=`translateY(${d}px)`;requestAnimationFrame(()=>{e.style.transition='';e.style.transform=''})}});
+  flashName=null;
+}
+function tryIt(name){const r=rows.find(x=>x.name===name);if(r)addPot(r.name,r.by,r.pick)}
+function nextLive(){const d=new Date();let add=(4-d.getDay()+7)%7;d.setHours(21,0,0,0);if(add===0&&new Date()>d)add=7;d.setDate(d.getDate()+add);return d}
+const LIVE=nextLive();
+function tick(){let s=Math.max(0,(LIVE-new Date())/1000|0);const D=s/86400|0;s%=86400;const H=s/3600|0;s%=3600;const M=s/60|0;s%=60;
+  document.getElementById('cd').innerHTML=[[D,'يوم'],[H,'ساعة'],[M,'دقيقة'],[s,'ثانية']].map(x=>`<div><b>${ar(String(x[0]).padStart(2,'0'))}</b><span>${x[1]}</span></div>`).join('')}
+
+/* ================= OWNER ================= */
+let oTab='orders', autoAdv=true, myOrders=[];
+const nowM=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
+let ORDERS=[
+ {no:412,name:'خالد',items:'فخارة «البركان الذهبي» · موهيتو',total:34,t:nowM()+20,car:'كامري أبيض',st:1,pre:false,pay:'مدى'},
+ {no:413,name:'ريم',items:'بطاطس دجاج بالفخارة (كبير) ×٢',total:44,t:nowM()+25,car:'تاهو أسود',st:0,pre:false,pay:'Apple Pay'},
+ {no:409,name:'منيرة',items:'فخارة «سيل الشيدر» · حلا أم علي',total:35,t:nowM()+5,car:'',st:2,pre:false,pay:'كاش'},
+ {no:398,name:'فهد',items:'باستا بالدجاج بالفخارة · بطاطس حلزوني',total:27,t:19*60+30,car:'اكسنت رمادي',st:0,pre:true,pay:'Apple Pay'},
+ {no:401,name:'سارة',items:'فخارة «فخارة الاستاد» ×٣',total:66,t:20*60,car:'يوكن',st:0,pre:true,pay:'مدى'},
+ {no:404,name:'عمر',items:'بطاطس دجاج بالفخارة (وسط)',total:18,t:20*60,car:'',st:0,pre:true,pay:'كاش'},
+ {no:405,name:'ليان',items:'فخارة «الحارّة الهادية» · عصير برتقال',total:32,t:21*60,car:'سوناتا',st:0,pre:true,pay:'Apple Pay'},
+];
+const ST=['جديد','في الفرن','جاهز للاستلام','تم التسليم'];
+let SOLD={};
+function advance(o){if(o.st<3){o.st++;if(o.mine&&lastOrder&&lastOrder.no===o.no)lastOrder.st=o.st;renderLive()}}
+function autoTick(){
+  if(autoAdv){
+    const due=ORDERS.filter(o=>o.st<3&&(!o.pre||o.mine)).sort((a,b)=>a.st-b.st||a.t-b.t);
+    const c=due.find(o=>o.st===0)||due.find(o=>o.st===1)||due.find(o=>o.st===2);
+    if(c)advance(c);
+  }
+  setTimeout(autoTick,7000);
+}
+function renderLive(){
+  if(document.getElementById('v-owner').classList.contains('on'))renderOwner();
+  if(document.getElementById('v-done').classList.contains('on'))updateTrack();
+}
+function orderCard(o){
+  const btn=['🔥 أدخلها الفرن','✅ جاهزة','📦 تم التسليم'][o.st];
+  return `<div class="ocard ${o.mine?'mine':''}"><div class="oh"><b>#${ar(o.no)} · ${esc(o.name)}${o.mine?' (طلبك)':''}</b><span class="ost s${o.st}">${ST[o.st]}</span></div>
+   <div class="oi">${esc(o.items)}</div>
+   <div class="om"><span>⏰ ${o.pre?'مسبق ':''}${slotLabel(o.t)}</span>${o.car?`<span>🚗 ${esc(o.car)}</span>`:''}<span>💳 ${o.pay}</span><b>${ar(o.total)} ر.س</b></div>
+   ${o.st<3?`<button class="btn ${o.st===2?'ghost':''} full" style="margin-top:10px;padding:10px;font-size:14px" onclick="advance(ORDERS.find(x=>x.no===${o.no}))">${btn}</button>`:''}</div>`;
+}
+function renderOwner(){
+  document.getElementById('ot1').classList.toggle('on',oTab==='orders');document.getElementById('ot2').classList.toggle('on',oTab==='admin');
+  const box=document.getElementById('ownerBox');
+  if(oTab==='orders'){
+    const cols=[0,1,2].map(st=>ORDERS.filter(o=>o.st===st&&!(o.pre&&st===0&&!o.mine&&o.t-nowM()>60)));
+    const later=ORDERS.filter(o=>o.pre&&o.st===0&&!o.mine&&o.t-nowM()>60).sort((a,b)=>a.t-b.t);
+    box.innerHTML=`<label class="autoadv"><input type="checkbox" ${autoAdv?'checked':''} onchange="autoAdv=this.checked"> تقدّم تلقائي للطلبات (للعرض التجريبي)</label>
+    ${[['🆕 جديد',0],['🔥 في الفرن',1],['✅ جاهز للاستلام',2]].map(([t,i])=>`<div class="lbl2">${t} <span class="cnt2">${ar(cols[i].length)}</span></div>${cols[i].length?cols[i].map(orderCard).join(''):'<p class="lead">ما فيه طلبات</p>'}`).join('')}
+    <div class="lbl2">📅 طلبات مسبقة لاحقًا <span class="cnt2">${ar(later.length)}</span></div>
+    ${later.map(o=>`<div class="lb" style="margin-top:8px"><div class="rk" style="width:auto;padding:0 8px;border-radius:10px;font-size:12px">${slotLabel(o.t)}</div><div class="n"><b>#${ar(o.no)} · ${esc(o.name)}</b><small>${esc(o.items)}</small></div><div class="sc"><small>ادخلها الفرن</small><b style="font-size:13px">${slotLabel(o.t-25)}</b></div></div>`).join('')}`;
+    return;
+  }
+  const done=ORDERS.length+38, sales=ORDERS.reduce((s,o)=>s+o.total,0)+912;
+  const all=ORDERS.filter(o=>o.pre||o.st<3).sort((a,b)=>a.t-b.t),by={};
+  all.forEach(o=>{const h=Math.floor(o.t/60)%24;by[h]=(by[h]||0)+1});
+  const hours=Object.keys(by).map(Number).sort((a,b)=>a-b),max=Math.max(...Object.values(by));
+  box.innerHTML=`<div class="owner"><div style="font-weight:900">اليوم</div><div class="row3" style="grid-template-columns:1fr 1fr">
+     <div><b>${ar(done)}</b><span>طلبات اليوم</span></div><div><b>${ar(sales)}</b><span>المبيعات (ر.س)</span></div>
+     <div><b>${ar(Math.round(sales/done))}</b><span>متوسط الطلب (ر.س)</span></div><div><b style="font-size:16px">البركان الذهبي</b><span>الأكثر طلبًا 🏆</span></div></div></div>
+   <div class="owner"><div style="font-weight:900">جدول الفرن · الفخارات حسب الوقت</div>${hours.map(h=>`<div class="bar"><span>${slotLabel(h*60)}</span><i style="width:${by[h]/max*70}%"></i><b>${ar(by[h])}</b></div>`).join('')}</div>
+   <div class="owner"><div style="font-weight:900">توفّر الأصناف</div><p class="lead" style="margin-top:4px">أي صنف تقفلونه هنا يظهر «نفد» في المنيو مباشرة.</p>
+     ${MENU.map((m,i)=>`<label class="avl"><span>${m.e} ${m.n}</span><input type="checkbox" ${SOLD[i]?'':'checked'} onchange="SOLD[${i}]=!this.checked;renderMenu()"><i></i></label>`).join('')}</div>
+   <div class="note">في النسخة الفعلية: المنيو والأسعار والإضافات تتعدّل من جدول Google Sheets بدون برمجة، وكل طلب يتسجّل للتقارير اليومية، وترتيب الأسبوع يتحدّث عند كل العملاء لحظيًا.</div>`;
+}
+/* ================= NAV ================= */
+function go(v){
+  document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  scrollTo({top:0});
+  if(v==='rank')renderRank(); if(v==='owner')renderOwner(); if(v==='cart')renderCart();
+  if(v==='checkout')renderCheckout(); if(v==='done')renderDone();
+  if(v==='build'&&step>=STEPS.length)restart();
+  updateBar();
+}
+
+renderMenu();renderAll();updateBar();tick();setInterval(tick,1000);
+setTimeout(simulate,1500);setTimeout(autoTick,7000);
+
+</script>
+</body>
+</html>
