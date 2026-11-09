@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELORA ART STUDIO — احجزي تجربتك</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:wght@500;600&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --olive:#A59C78; --olive-d:#7f7752; --olive-dd:#5f5a3c; --stem:#77753f;
+  --cream:#F8F2E7; --linen:#EFE6D6; --paper:#FFFDF8;
+  --pink:#DE8A8C; --pink-d:#C4676D; --pink-l:#F4D5D3;
+  --ink:#3B3826; --muted:#857d63; --line:#e4d9c4;
+  --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;color:var(--ink);background:var(--cream);
+  background-image:repeating-linear-gradient(0deg,rgba(165,156,120,.05) 0 1px,transparent 1px 4px),repeating-linear-gradient(90deg,rgba(165,156,120,.05) 0 1px,transparent 1px 4px);
+  line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+.latin{font-family:'Italiana',serif;letter-spacing:.12em;direction:ltr;display:inline-block}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ============ INTRO ============ */
+#intro{position:fixed;inset:0;z-index:100;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background-image:repeating-linear-gradient(45deg,rgba(165,156,120,.06) 0 2px,transparent 2px 6px);transition:transform 1s cubic-bezier(.7,0,.2,1),opacity 1s}
+#intro.out{transform:translateY(-100%);opacity:.6}
+#intro .side{position:absolute;top:0;bottom:0;width:min(28vw,260px)}
+#intro .side.l{left:0}#intro .side.r{right:0;transform:scaleX(-1)}
+#intro .side svg{width:100%;height:100%}
+.draw{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2s ease forwards}
+.bloom{transform-box:fill-box;transform-origin:50% 100%;transform:scale(0);animation:bloom .9s cubic-bezier(.3,1.6,.5,1) forwards}
+.dash{stroke-dasharray:6 7;opacity:0;animation:fade .8s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes bloom{to{transform:scale(1)}}
+@keyframes fade{to{opacity:1}}
+.intro-box{position:relative;background:var(--olive);padding:34px 54px 30px;text-align:center;color:var(--cream);
+  clip-path:inset(0 50% 0 50%);animation:openBox 1s .5s cubic-bezier(.7,0,.2,1) forwards}
+@keyframes openBox{to{clip-path:inset(0 0 0 0)}}
+.intro-logo{font-family:'Italiana',serif;font-size:clamp(54px,13vw,110px);line-height:1;letter-spacing:.06em;direction:ltr;display:flex;justify-content:center}
+.intro-logo span{display:inline-block;opacity:0;transform:translateY(24px);animation:rise .7s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.intro-sub{font-family:'Tajawal';font-weight:700;letter-spacing:.25em;font-size:15px;margin-top:10px;opacity:0;animation:fade .8s 1.9s forwards;direction:ltr}
+.intro-tag{font-size:11px;letter-spacing:.3em;opacity:0;animation:fade .8s 2.2s forwards;direction:ltr}
+.intro-skip{position:absolute;bottom:28px;font-size:13px;color:var(--muted);opacity:0;animation:fade .6s 1.2s forwards}
+
+/* ============ HEADER ============ */
+header{position:sticky;top:0;z-index:20;background:rgba(248,242,231,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.brand{font-family:'Italiana',serif;font-size:28px;letter-spacing:.1em;color:var(--olive-d);direction:ltr}
+.brand small{font-family:'Tajawal';font-size:9px;letter-spacing:.25em;display:block;margin-top:-8px;color:var(--muted)}
+nav{display:flex;gap:4px}
+nav a{color:var(--ink);text-decoration:none;font-size:14px;padding:6px 12px;border-radius:99px;font-weight:500}
+nav a:hover{background:var(--linen)}
+@media(max-width:640px){nav a.hide-m{display:none}}
+
+/* ============ HERO ============ */
+.hero{position:relative;padding:46px 0 30px;text-align:center;overflow:hidden}
+.hero-banner{position:relative;margin:0 auto;max-width:720px;display:grid;grid-template-columns:70px 1fr 70px;align-items:stretch;box-shadow:0 20px 50px -25px rgba(95,90,60,.45)}
+.hero-banner .fl{background:var(--paper);overflow:hidden}
+.hero-banner .fl svg{width:100%;height:100%}
+.hero-banner .mid{background:var(--olive);color:var(--cream);padding:30px 16px 24px}
+.hero-banner .mid .logo{font-family:'Italiana',serif;font-size:clamp(50px,11vw,92px);line-height:1;letter-spacing:.06em;direction:ltr}
+.hero-banner .mid .s1{font-weight:700;letter-spacing:.28em;font-size:13px;direction:ltr}
+.hero-banner .mid .s2{font-size:10px;letter-spacing:.3em;opacity:.9;direction:ltr}
+.hero h1{font-size:clamp(24px,5vw,36px);font-weight:800;margin-top:30px;line-height:1.4}
+.hero h1 em{font-style:normal;color:var(--pink-d)}
+.hero p{color:var(--muted);margin:8px auto 22px;max-width:520px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 26px;border-radius:99px;font-weight:700;transition:.2s;font-size:15px}
+.btn.p{background:var(--olive-dd);color:var(--cream)}
+.btn.p:hover{background:var(--ink);transform:translateY(-2px)}
+.btn.o{border:1.5px solid var(--olive-d);color:var(--olive-dd)}
+.btn.o:hover{background:var(--linen)}
+.btn.pk{background:var(--pink-d);color:#fff}
+.btn:disabled{opacity:.45;pointer-events:none}
+.hero .ctas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.trust{display:flex;gap:22px;justify-content:center;margin-top:28px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.trust b{display:block;font-size:22px;color:var(--olive-dd)}
+
+/* ============ SECTIONS ============ */
+section.blk{padding:46px 0}
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.sec-h h2{font-size:26px;font-weight:800}
+.sec-h h2 .latin{font-size:15px;color:var(--pink-d);display:block;letter-spacing:.25em}
+.sec-h p{color:var(--muted);font-size:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:7px 16px;border-radius:99px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;font-weight:500;transition:.2s}
+.chip.on{background:var(--olive);border-color:var(--olive);color:#fff}
+
+/* workshops */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.ws{background:var(--paper);border-radius:var(--r);overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;transition:.25s}
+.ws:hover{transform:translateY(-4px);box-shadow:0 18px 40px -22px rgba(95,90,60,.5)}
+.ws .art{aspect-ratio:3/2;position:relative}
+.ws .art svg{width:100%;height:100%;display:block}
+.ws .date{position:absolute;top:12px;right:12px;background:var(--paper);border-radius:12px;padding:4px 12px;text-align:center;line-height:1.25;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.ws .date b{display:block;font-size:20px;color:var(--olive-dd)}
+.ws .date span{font-size:11px;color:var(--muted)}
+.ws .tag{position:absolute;bottom:12px;right:12px;background:rgba(59,56,38,.72);color:#fff;font-size:12px;padding:3px 10px;border-radius:99px}
+.ws .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.ws h3{font-size:18px;font-weight:800;line-height:1.4}
+.ws .meta{font-size:13px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.ws .desc{font-size:14px;color:#5e5843}
+.seats{margin-top:auto}
+.seats .bar{height:7px;background:var(--linen);border-radius:9px;overflow:hidden}
+.seats .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--olive),var(--olive-d));border-radius:9px}
+.seats .lbl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;color:var(--muted)}
+.seats .lbl b.hot{color:var(--pink-d)}
+.ws .foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.price{font-size:20px;font-weight:800;color:var(--olive-dd)}
+.price small{font-size:12px;font-weight:500;color:var(--muted)}
+.ws .foot .btn{padding:9px 20px;font-size:14px}
+
+/* events */
+.events{background:var(--olive);color:var(--cream);border-radius:28px;padding:34px 26px;position:relative;overflow:hidden}
+.events .deco{position:absolute;left:-20px;bottom:-30px;width:180px;opacity:.35;pointer-events:none}
+.events h2{font-size:26px;font-weight:800}
+.events h2 .latin{font-size:14px;letter-spacing:.25em;display:block;color:var(--pink-l)}
+.events>p{opacity:.9;margin-bottom:20px;font-size:15px}
+.etypes{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:18px}
+.etype{background:rgba(255,253,248,.12);border:1.5px solid rgba(255,253,248,.25);border-radius:16px;padding:14px 10px;text-align:center;color:var(--cream);transition:.2s}
+.etype .ic{font-size:26px;display:block}
+.etype.on{background:var(--cream);color:var(--olive-dd);border-color:var(--cream)}
+.pk-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0}
+.pkg{background:rgba(255,253,248,.1);border:1.5px solid rgba(255,253,248,.25);border-radius:16px;padding:14px;text-align:right;color:var(--cream);transition:.2s}
+.pkg b{font-size:16px;display:block}
+.pkg span{font-size:12.5px;opacity:.85;display:block}
+.pkg .pp{font-size:15px;font-weight:800;margin-top:6px;opacity:1}
+.pkg.on{background:var(--cream);color:var(--olive-dd)}
+.efields{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.events label{font-size:13px;display:block;margin-bottom:4px;opacity:.9}
+.events input,.events select{width:100%;padding:11px 14px;border-radius:12px;border:none;background:var(--paper);color:var(--ink)}
+.est{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;flex-wrap:wrap;background:rgba(59,56,38,.25);border-radius:16px;padding:14px 18px}
+.est b{font-size:24px}
+.events .btn.p{background:var(--cream);color:var(--olive-dd)}
+
+/* gallery */
+.gal-note{background:var(--paper);border:1.5px dashed var(--pink);border-radius:var(--r);padding:16px 18px;display:flex;gap:14px;align-items:center;margin-bottom:20px}
+.gal-note .q{flex-shrink:0;width:64px;height:64px;background:#fff;border-radius:10px;padding:5px;border:1px solid var(--line)}
+.gal-note p{font-size:14px;color:#5e5843}
+.gal-note b{color:var(--ink)}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.pt{background:var(--paper);border-radius:var(--r);padding:10px;border:1px solid var(--line);position:relative}
+.pt .frame{border:8px solid #fff;box-shadow:0 0 0 1px var(--line),0 10px 22px -14px rgba(0,0,0,.4);aspect-ratio:4/5;overflow:hidden}
+.pt .frame svg{width:100%;height:100%;display:block}
+.pt .info{display:flex;justify-content:space-between;align-items:center;padding:10px 4px 2px}
+.pt .info b{font-size:15px}
+.pt .info small{display:block;color:var(--muted);font-size:12px}
+.heart{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:99px;background:var(--linen);font-weight:700;font-size:14px;transition:.2s}
+.heart svg{width:18px;height:18px;fill:none;stroke:var(--pink-d);stroke-width:2}
+.heart.on{background:var(--pink-l)}
+.heart.on svg{fill:var(--pink-d)}
+.heart.pop{animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.25)}}
+.pt.hl{outline:3px solid var(--pink-d);outline-offset:4px;animation:pop .6s 2}
+.crown{position:absolute;top:2px;left:2px;background:var(--pink-d);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:99px;z-index:2;box-shadow:0 4px 12px rgba(196,103,109,.4)}
+
+/* footer */
+footer{margin-top:40px;background:var(--olive-dd);color:var(--cream);padding:34px 0 26px;text-align:center}
+footer .logo{font-family:'Italiana',serif;font-size:44px;letter-spacing:.08em;direction:ltr}
+footer .tl{font-size:11px;letter-spacing:.3em;direction:ltr;opacity:.8}
+footer p{font-size:14px;opacity:.85;margin-top:12px}
+footer .by{margin-top:20px;font-size:12px;opacity:.7}
+footer .by a{color:var(--pink-l)}
+footer .adm-link{margin-top:14px;display:inline-block;font-size:13px;color:var(--cream);border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:6px 16px}
+
+/* ============ SHEET ============ */
+.ov{position:fixed;inset:0;background:rgba(40,38,25,.5);z-index:50;opacity:0;pointer-events:none;transition:.3s;display:flex;align-items:flex-end;justify-content:center}
+.ov.show{opacity:1;pointer-events:auto}
+.sheet{background:var(--cream);width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:26px 26px 0 0;padding:22px 22px 28px;transform:translateY(100%);transition:.4s cubic-bezier(.2,.8,.2,1)}
+.ov.show .sheet{transform:none}
+@media(min-width:700px){.ov{align-items:center}.sheet{border-radius:26px}}
+.sheet .grab{width:44px;height:5px;background:var(--line);border-radius:9px;margin:-8px auto 14px}
+.sheet h3{font-size:20px;font-weight:800}
+.sheet .sub{color:var(--muted);font-size:13.5px;margin-bottom:16px}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+.fld input,.fld textarea,.fld select{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);outline:none;transition:.2s}
+.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:var(--olive)}
+.fld .err{color:var(--pink-d);font-size:12px;display:none}
+.fld.bad .err{display:block}.fld.bad input{border-color:var(--pink-d)}
+.step{display:flex;align-items:center;gap:14px}
+.step button{width:40px;height:40px;border-radius:50%;background:var(--paper);border:1.5px solid var(--line);font-size:20px;font-weight:700}
+.step b{font-size:20px;min-width:24px;text-align:center}
+.paym{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.paym button{padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);font-weight:500;font-size:14px}
+.paym button.on{border-color:var(--olive-d);background:var(--linen);font-weight:700}
+.total{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px dashed var(--line);margin-top:6px}
+.total b{font-size:22px;color:var(--olive-dd)}
+.sheet .btn{width:100%}
+.x{float:left;width:34px;height:34px;border-radius:50%;background:var(--linen);font-size:18px}
+
+/* ticket */
+.ticket{background:var(--olive);color:var(--cream);border-radius:22px;overflow:hidden;position:relative;animation:rise .6s both}
+.ticket .top{padding:20px 22px 16px;text-align:center}
+.ticket .top .logo{font-family:'Italiana',serif;font-size:34px;letter-spacing:.1em;direction:ltr}
+.ticket .cut{border-top:2px dashed rgba(255,253,248,.4);position:relative;margin:0 14px}
+.ticket .cut:before,.ticket .cut:after{content:'';position:absolute;top:-13px;width:26px;height:26px;border-radius:50%;background:var(--cream)}
+.ticket .cut:before{right:-27px}.ticket .cut:after{left:-27px}
+.ticket .bot{padding:18px 22px 22px;display:flex;gap:16px;align-items:center}
+.ticket .qr{width:104px;height:104px;background:#fff;border-radius:12px;padding:7px;flex-shrink:0}
+.ticket .rows{font-size:13.5px;flex:1}
+.ticket .rows div{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,253,248,.15);padding:4px 0}
+.ticket .code{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.12em;direction:ltr}
+.okmsg{text-align:center;margin:16px 0 4px;font-size:14px;color:var(--muted)}
+
+/* toast */
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--ink);color:var(--cream);padding:12px 22px;border-radius:99px;font-size:14px;z-index:90;transition:.4s cubic-bezier(.2,.8,.2,1);white-space:nowrap}
+#toast.show{transform:translate(-50%,0)}
+
+/* ============ ADMIN ============ */
+#admin{display:none;min-height:100vh}
+body.adm #site{display:none}
+body.adm #admin{display:block}
+.adm-top{background:var(--olive-dd);color:var(--cream)}
+.adm-top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.adm-top .brand{color:var(--cream)}
+.adm-top .brand small{color:var(--pink-l)}
+.adm-top a{color:var(--cream);font-size:13px;border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:6px 14px;text-decoration:none}
+.atabs{display:flex;gap:6px;overflow-x:auto;padding:16px 0 4px;scrollbar-width:none}
+.atabs button{white-space:nowrap;padding:9px 16px;border-radius:99px;background:var(--paper);border:1.5px solid var(--line);font-weight:500;font-size:14px;position:relative}
+.atabs button.on{background:var(--olive-dd);border-color:var(--olive-dd);color:var(--cream)}
+.atabs .dot{position:absolute;top:-4px;left:-2px;background:var(--pink-d);color:#fff;font-size:11px;min-width:20px;height:20px;border-radius:99px;display:grid;place-items:center;padding:0 5px}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin:18px 0}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stat small{color:var(--muted);font-size:13px}
+.stat b{display:block;font-size:28px;color:var(--olive-dd);line-height:1.3}
+.stat.pk b{color:var(--pink-d)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.card h4{font-size:16px;font-weight:800;margin-bottom:12px}
+.occ{display:grid;grid-template-columns:1fr 2fr auto;gap:10px;align-items:center;font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--linen)}
+.occ:last-child{border:none}
+.occ .bar{height:9px;background:var(--linen);border-radius:9px;overflow:hidden}
+.occ .bar i{display:block;height:100%;background:var(--olive);border-radius:9px}
+.occ .bar i.full{background:var(--pink-d)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--linen);flex-wrap:wrap}
+.row:last-child{border:none}
+.row .who{flex:1;min-width:160px}
+.row .who b{display:block}
+.row .who small{color:var(--muted);font-size:12.5px}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;font-weight:700;white-space:nowrap}
+.pill.ok{background:#e5ead2;color:#56602a}
+.pill.wait{background:#f7e6c8;color:#8a6420}
+.pill.new{background:var(--pink-l);color:var(--pink-d)}
+.pill.no{background:#eee;color:#888}
+.sbtn{padding:6px 12px;border-radius:10px;font-size:13px;font-weight:700;background:var(--linen)}
+.sbtn.g{background:var(--olive);color:#fff}
+.sbtn.r{background:var(--pink-l);color:var(--pink-d)}
+.addf{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.addf .fld{margin:0}
+.empty{text-align:center;color:var(--muted);padding:24px;font-size:14px}
+.reset{font-size:12.5px;color:var(--muted);text-decoration:underline;margin:20px auto;display:block}
+.demo-b{background:var(--pink-l);color:var(--pink-d);font-size:12.5px;text-align:center;padding:6px;font-weight:500}
+
+.reveal{opacity:0;transform:translateY(24px);transition:1s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+
+<!-- ================= INTRO ================= -->
+<div id="intro" onclick="endIntro()">
+  <div class="side l"><svg id="introSideL" viewBox="0 0 200 800" preserveAspectRatio="xMidYMid slice"></svg></div>
+  <div class="side r"><svg id="introSideR" viewBox="0 0 200 800" preserveAspectRatio="xMidYMid slice"></svg></div>
+  <div class="intro-box">
+    <div class="intro-logo" id="introLogo"></div>
+    <div class="intro-sub">ART STUDIO</div>
+    <div class="intro-tag">CREATE . INSPIRE . BLOOM</div>
+  </div>
+  <div class="intro-skip">اضغطي للتخطي</div>
+</div>
+
+<!-- ================= SITE ================= -->
+<div id="site">
+<div class="demo-b">نسخة تجريبية (ديمو) — الورش والأسعار للعرض فقط</div>
+<header>
+  <div class="wrap">
+    <div class="brand">ELORA<small>ART STUDIO</small></div>
+    <nav>
+      <a href="#workshops">الورش</a>
+      <a href="#events">مناسبتك</a>
+      <a href="#gallery" class="hide-m">المعرض</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-banner reveal">
+      <div class="fl" id="heroFlL"></div>
+      <div class="mid">
+        <div class="logo">ELORA</div>
+        <div class="s1">ART STUDIO</div>
+        <div class="s2">CREATE . INSPIRE . BLOOM</div>
+      </div>
+      <div class="fl" id="heroFlR" style="transform:scaleX(-1)"></div>
+    </div>
+    <h1 class="reveal">مكانك الهادي <em>لتصنعين بحب</em><br>وتطلعين بذكرى حلوة</h1>
+    <p class="reveal">ورش فنية وتجارب إبداعية وحفلات ميلاد وتخرج في المدينة المنورة. اختاري ورشتك واحجزي مقعدك بخطوة وحدة.</p>
+    <div class="ctas reveal">
+      <a href="#workshops" class="btn p">احجزي مقعدك</a>
+      <a href="#events" class="btn o">نظّمي مناسبتك معنا</a>
+    </div>
+    <div class="trust reveal">
+      <div><b id="tWs">5</b>ورش هالشهر</div>
+      <div><b>+300</b>مبدعة شاركتنا</div>
+      <div><b>📍</b>المدينة المنورة</div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="workshops">
+  <div class="wrap">
+    <div class="sec-h reveal">
+      <h2><span class="latin">WORKSHOPS</span>الورش الجاية</h2>
+      <div class="chips" id="filters">
+        <button class="chip on" data-f="all">الكل</button>
+        <button class="chip" data-f="studio">بالستوديو</button>
+        <button class="chip" data-f="sea">على البحر</button>
+        <button class="chip" data-f="kids">للصغار</button>
+      </div>
+    </div>
+    <div class="grid" id="wsGrid"></div>
+  </div>
+</section>
+
+<section class="blk" id="events">
+  <div class="wrap">
+    <div class="events reveal">
+      <svg class="deco" viewBox="0 0 200 300" id="evDeco"></svg>
+      <h2><span class="latin">YOUR OCCASION</span>مناسبتك على طريقتنا</h2>
+      <p>عيد ميلاد، أو تخرج، أو جمعة صديقات… نجهز لك ورشة خاصة بالثيم والألوان اللي تبينها، وأنتِ بس تحضرين.</p>
+      <form id="evForm" novalidate>
+        <div class="etypes" id="etypes"></div>
+        <div class="efields">
+          <div><label>اسمك</label><input id="evName" placeholder="مثال: ريم"></div>
+          <div><label>رقم الجوال</label><input id="evPhone" inputmode="numeric" placeholder="05xxxxxxxx"></div>
+          <div><label>التاريخ المقترح</label><input id="evDate" type="date"></div>
+          <div><label>عدد الحضور</label><input id="evGuests" type="number" min="4" max="60" value="10"></div>
+          <div><label>الثيم أو الألوان</label><input id="evTheme" placeholder="مثال: وردي وأبيض، زهور"></div>
+        </div>
+        <div class="pk-row" id="pkgs"></div>
+        <div class="est">
+          <div><small style="opacity:.85">التكلفة التقديرية</small><br><b id="evEst">0</b> <small>ر.س</small></div>
+          <button class="btn p" type="submit">أرسلي الطلب</button>
+        </div>
+        <div id="evDone"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="gallery">
+  <div class="wrap">
+    <div class="sec-h reveal">
+      <h2><span class="latin">ELORA GALLERY</span>معرض إيلورا</h2>
+      <p>أعمال المشاركات من كل ورشنا: لوحات وصحون وتصاميم وغيرها. صوّتي للعمل اللي عجبك ❤</p>
+    </div>
+    <div class="gal-note reveal">
+      <div class="q" id="noteQr"></div>
+      <p><b>عملك له مكان 🌷</b><br>أياً كانت الورشة، كل مشاركة تاخذ بعدها كرت فيه رمز QR يفتح صفحة عملها في المعرض، تشاركه مع صاحباتها وهم يصوّتون. والعمل اللي يجمع أكثر أصوات في الشهر تكسب صاحبتها <b>مقعد مجاني</b> في الورشة الجاية.</p>
+    </div>
+    <div class="gal" id="galGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">ELORA</div>
+  <div class="tl">CREATE . INSPIRE . BLOOM</div>
+  <p>ورش فنية وتجارب إبداعية — المدينة المنورة 📍</p>
+  <a href="#admin" class="adm-link">لوحة الإدارة (للعرض)</a>
+  <div class="by">ديمو من تصميم نرجس العمري · <a href="https://narjes455.github.io/">ملف أعمالي</a></div>
+</footer>
+</div>
+
+<!-- ================= ADMIN ================= -->
+<div id="admin">
+  <div class="adm-top">
+    <div class="wrap">
+      <div class="brand">ELORA<small>لوحة الإدارة</small></div>
+      <a href="#home">← الموقع</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="atabs" id="atabs"></div>
+    <div id="apanel"></div>
+    <button class="reset" onclick="resetDemo()">إعادة ضبط بيانات الديمو</button>
+  </div>
+</div>
+
+<div class="ov" id="ov" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const DAYS=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+function pd(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function fmtDate(s){const d=pd(s);return DAYS[d.getDay()]+' '+d.getDate()+' '+MONTHS[d.getMonth()]}
+const fmt=n=>Number(n).toLocaleString('en-US');
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2600)}
+function rnd(seed){let s=seed%2147483647;if(s<=0)s+=2147483646;return()=>(s=s*16807%2147483647)/2147483647}
+function hash(str){let h=7;for(const c of str)h=(h*31+c.charCodeAt(0))>>>0;return h}
+
+/* ---------- flower art (Elora banner motif) ---------- */
+function fan(x,y,s,rot,col='#DE8A8C',dk='#C4676D'){
+  let p='';
+  [-46,-23,0,23,46].forEach(a=>{
+    p+=`<g transform="rotate(${a})"><path d="M0 0 C -9 -14,-11 -34,-6 -46 L 0 -40 L 6 -46 C 11 -34,9 -14,0 0Z" fill="${col}"/><path d="M0 -4 L0 -36 M-3 -12 L-4 -30 M3 -12 L4 -30" stroke="${dk}" stroke-width="1.3" opacity=".65"/></g>`;
+  });
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})">${p}<path d="M-7 2 C -6 10,6 10,7 2 Z" fill="#8f8c55"/></g>`;
+}
+function tulip(x,y,s,c='#DE8A8C'){
+  return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0 C -4 30,6 60,0 95" stroke="#77753f" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M0 60 C -22 48,-34 56,-42 40 C -22 38,-8 46,0 56Z" fill="#8f8c55"/><path d="M0 4 C -16 -4,-20 -24,-12 -38 C -6 -26,-2 -22,0 -30 C 2 -22,6 -26,12 -38 C 20 -24,16 -4,0 4Z" fill="${c}"/><path d="M0 2 C -6 -10,-6 -20,0 -30 M0 2 C 6 -10,6 -20,0 -30" stroke="rgba(120,40,40,.3)" stroke-width="1.5" fill="none"/></g>`;
+}
+function sideFlowers(animated){
+  const a=animated?' class="draw"':'', b=animated?' class="bloom"':'', d=animated?' class="dash"':'';
+  const st=(t)=>animated?` style="animation-delay:${t}s"`:'';
+  return `
+  <rect width="200" height="800" fill="#FFFDF8"/>
+  <path${d}${st(1.3)} d="M150 40 C 90 110, 190 170, 120 250" stroke="#DE8A8C" stroke-width="2.4" fill="none" stroke-dasharray="6 7"/>
+  <path${d}${st(1.5)} d="M40 430 C 110 500, 20 560, 90 640" stroke="#DE8A8C" stroke-width="2.4" fill="none" stroke-dasharray="6 7"/>
+  <path${a}${st(.2)} d="M60 800 C 40 680, 140 600, 110 470 C 95 400, 40 360, 60 300" stroke="#77753f" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path${a}${st(.6)} d="M105 560 C 150 520, 175 500, 200 470" stroke="#77753f" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <g${b}${st(1)}><path d="M85 620 C 30 600, 10 640, -10 610 C 30 590, 60 600, 85 610Z" fill="#8f8c55"/></g>
+  <g${b}${st(1.1)}>${fan(60,300,2.1,-8)}</g>
+  <g${b}${st(1.4)}>${fan(198,470,1.6,40)}</g>
+  <path${a}${st(.4)} d="M20 0 C 40 60, -10 110, 30 170" stroke="#77753f" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <g${b}${st(1.6)}>${fan(30,175,1.5,180)}</g>`;
+}
+function sceneArt(kind,seed=1){
+  const r=rnd(seed*97+13);
+  if(kind==='sea'){
+    const sky=[['#F6C9B8','#F9E3CF'],['#E9B7C0','#F7E1D4'],['#D9C3E0','#F6E2D6']][seed%3];
+    return `<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sk${seed}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient></defs>
+    <rect width="300" height="200" fill="url(#sk${seed})"/><circle cx="${110+r()*80}" cy="98" r="26" fill="#F3A07F" opacity=".9"/>
+    <rect y="104" width="300" height="96" fill="#9DB3AE"/><path d="M0 120 Q 40 112 80 120 T 160 120 T 240 120 T 320 120 V200 H0Z" fill="#7F9C98"/>
+    <path d="M0 146 Q 50 136 100 146 T 200 146 T 300 146 V200 H0Z" fill="#E8DCC4"/>
+    <path d="M30 128 h40 M150 132 h50 M220 124 h40" stroke="#fff" stroke-width="2" opacity=".6" stroke-linecap="round"/>
+    <g transform="translate(220 150)"><rect x="-2" y="-34" width="4" height="40" fill="#6b5a3e" transform="rotate(-12)"/><rect x="-22" y="-44" width="40" height="30" fill="#fff" stroke="#c9bfa8" transform="rotate(-12)"/><circle cx="-6" cy="-32" r="6" fill="#F3A07F" opacity=".8"/></g></svg>`;
+  }
+  if(kind==='plate'){
+    return `<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice"><rect width="300" height="200" fill="#C98F8E"/><rect width="300" height="200" fill="url(#none)" opacity="0"/>
+    <path d="M0 0 H300 V200 H0Z" fill="#B97A7C" opacity=".4"/>
+    <ellipse cx="160" cy="112" rx="112" ry="78" fill="#FFFDF8"/><ellipse cx="160" cy="112" rx="112" ry="78" fill="none" stroke="#C4453F" stroke-width="9"/>
+    <path d="M90 120 C 120 80, 170 150, 230 100" stroke="#5c7a3c" stroke-width="2.5" fill="none"/>
+    ${[[110,104,'#C4453F'],[150,118,'#E0B04B'],[195,112,'#C4453F'],[228,102,'#E0B04B']].map(([x,y,c])=>`<circle cx="${x}" cy="${y}" r="6" fill="${c}"/><path d="M${x-12} ${y+6} q6 -8 12 0" stroke="#5c7a3c" stroke-width="2" fill="none"/>`).join('')}
+    <g transform="translate(40 160) rotate(-30)"><rect width="70" height="7" rx="3" fill="#7f7752"/><path d="M70 0 l14 3.5 l-14 3.5z" fill="#3b3826"/></g></svg>`;
+  }
+  if(kind==='flowers'){
+    const cols=['#DE8A8C','#E9A86F','#C4676D','#F0B7B5','#D9757A'];
+    let g='';for(let i=0;i<5;i++)g+=tulip(70+i*42+r()*10,70+r()*30,.85+r()*.3,cols[(i+seed)%5]);
+    return `<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice"><rect width="300" height="200" fill="#EFE6D6"/><rect x="40" y="18" width="220" height="172" fill="#FFFDF8" stroke="#d9cdb5" stroke-width="2"/>${g}</svg>`;
+  }
+  if(kind==='design'){
+    return `<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice"><rect width="300" height="200" fill="#F8F2E7"/>
+    <path d="M30 200 V110 a40 40 0 0 1 80 0 V200Z" fill="#A59C78"/><path d="M120 200 V80 a45 45 0 0 1 90 0 V200Z" fill="#DE8A8C"/><path d="M220 200 V120 a32 32 0 0 1 64 0 V200Z" fill="#7f7752"/>
+    <circle cx="240" cy="50" r="18" fill="#E9A86F"/><path d="M40 40 q30 -20 60 0 t60 0" stroke="#3b3826" stroke-width="2" fill="none" stroke-dasharray="4 5"/>${fan(165,112,.9,0,'#FFFDF8','#e9c8c5')}</svg>`;
+  }
+  // kids
+  let dots='';for(let i=0;i<26;i++)dots+=`<circle cx="${r()*300}" cy="${r()*200}" r="${3+r()*7}" fill="${['#DE8A8C','#E9A86F','#A59C78','#9DB3AE','#F0B7B5'][i%5]}" opacity=".75"/>`;
+  return `<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice"><rect width="300" height="200" fill="#FBEFE2"/>${dots}
+  <circle cx="150" cy="100" r="42" fill="#F3C25B"/><circle cx="136" cy="94" r="4" fill="#3b3826"/><circle cx="164" cy="94" r="4" fill="#3b3826"/><path d="M134 110 q16 14 32 0" stroke="#3b3826" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  ${Array.from({length:10},(_,i)=>{const a=i*36*Math.PI/180;return `<line x1="${150+Math.cos(a)*52}" y1="${100+Math.sin(a)*52}" x2="${150+Math.cos(a)*66}" y2="${100+Math.sin(a)*66}" stroke="#F3C25B" stroke-width="5" stroke-linecap="round"/>`}).join('')}</svg>`;
+}
+function paintingArt(i,art){
+  if(art&&art!=='painting')return sceneArt(art,i+2).replace('viewBox="0 0 300 200"','viewBox="50 0 200 200"');
+  const kinds=['sea','flowers','moon','plate','bloom','sea','flowers','moon'];
+  const k=kinds[i%kinds.length];
+  if(k==='moon'){const r=rnd(i*31+5);let st='';for(let j=0;j<22;j++)st+=`<circle cx="${r()*200}" cy="${r()*130}" r="${.6+r()*1.4}" fill="#fff" opacity="${.5+r()*.5}"/>`;
+    return `<svg viewBox="0 0 200 250" preserveAspectRatio="xMidYMid slice"><rect width="200" height="250" fill="#2F3B4F"/>${st}<circle cx="132" cy="70" r="26" fill="#F6E7C1"/><circle cx="142" cy="64" r="24" fill="#2F3B4F"/>
+    <rect y="150" width="200" height="100" fill="#3E5468"/><path d="M0 170 Q 50 160 100 170 T 200 170 V250 H0Z" fill="#4A6478"/><path d="M110 150 v100" stroke="#F6E7C1" stroke-width="10" opacity=".25"/></svg>`}
+  if(k==='bloom'){return `<svg viewBox="0 0 200 250" preserveAspectRatio="xMidYMid slice"><rect width="200" height="250" fill="#A59C78"/><path d="M100 250 C 90 200, 120 170, 100 120" stroke="#5f5a3c" stroke-width="6" fill="none"/><path d="M104 200 C 140 180,160 190,175 170 C 150 165,120 180,104 190Z" fill="#5f5a3c"/>${fan(100,122,1.7,0,'#F4D5D3','#DE8A8C')}</svg>`}
+  return sceneArt(k,i+2).replace('viewBox="0 0 300 200"','viewBox="50 0 200 200"');
+}
+function renderWork(g,i){return g.img?`<img src="${g.img}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">`:paintingArt(i,g.art)}
+function readImg(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const m=900,s=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
+function qrSvg(text,fg='#3B3826'){
+  try{
+    if(window.qrcode){const q=qrcode(0,'M');q.addData(text);q.make();const n=q.getModuleCount();let c='';
+      for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(q.isDark(y,x))c+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${fg}"/>`;
+      return `<svg viewBox="-1 -1 ${n+2} ${n+2}" shape-rendering="crispEdges" style="width:100%;height:100%;display:block"><rect x="-1" y="-1" width="${n+2}" height="${n+2}" fill="#fff"/>${c}</svg>`}
+  }catch(e){}
+  return fakeQr(text,fg);
+}
+const SITE_URL=()=>location.href.split('#')[0];
+const paintUrl=id=>SITE_URL()+'#p-'+id;
+function fakeQr(text,fg){
+  const n=25,r=rnd(hash(text)+1);let c='';
+  const finder=(x,y)=>`<rect x="${x}" y="${y}" width="7" height="7" fill="${fg}"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3" fill="${fg}"/>`;
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+    if((x<8&&y<8)||(x>n-9&&y<8)||(x<8&&y>n-9))continue;
+    if(r()>.52)c+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${fg}"/>`;
+  }
+  return `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges" style="width:100%;height:100%;display:block">${c}${finder(0,0)}${finder(n-7,0)}${finder(0,n-7)}</svg>`;
+}
+
+/* ---------- data ---------- */
+const TYPES={studio:'بالستوديو',sea:'على البحر',kids:'للصغار'};
+const ETYPES=[{k:'birthday',ic:'🎂',t:'عيد ميلاد'},{k:'grad',ic:'🎓',t:'تخرج'},{k:'friends',ic:'🌷',t:'جمعة صديقات'},{k:'corp',ic:'💼',t:'فعالية جهة'}];
+const PKGS=[{k:'basic',t:'الأساسية',d:'ورشة رسم + الأدوات كاملة',p:85},{k:'plus',t:'المميزة',d:'ورشة + ضيافة + تنسيق طاولة بالثيم',p:120},{k:'lux',t:'الفاخرة',d:'كل المميزة + كيكة + براويز للوحات + تصوير',p:160}];
+function seed(){
+  return {
+    workshops:[
+      {id:'w1',title:'رسم على البحر وقت الغروب',type:'sea',date:'2026-11-13',time:'4:30 م',place:'رحلة جماعية للبحر',price:220,seats:12,left:4,desc:'نطلع سوا ونرسم البحر مع الغروب، والأدوات والضيافة علينا.',art:'sea'},
+      {id:'w2',title:'تلوين الصحون الفخارية',type:'studio',date:'2026-11-15',time:'7:00 م',place:'الستوديو',price:160,seats:10,left:6,desc:'تلوّنين صحنك بنقشتك الخاصة ويرجع لك بعد الحرق جاهز للاستخدام.',art:'plate'},
+      {id:'w3',title:'لوحة الزهور بالأكريليك',type:'studio',date:'2026-11-18',time:'7:30 م',place:'الستوديو',price:180,seats:8,left:2,desc:'ورشة للمبتدئات، نعلمك الضربات الأساسية وتطلعين بلوحة زهور كاملة.',art:'flowers'},
+      {id:'w4',title:'يوم في حياة مصممة',type:'studio',date:'2026-11-20',time:'5:00 م',place:'الستوديو',price:250,seats:8,left:7,desc:'تجربة تصميم من الفكرة للتنفيذ: لوحة ألوان، ومود بورد، وقطعة تاخذينها معك.',art:'design'},
+      {id:'w5',title:'ورشة الرسم للبنات الصغار',type:'kids',date:'2026-11-22',time:'4:00 م',place:'الستوديو',price:120,seats:10,left:0,desc:'ساعتين رسم وألوان ومرح لأعمار 6 إلى 12 سنة.',art:'kids'}
+    ],
+    bookings:[
+      {code:'ELR-2741',name:'لمى',phone:'0551234567',wid:'w1',seats:2,total:440,pay:'transfer',status:'confirmed',att:false,at:Date.now()-86400000*2},
+      {code:'ELR-3196',name:'هيا',phone:'0569876543',wid:'w3',seats:1,total:180,pay:'transfer',status:'pending',att:false,at:Date.now()-3600000*5},
+      {code:'ELR-5508',name:'جود',phone:'0541112233',wid:'w2',seats:3,total:480,pay:'studio',status:'confirmed',att:false,at:Date.now()-3600000*20}
+    ],
+    events:[
+      {id:'e1',name:'سارة',phone:'0533332211',type:'grad',guests:14,date:'2026-11-27',theme:'أبيض وذهبي',pkg:'plus',est:1680,status:'new'}
+    ],
+    waitlist:[{name:'دانة',phone:'0507654321',wid:'w5'}],
+    gallery:[
+      {id:'g1',by:'ريم',ws:'رسم على البحر',votes:48},{id:'g2',by:'لمى',ws:'لوحة الزهور',votes:35},
+      {id:'g3',by:'جود',ws:'ليلة القمر',votes:41},{id:'g4',by:'سارة',ws:'تلوين الصحون الفخارية',votes:22,art:'plate'},
+      {id:'g5',by:'هيا',ws:'زهرة إيلورا',votes:29},{id:'g6',by:'دانة',ws:'يوم في حياة مصممة',votes:17,art:'design'}
+    ],
+    voted:{},featured:null
+  };
+}
+let S;
+function load(){try{const v=localStorage.getItem('elora-demo-v2');return v?JSON.parse(v):null}catch(e){return null}}
+function save(){try{localStorage.setItem('elora-demo-v2',JSON.stringify(S))}catch(e){toast('الذاكرة امتلأت، الصور الكثيرة ما تنحفظ بالديمو')}}
+S=load()||seed();
+const W=id=>S.workshops.find(w=>w.id===id);
+
+/* ---------- intro ---------- */
+(function(){
+  $('#introSideL').innerHTML=sideFlowers(true);
+  $('#introSideR').innerHTML=sideFlowers(true);
+  $('#introLogo').innerHTML=[...'ELORA'].map((c,i)=>`<span style="animation-delay:${1+i*.13}s">${c}</span>`).join('');
+  let seen=false;try{seen=sessionStorage.getItem('elora-intro')}catch(e){}
+  if(seen||location.hash==='#admin'||location.hash.startsWith('#p-')){$('#intro').remove();return}
+  setTimeout(endIntro,3700);
+})();
+function endIntro(){const i=$('#intro');if(!i||i.classList.contains('out'))return;i.classList.add('out');try{sessionStorage.setItem('elora-intro','1')}catch(e){}setTimeout(()=>i.remove(),1000)}
+
+/* ---------- static decor ---------- */
+const heroFl=`<svg viewBox="0 0 200 800" preserveAspectRatio="xMidYMid slice">${sideFlowers(false)}</svg>`;
+$('#heroFlL').innerHTML=heroFl;$('#heroFlR').innerHTML=heroFl;
+$('#evDeco').innerHTML=`<path d="M100 300 C 80 230,130 190,100 120" stroke="#F8F2E7" stroke-width="6" fill="none"/>${fan(100,122,2,0,'#F8F2E7','#e8dcc4')}`;
+$('#noteQr').innerHTML=qrSvg(SITE_URL()+'#gallery');
+
+/* ---------- workshops ---------- */
+let filter='all';
+$('#filters').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.f;document.querySelectorAll('#filters .chip').forEach(c=>c.classList.toggle('on',c===b));renderWs()};
+function renderWs(){
+  const list=S.workshops.filter(w=>filter==='all'||w.type===filter).sort((a,b)=>a.date.localeCompare(b.date));
+  $('#tWs').textContent=S.workshops.length;
+  $('#wsGrid').innerHTML=list.length?list.map((w,i)=>{
+    const d=pd(w.date),sold=w.seats-w.left,pct=Math.round(sold/w.seats*100),full=w.left<=0;
+    return `<article class="ws reveal">
+      <div class="art">${sceneArt(w.art,i+1)}
+        <div class="date"><b>${d.getDate()}</b><span>${MONTHS[d.getMonth()]}</span></div>
+        <div class="tag">${TYPES[w.type]}</div></div>
+      <div class="body">
+        <h3>${esc(w.title)}</h3>
+        <div class="meta"><span>🗓 ${DAYS[d.getDay()]} · ${esc(w.time)}</span><span>📍 ${esc(w.place)}</span></div>
+        <div class="desc">${esc(w.desc)}</div>
+        <div class="seats"><div class="lbl"><span>${full?'اكتملت المقاعد':'المقاعد المتبقية'}</span><b class="${w.left<=3?'hot':''}">${full?'—':(w.left<=3?'باقي '+w.left+' فقط 🔥':w.left+' من '+w.seats)}</b></div>
+          <div class="bar"><i style="width:${pct}%"></i></div></div>
+        <div class="foot"><div class="price">${fmt(w.price)} <small>ر.س / للشخص</small></div>
+          ${full?`<button class="btn o" onclick="openWait('${w.id}')">قائمة الانتظار</button>`:`<button class="btn p" onclick="openBook('${w.id}')">احجزي</button>`}</div>
+      </div></article>`}).join(''):'<div class="empty">ما فيه ورش بهالتصنيف حالياً، ترقبوا الجديد 🌷</div>';
+  observe();
+}
+
+/* ---------- sheet ---------- */
+function openSheet(html){$('#sheet').innerHTML='<div class="grab"></div>'+html;$('#ov').classList.add('show')}
+function closeSheet(){$('#ov').classList.remove('show')}
+let bk={};
+function openBook(id){
+  const w=W(id);bk={id,seats:1,pay:'transfer'};
+  openSheet(`<button class="x" onclick="closeSheet()">✕</button><h3>${esc(w.title)}</h3>
+  <div class="sub">${fmtDate(w.date)} · ${esc(w.time)} · ${esc(w.place)}</div>
+  <div class="fld" id="fN"><label>الاسم</label><input id="bName" placeholder="اسمك الكريم"><div class="err">اكتبي اسمك</div></div>
+  <div class="fld" id="fP"><label>رقم الجوال</label><input id="bPhone" inputmode="numeric" maxlength="10" placeholder="05xxxxxxxx"><div class="err">رقم جوال غير صحيح (يبدأ بـ 05 وفيه 10 أرقام)</div></div>
+  <div class="fld"><label>عدد المقاعد</label><div class="step"><button type="button" onclick="bkSeats(-1)">−</button><b id="bSeats">1</b><button type="button" onclick="bkSeats(1)">+</button><small style="color:var(--muted)">متاح ${w.left}</small></div></div>
+  <div class="fld"><label>طريقة الدفع</label><div class="paym" id="bPay"><button type="button" class="on" data-p="transfer">تحويل بنكي</button><button type="button" data-p="studio">الدفع بالستوديو</button></div></div>
+  <div class="fld"><label>ملاحظات (اختياري)</label><input id="bNote" placeholder="مثال: أول مرة أرسم 😄"></div>
+  <div class="total"><span>الإجمالي</span><b><span id="bTotal">${fmt(w.price)}</span> ر.س</b></div>
+  <button class="btn p" onclick="confirmBook()">تأكيد الحجز</button>`);
+  $('#bPay').onclick=e=>{const b=e.target.closest('button');if(!b)return;bk.pay=b.dataset.p;$('#bPay').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))};
+}
+function bkSeats(d){const w=W(bk.id);bk.seats=Math.max(1,Math.min(w.left,bk.seats+d));$('#bSeats').textContent=bk.seats;$('#bTotal').textContent=fmt(bk.seats*w.price)}
+const okPhone=p=>/^05\d{8}$/.test(p);
+function confirmBook(){
+  const name=$('#bName').value.trim(),phone=$('#bPhone').value.trim();
+  $('#fN').classList.toggle('bad',!name);$('#fP').classList.toggle('bad',!okPhone(phone));
+  if(!name||!okPhone(phone))return;
+  const w=W(bk.id);if(w.left<bk.seats){toast('عذراً، المقاعد تغيّرت');return}
+  const code='ELR-'+(1000+Math.floor(Math.random()*9000));
+  const b={code,name,phone,wid:w.id,seats:bk.seats,total:bk.seats*w.price,pay:bk.pay,status:bk.pay==='transfer'?'pending':'confirmed',att:false,note:$('#bNote').value.trim(),at:Date.now()};
+  S.bookings.unshift(b);w.left-=bk.seats;save();renderWs();
+  openSheet(`<div class="ticket"><div class="top"><div class="logo">ELORA</div><div style="font-size:13px;opacity:.9">تذكرة حضور</div><div style="font-size:19px;font-weight:800;margin-top:6px">${esc(w.title)}</div></div>
+    <div class="cut"></div>
+    <div class="bot"><div class="qr">${qrSvg(code)}</div><div class="rows">
+      <div><span>الاسم</span><b>${esc(name)}</b></div><div><span>الموعد</span><b>${fmtDate(w.date)}</b></div>
+      <div><span>الوقت</span><b>${esc(w.time)}</b></div><div><span>المقاعد</span><b>${b.seats}</b></div>
+      <div style="border:none"><span>رقم الحجز</span><span class="code">${code}</span></div></div></div></div>
+    <p class="okmsg">${b.pay==='transfer'?'تم حجز مقعدك مبدئياً 🌷 يتأكد الحجز بعد التحويل، وبيانات الحساب توصلك برسالة.':'تم تأكيد حجزك 🌷 الدفع يكون بالستوديو يوم الورشة.'}<br>اعرضي رمز الـ QR عند الدخول.</p>
+    <button class="btn o" onclick="closeSheet()">تمام</button>`);
+}
+function openWait(id){
+  const w=W(id);
+  openSheet(`<button class="x" onclick="closeSheet()">✕</button><h3>قائمة الانتظار</h3><div class="sub">${esc(w.title)} — اكتملت المقاعد، ونبلغك أول ما يفضى مقعد.</div>
+  <div class="fld" id="fN"><label>الاسم</label><input id="wName"><div class="err">اكتبي اسمك</div></div>
+  <div class="fld" id="fP"><label>رقم الجوال</label><input id="wPhone" inputmode="numeric" maxlength="10" placeholder="05xxxxxxxx"><div class="err">رقم جوال غير صحيح</div></div>
+  <button class="btn p" onclick="joinWait('${id}')">سجليني</button>`);
+}
+function joinWait(id){
+  const name=$('#wName').value.trim(),phone=$('#wPhone').value.trim();
+  $('#fN').classList.toggle('bad',!name);$('#fP').classList.toggle('bad',!okPhone(phone));
+  if(!name||!okPhone(phone))return;
+  S.waitlist.push({name,phone,wid:id});save();closeSheet();toast('سجلناك بقائمة الانتظار 🌷');
+}
+
+/* ---------- events ---------- */
+let ev={type:'birthday',pkg:'plus'};
+function renderEvForm(){
+  $('#etypes').innerHTML=ETYPES.map(t=>`<button type="button" class="etype ${ev.type===t.k?'on':''}" data-k="${t.k}"><span class="ic">${t.ic}</span>${t.t}</button>`).join('');
+  $('#pkgs').innerHTML=PKGS.map(p=>`<button type="button" class="pkg ${ev.pkg===p.k?'on':''}" data-k="${p.k}"><b>${p.t}</b><span>${p.d}</span><span class="pp">${p.p} ر.س / للشخص</span></button>`).join('');
+  calcEv();
+}
+function calcEv(){const g=Math.max(0,+$('#evGuests').value||0);$('#evEst').textContent=fmt(g*PKGS.find(p=>p.k===ev.pkg).p)}
+$('#etypes').onclick=e=>{const b=e.target.closest('.etype');if(b){ev.type=b.dataset.k;renderEvForm()}};
+$('#pkgs').onclick=e=>{const b=e.target.closest('.pkg');if(b){ev.pkg=b.dataset.k;renderEvForm()}};
+$('#evGuests').oninput=calcEv;
+(()=>{const d=new Date();d.setDate(d.getDate()+10);$('#evDate').value=d.toISOString().slice(0,10)})();
+$('#evForm').onsubmit=e=>{
+  e.preventDefault();
+  const name=$('#evName').value.trim(),phone=$('#evPhone').value.trim(),g=+$('#evGuests').value;
+  if(!name){toast('اكتبي اسمك');return}
+  if(!okPhone(phone)){toast('رقم الجوال لازم يبدأ بـ 05 وفيه 10 أرقام');return}
+  if(!g||g<4){toast('أقل عدد للمناسبة 4 أشخاص');return}
+  const est=g*PKGS.find(p=>p.k===ev.pkg).p;
+  S.events.unshift({id:'e'+Date.now(),name,phone,type:ev.type,guests:g,date:$('#evDate').value,theme:$('#evTheme').value.trim(),pkg:ev.pkg,est,status:'new'});save();
+  $('#evDone').innerHTML=`<div style="margin-top:14px;background:var(--cream);color:var(--olive-dd);border-radius:14px;padding:14px;text-align:center;font-weight:700;animation:rise .5s both">وصلنا طلبك يا ${esc(name)} 🌷 بنتواصل معك خلال 24 ساعة لتأكيد التفاصيل.</div>`;
+  e.target.querySelectorAll('input:not([type=date]):not([type=number])').forEach(i=>i.value='');
+};
+
+/* ---------- gallery ---------- */
+function renderGal(){
+  const top=S.featured||[...S.gallery].sort((a,b)=>b.votes-a.votes)[0].id;
+  $('#galGrid').innerHTML=S.gallery.map((g,i)=>`<div class="pt reveal" id="p-${g.id}">${g.id===top?'<div class="crown">👑 عمل الشهر</div>':''}
+    <div class="frame">${renderWork(g,i)}</div>
+    <div class="info"><div><b>${esc(g.by)}</b><small>${esc(g.ws)}</small></div>
+    <button class="heart ${S.voted[g.id]?'on':''}" onclick="vote('${g.id}',this)"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.2 3.2 5 6.6 5c2 0 3.5 1.1 4.4 2.6h2C13.9 6.1 15.4 5 17.4 5c3.4 0 5.6 3.2 4.1 6.8C19.5 16.4 12 21 12 21z"/></svg><span>${g.votes}</span></button></div></div>`).join('');
+  observe();
+}
+function vote(id,btn){
+  const g=S.gallery.find(x=>x.id===id);
+  if(S.voted[id]){S.voted[id]=false;g.votes--}else{S.voted[id]=true;g.votes++;toast('شكراً على تصويتك ❤')}
+  save();btn.classList.toggle('on',!!S.voted[id]);btn.querySelector('span').textContent=g.votes;btn.classList.remove('pop');void btn.offsetWidth;btn.classList.add('pop');
+}
+
+/* ---------- admin ---------- */
+let atab='over';
+const ATABS=[['over','نظرة عامة'],['book','الحجوزات'],['ev','طلبات المناسبات'],['ws','إدارة الورش'],['gal','المعرض']];
+function renderAdmin(){
+  const nEv=S.events.filter(e=>e.status==='new').length,nPend=S.bookings.filter(b=>b.status==='pending').length;
+  $('#atabs').innerHTML=ATABS.map(([k,t])=>{const n=k==='ev'?nEv:k==='book'?nPend:0;return `<button class="${atab===k?'on':''}" onclick="atab='${k}';renderAdmin()">${t}${n?`<span class="dot">${n}</span>`:''}</button>`}).join('');
+  const P=$('#apanel');
+  if(atab==='over'){
+    const seats=S.bookings.reduce((s,b)=>s+b.seats,0),rev=S.bookings.reduce((s,b)=>s+b.total,0);
+    P.innerHTML=`<div class="stats">
+      <div class="stat"><small>الحجوزات</small><b>${S.bookings.length}</b></div>
+      <div class="stat"><small>المقاعد المحجوزة</small><b>${seats}</b></div>
+      <div class="stat"><small>الإيراد المتوقع</small><b>${fmt(rev)} <small>ر.س</small></b></div>
+      <div class="stat pk"><small>تحويلات بانتظار التأكيد</small><b>${nPend}</b></div>
+      <div class="stat pk"><small>طلبات مناسبات جديدة</small><b>${nEv}</b></div>
+      <div class="stat"><small>قائمة الانتظار</small><b>${S.waitlist.length}</b></div></div>
+      <div class="card"><h4>امتلاء الورش</h4>${S.workshops.map(w=>{const p=Math.round((w.seats-w.left)/w.seats*100);return `<div class="occ"><span>${esc(w.title)}</span><div class="bar"><i class="${p>=100?'full':''}" style="width:${p}%"></i></div><b>${w.seats-w.left}/${w.seats}</b></div>`}).join('')}</div>`;
+  }
+  if(atab==='book'){
+    P.innerHTML=`<div class="card"><h4>التحقق من تذكرة عند الدخول</h4><div style="display:flex;gap:8px"><input id="chk" placeholder="رقم الحجز مثل ELR-2741 (أو امسحي الـ QR)" style="flex:1;padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);background:#fff;direction:ltr;text-align:right"><button class="sbtn g" onclick="checkTicket()">تحقق</button></div><div id="chkRes"></div></div><div class="card"><h4>كل الحجوزات</h4>${S.bookings.length?S.bookings.map((b,i)=>{const w=W(b.wid)||{title:'ورشة محذوفة'};return `<div class="row">
+      <div class="who"><b>${esc(b.name)} · <span style="font-family:'Cormorant Garamond';direction:ltr;display:inline-block">${b.code}</span></b><small>${esc(w.title)} · ${b.seats} مقعد · ${fmt(b.total)} ر.س · ${b.pay==='transfer'?'تحويل':'بالستوديو'} · ${esc(b.phone)}</small>${b.note?`<small style="display:block">📝 ${esc(b.note)}</small>`:''}</div>
+      <span class="pill ${b.status==='confirmed'?'ok':'wait'}">${b.status==='confirmed'?'مؤكد':'بانتظار التحويل'}</span>
+      ${b.status==='pending'?`<button class="sbtn g" onclick="S.bookings[${i}].status='confirmed';save();renderAdmin();toast('تم تأكيد الدفع')">تأكيد الدفع</button>`:''}
+      <button class="sbtn ${b.att?'g':''}" onclick="S.bookings[${i}].att=!S.bookings[${i}].att;save();renderAdmin()">${b.att?'✓ حضرت':'تسجيل حضور'}</button></div>`}).join(''):'<div class="empty">ما فيه حجوزات</div>'}</div>
+      <div class="card"><h4>قائمة الانتظار</h4>${S.waitlist.length?S.waitlist.map(x=>`<div class="row"><div class="who"><b>${esc(x.name)}</b><small>${esc((W(x.wid)||{}).title||'')} · ${esc(x.phone)}</small></div><span class="pill new">انتظار</span></div>`).join(''):'<div class="empty">فاضية</div>'}</div>`;
+  }
+  if(atab==='ev'){
+    P.innerHTML=`<div class="card"><h4>طلبات المناسبات الخاصة</h4>${S.events.length?S.events.map((e,i)=>{const t=ETYPES.find(x=>x.k===e.type),p=PKGS.find(x=>x.k===e.pkg);return `<div class="row">
+      <div class="who"><b>${t.ic} ${t.t} — ${esc(e.name)}</b><small>${e.date?fmtDate(e.date):''} · ${e.guests} شخص · باقة ${p.t} · ${fmt(e.est)} ر.س${e.theme?' · الثيم: '+esc(e.theme):''} · ${esc(e.phone)}</small></div>
+      <span class="pill ${e.status==='new'?'new':e.status==='ok'?'ok':'no'}">${e.status==='new'?'جديد':e.status==='ok'?'مقبول':'معتذر'}</span>
+      ${e.status==='new'?`<button class="sbtn g" onclick="S.events[${i}].status='ok';save();renderAdmin();toast('تم قبول الطلب')">قبول</button><button class="sbtn r" onclick="S.events[${i}].status='no';save();renderAdmin()">اعتذار</button>`:''}</div>`}).join(''):'<div class="empty">ما فيه طلبات</div>'}</div>`;
+  }
+  if(atab==='ws'){
+    P.innerHTML=`<div class="card"><h4>الورش الحالية</h4>${S.workshops.map((w,i)=>`<div class="row"><div class="who"><b>${esc(w.title)}</b><small>${fmtDate(w.date)} · ${esc(w.time)} · ${fmt(w.price)} ر.س · ${TYPES[w.type]}</small></div>
+      <div class="step" style="gap:8px"><button style="width:32px;height:32px;font-size:16px" onclick="adjLeft(${i},-1)">−</button><b style="font-size:15px;min-width:64px">${w.left} متاح</b><button style="width:32px;height:32px;font-size:16px" onclick="adjLeft(${i},1)">+</button></div>
+      <button class="sbtn r" onclick="delWs(${i})">حذف</button></div>`).join('')}</div>
+      <div class="card"><h4>إضافة ورشة جديدة</h4><form id="addWs" class="addf">
+        <div class="fld"><label>اسم الورشة</label><input name="title" required placeholder="مثال: رسم بالألوان المائية"></div>
+        <div class="fld"><label>النوع</label><select name="type"><option value="studio">بالستوديو</option><option value="sea">على البحر</option><option value="kids">للصغار</option></select></div>
+        <div class="fld"><label>التاريخ</label><input name="date" type="date" required></div>
+        <div class="fld"><label>الوقت</label><input name="time" value="7:00 م"></div>
+        <div class="fld"><label>السعر (ر.س)</label><input name="price" type="number" value="150" min="0"></div>
+        <div class="fld"><label>عدد المقاعد</label><input name="seats" type="number" value="10" min="1"></div>
+        <div class="fld" style="grid-column:1/-1"><label>وصف قصير</label><input name="desc" placeholder="وش بتسوي المشاركات؟"></div>
+        <button class="btn p" style="grid-column:1/-1">إضافة ونشر بالموقع</button></form></div>`;
+    $('#addWs').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);if(!f.get('title').trim()||!f.get('date')){toast('عبّي الاسم والتاريخ');return}
+      const t=f.get('type'),seats=Math.max(1,+f.get('seats')||10);
+      S.workshops.push({id:'w'+Date.now(),title:f.get('title').trim(),type:t,date:f.get('date'),time:f.get('time')||'',place:t==='sea'?'رحلة جماعية للبحر':'الستوديو',price:+f.get('price')||0,seats,left:seats,desc:f.get('desc').trim()||'ورشة جديدة من إيلورا 🌷',art:t==='sea'?'sea':t==='kids'?'kids':['flowers','plate','design'][S.workshops.length%3]});
+      save();renderWs();renderAdmin();toast('انضافت الورشة وصارت ظاهرة بالموقع')};
+  }
+  if(atab==='gal'){
+    const sorted=[...S.gallery].sort((a,b)=>b.votes-a.votes);const top=S.featured||sorted[0].id;
+    P.innerHTML=`<div class="card"><h4>ترتيب التصويت — مسابقة عمل الشهر</h4>${sorted.map((g,i)=>`<div class="row"><b style="width:26px;color:var(--muted)">${i+1}</b>
+      <div style="width:46px;height:56px;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);flex-shrink:0;overflow:hidden">${renderWork(g,S.gallery.indexOf(g))}</div>
+      <div class="who"><b>${esc(g.by)}</b><small>${esc(g.ws)} · ${g.votes} صوت</small></div>
+      <label class="sbtn" style="cursor:pointer">📷 ${g.img?'تغيير الصورة':'إضافة صورة'}<input type="file" accept="image/*" hidden onchange="setImg('${g.id}',this)"></label>
+      ${g.id===top?'<span class="pill new">👑 عمل الشهر</span>':`<button class="sbtn" onclick="S.featured='${g.id}';save();renderAdmin();renderGal();toast('تم اعتماده عمل الشهر')">اعتماد كعمل الشهر</button>`}</div>`).join('')}</div>
+      <div class="card"><h4>إضافة عمل من أي ورشة</h4><form id="addG" class="addf">
+        <div class="fld"><label>اسم المشاركة</label><input name="by" required></div>
+        <div class="fld"><label>الورشة</label><select name="wid">${S.workshops.map(w=>`<option value="${w.id}">${esc(w.title)}</option>`).join('')}<option value="other">ورشة أخرى / سابقة</option></select></div><div class="fld"><label>اسم الورشة (لو أخرى)</label><input name="ws" placeholder="مثال: ورشة الشموع"></div><div class="fld" style="grid-column:1/-1"><label>صورة العمل</label><label style="display:flex;align-items:center;gap:12px;border:1.5px dashed var(--olive);border-radius:14px;padding:12px;cursor:pointer;background:var(--cream)"><div id="imgPrev" style="width:70px;height:86px;border-radius:8px;background:var(--linen);display:grid;place-items:center;font-size:26px;overflow:hidden;flex-shrink:0">📷</div><span style="font-size:14px;color:var(--muted)">اضغطي لاختيار صورة من الجوال أو الكمبيوتر</span><input type="file" id="imgIn" accept="image/*" hidden></label></div>
+        <button class="btn p" style="grid-column:1/-1">إضافة وإصدار كرت QR</button></form><small style="color:var(--muted)">لكل ورشة كرت QR: لوحة، صحن، قطعة تصميم… أي شي سوّته المشاركة.</small><div id="newQr"></div></div>`;
+    let newImg=null;
+    $('#imgIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{newImg=await readImg(f);$('#imgPrev').innerHTML=`<img src="${newImg}" style="width:100%;height:100%;object-fit:cover">`}catch(err){toast('ما قدرنا نقرأ الصورة')}};
+    $('#addG').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const by=f.get('by').trim();if(!by)return;
+      const wsel=W(f.get('wid'));const g={id:'g'+Date.now(),by,ws:wsel?wsel.title:(f.get('ws').trim()||'ورشة إيلورا'),art:wsel?wsel.art:'painting',img:newImg,votes:0};S.gallery.push(g);save();renderGal();renderAdmin();
+      $('#newQr').innerHTML=`<div style="margin-top:14px;display:flex;gap:14px;align-items:center;background:var(--olive);color:var(--cream);border-radius:16px;padding:14px"><div style="width:90px;height:90px;background:#fff;border-radius:10px;padding:6px">${qrSvg(paintUrl(g.id))}</div><div><b class="latin" style="font-size:22px">ELORA</b><br>كرت عمل ${esc(by)} · ${esc(g.ws)}<br><small>امسحي الرمز وصوّتي لعملي 🌷</small></div></div>`;toast('انضاف العمل للمعرض')};
+  }
+}
+function checkTicket(){
+  const v=$('#chk').value.trim().toUpperCase(),i=S.bookings.findIndex(b=>b.code===v),R=$('#chkRes');
+  if(i<0){R.innerHTML='<div class="empty" style="color:var(--pink-d)">✕ ما فيه حجز بهالرقم</div>';return}
+  const b=S.bookings[i],w=W(b.wid)||{title:''};
+  R.innerHTML=`<div class="row"><div class="who"><b>✓ ${esc(b.name)} — ${b.seats} مقعد</b><small>${esc(w.title)} · ${b.status==='confirmed'?'مدفوع':'⚠ لم يتأكد التحويل'}</small></div>${b.att?'<span class="pill ok">سجّلت حضورها</span>':`<button class="sbtn g" onclick="S.bookings[${i}].att=true;save();renderAdmin();toast('تم تسجيل الحضور')">تسجيل الحضور</button>`}</div>`;
+}
+async function setImg(id,inp){const f=inp.files[0];if(!f)return;try{const g=S.gallery.find(x=>x.id===id);g.img=await readImg(f);save();renderAdmin();renderGal();toast('انحفظت الصورة')}catch(e){toast('ما قدرنا نقرأ الصورة')}}
+function adjLeft(i,d){const w=S.workshops[i];w.left=Math.max(0,Math.min(w.seats,w.left+d));save();renderAdmin();renderWs()}
+function delWs(i){S.workshops.splice(i,1);save();renderAdmin();renderWs();toast('انحذفت الورشة')}
+function resetDemo(){S=seed();save();renderAll();toast('رجعت بيانات الديمو للبداية')}
+
+/* ---------- routing + reveal ---------- */
+function route(){
+  const m=location.hash.match(/^#p-(\w+)$/);
+  if(m){const el=document.getElementById('p-'+m[1]);if(el){document.body.classList.remove('adm');setTimeout(()=>{el.scrollIntoView({block:'center'});el.classList.add('in','hl');setTimeout(()=>el.classList.remove('hl'),3000)},400);toast('هذا عملها، صوّتي له ❤')}return}
+  const a=location.hash==='#admin';document.body.classList.toggle('adm',a);if(a){renderAdmin();scrollTo(0,0)}else if(location.hash==='#home'){scrollTo(0,0)}}
+addEventListener('hashchange',route);
+let io;
+function observe(){
+  if(!('IntersectionObserver' in window)){document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));return}
+  io=io||new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal:not(.in)').forEach(e=>io.observe(e));
+}
+function renderAll(){renderWs();renderEvForm();renderGal();if(document.body.classList.contains('adm'))renderAdmin()}
+renderAll();route();observe();
+</script>
+</body>
+</html>
