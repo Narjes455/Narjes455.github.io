@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="logo.png">
 <title>جَمرة | لوحة الإدارة</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="brand.css">
@@ -145,6 +149,33 @@ td.num,th.num{text-align:end}
 .toast.err{background:var(--bad)}
 .demo-bar{background:var(--card);color:var(--brand);text-align:center;font:700 .82rem var(--body);padding:6px 16px}
 
+
+/* شاشة المتجر */
+body.store-mode main{padding-block:12px 24px}
+.st-money{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;align-items:stretch;margin-bottom:12px}
+.st-big,.st-m{background:var(--white);border-radius:18px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.st-big{background:var(--brand);color:var(--paper)}
+.st-big small,.st-m small{font-weight:600;opacity:.8}
+.st-big b{font:800 2.4rem var(--display);color:var(--card);line-height:1.1}
+.st-big span{font-size:.85rem;opacity:.85}
+.st-m b{font:800 1.4rem var(--display);color:var(--brand)}
+.st-fs{border:0;border-radius:18px;background:var(--white);color:var(--brand);font-weight:700;padding:0 16px}
+.st-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px;align-items:start}
+.st-col{background:#ebe7e1;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.st-col h2{margin:0;font:800 1.25rem var(--display);color:var(--brand);display:flex;align-items:baseline;gap:8px}
+.st-col h2 small{font:500 .8rem var(--body);color:var(--muted)}
+.st-orders{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.st-orders .ord .oact .btn{padding:12px 14px;font-size:1rem}
+.st-empty{text-align:center;color:var(--muted);padding:40px 0;font-weight:600;grid-column:1/-1}
+.st-cat{margin:6px 2px 0;font-size:.95rem;color:var(--muted)}
+.st-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.st-it{border:2px solid transparent;background:var(--white);border-radius:14px;padding:12px;text-align:start;display:flex;flex-direction:column;gap:2px;min-height:86px;color:var(--ink)}
+.st-it b{font-size:1rem;line-height:1.3}
+.st-it span{color:var(--brand);font-weight:700;font-size:.9rem}
+.st-it em{font-style:normal;font-size:.78rem;color:var(--ready);font-weight:700;margin-top:auto}
+.st-it.low{border-color:#f59e0b} .st-it.low em{color:#92400e}
+.st-it.off{background:#f3f0ec;opacity:.75;border-style:dashed;border-color:var(--bad)} .st-it.off b{text-decoration:line-through} .st-it.off em{color:var(--bad)}
+@media (max-width:900px){ .st-grid{grid-template-columns:1fr} .st-money{grid-template-columns:1fr 1fr 1fr} .st-big{grid-column:1/-1} .st-fs{display:none} }
 @media (max-width:1000px){ .board{grid-template-columns:repeat(2,minmax(0,1fr))} .pos{grid-template-columns:1fr} .cart{position:static} .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:640px){ .board{grid-template-columns:1fr} .cols2{grid-template-columns:1fr} .top h1{font-size:1.05rem} }
 @media (prefers-reduced-motion:reduce){ .ord.fresh{animation:none} }
@@ -219,12 +250,13 @@ $("#logout").onclick=()=>{ USER=null; try{sessionStorage.removeItem("adm");}catc
 
 /* ===== الهيكل ===== */
 const TABS=[
+  {id:"store",t:"شاشة المتجر",roles:["مدير","كاشير"]},
   {id:"orders",t:"الطلبات",roles:["مدير","كاشير","مطبخ"]},
   {id:"pos",t:"الكاشير",roles:["مدير","كاشير"]},
   {id:"att",t:"الحضور",roles:["مدير","كاشير","مطبخ"]},
   {id:"rep",t:"التقارير",roles:["مدير"]},
   {id:"stock",t:"المنيو والمخزون",roles:["مدير"]}];
-let TAB="orders", pollT;
+let TAB="", pollT;
 async function start(){
   $("#login").hidden=true; $("#app").hidden=false;
   $("#who").textContent=`${USER.name} · ${USER.role}`;
@@ -232,10 +264,13 @@ async function start(){
   $("#tabs").innerHTML=tabs.map(t=>`<button type="button" data-t="${t.id}">${t.t}${t.id==="orders"?'<span class="badge" id="nb" hidden></span>':""}</button>`).join("");
   $("#tabs").onclick=e=>{const b=e.target.closest("button"); if(b) go(b.dataset.t);};
   await loadMenu();
-  go(TAB=tabs.some(t=>t.id===TAB)?TAB:"orders");
+  const want=location.hash.slice(1);
+  go(TAB=tabs.some(t=>t.id===want)?want:tabs.some(t=>t.id===TAB)?TAB:tabs[0].id);
   clearInterval(pollT); pollT=setInterval(()=>{ fetchOrders(); },10000); fetchOrders();
 }
-function go(t){ TAB=t; document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===t)); ({orders:viewOrders,pos:viewPos,att:viewAtt,rep:viewRep,stock:viewStock})[t](); }
+function go(t){ TAB=t; document.body.classList.toggle("store-mode",t==="store"); if(t!=="store") releaseWake();
+  try{history.replaceState(null,"","#"+t);}catch(e){}
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===t)); ({store:viewStore,orders:viewOrders,pos:viewPos,att:viewAtt,rep:viewRep,stock:viewStock})[t](); }
 async function loadMenu(){
   const j=await call("").catch(()=>({ok:false}));
   if(j.ok){ MENU=j.menu; SET=j.settings; }
@@ -264,6 +299,7 @@ async function fetchOrders(){
   const n=ORDERS.filter(o=>o.status==="جديد").length, nb=$("#nb"); if(nb){nb.hidden=!n; nb.textContent=n;}
   document.title=(n?`(${n}) `:"")+"إدارة "+(SET.name||"");
   if(TAB==="orders") drawBoard();
+  if(TAB==="store") { drawStoreOrders(); loadToday(); }
 }
 function viewOrders(){
   $("#view").innerHTML=`<div class="filters" id="flt">${[["all","الكل"],["الرابط","طلبات الرابط"],["الفرع","طلبات الفرع"],["توصيل","توصيل بس"]].map(([k,t])=>`<button type="button" class="chip${filt===k?" on":""}" data-f="${k}">${t}</button>`).join("")}
@@ -299,6 +335,65 @@ function drawBoard(){
     if(!j.ok){toast(errText(j),true); btn.disabled=false; return;}
     const o=ORDERS.find(x=>x.no===btn.dataset.no); if(o){o.status=btn.dataset.s; o._fresh=false;} drawBoard(); };
   ORDERS.forEach(o=>o._fresh=false);
+}
+
+/* ===== شاشة المتجر (آيباد) ===== */
+let wake=null, storeMenuT;
+async function keepAwake(){ try{ if(navigator.wakeLock&&!wake){ wake=await navigator.wakeLock.request("screen"); wake.addEventListener("release",()=>wake=null);} }catch(e){} }
+function releaseWake(){ try{ wake&&wake.release(); }catch(e){} wake=null; clearInterval(storeMenuT); }
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&TAB==="store") keepAwake(); });
+function viewStore(){
+  $("#view").innerHTML=`<section class="st-money" id="stMoney">
+      <div class="st-big"><small>دخل اليوم</small><b class="num" id="stTotal">…</b><span id="stCount"></span></div>
+      <div class="st-m"><small>كاش</small><b class="num" id="stCash">…</b></div>
+      <div class="st-m"><small>تحويل</small><b class="num" id="stTr">…</b></div>
+      <div class="st-m"><small>شبكة</small><b class="num" id="stCard">…</b></div>
+      <button type="button" class="st-fs" id="stFs" title="ملء الشاشة">⛶ ملء الشاشة</button>
+    </section>
+    <div class="st-grid">
+      <section class="st-col"><h2>الطلبات <small id="stOc"></small></h2><div id="stOrders" class="st-orders"></div></section>
+      <section class="st-col"><h2>الأصناف <small>اضغط على الصنف عشان تقفله أو تفتحه</small></h2><div id="stItems"></div></section>
+    </div>`;
+  $("#stFs").onclick=()=>{ const el=document.documentElement; const f=el.requestFullscreen||el.webkitRequestFullscreen;
+    if(document.fullscreenElement||document.webkitFullscreenElement){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+    else if(f){ try{ const r=f.call(el); r&&r.catch&&r.catch(()=>toast("للشاشة الكاملة: من سفاري اضغطي مشاركة ← إضافة إلى الشاشة الرئيسية")); }catch(e){ toast("للشاشة الكاملة: من سفاري اضغطي مشاركة ← إضافة إلى الشاشة الرئيسية"); } }
+    else toast("للشاشة الكاملة: من سفاري اضغطي مشاركة ← إضافة إلى الشاشة الرئيسية"); };
+  keepAwake();
+  drawStoreOrders(); drawStoreItems(); loadToday();
+  clearInterval(storeMenuT); storeMenuT=setInterval(()=>{ if(TAB==="store") loadMenu().then(drawStoreItems); },30000);
+}
+async function loadToday(){
+  const j=await call("",{action:"today",pin:USER.pin}).catch(()=>null);
+  if(!j||!j.ok||TAB!=="store") return;
+  const T=j.today;
+  $("#stTotal").textContent=money(T.total);
+  $("#stCount").textContent=`${T.count} طلب${T.count?` · متوسط ${money(T.total/T.count)}`:""}${T.branch?` · الفرع ${money(T.branch)}`:""}`;
+  $("#stCash").textContent=money(T.cash); $("#stTr").textContent=money(T.transfer); $("#stCard").textContent=money(T.card);
+  drawOpen(j.openNow);
+}
+function drawStoreOrders(){
+  const box=$("#stOrders"); if(!box) return;
+  const act=ORDERS.filter(o=>o.status!=="تم"&&o.status!=="ملغي").sort((a,b)=>({"جديد":0,"يتجهز":1,"جاهز":2,"في الطريق":2})[a.status]-({"جديد":0,"يتجهز":1,"جاهز":2,"في الطريق":2})[b.status]||(a.time<b.time?-1:1));
+  $("#stOc").textContent=act.length?`${act.length} نشط`:"";
+  box.innerHTML=act.length?act.map(card).join(""):'<p class="st-empty">ما فيه طلبات الحين ☕<br><small>أي طلب جديد يطلع هنا مع صوت تنبيه</small></p>';
+  box.onclick=async e=>{const btn=e.target.closest("button[data-s]"); if(!btn) return;
+    if(btn.dataset.s==="ملغي"&&btn.dataset.sure!=="1"){btn.dataset.sure="1"; btn.textContent="متأكد؟ اضغط مرة ثانية"; return;}
+    btn.disabled=true; const j=await call("",{action:"status",pin:USER.pin,no:btn.dataset.no,status:btn.dataset.s});
+    if(!j.ok){toast(errText(j),true); btn.disabled=false; return;}
+    const o=ORDERS.find(x=>x.no===btn.dataset.no); if(o){o.status=btn.dataset.s;} drawStoreOrders(); if(btn.dataset.s==="تم"||btn.dataset.s==="ملغي") loadToday(); };
+  ORDERS.forEach(o=>o._fresh=false);
+}
+function drawStoreItems(){
+  const box=$("#stItems"); if(!box) return;
+  if(!MENU.length){ box.innerHTML='<p class="st-empty">المنيو فاضي</p>'; return; }
+  box.innerHTML=MENU.map(c=>`<h3 class="st-cat">${esc(c.cat)}</h3><div class="st-items">${c.items.map(it=>{const out=it.status==="منتهي";
+    return `<button type="button" class="st-it${out?" off":it.status==="ينتهي قريباً"?" low":""}" data-n="${esc(it.name)}" data-out="${out?1:""}">
+      <b>${esc(it.name)}</b><span class="num">${money(it.price)}</span><em>${out?"⛔ نفد · اضغط للفتح":it.left?`⚠️ باقي ${it.left}`:"✓ متوفر"}</em></button>`;}).join("")}</div>`).join("");
+  box.onclick=async e=>{const b=e.target.closest(".st-it"); if(!b) return;
+    const make=!!b.dataset.out; b.disabled=true;
+    const j=await call("",{action:"avail",pin:USER.pin,name:b.dataset.n,available:make}).catch(()=>({ok:false}));
+    if(!j.ok){ toast(errText(j),true); b.disabled=false; return; }
+    toast(make?`فتحت ${b.dataset.n}`:`قفلت ${b.dataset.n}، ما يقدر أحد يطلبه`); await loadMenu(); drawStoreItems(); };
 }
 
 /* ===== الكاشير ===== */

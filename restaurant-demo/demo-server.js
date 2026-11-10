@@ -221,6 +221,10 @@
         else if (a === "pos") { const u = auth(body.pin, ["مدير", "كاشير"]); r = createOrder(st, body, true, u); }
         else if (a === "attend") r = attend(st, auth(body.pin));
         else if (a === "attendance") { auth(body.pin, ["مدير"]); r = attendance(st, body.month); }
+        else if (a === "today") { auth(body.pin, ["مدير", "كاشير"]); const rp = report(st); r = { ok: true, today: rp.today, open: st.open, openNow: st.open }; }
+        else if (a === "avail") { auth(body.pin, ["مدير", "كاشير"]); const it = find(st, body.name);
+          if (it) { it.status = body.available ? "متوفر" : "منتهي"; if (body.available && it.qty !== null && it.qty <= 0) it.qty = null; }
+          r = { ok: !!it }; }
         else if (a === "report") { auth(body.pin, ["مدير"]); r = report(st); }
         else if (a === "stock") { auth(body.pin, ["مدير"]); const it = find(st, body.name);
           if (it) { if (body.qty !== undefined && body.qty !== null) it.qty = body.qty === "" ? null : Math.max(0, Math.floor(Number(body.qty)) || 0); if (body.status) it.status = body.status; }
