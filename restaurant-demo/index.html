@@ -103,6 +103,20 @@ select{font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--ca
 .prebox b{color:var(--brand)} .prebox span{font-size:.82rem;color:var(--muted)}
 .pre2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pre2 input{width:100%;min-width:0}
+.contact{padding-block:8px 0}
+.contact h2{font:800 1.4rem var(--display);color:var(--card);margin:0 0 10px;text-align:center}
+.cts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.ct{display:flex;align-items:center;gap:12px;background:var(--paper);color:var(--ink);border-radius:16px;padding:12px 14px;text-decoration:none;flex-wrap:wrap}
+.ct>div{flex:1;min-width:0;display:flex;flex-direction:column}
+.ct small{color:var(--muted);font-size:.78rem}
+.ct b{font-weight:700;overflow-wrap:anywhere}
+.ci{width:40px;height:40px;border-radius:50%;background:var(--card-soft);display:grid;place-items:center;font-size:1.2rem;flex:none}
+.go2{font-weight:700;color:var(--brand);font-size:.85rem}
+.cbtns{display:flex;gap:8px;flex-basis:100%}
+.cbtns a{flex:1;text-align:center}
+.cbtns a{background:var(--brand);color:var(--paper);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.85rem;text-decoration:none}
+.cbtns a+a{background:var(--card);color:var(--brand)}
+.ltr{direction:ltr;unicode-bidi:isolate}
 .hint{font-size:.8rem;color:var(--muted);margin:0}
 .tno{direction:ltr;unicode-bidi:isolate;font-size:1.1rem;color:var(--muted)}
 .track{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
@@ -155,6 +169,7 @@ footer b{font-family:var(--display);font-size:1.6rem;display:block;line-height:1
 
 <nav aria-label="أقسام المنيو"><div class="wrap" id="tabs"></div></nav>
 <main class="wrap"><div class="card" id="menu"></div></main>
+<section class="wrap contact" id="contact" hidden aria-label="تواصل معنا"></section>
 <footer class="wrap"><b id="footTitle"></b><span id="footLine"></span><p class="made">نموذج من تصميم <b style="display:inline;font-size:inherit">نرجس العمري</b> · واتساب 0556211944 · <a href="https://narjes455.github.io/" target="_blank" rel="noopener">أعمالي</a></p></footer>
 
 <div class="bar"><div class="wrap"><button id="openCart" type="button"><span>السلة<span class="count" id="count">0</span></span><span id="barTotal">0 ريال</span></button></div></div>
@@ -178,6 +193,17 @@ function call(qs, body){
 }
 const QS=new URLSearchParams(location.search);
 const TABLE_FROM_QR=(QS.get("table")||"").replace(/[^\w\u0600-\u06FF-]/g,"").slice(0,10);
+function drawContact(){
+  const c=[], ph=SET.contact||"";
+  const local=ph.replace(/^966/,"0");
+  if(ph) c.push(`<div class="ct ct-ph"><span class="ci">💬</span><div><small>للتواصل والاستفسار</small><b class="ltr">${esc(local)}</b></div>
+      <div class="cbtns"><a href="https://wa.me/${esc(ph)}" target="_blank" rel="noopener">واتساب</a><a href="tel:+${esc(ph)}">اتصال</a></div></div>`);
+  if(SET.maps||SET.address) c.push(`<${SET.maps?`a href="${esc(SET.maps)}" target="_blank" rel="noopener"`:"div"} class="ct"><span class="ci">📍</span><div><small>موقعنا</small><b>${esc(SET.address||"افتح الموقع على قوقل ماب")}</b></div>${SET.maps?'<span class="go2">الخريطة ←</span>':""}</${SET.maps?"a":"div"}>`);
+  if(SET.tiktok) c.push(`<a class="ct" href="https://www.tiktok.com/@${esc(SET.tiktok)}" target="_blank" rel="noopener"><span class="ci">🎵</span><div><small>تيك توك</small><b class="ltr">@${esc(SET.tiktok)}</b></div><span class="go2">تابعنا ←</span></a>`);
+  if(SET.instagram) c.push(`<a class="ct" href="https://www.instagram.com/${esc(SET.instagram)}" target="_blank" rel="noopener"><span class="ci">📷</span><div><small>إنستقرام</small><b class="ltr">@${esc(SET.instagram)}</b></div><span class="go2">تابعنا ←</span></a>`);
+  contact.innerHTML=c.length?`<h2>تواصل معنا</h2><div class="cts">${c.join("")}</div>`:"";
+  contact.hidden=!c.length;
+}
 function applySettings(){
   shopName.textContent=SET.name; if(SET.name) document.title=SET.name;
   logo.src=CONFIG.logo; logo.alt=SET.name?"شعار "+SET.name:"الشعار";
@@ -188,6 +214,7 @@ function applySettings(){
   document.body.classList.toggle("is-closed",!SET.open);
   footTitle.textContent=CONFIG.footerTitle; footTitle.hidden=!CONFIG.footerTitle;
   footLine.textContent=CONFIG.footerLine; footLine.hidden=!CONFIG.footerLine;
+  drawContact();
 }
 logo.onerror=()=>{logo.hidden=true;};
 // المنيو كله من ورقة "المنيو" في الشيت
