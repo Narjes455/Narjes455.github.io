@@ -50,6 +50,11 @@ button{font-family:inherit;cursor:pointer;border:0}
 .chef-line{display:inline-flex;gap:6px;align-items:center;margin-top:12px;background:var(--card);border:1px solid #5a3424;
   padding:7px 14px;border-radius:30px;font-size:13px}
 .chef-line b{color:var(--cu2)}
+.info-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:12px}
+.info-row a,.info-row span{background:#2a160e;color:var(--muted);padding:6px 12px;border-radius:20px;text-decoration:none}
+.onway{margin-top:12px;width:100%;background:#3b2218;color:#fff;font-weight:800;padding:13px;border-radius:12px;font-size:15px;animation:pulse 1.6s infinite}
+.onway:disabled{animation:none;opacity:.6}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(142,74,47,.6)}50%{box-shadow:0 0 0 8px rgba(142,74,47,0)}}
 
 /* ---------- Batch board ---------- */
 .board{margin-top:18px;background:linear-gradient(160deg,#4a2a1d,#2c170f);border:1px solid #6b3d28;border-radius:22px;padding:18px;position:relative;overflow:hidden}
@@ -266,6 +271,7 @@ button{font-family:inherit;cursor:pointer;border:0}
     <h1>نادي الجوعانين</h1>
     <p class="en">THE BATCH KITCHEN · AL KHOBAR</p>
     <div class="chef-line">👨‍🍳 مطبخ سحابي… <b>يطبخه رجل واحد فقط</b></div>
+    <div class="info-row"><a href="https://maps.app.goo.gl/NSMtwdXDv2YDtLLR7?g_st=ic">📍 حي الجسر، الخبر</a><span>⏰ يوميًا 4:00 عصرًا – 11:30 مساءً</span></div>
   </div>
 
   <div class="board">
@@ -396,9 +402,13 @@ button{font-family:inherit;cursor:pointer;border:0}
   <div class="sec"><h2>🧩 النظام المتكامل</h2></div>
   <div class="idea" style="margin-top:0"><div class="e">📱</div><div>
     <h3>ثلاث شاشات مربوطة ببعض</h3>
-    <p><b>العميل:</b> منيو، دفعة، نادي، طلب مسبق بوقت استلام.<br><b>المطبخ:</b> الطلبات مرتبة وحالتها بضغطة.<br><b>الإدارة:</b> الكميات، الأوقات، المبيعات، وفتح دفعة جديدة.</p>
+    <p><b>العميل:</b> منيو، دفعة، نادي، طلب مسبق بوقت استلام.<br><b>المطبخ:</b> الطلبات مرتبة حسب وقت الاستلام وحالتها بضغطة.<br><b>الإدارة:</b> الكميات، الأوقات، المبيعات، وفتح دفعة جديدة.</p>
   </div></div>
 
+  <div class="idea"><div class="e">📝</div><div>
+    <h3>بدل رسالة «لتأكيد طلبك أرسل…»</h3>
+    <p>الخطوات الأربع (تفاصيل الطلب، الاسم والجوال، وقت الاستلام، طريقة الدفع) يعبيها العميل بنفسه، والطلب يوصل للمطبخ كامل. وزر <b>«أنا في الطريق»</b> يبلغك متى تبدأ الطبخ، فيوصل الطلب للعميل طازج بدون ما تلاحقه.</p>
+    <span class="why">نفس طريقتك الحالية، بس بدون رسائل</span></div></div>
   <button class="btn" style="margin-top:18px" onclick="go('customer')">جرّب تجربة العميل ←</button>
   <div class="sign">إعداد وتنفيذ: <b>نرجس العمري</b><br><b class="en">0556211944</b> · <a href="https://narjes455.github.io/" style="color:var(--cu2)">narjes455.github.io</a></div>
  </div>
@@ -436,7 +446,7 @@ const items = [
 items.forEach(i=>i.on=true);
 const secret = {id:99,ar:'بيريا رامن',en:'Birria Ramen · Members Only',desc:'نودلز في مرق الكونسومي + لحم بيريا + جبن ذايب',price:45,batch:10,left:6,on:true};
 const extras = [{k:'consome',n:'كونسومي إضافي'},{k:'cheese',n:'جبن إضافي'},{k:'guac',n:'غواكامولي إضافي'},{k:'sour',n:'ساور كريم إضافي'},{k:'jal',n:'هالبينو'}];
-const slots = [{t:'7:00 م',on:true,cap:8,used:8},{t:'7:30 م',on:true,cap:8,used:5},{t:'8:00 م',on:true,cap:8,used:2},{t:'8:30 م',on:true,cap:8,used:0},{t:'9:00 م',on:true,cap:8,used:0}];
+const slots = ['5:00 م','6:00 م','7:00 م','8:00 م','9:00 م','10:00 م','11:00 م'].map((t,k)=>({t,on:true,cap:6,used:[6,4,2,1,0,0,0][k]}));
 let batchNo = 128, orderSeq = 26, cart = [], orders = [];
 let member = null, stamps = 4, members = 214;
 let votes = [{n:'🍜 بيريا رامن',v:48},{n:'🧀 ناتشوز بيريا',v:31},{n:'🦐 تاكو روبيان',v:21}], myVote = -1;
@@ -445,9 +455,9 @@ function save(){try{localStorage.setItem('tbk',JSON.stringify({member,stamps}))}
 
 /* seed kitchen orders */
 orders = [
- {no:24,name:'أبو فهد',slot:'7:00 م',lines:[{n:'بيريا تاكو',q:2,ex:['كونسومي إضافي']},{n:'كساديا دجاج',q:1,ex:[]}],st:2,total:122},
- {no:25,name:'سارة',slot:'7:00 م',lines:[{n:'بيريا بوريتو بول',q:1,ex:[]}],st:1,total:35},
- {no:26,name:'خالد',slot:'7:30 م',lines:[{n:'تاكو دجاج فاهيتا',q:3,ex:['هالبينو']}],st:0,total:123},
+ {no:24,name:'أبو فهد',slot:'6:00 م',pay:'شبكة عند الاستلام',lines:[{n:'بيريا تاكو',q:2,ex:['كونسومي إضافي']},{n:'كساديا دجاج',q:1,ex:[]}],st:2,total:122},
+ {no:25,name:'سارة',slot:'6:00 م',pay:'تحويل بنكي',lines:[{n:'بيريا بوريتو بول',q:1,ex:[]}],st:1,total:35},
+ {no:26,name:'خالد',slot:'7:00 م',pay:'شبكة عند الاستلام',lines:[{n:'تاكو دجاج فاهيتا',q:3,ex:['هالبينو']}],st:0,total:123},
 ];
 
 /* ---------- helpers ---------- */
@@ -540,7 +550,9 @@ function renderCart(){
 }
 
 /* ---------- cart / checkout ---------- */
-let pick = null, mode='استلام';
+let pick = null, mode='استلام', pay='شبكة عند الاستلام', curTicket=null;
+const modes=[['استلام','🚶 استلام شخصي من حي الجسر'],['مندوب','🛵 مندوب (حسب التوفر)']];
+const pays=[['شبكة عند الاستلام','💳 شبكة عند الاستلام (مدى / Apple Pay)'],['تحويل بنكي','🏦 تحويل بنكي'],['دفع أونلاين','🔗 رابط دفع أونلاين (تجريبي)']];
 function openCart(){
   if(!cart.length)return;
   pick = pick && slots.find(s=>s.t===pick&&s.on&&s.used<s.cap) ? pick : null;
@@ -548,9 +560,11 @@ function openCart(){
    ${cart.map((c,k)=>`<div class="line"><div>${c.q}× ${c.n}<small>${c.ex.join('، ')||'بدون إضافات'}</small></div>
      <div style="display:flex;gap:10px;align-items:center"><span class="en">${(c.price+c.ex.length*4)*c.q}</span><button class="x" onclick="rm(${k})">✕</button></div></div>`).join('')}
    <div class="lbl">طريقة الاستلام</div>
-   <div class="chips">${['استلام','توصيل'].map(m=>`<button class="chip ${mode===m?'on':''}" onclick="mode='${m}';openCart()">${m==='استلام'?'🚶 استلام من المطبخ':'🛵 توصيل'}</button>`).join('')}</div>
+   <div class="chips">${modes.map(([m,l])=>`<button class="chip ${mode===m?'on':''}" onclick="mode='${m}';openCart()">${l}</button>`).join('')}</div>
    <div class="lbl">اختر وقت استلام دفعتك (طلب مسبق)</div>
    <div class="chips">${slots.filter(s=>s.on).map(s=>`<button class="chip ${pick===s.t?'on':''}" ${s.used>=s.cap?'disabled':''} onclick="pick='${s.t}';openCart()">${s.t}${s.used>=s.cap?' · ممتلئ':` · ${s.cap-s.used} أماكن`}</button>`).join('')}</div>
+   <div class="lbl">طريقة الدفع</div>
+   <div class="chips">${pays.map(([p,l])=>`<button class="chip ${pay===p?'on':''}" onclick="pay='${p}';openCart()">${l}</button>`).join('')}</div>
    <div class="lbl">الاسم ورقم الجوال</div>
    <input class="field" id="cName" placeholder="اسمك" value="${member||''}">
    <input class="field" id="cPhone" placeholder="05xxxxxxxx" inputmode="tel">
@@ -566,7 +580,7 @@ function placeOrder(){
   cart.forEach(c=>{const it=allItems().find(i=>i.id===c.id); it.left=Math.max(0,it.left-c.q)});
   slots.find(s=>s.t===pick).used++;
   const no=++orderSeq, total=cartTotal();
-  orders.push({no,name,slot:pick,mode,lines:cart.map(c=>({n:c.n,q:c.q,ex:c.ex})),st:0,total});
+  orders.push({no,name,slot:pick,mode,pay,lines:cart.map(c=>({n:c.n,q:c.q,ex:c.ex})),st:0,total});
   const wasLocked=!unlocked(); stamps=Math.min(5,stamps+1); if(!member){member=name;members++} save();
   cart=[]; renderCart(); renderAll();
   showTicket(no,name,wasLocked&&unlocked());
@@ -578,19 +592,22 @@ function showTicket(no,name,justUnlocked){
      <div style="font-size:13px;color:#8a5a40;margin-top:6px">رقم طلبك في دفعة اليوم</div>
      <div class="n">#${no}</div>
      <div class="msg">«يا ${name}، طلبك رقم ${no} اليوم…<br>وأنا اللي بطبخه بنفسي 👨‍🍳»</div>
-     <div style="font-size:13px;color:#8a5a40">⏰ ${mode} الساعة ${pick}</div>
+     <div style="font-size:13px;color:#8a5a40">⏰ ${mode==='استلام'?'استلام من حي الجسر':'مندوب'} الساعة ${pick} · 💳 ${pay}</div>
      <hr>
      <div class="steps" id="tSteps">
-       <div class="on"><b>📥</b>استلمنا</div><div><b>🔥</b>على النار</div><div><b>✅</b>جاهز</div>
+       <div class="on"><b>📥</b>استلمنا</div><div><b>🚗</b>في الطريق</div><div><b>🔥</b>على النار</div><div><b>✅</b>جاهز</div>
      </div>
+     <div style="font-size:12px;color:#8a5a40;margin-top:10px">🔥 نجهّز طلبك طازج، وما نبدأ الطبخ إلا لما تبلغنا إنك جاي</div>
+     <button class="onway" id="onway" onclick="onWay(${no})">🚗 أنا في الطريق، ابدأ طبخ طلبي</button>
      <div class="plus-stamp">${justUnlocked?'🎉 الختم الخامس! فتحت الصنف السري «بيريا رامن»':'+1 ختم في بطاقة النادي 🔥 ('+stamps+'/5)'}</div>
    </div>
    <button class="btn ghost" style="margin-top:14px" onclick="closeSheet()">رجوع للمنيو</button>
    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:10px">💡 افتح «شاشة المطبخ» تحت وشوف طلبك وصل</p>`;
   openSheet(); pick=null;
-  const o=orders.find(x=>x.no===no);
-  setTimeout(()=>{o.st=Math.max(o.st,1);stepTicket(1);renderKitchen()},3500);
+  curTicket=no;
 }
+function onWay(no){const o=orders.find(x=>x.no===no); if(o.st<1)o.st=1; stepTicket(1); const b=$('#onway'); if(b){b.disabled=true;b.textContent='✅ وصل تنبيهك للمطبخ، طلبك بيدخل النار';} renderKitchen(); toast('🚗 المطبخ عرف إنك جاي');
+  setTimeout(()=>{if(o.st<2){o.st=2;renderKitchen();if(curTicket===no)stepTicket(2)}},4000)}
 function stepTicket(k){const s=document.querySelectorAll('#tSteps div'); s.forEach((d,i)=>d.classList.toggle('on',i<=k))}
 
 /* ---------- join ---------- */
@@ -607,22 +624,23 @@ function openSheet(){$('#ov').classList.add('on');$('#sheet').classList.add('on'
 function closeSheet(){$('#ov').classList.remove('on');$('#sheet').classList.remove('on')}
 
 /* ---------- kitchen ---------- */
-const stN=['جديد','يجهّز','على النار','جاهز'], stB=['ابدأ التجهيز','على النار 🔥','جاهز ✅',''];
+const stN=['بانتظار العميل','العميل في الطريق 🚗','على النار 🔥','جاهز'], stB=['🔔 ذكّر العميل','ابدأ الطبخ 🔥','جاهز ✅',''];
 function renderKitchen(){
   const act=orders.filter(o=>o.st<3);
   $('#kCount').textContent=act.length;
   const need={}; act.forEach(o=>o.lines.forEach(l=>need[l.n]=(need[l.n]||0)+l.q));
   $('#fireRow').innerHTML = Object.keys(need).length? Object.entries(need).map(([n,q])=>`<div><b>${q}</b>${n}</div>`).join('') : '<div>ما فيه شي على النار</div>';
-  const sorted=[...orders].sort((a,b)=>(a.st===3)-(b.st===3)||a.slot.localeCompare(b.slot)||a.no-b.no);
+  const sorted=[...orders].sort((a,b)=>(a.st===3)-(b.st===3)||slotIdx(a.slot)-slotIdx(b.slot)||a.no-b.no);
   $('#orders').innerHTML = sorted.map(o=>`<div class="order st${o.st}">
     <div class="top"><b>#${o.no}</b><span class="badge">${stN[o.st]}</span></div>
-    <div class="meta">👤 ${o.name} · ⏰ ${o.slot} · ${o.mode||'استلام'} · <span class="en">${o.total} SAR</span></div>
+    <div class="meta">👤 ${o.name} · ⏰ ${o.slot} · ${o.mode||'استلام'} · 💳 ${o.pay||'شبكة'} · <span class="en">${o.total} SAR</span></div>
     <ul>${o.lines.map(l=>`<li>${l.q}× ${l.n} ${l.ex.length?`<small>(${l.ex.join('، ')})</small>`:''}</li>`).join('')}</ul>
     ${o.st<3?`<div class="act"><button class="go" onclick="adv(${o.no})">${stB[o.st]}</button></div>`:''}
   </div>`).join('');
 }
-function adv(no){const o=orders.find(x=>x.no===no); o.st=Math.min(3,o.st+1); renderKitchen(); renderAdmin();
-  if(o.st===3)toast('انرسل للعميل: طلبك #'+no+' جاهز ✅'); if(o.st>=2)stepTicket(o.st===3?2:1)}
+function slotIdx(t){return slots.findIndex(s=>s.t===t)}
+function adv(no){const o=orders.find(x=>x.no===no); if(o.st===0){toast('🔔 انرسل تذكير للعميل #'+no);return} o.st=Math.min(3,o.st+1); renderKitchen(); renderAdmin();
+  if(o.st===3)toast('انرسل للعميل: طلبك #'+no+' جاهز ✅'); if(curTicket===no)stepTicket(o.st)}
 
 /* ---------- admin ---------- */
 function renderAdmin(){
@@ -643,7 +661,7 @@ function newBatch(){batchNo++; items.concat([secret]).forEach(i=>i.left=i.batch)
   orders=orders.filter(o=>o.st<3); renderAll(); toast('🔥 انفتحت الدفعة #'+batchNo+' وانرسل تنبيه لأعضاء النادي')}
 
 /* ---------- countdown & live feed ---------- */
-function tick(){const now=new Date(), end=new Date(); end.setHours(23,0,0,0); if(end<now)end.setDate(end.getDate()+1);
+function tick(){const now=new Date(), end=new Date(); end.setHours(23,30,0,0); if(end<now)end.setDate(end.getDate()+1);
   let s=Math.floor((end-now)/1000); const h=String(Math.floor(s/3600)).padStart(2,'0'), m=String(Math.floor(s%3600/60)).padStart(2,'0'), x=String(s%60).padStart(2,'0');
   $('#cd').textContent=`${h}:${m}:${x}`}
 const who=['عضو من الخبر','أبو سلطان','عضو جديد بالنادي','ريم','فيصل','عضو ذهبي'];
