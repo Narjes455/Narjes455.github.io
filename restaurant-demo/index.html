@@ -98,6 +98,11 @@ body.is-closed .qty{display:none}
 .loc button{border:1.5px solid var(--brand);background:#fff;color:var(--brand);border-radius:999px;padding:5px 12px;font:600 .82rem var(--body);cursor:pointer}
 select{font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--card);border-radius:12px;padding:10px 12px}
 .lastord{border:0;border-radius:999px;background:var(--paper);color:var(--brand);font:700 .85rem var(--body);padding:6px 14px;cursor:pointer;margin-top:4px}
+.tag.pre{background:var(--paper);color:var(--brand);border:1.5px dashed var(--brand)}
+.prebox{background:var(--card-soft);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.prebox b{color:var(--brand)} .prebox span{font-size:.82rem;color:var(--muted)}
+.pre2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pre2 input{width:100%;min-width:0}
 .hint{font-size:.8rem;color:var(--muted);margin:0}
 .tno{direction:ltr;unicode-bidi:isolate;font-size:1.1rem;color:var(--muted)}
 .track{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
@@ -193,6 +198,12 @@ const cart = {};               // المفتاح: id أو id|خيار
 const choice = {};             // الخيار المختار لكل صنف له خيارات
 const OUT="منتهي", LOW="ينتهي قريباً";
 let items=[], menuLoaded=false;
+const preTxt=h=>h%24===0?(h===24?"قبل يوم":h===48?"قبل يومين":`قبل ${h/24} أيام`):`قبل ${h} ساعة`;
+const cartPre=()=>Math.max(0,...Object.keys(cart).map(k=>{const it=find(k.split("|")[0]); return it&&it.pre||0;}));
+const pad2=n=>String(n).padStart(2,"0");
+const localISO=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+const DAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const fmtWhen=iso=>{const d=new Date(iso); if(isNaN(d))return iso; const h=d.getHours(),m=pad2(d.getMinutes()); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1} · ${h%12||12}:${m} ${h<12?"ص":"م"}`;};
 function indexMenu(){items=MENU.flatMap(c=>c.items); items.forEach(it=>{it.id=it.name; if(it.opts&&!it.opts.length) delete it.opts;});}
 indexMenu();
 const esc = v => String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -208,6 +219,7 @@ function renderMenu(){
   tabs.innerHTML = MENU.map((c,i)=>`<button type="button" data-i="${i}" class="${i?'':'on'}">${esc(c.cat)}</button>`).join("");
   menu.innerHTML = MENU.map((c,i)=>`<section id="sec${i}"><h2>${esc(c.cat)}</h2>${
     c.items.map(it=>`<div class="item${it.status===OUT?" out":""}"><div class="txt"><b>${esc(it.name)}</b>${it.desc?`<span>${esc(it.desc)}</span>`:""}${
+      it.pre&&it.status!==OUT?`<em class="tag pre">🗓 طلب مسبق ${preTxt(it.pre)}</em>`:""}${
       it.status===LOW?`<em class="tag low">${it.left?"باقي "+it.left:"ينتهي قريباً"}</em>`:it.status===OUT?`<em class="tag">نفد</em>`:""}${
       it.opts&&it.status!==OUT?`<div class="opts" data-id="${esc(it.id)}">${it.opts.map((o,j)=>`<button type="button" data-o="${esc(o)}" class="${(choice[it.id]||it.opts[0])===o?'on':''}">${esc(o)}</button>`).join("")}</div>`:""
     }</div><div class="price">${money(it.price)}</div><div class="qty" data-id="${esc(it.id)}"></div></div>`).join("")
@@ -274,6 +286,8 @@ openCart.onclick=()=>{
       ${SET.deliveryMin?`<span class="hint">أقل طلب للتوصيل ${money(SET.deliveryMin)}</span>`:""}
       <div class="loc"><button type="button" id="gl">📍 أرسل موقعي</button><span id="glMsg">اختياري، يساعد المندوب يوصل أسرع</span></div>
     </div>
+    ${cartPre()?`<div class="prebox"><b>🗓 طلبك فيه أصناف تنطلب ${preTxt(cartPre())}</b><span>اختر موعد الاستلام (بعد ${cartPre()} ساعة من الحين أو أكثر)</span>
+      <div class="pre2"><label for="pdate">اليوم<input type="date" id="pdate"></label><label for="ptime">الساعة<input type="time" id="ptime" step="900"></label></div></div>`:""}
     <label for="nm">الاسم<input id="nm" required autocomplete="name"></label>
     <label for="ph">رقم الجوال<input id="ph" required inputmode="tel" placeholder="05XXXXXXXX"></label>
     <div class="loyal" id="loyal" hidden></div>
@@ -297,6 +311,9 @@ openCart.onclick=()=>{
     feeLine.hidden=!(k==="توصيل"&&fee()>0); feeLine.lastElementChild.textContent=money(fee()); grand.textContent=money(t.s+fee()); tnote.querySelector("b").textContent=money(t.s+fee());};
   f.onchange=()=>{tnote.hidden=!p2.checked; syncKind();};
   syncKind();
+  if(cartPre()){ const d0=new Date(Date.now()+cartPre()*36e5); d0.setMinutes(Math.ceil(d0.getMinutes()/15)*15,0,0);
+    pdate.min=localISO(new Date(Date.now()+cartPre()*36e5-864e5)).slice(0,10); pdate.max=localISO(new Date(Date.now()+30*864e5)).slice(0,10);
+    pdate.value=localISO(d0).slice(0,10); ptime.value=localISO(d0).slice(11,16); }
   gl.onclick=()=>{ if(!navigator.geolocation){glMsg.textContent="جهازك ما يدعم تحديد الموقع، اكتب العنوان بس.";return;}
     glMsg.textContent="جاري تحديد موقعك…";
     navigator.geolocation.getCurrentPosition(p=>{geo=`https://maps.google.com/?q=${p.coords.latitude.toFixed(6)},${p.coords.longitude.toFixed(6)}`; glMsg.textContent="✅ تم إرفاق موقعك";},
@@ -337,11 +354,20 @@ openCart.onclick=()=>{
     if(kind==="توصيل"&&ad.value.trim().length<4) return fail("اكتب عنوان التوصيل.");
     if(kind==="توصيل"&&SET.deliveryMin&&t.s<SET.deliveryMin) return fail(`أقل طلب للتوصيل ${money(SET.deliveryMin)}.`);
     const where=kind==="طاولة"?tb.value.trim():kind==="توصيل"?ad.value.trim():"";
+    let sched="";
+    if(cartPre()){
+      if(!pdate.value||!ptime.value) return fail("اختر يوم وساعة الاستلام.");
+      sched=pdate.value+"T"+ptime.value.slice(0,5);
+      const minT=Date.now()+cartPre()*36e5-5*6e4;
+      if(new Date(sched).getTime()<minT) return fail(`الموعد لازم يكون بعد ${cartPre()} ساعة على الأقل. أقرب موعد: ${fmtWhen(localISO(new Date(minT+5*6e4)))}`);
+      if(new Date(sched).getTime()>Date.now()+30*864e5) return fail("الموعد بعيد، اختر موعد خلال ٣٠ يوم.");
+    }
     const pay=f.querySelector("input[name=pay]:checked").value;
     const itemsTxt=Object.entries(cart).map(([k,q])=>`${q} × ${label(k)}`).join("، ");
     const order={name:nm.value.trim(),phone:phone(),notes:nt.value.trim(),pay,total:t.s,items:itemsTxt,
-      lines:Object.entries(cart).map(([k,q])=>{const [name,opt]=k.split("|"); return {name,opt:opt||"",qty:q};}),freeOpt,kind,where,geo,zone:zoneNow()?zoneNow().name:""};
+      lines:Object.entries(cart).map(([k,q])=>{const [name,opt]=k.split("|"); return {name,opt:opt||"",qty:q};}),freeOpt,kind,where,geo,zone:zoneNow()?zoneNow().name:"",sched};
     const waMsg=`طلب جديد من موقع ${SET.name}\n`+Object.entries(cart).map(([k,q])=>`• ${q} × ${label(k)}`).join("\n")+
+      (sched?`\n🗓 موعد الاستلام: ${fmtWhen(sched)}`:"")+
       `\nنوع الطلب: ${kind}${zoneNow()?" - "+zoneNow().name:""}${where?" - "+where:""}${geo?"\n"+geo:""}`+
       `\nالإجمالي: ${t.s+fee()} ريال\nالدفع: ${pay}\nالاسم: ${order.name}\nالجوال: ${order.phone}`+(order.notes?`\nملاحظات: ${order.notes}`:"");
     const waUrl=`https://wa.me/${SET.whatsapp}?text=${encodeURIComponent(waMsg)}`;
@@ -351,6 +377,7 @@ openCart.onclick=()=>{
       if(file) order.receipt={name:file.name,type:file.type||"application/octet-stream",data:await new Promise((ok,no)=>{
         const r=new FileReader(); r.onload=()=>ok(String(r.result).split(",")[1]); r.onerror=no; r.readAsDataURL(file);})};
       const j=await call("",order);
+      if(!j.ok&&(j.error==="need_sched"||j.error==="too_soon"||j.error==="too_far")){ btn.disabled=false; btn.textContent="أرسل الطلب"; await loadMenu(); return fail(j.error==="too_far"?"الموعد بعيد، اختر موعد خلال ٣٠ يوم.":`فيه أصناف تنطلب ${preTxt(j.hours||24)}. اختر موعد استلام بعد ${j.hours||24} ساعة أو أكثر.`); }
       if(!j.ok&&j.error==="min_order"){ btn.disabled=false; btn.textContent="أرسل الطلب"; return fail(`أقل طلب للتوصيل ${money(j.min)}.`); }
       if(!j.ok&&j.error==="closed"){ btn.disabled=false; btn.textContent="أرسل الطلب"; await loadMenu(); return fail(esc(j.msg||SET.closedMsg||"الطلبات مقفلة حالياً")); }
       if(!j.ok&&j.error==="bad_zone"){ btn.disabled=false; btn.textContent="أرسل الطلب"; return fail("اختر الحي من القائمة."); }
@@ -361,6 +388,7 @@ openCart.onclick=()=>{
       }
       if(!j.ok) throw new Error(j.error||"failed");
       openSheet(`<div class="done"><img class="logo" src="${document.querySelector('.logo').src}" alt=""><h3 id="sheetTitle">وصلنا طلبك</h3><div class="num">${j.no}</div>
+        ${sched?`<p class="loyal"><b>🗓 موعد الاستلام: ${fmtWhen(sched)}</b></p>`:""}
         <p>${esc(SET.doneMsg)}${kind==="طاولة"?" بنجيبه لطاولتك.":kind==="توصيل"?" بنتواصل معك وقت التوصيل.":""}</p>
         ${j.gift?`<p class="loyal"><b>🎁 معك ${esc(j.gift)} مجاناً</b></p>`:j.every?`<p class="loyal"><span>${CONFIG.orderIcon} صار عندك ${j.stamps} من ${j.every}${j.stamps>=j.every?`، طلبك الجاي معه ${esc(SET.gift)} مجاناً 🎉`:""}</span></p>`:""}
         <a class="go" style="align-self:stretch" href="?track=${encodeURIComponent(j.no)}&k=${order.phone.slice(-4)}">📍 تابع حالة طلبك</a>
@@ -386,6 +414,7 @@ function showTrack(no,k){
     const steps=STEPS[j.kind]||STEPS._, cur=steps.indexOf(j.status), cancel=j.status==="ملغي";
     openSheet(`<h3 id="sheetTitle">طلبك <span class="tno">${esc(j.no)}</span><button class="x" type="button" aria-label="إغلاق">✕</button></h3>
       ${cancel?`<p class="closed" style="text-align:center">تم إلغاء الطلب. للاستفسار تواصل مع المحل.</p>`:`<ol class="track">${steps.map((s,i)=>`<li class="${i<cur?"done":i===cur?"now":""}"><i></i><span>${STEP_TXT[s]||s}</span></li>`).join("")}</ol>`}
+      ${j.sched?`<p class="loyal"><b>🗓 موعد الاستلام: ${fmtWhen(j.sched)}</b></p>`:""}
       <p class="hint">${esc(j.items)} · ${money(j.total)} · ${esc(j.kind)} · ${esc(j.time)}</p>
       <p class="hint">الصفحة تتحدث لحالها كل ٢٠ ثانية.</p>`);
     clearTimeout(trackTimer); if(!cancel&&j.status!=="تم"&&!sheet.hidden) trackTimer=setTimeout(()=>call("track="+encodeURIComponent(no)+"&k="+encodeURIComponent(k)).then(draw).catch(()=>{}),20000);

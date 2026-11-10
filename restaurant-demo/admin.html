@@ -76,6 +76,9 @@ main{padding-block:16px 40px}
 .oh small{color:var(--muted)}
 .tags{display:flex;gap:6px;flex-wrap:wrap}
 .tag{font-size:.75rem;font-weight:700;border-radius:999px;padding:1px 9px;background:var(--card-soft);color:var(--brand)}
+.sched{font-weight:700;font-size:.88rem;background:#ede9fe;color:#4c1d95;border-radius:8px;padding:4px 8px}
+.sched.soon{background:#fee2e2;color:#991b1b}
+.st-up{grid-column:1/-1;margin:8px 2px 0;font-size:1rem;color:#4c1d95}
 .tag.dl{background:#dbeafe;color:#1e3a8a} .tag.br{background:#ede9fe;color:#4c1d95} .tag.tr{background:#fef3c7;color:#92400e}
 .items{margin:0;padding-inline-start:18px;font-size:.92rem}
 .meta{font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
@@ -317,6 +320,7 @@ function card(o){
     <div class="oh"><b class="num ltr">${esc(o.no)}</b><small class="num ltr">${esc(o.time)}</small></div>
     <div class="tags"><span class="tag ${kindTag}">${esc(o.kind)}</span><span class="tag">${esc(o.source.split(" · ")[0])}</span><span class="tag ${o.pay.indexOf("تحويل")===0?"tr":o.pay==="Apple Pay"?"dl":""}">${esc(o.pay)}</span>${o.gift?'<span class="tag">🎁 هدية</span>':""}</div>
     <ul class="items">${(o.lines&&o.lines.length?o.lines.map(l=>`<li>${l.q} × ${esc(l.n)}${l.o?` <small>(${esc(l.o)})</small>`:""}${l.p===0?" 🎁":""}</li>`):o.items.split("، ").map(t=>`<li>${esc(t)}</li>`)).join("")}</ul>
+    ${o.sched?`<div class="sched${soon(o.sched)?" soon":""}">🗓 الاستلام: ${fmtWhen(o.sched)}</div>`:""}
     ${o.notes?`<div class="meta">📝 ${esc(o.notes)}</div>`:""}
     <div class="meta">${esc(o.name)}${o.phone?` · <a href="tel:${esc(o.phone)}" class="num ltr">${esc(o.phone)}</a>`:""}</div>
     ${o.where?`<div class="meta">📍 ${esc(o.where)}${o.geo?` · <a href="${esc(o.geo)}" target="_blank" rel="noopener">الموقع على الخريطة</a>`:""}</div>`:""}
@@ -337,6 +341,15 @@ function drawBoard(){
     const o=ORDERS.find(x=>x.no===btn.dataset.no); if(o){o.status=btn.dataset.s; o._fresh=false;} drawBoard(); };
   ORDERS.forEach(o=>o._fresh=false);
 }
+
+/* ===== الطلبات المسبقة ===== */
+const DAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const fmtWhen=iso=>{const d=new Date(iso); if(isNaN(d))return esc(iso); const h=d.getHours(),m=String(d.getMinutes()).padStart(2,"0");
+  const today=new Date(), tm=new Date(Date.now()+864e5); const same=(a,b)=>a.toDateString()===b.toDateString();
+  return `${same(d,today)?"اليوم":same(d,tm)?"بكرة":DAYS[d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1)} ${h%12||12}:${m} ${h<12?"ص":"م"}`;};
+const schedMs=o=>o.sched?new Date(o.sched).getTime():0;
+const soon=iso=>{const t=new Date(iso).getTime(); return t-Date.now()<3*36e5;};
+const later=o=>o.sched&&!soon(o.sched)&&o.status==="جديد";
 
 /* ===== شاشة المتجر (آيباد) ===== */
 let wake=null, storeMenuT;
@@ -374,9 +387,12 @@ async function loadToday(){
 }
 function drawStoreOrders(){
   const box=$("#stOrders"); if(!box) return;
-  const act=ORDERS.filter(o=>o.status!=="تم"&&o.status!=="ملغي").sort((a,b)=>({"جديد":0,"يتجهز":1,"جاهز":2,"في الطريق":2})[a.status]-({"جديد":0,"يتجهز":1,"جاهز":2,"في الطريق":2})[b.status]||(a.time<b.time?-1:1));
+  const all=ORDERS.filter(o=>o.status!=="تم"&&o.status!=="ملغي");
+  const upcoming=all.filter(later).sort((a,b)=>schedMs(a)-schedMs(b));
+  const act=all.filter(o=>!later(o)).sort((a,b)=>({"جديد":0,"يتجهز":1,"جاهز":2,"في الطريق":2})[a.status]-({"جديد":0,"يتجهز":1,"جاهز":2,"في الطريق":2})[b.status]||(a.time<b.time?-1:1));
   $("#stOc").textContent=act.length?`${act.length} نشط`:"";
-  box.innerHTML=act.length?act.map(card).join(""):'<p class="st-empty">ما فيه طلبات الحين ☕<br><small>أي طلب جديد يطلع هنا مع صوت تنبيه</small></p>';
+  box.innerHTML=(act.length?act.map(card).join(""):'<p class="st-empty">ما فيه طلبات الحين ☕<br><small>أي طلب جديد يطلع هنا مع صوت تنبيه</small></p>')+
+    (upcoming.length?`<h3 class="st-up">🗓 طلبات مسبقة قادمة (${upcoming.length})</h3>${upcoming.map(card).join("")}`:"");
   box.onclick=async e=>{const btn=e.target.closest("button[data-s]"); if(!btn) return;
     if(btn.dataset.s==="ملغي"&&btn.dataset.sure!=="1"){btn.dataset.sure="1"; btn.textContent="متأكد؟ اضغط مرة ثانية"; return;}
     btn.disabled=true; const j=await call("",{action:"status",pin:USER.pin,no:btn.dataset.no,status:btn.dataset.s});

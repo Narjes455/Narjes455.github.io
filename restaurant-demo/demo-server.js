@@ -1,7 +1,7 @@
 /* سيرفر تجريبي داخل المتصفح: يقلّد Google Apps Script عشان النموذج يشتغل بدون شيت.
    البيانات تنحفظ في المتصفح (localStorage) فطلب الزبون يظهر في صفحة الإدارة على نفس الجهاز. */
 (function () {
-  const KEY = "jamraDemo.v2";
+  const KEY = "jamraDemo.v3";
   const STAFF = [
     { name: "المدير", pin: "1234", role: "مدير" },
     { name: "سعد", pin: "1111", role: "كاشير" },
@@ -14,12 +14,13 @@
     ["البروست", "بروست ٤ قطع", "مع بطاطس وثومية وخبز", 22, ["عادي", "حار"], null, "متوفر"],
     ["البروست", "بروست ٨ قطع", "وجبة عائلية مع بطاطس كبير", 39, ["عادي", "حار"], 12, "متوفر"],
     ["البروست", "ستربس ٥ قطع", "مع صوص العسل والخردل", 19, [], null, "متوفر"],
+    ["البروست", "وليمة جمرة (١٠ أشخاص)", "٢٠ قطعة بروست، ١٠ برجر، بطاطس وصوصات", 290, [], null, "متوفر", 24],
     ["الجانبيات", "بطاطس جمرة", "بطاطس مع صوص جمرة وجبنة", 12, [], null, "متوفر"],
     ["الجانبيات", "أصابع موزاريلا", "٦ قطع", 14, [], 0, "متوفر"],
     ["الجانبيات", "كول سلو", "", 6, [], null, "متوفر"],
     ["المشروبات", "موهيتو", "", 11, ["ليمون", "فراولة", "توت"], null, "متوفر"],
     ["المشروبات", "مشروب غازي", "", 4, [], null, "متوفر"]
-  ].map(([cat, name, desc, price, opts, qty, status]) => ({ cat, name, desc, price, opts, qty, status }));
+  ].map(([cat, name, desc, price, opts, qty, status, pre]) => ({ cat, name, desc, price, opts, qty, status, pre: pre || 0 }));
   const SET = {
     name: "جَمرة", tagline: "مطبخ سحابي في البدراني · التحضير ٢٠ دقيقة", open: true, closedMsg: "الطلبات مقفلة حالياً",
     doneMsg: "طلبك وصل للمطبخ وبدأ يتجهز.", cash: true, transfer: false, applepay: true, bank: "بنك تجريبي", holder: "مطعم جمرة (حساب وهمي)",
@@ -102,7 +103,7 @@
     st.menu.forEach(it => {
       const s = status(it); if (s === "مخفي") return;
       let c = cats.find(x => x.cat === it.cat); if (!c) cats.push(c = { cat: it.cat, items: [] });
-      c.items.push({ name: it.name, desc: it.desc, price: it.price, opts: it.opts, status: s, left: s === "ينتهي قريباً" ? it.qty : null });
+      c.items.push({ name: it.name, desc: it.desc, price: it.price, opts: it.opts, status: s, left: s === "ينتهي قريباً" ? it.qty : null, pre: it.pre || 0 });
     });
     return cats;
   }
@@ -140,6 +141,8 @@
     }
     if (!lines.length) return { ok: false, error: "invalid_order" };
     const sub = lines.reduce((s, l) => s + l.q * l.p, 0);
+    const preH = Math.max(0, ...lines.map(l => (find(st, l.n).pre || 0)));
+    if (online && preH) { const t = new Date(d.sched || ""); if (isNaN(t)) return { ok: false, error: "need_sched", hours: preH }; if (t - Date.now() < preH * 36e5 - 6e5) return { ok: false, error: "too_soon", hours: preH }; }
     if (online && kind === "توصيل" && sub < SET.deliveryMin) return { ok: false, error: "min_order", min: SET.deliveryMin };
     let gift = "", stampsAfter = 0;
     const phone = String(d.phone || "");
@@ -153,9 +156,9 @@
     const o = { no, date: ymd(now), time: hm(now), name: d.name || (branch ? "زبون الفرع" : ""), phone, lines,
       items: lines.map(l => `${l.q} × ${l.n}${l.o ? " (" + l.o + ")" : ""}${l.p === 0 ? " 🎁" : ""}`).join("، "),
       total: sub + fee, pay, notes: d.notes || "", receipt: d.receipt ? "(إيصال مرفق)" : "", gift, kind, where, geo: d.geo || "", fee,
-      status: branch ? "يتجهز" : "جديد", source: branch ? "الفرع · " + u.name : "الرابط" };
+      sched: d.sched || "", status: branch ? "يتجهز" : "جديد", source: branch ? "الفرع · " + u.name : "الرابط" };
     st.orders.push(o);
-    const wa = `طلب جديد ${no}\n` + lines.map(l => `• ${l.q} × ${l.n}${l.o ? " (" + l.o + ")" : ""}${l.p === 0 ? " 🎁 مجانية" : ""}`).join("\n") +
+    const wa = `طلب جديد ${no}${o.sched ? " (طلب مسبق)" : ""}\n` + (o.sched ? `🗓 موعد الاستلام: ${o.sched.replace("T", " ")}\n` : "") + lines.map(l => `• ${l.q} × ${l.n}${l.o ? " (" + l.o + ")" : ""}${l.p === 0 ? " 🎁 مجانية" : ""}`).join("\n") +
       `\nنوع الطلب: ${kind}${where ? " - " + where : ""}${o.geo ? "\n📍 " + o.geo : ""}` + (fee ? `\nرسوم التوصيل: ${fee} ريال` : "") +
       `\nالإجمالي: ${o.total} ريال\nالدفع: ${pay}\nالاسم: ${o.name}\nالجوال: ${phone}` + (o.notes ? `\nملاحظات: ${o.notes}` : "") +
       (d.receipt ? "\nالإيصال: (صورة الإيصال توصل مع الرسالة)" : "");
@@ -206,7 +209,7 @@
         const p = new URLSearchParams(qs || "");
         if (!body) {
           if (p.get("track")) { const o = st.orders.find(o => o.no === p.get("track") && o.phone.slice(-4) === p.get("k"));
-            return o ? { ok: true, no: o.no, status: o.status, kind: o.kind, time: o.time, items: o.items, total: o.total } : { ok: false, error: "not_found" }; }
+            return o ? { ok: true, no: o.no, status: o.status, kind: o.kind, time: o.time, items: o.items, total: o.total, sched: o.sched || "" } : { ok: false, error: "not_found" }; }
           if (p.get("phone")) { const n = stamps(st, p.get("phone")); return { ok: true, stamps: Math.min(n, SET.every), every: SET.every, due: n >= SET.every, freeItem: SET.gift }; }
           return { ok: true, menu: publicMenu(st), settings: Object.assign({}, SET, { open: st.open }) };
         }
