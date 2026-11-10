@@ -112,7 +112,7 @@ select{font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--ca
 .ct b{font-weight:700;overflow-wrap:anywhere}
 .ci{width:40px;height:40px;border-radius:50%;background:var(--card-soft);display:grid;place-items:center;font-size:1.2rem;flex:none}
 .go2{font-weight:700;color:var(--brand);font-size:.85rem}
-.cbtns{display:flex;gap:8px;flex-basis:100%}
+.ct>.cbtns{display:flex;flex-direction:row;gap:8px;flex:1 1 100%}
 .cbtns a{flex:1;text-align:center}
 .cbtns a{background:var(--brand);color:var(--paper);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.85rem;text-decoration:none}
 .cbtns a+a{background:var(--card);color:var(--brand)}
@@ -200,6 +200,7 @@ function drawContact(){
       <div class="cbtns"><a href="https://wa.me/${esc(ph)}" target="_blank" rel="noopener">واتساب</a><a href="tel:+${esc(ph)}">اتصال</a></div></div>`);
   if(SET.maps||SET.address) c.push(`<${SET.maps?`a href="${esc(SET.maps)}" target="_blank" rel="noopener"`:"div"} class="ct"><span class="ci">📍</span><div><small>موقعنا</small><b>${esc(SET.address||"افتح الموقع على قوقل ماب")}</b></div>${SET.maps?'<span class="go2">الخريطة ←</span>':""}</${SET.maps?"a":"div"}>`);
   if(SET.tiktok) c.push(`<a class="ct" href="https://www.tiktok.com/@${esc(SET.tiktok)}" target="_blank" rel="noopener"><span class="ci">🎵</span><div><small>تيك توك</small><b class="ltr">@${esc(SET.tiktok)}</b></div><span class="go2">تابعنا ←</span></a>`);
+  if(SET.snapchat) c.push(`<a class="ct" href="${esc(SET.snapchat)}" target="_blank" rel="noopener"><span class="ci">👻</span><div><small>سناب شات</small><b>حسابنا على سناب</b></div><span class="go2">أضفنا ←</span></a>`);
   if(SET.instagram) c.push(`<a class="ct" href="https://www.instagram.com/${esc(SET.instagram)}" target="_blank" rel="noopener"><span class="ci">📷</span><div><small>إنستقرام</small><b class="ltr">@${esc(SET.instagram)}</b></div><span class="go2">تابعنا ←</span></a>`);
   contact.innerHTML=c.length?`<h2>تواصل معنا</h2><div class="cts">${c.join("")}</div>`:"";
   contact.hidden=!c.length;
