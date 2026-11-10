@@ -152,7 +152,8 @@ td.num,th.num{text-align:end}
 
 /* شاشة المتجر */
 body.store-mode main{padding-block:12px 24px}
-.st-money{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;align-items:stretch;margin-bottom:12px}
+.st-money{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin-bottom:12px}
+.st-money .st-big{flex:2 1 280px} .st-money .st-m{flex:1 1 140px} .st-money .st-fs{flex:0 0 auto}
 .st-big,.st-m{background:var(--white);border-radius:18px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center;gap:2px}
 .st-big{background:var(--brand);color:var(--paper)}
 .st-big small,.st-m small{font-weight:600;opacity:.8}
@@ -175,7 +176,7 @@ body.store-mode main{padding-block:12px 24px}
 .st-it em{font-style:normal;font-size:.78rem;color:var(--ready);font-weight:700;margin-top:auto}
 .st-it.low{border-color:#f59e0b} .st-it.low em{color:#92400e}
 .st-it.off{background:#f3f0ec;opacity:.75;border-style:dashed;border-color:var(--bad)} .st-it.off b{text-decoration:line-through} .st-it.off em{color:var(--bad)}
-@media (max-width:900px){ .st-grid{grid-template-columns:1fr} .st-money{grid-template-columns:1fr 1fr 1fr} .st-big{grid-column:1/-1} .st-fs{display:none} }
+@media (max-width:900px){ .st-grid{grid-template-columns:1fr} .st-money .st-big{flex-basis:100%} .st-fs{display:none} }
 @media (max-width:1000px){ .board{grid-template-columns:repeat(2,minmax(0,1fr))} .pos{grid-template-columns:1fr} .cart{position:static} .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:640px){ .board{grid-template-columns:1fr} .cols2{grid-template-columns:1fr} .top h1{font-size:1.05rem} }
 @media (prefers-reduced-motion:reduce){ .ord.fresh{animation:none} }
@@ -347,7 +348,7 @@ function viewStore(){
       <div class="st-big"><small>دخل اليوم</small><b class="num" id="stTotal">…</b><span id="stCount"></span></div>
       <div class="st-m"><small>كاش</small><b class="num" id="stCash">…</b></div>
       <div class="st-m"><small>تحويل</small><b class="num" id="stTr">…</b></div>
-      <div class="st-m"><small>شبكة</small><b class="num" id="stCard">…</b></div>
+      ${HAS_CARD?`<div class="st-m"><small>شبكة</small><b class="num" id="stCard">…</b></div>`:""}
       <button type="button" class="st-fs" id="stFs" title="ملء الشاشة">⛶ ملء الشاشة</button>
     </section>
     <div class="st-grid">
@@ -368,7 +369,7 @@ async function loadToday(){
   const T=j.today;
   $("#stTotal").textContent=money(T.total);
   $("#stCount").textContent=`${T.count} طلب${T.count?` · متوسط ${money(T.total/T.count)}`:""}${T.branch?` · الفرع ${money(T.branch)}`:""}`;
-  $("#stCash").textContent=money(T.cash); $("#stTr").textContent=money(T.transfer); $("#stCard").textContent=money(T.card);
+  $("#stCash").textContent=money(T.cash); $("#stTr").textContent=money(T.transfer); if($("#stCard")) $("#stCard").textContent=money(T.card);
   drawOpen(j.openNow);
 }
 function drawStoreOrders(){
@@ -397,7 +398,10 @@ function drawStoreItems(){
 }
 
 /* ===== الكاشير ===== */
-let CART={}, pcat=0, pkind="محلي", ppay="كاش";
+// طرق الدفع في الفرع (config.js: branchPay). الافتراضي: كاش وشبكة وتحويل
+const PAYS=(window.CONFIG&&CONFIG.branchPay)||["كاش","شبكة","تحويل بنكي"];
+const HAS_CARD=PAYS.includes("شبكة");
+let CART={}, pcat=0, pkind="محلي", ppay=PAYS[0];
 const priceOf=n=>{for(const c of MENU)for(const i of c.items)if(i.name===n)return i.price;return 0;};
 function viewPos(){
   if(!MENU.length){$("#view").innerHTML='<div class="panel"><p>المنيو فاضي. عبّي ورقة المنيو في الشيت.</p></div>';return;}
@@ -407,7 +411,7 @@ function viewPos(){
     <aside class="cart"><h3>طلب الفرع</h3><div class="cl" id="cl"></div>
       <div class="tot"><span>الإجمالي</span><span id="ptot">0</span></div>
       <div class="seg" id="pk">${["محلي","سفري"].map(k=>`<button type="button" data-v="${k}" class="${pkind===k?"on":""}">${k}</button>`).join("")}</div>
-      <div class="seg" id="pp">${["كاش","شبكة","تحويل بنكي"].map(k=>`<button type="button" data-v="${k}" class="${ppay===k?"on":""}">${k==="تحويل بنكي"?"تحويل":k}</button>`).join("")}</div>
+      <div class="seg" id="pp">${PAYS.map(k=>`<button type="button" data-v="${k}" class="${ppay===k?"on":""}">${k==="تحويل بنكي"?"تحويل":k}</button>`).join("")}</div>
       <div class="row2"><input class="in" id="pn" placeholder="اسم الزبون (اختياري)"><input class="in num" id="pph" inputmode="tel" placeholder="جوال للولاء (اختياري)"></div>
       <input class="in" id="pnote" placeholder="ملاحظات (اختياري)">
       <button type="button" class="btn" id="psend">سجّل الطلب</button>
@@ -482,7 +486,7 @@ async function viewRep(){
   if(!j||!j.ok){$("#view").innerHTML=`<div class="panel"><p class="msg err">${j?errText(j):"ما قدرنا نحمّل التقارير"}</p></div>`;return;}
   const T=j.today,M=j.month, max=Math.max(1,...j.days.map(d=>d.total)), today=j.days.length?j.days[j.days.length-1].date:"";
   const sp=(o)=>{const s=o.total||1; return `<div class="split"><i style="width:${o.cash/s*100}%;background:var(--brand)"></i><i style="width:${o.card/s*100}%;background:var(--card)"></i><i style="width:${o.transfer/s*100}%;background:#93c5fd"></i></div>
-    <div class="legend"><span><b style="background:var(--brand)"></b>كاش ${money(o.cash)}</span><span><b style="background:var(--card)"></b>شبكة / Apple Pay ${money(o.card)}</span><span><b style="background:#93c5fd"></b>تحويل ${money(o.transfer)}</span></div>`;};
+    <div class="legend"><span><b style="background:var(--brand)"></b>كاش ${money(o.cash)}</span>${HAS_CARD||o.card?`<span><b style="background:var(--card)"></b>شبكة / Apple Pay ${money(o.card)}</span>`:""}<span><b style="background:#93c5fd"></b>تحويل ${money(o.transfer)}</span></div>`;};
   const hrs=Object.entries(j.hours).sort((a,b)=>b[1]-a[1])[0];
   $("#view").innerHTML=`
   <div class="kpis">
