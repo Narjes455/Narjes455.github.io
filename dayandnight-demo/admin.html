@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>لوحة المحل — Day & Night</title>
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#efe9e3;--card:#fbf8f5;--ink:#2f4255;--muted:#6b7c90;--line:rgba(47,66,85,.14);--red:#8b1c24;--chip:#e8eef4;--ok:#1f6b3a}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Tajawal,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:40px}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit;font-size:16px;width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--chip);color:var(--ink)}
+.bar{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 14px}
+.bar img{width:40px;height:40px;border-radius:50%}
+.bar b{font-size:18px}.bar .sp{flex:1}
+.live{font-size:12px;background:rgba(255,255,255,.15);border-radius:99px;padding:3px 10px}
+.live.err{background:var(--red)}
+.out{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:99px;padding:4px 12px}
+main{max-width:680px;margin:0 auto;padding:14px}
+.login{max-width:360px;margin:60px auto;text-align:center;padding:0 16px}
+.login img{width:110px;border-radius:50%;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.login h2{margin:14px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center}
+.kpi b{display:block;font-size:26px;font-family:'Cormorant Garamond',serif}
+.kpi small{color:var(--muted)}
+.big{width:100%;border:0;border-radius:16px;padding:13px;font-size:17px;font-weight:800;background:var(--ink);color:#fff;margin-top:12px}
+.sec-h{display:flex;justify-content:space-between;align-items:center;margin:20px 0 8px}
+.sec-h small{color:var(--muted)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.row:last-child{border:0}
+.row small{display:block;color:var(--muted);font-size:12px}
+.sw{width:50px;height:30px;border-radius:99px;border:0;background:#cfd6de;position:relative;flex:none;transition:.2s}
+.sw i{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on{background:var(--ok)}.sw.on i{right:23px}
+.filters{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--chip);color:var(--ink);border-radius:99px;padding:6px 12px;font-weight:700;font-size:13px}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ord{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:10px}
+.ord.st-جديد{border:2px solid var(--red)}
+.ord .h{display:flex;justify-content:space-between;align-items:center;font-weight:800;gap:8px}
+.ord .items{white-space:pre-line;margin:8px 0;font-size:15px;line-height:1.7}
+.meta{font-size:13px;color:var(--muted);margin-bottom:8px;line-height:1.8}
+.act{display:flex;gap:8px}
+.act a,.act button{flex:1;border:0;border-radius:12px;padding:10px;font-weight:800;text-align:center;text-decoration:none;font-size:14px;background:var(--ink);color:#fff}
+.act .wa{background:#1fa855}.act .cancel{background:#e6e6e6;color:#555;flex:0 0 auto;padding:10px 14px}
+.tag{font-size:12px;border-radius:99px;padding:3px 10px}
+.s0{background:#fbe2e4;color:var(--red)}.s1{background:#fff3c4;color:#7a5a00}.s2{background:#dcefe2;color:var(--ok)}
+.gift{background:var(--red);color:#fff;border-radius:99px;padding:1px 9px;font-size:11px}
+.photo{display:inline-block;margin-bottom:8px;font-weight:800;color:var(--ink)}
+.note{font-size:13px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.8}
+.empty{text-align:center;color:var(--muted);padding:24px}
+.toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-120px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:30px;font-weight:700;z-index:60;transition:transform .4s}
+.toast.show{transform:translate(-50%,0)}
+.sub-h{font-weight:800;margin:10px 0 2px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+const K=window.DN,$=s=>document.querySelector(s),esc=K.esc;
+let PASS=K.store.get('pass',''),D=null,seen=new Set(K.store.get('seen',[])),filter='active',first=true;
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2400)}
+let actx=null;
+function ding(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();[0,.18].forEach((t,i)=>{const o=actx.createOscillator(),g=actx.createGain();
+  o.frequency.value=i?1320:880;o.connect(g);g.connect(actx.destination);g.gain.setValueAtTime(.25,actx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+t+.35);
+  o.start(actx.currentTime+t);o.stop(actx.currentTime+t+.4)})}catch(e){}}
+
+function loginView(msg){
+  $('#app').innerHTML=`<div class="login"><img src="logo.png" alt=""><h2>لوحة Day & Night</h2>
+   <div class="card"><label for="pw" style="font-weight:700;display:block;margin-bottom:6px">كلمة المرور</label><input id="pw" type="password" autocomplete="current-password">
+   ${msg?`<p style="color:var(--red);font-weight:700;margin-top:8px">${msg}</p>`:''}<button class="big" id="go">دخول</button>
+   ${K.LIVE?'':`<p class="note">وضع العرض: كلمة المرور <b>${K.DEMO_PASS}</b></p>`}</div></div>`;
+  const go=async()=>{PASS=$('#pw').value.trim();const r=await K.apiPost({a:'admin',pass:PASS}).catch(()=>null);
+    if(r&&r.ok){K.store.set('pass',PASS);D=r;r.orders.forEach(o=>seen.add(o.no));ding();shell();render();poll()}else loginView('كلمة المرور غلط')};
+  $('#go').onclick=go;$('#pw').onkeydown=e=>{if(e.key==='Enter')go()};
+}
+function shell(){
+  $('#app').innerHTML=`<div class="bar"><img src="logo.png" alt=""><b>لوحة المحل</b><span class="sp"></span><span class="live" id="live">● مباشر</span><button class="out" id="out">خروج</button></div>
+   <main>
+    <div class="kpis"><div class="kpi"><b id="kO">0</b><small>طلبات اليوم</small></div><div class="kpi"><b id="kC">0</b><small>مشروب</small></div><div class="kpi"><b id="kR">0</b><small>ريال</small></div></div>
+    <div class="card row" style="border:1px solid var(--line)"><div><b>استقبال الطلبات</b><small id="accTxt"></small></div><button class="sw" id="accSw" aria-label="استقبال الطلبات"><i></i></button></div>
+    <div class="sec-h"><h3>الطلبات</h3></div>
+    <div class="filters" id="filters"></div>
+    <div id="ords"></div>
+    <div class="sec-h"><h3>المتوفر</h3><small>اللي يخلص يختفي من الموقع</small></div>
+    <div class="card" id="stock"></div>
+    <div class="sec-h"><h3>صرف مشروب مجاني يدويًا</h3></div>
+    <div class="card" style="display:flex;gap:8px;align-items:center"><input id="rPh" inputmode="tel" placeholder="جوال العميلة 05xxxxxxxx" aria-label="جوال العميلة"><button class="big" id="rBtn" style="width:auto;margin:0;padding:12px 16px">صرف</button></div>
+    <p class="note">الأسعار والأصناف والإضافات والدوام تتعدل من ملف قوقل شيت مباشرة.</p>
+   </main>`;
+  $('#out').onclick=()=>{K.store.set('pass','');PASS='';loginView()};
+  $('#accSw').onclick=async()=>{const on=!D.settings.accepting;D.settings.accepting=on;render();const r=await K.apiPost({a:'accepting',pass:PASS,on});toast(on?'رجعنا نستقبل الطلبات':'وقفنا استقبال الطلبات');if(!r.ok)refresh()};
+  $('#rBtn').onclick=async()=>{const p=K.normPhone($('#rPh').value);if(!/^05\d{8}$/.test(p)){toast('رقم غير صحيح');return}
+    const r=await K.apiPost({a:'redeem',pass:PASS,phone:p});toast(r.ok?`تم الصرف ✦ باقي عندها ${r.stars} نجوم`:(r.msg||'ما عندها نجوم كافية'));if(r.ok){$('#rPh').value='';refresh()}};
+}
+const NEXT={'جديد':['يتجهز','ابدئي التجهيز'],'يتجهز':['جاهز','جاهز ✓'],'جاهز':['استلم','تم الاستلام']};
+const TAGC={'جديد':'s0','يتجهز':'s1','جاهز':'s2'};
+function readyMsg(o){return `هلا ${o.name} ✦\nطلبك ${o.no} جاهز في Day & Night 🦢🐆\nتقدرين تجين تستلمينه`}
+function render(){
+  if(!D)return;
+  $('#kO').textContent=D.today.orders;$('#kC').textContent=D.today.cups;$('#kR').textContent=D.today.total;
+  $('#accSw').classList.toggle('on',!!D.settings.accepting);$('#accTxt').textContent=D.settings.accepting?'العملاء يقدرون يطلبون الحين':'الطلبات متوقفة، العملاء يشوفون رسالة';
+  const counts={active:D.orders.length};['جديد','يتجهز','جاهز'].forEach(s=>counts[s]=D.orders.filter(o=>o.status===s).length);
+  $('#filters').innerHTML=[['active','الكل'],['جديد','جديد'],['يتجهز','يتجهز'],['جاهز','جاهز']].map(([k,l])=>`<button class="chip ${filter===k?'on':''}" data-f="${k}">${l} (${counts[k]})</button>`).join('');
+  $('#filters').onclick=e=>{const b=e.target.closest('[data-f]');if(b){filter=b.dataset.f;render()}};
+  const list=D.orders.filter(o=>filter==='active'||o.status===filter);
+  $('#ords').innerHTML=list.length?list.map(o=>{const st=(D.stars||{})[K.normPhone(o.phone)]||0,gift=st>=D.settings.freeAt;
+    return `<div class="ord st-${esc(o.status)}"><div class="h"><span>${esc(o.no)} · ${esc(o.name)} ${gift?'<span class="gift">عندها مشروب مجاني</span>':''}</span><span class="tag ${TAGC[o.status]||'s0'}">${esc(o.status)}</span></div>
+     <div class="items">${esc(o.items)}</div>
+     ${o.photo?(/^https:/.test(o.photo)?`<a class="photo" href="${esc(o.photo)}" target="_blank" rel="noopener">📷 صورة كوب الميلاد</a>`:`<div class="meta">📷 ${esc(o.photo)}</div>`):''}
+     <div class="meta">⏰ ${esc(o.time)} · ${esc(o.pay)} · <b style="color:var(--ink)">${o.total} ريال</b>${o.reward?` · مكافأة النجوم ${esc(o.reward)}`:''}${o.phone?` · 📱 ${esc(o.phone)}`:''}${o.note?`<br>📝 ${esc(o.note)}`:''}</div>
+     <div class="act">${NEXT[o.status]?`<button data-no="${esc(o.no)}" data-to="${NEXT[o.status][0]}">${NEXT[o.status][1]}</button>`:''}
+      ${o.phone&&(o.status==='جاهز'||o.status==='يتجهز')?`<a class="wa" target="_blank" rel="noopener" href="${K.waLink(o.phone,readyMsg(o))}">بلّغي العميلة</a>`:''}
+      ${o.status==='جديد'?`<button class="cancel" data-no="${esc(o.no)}" data-to="ملغي">إلغاء</button>`:''}</div></div>`}).join(''):'<div class="empty">ما فيه طلبات هنا ✦</div>';
+  $('#ords').onclick=async e=>{const b=e.target.closest('[data-to]');if(!b)return;if(b.dataset.to==='ملغي'&&!confirmCancel(b))return;
+    const o=D.orders.find(x=>x.no===b.dataset.no);o.status=b.dataset.to;if(o.status==='استلم'||o.status==='ملغي')D.orders=D.orders.filter(x=>x!==o);render();
+    const r=await K.apiPost({a:'status',pass:PASS,no:b.dataset.no,status:b.dataset.to});if(!r.ok){toast('ما انحفظ، جربي مرة ثانية');refresh()}
+    else if(b.dataset.to==='جاهز'&&o.phone)toast('جاهز ✓ اضغطي «بلّغي العميلة» لإرسال رسالة')};
+  const sw=(kind,x)=>`<div class="row"><div><b>${esc(x.name)}</b><small>${x.price?x.price+' ريال · ':''}${x.on?'متوفر':'مخفي، خلص'}</small></div><button class="sw ${x.on?'on':''}" data-kind="${kind}" data-id="${esc(x.id)}" aria-label="متوفر"><i></i></button></div>`;
+  $('#stock').innerHTML='<div class="sub-h">المشروبات</div>'+D.menu.map(x=>sw('menu',x)).join('')+'<div class="sub-h">الإضافات</div>'+D.adds.map(x=>sw('add',x)).join('')+'<div class="sub-h">الحليب</div>'+D.milks.map(x=>sw('milk',x)).join('');
+  $('#stock').onclick=async e=>{const b=e.target.closest('[data-kind]');if(!b)return;const list=b.dataset.kind==='add'?D.adds:b.dataset.kind==='milk'?D.milks:D.menu;
+    const m=list.find(x=>x.id===b.dataset.id);m.on=!m.on;render();toast(m.on?`رجع «${m.name}»`:`«${m.name}» اختفى من الموقع`);
+    const r=await K.apiPost({a:'stock',pass:PASS,kind:b.dataset.kind,id:m.id,on:m.on});if(!r.ok)refresh()};
+}
+function confirmCancel(b){if(b.dataset.sure)return true;b.dataset.sure=1;b.textContent='متأكدة؟';setTimeout(()=>{if(b.isConnected){delete b.dataset.sure;b.textContent='إلغاء'}},3000);return false}
+async function refresh(){
+  try{const r=await K.apiPost({a:'admin',pass:PASS});
+    if(!r.ok){if(r.error==='auth'){K.store.set('pass','');loginView('انتهت الجلسة، ادخلي مرة ثانية')}return}
+    const fresh=r.orders.filter(o=>o.status==='جديد'&&!seen.has(o.no));
+    if(fresh.length&&!first){ding();toast(fresh.length===1?'طلب جديد ✦':fresh.length+' طلبات جديدة ✦');try{navigator.vibrate&&navigator.vibrate([300,100,300])}catch(e){}}
+    r.orders.forEach(o=>seen.add(o.no));K.store.set('seen',[...seen].slice(-300));first=false;
+    D=r;render();$('#live').textContent='● مباشر';$('#live').classList.remove('err');
+  }catch(e){$('#live').textContent='ما فيه اتصال';$('#live').classList.add('err')}
+}
+let pt=null;function poll(){clearInterval(pt);refresh();pt=setInterval(refresh,10000)}
+if(PASS){K.apiPost({a:'admin',pass:PASS}).then(r=>{if(r&&r.ok){D=r;r.orders.forEach(o=>seen.add(o.no));shell();render();poll()}else loginView()}).catch(()=>loginView('ما فيه اتصال'))}else loginView();
+</script>
+</body>
+</html>
