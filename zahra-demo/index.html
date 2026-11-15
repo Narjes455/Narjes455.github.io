@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zahra Matcha | زهرة ماتشا — ديمو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#ee719e; --pink-d:#d9517f; --pink-l:#fde3ec; --blush:#fff6f9;
+  --matcha:#7fa35a; --matcha-d:#56743a; --matcha-l:#e7f0dc;
+  --ink:#3b2a31; --muted:#9a7f8a; --card:#ffffff; --line:#f6d5e0;
+  --r:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Readex Pro",Tahoma,sans-serif;background:var(--blush);color:var(--ink);min-height:100vh;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none}
+input,select,textarea{font-family:inherit}
+
+/* ===== INTRO ===== */
+#intro{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 40%,#fff 0%,#fde3ec 45%,#f7a9c4 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .9s ease, visibility .9s}
+#intro.hide{opacity:0;visibility:hidden}
+.flower{width:190px;height:190px;position:relative}
+.flower svg{width:100%;height:100%;overflow:visible}
+.petal{transform-origin:100px 100px;transform:scale(0) rotate(0deg);animation:bloom 1.4s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes bloom{to{transform:scale(1) rotate(var(--rot))}}
+.core{transform-origin:100px 100px;transform:scale(0);animation:pop .6s 1.1s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes pop{to{transform:scale(1)}}
+.intro-title{font-family:"Playfair Display",serif;font-style:italic;font-size:46px;color:var(--pink-d);margin-top:18px;opacity:0;animation:rise .8s 1.5s forwards}
+.intro-sub{font-size:16px;color:var(--ink);opacity:0;animation:rise .8s 1.9s forwards;margin-top:6px}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.85;filter:blur(1px)}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:55%;height:150%;top:-60%;right:15%}
+.cloud::after{width:40%;height:120%;top:-40%;left:12%}
+.c1{width:150px;height:44px;top:16%;animation:drift 14s linear infinite}
+.c2{width:110px;height:34px;top:72%;animation:drift 18s linear infinite reverse}
+.c3{width:90px;height:28px;top:30%;animation:drift 22s linear infinite;animation-delay:-8s}
+@keyframes drift{from{left:-180px}to{left:110%}}
+.skip{position:absolute;bottom:34px;background:rgba(255,255,255,.7);color:var(--pink-d);padding:9px 22px;border-radius:30px;font-size:14px;opacity:0;animation:rise .6s 2.3s forwards}
+.fall{position:absolute;top:-20px;font-size:18px;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.2}}
+
+/* ===== DEMO SWITCHER ===== */
+.switcher{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:60;background:var(--ink);border-radius:40px;padding:5px;display:flex;gap:4px;box-shadow:0 10px 30px rgba(59,42,49,.3)}
+.switcher button{background:transparent;color:#f3dbe4;padding:9px 16px;border-radius:30px;font-size:13px}
+.switcher button.on{background:var(--pink);color:#fff}
+.screen{display:none;padding-bottom:110px}
+.screen.on{display:block}
+
+/* ===== HEADER ===== */
+header{position:sticky;top:0;z-index:40;background:rgba(255,246,249,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hwrap{max-width:1000px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 18px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:42px;height:42px}
+.brand b{font-family:"Playfair Display",serif;font-style:italic;font-size:22px;color:var(--pink-d);display:block;line-height:1}
+.brand small{color:var(--muted);font-size:11px}
+.cartbtn{position:relative;background:var(--pink);color:#fff;border-radius:16px;padding:10px 16px;font-size:14px;display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(238,113,158,.4)}
+.cartbtn .n{background:#fff;color:var(--pink-d);border-radius:20px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px;font-weight:700}
+.cartbtn.bump{animation:bump .4s}
+@keyframes bump{50%{transform:scale(1.12)}}
+
+/* ===== HERO ===== */
+.wrap{max-width:1000px;margin:auto;padding:0 18px}
+.hero{margin:20px 0;border-radius:28px;padding:28px 24px;background:linear-gradient(135deg,var(--pink) 0%,#f5a3c0 60%,#fcd3e1 100%);color:#fff;position:relative;overflow:hidden}
+.hero h1{font-size:26px;line-height:1.5;max-width:70%}
+.hero p{opacity:.95;margin-top:8px;font-size:14px;max-width:70%}
+.hero .tag{display:inline-block;background:rgba(255,255,255,.25);border-radius:20px;padding:5px 12px;font-size:12px;margin-bottom:10px}
+.hero-cup{position:absolute;left:14px;bottom:-6px;width:130px;animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+
+.daybar{display:flex;gap:10px;align-items:center;background:var(--card);border:1px dashed var(--pink);border-radius:18px;padding:12px 16px;font-size:13px;margin-bottom:18px}
+.daybar .dot{width:10px;height:10px;border-radius:50%;background:var(--matcha);box-shadow:0 0 0 4px var(--matcha-l);flex-shrink:0}
+
+/* Mood picker - innovative idea */
+.mood{background:var(--card);border-radius:var(--r);padding:18px;margin-bottom:22px;border:1px solid var(--line)}
+.mood h3{font-size:16px}
+.mood p{font-size:12px;color:var(--muted);margin:4px 0 12px}
+.moods{display:flex;gap:8px;flex-wrap:wrap}
+.moods button{background:var(--blush);border:1px solid var(--line);border-radius:30px;padding:8px 14px;font-size:13px;color:var(--ink);transition:.2s}
+.moods button:hover,.moods button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+.mood-res{margin-top:12px;font-size:13px;display:none;background:var(--pink-l);border-radius:14px;padding:12px}
+.mood-res.show{display:flex;align-items:center;justify-content:space-between;gap:10px;animation:rise .4s}
+.mood-res button{background:var(--pink-d);color:#fff;border-radius:12px;padding:8px 12px;font-size:12px;white-space:nowrap}
+
+/* Categories */
+.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;scrollbar-width:none}
+.cats button{white-space:nowrap;background:var(--card);border:1px solid var(--line);padding:9px 16px;border-radius:30px;font-size:13px;color:var(--ink)}
+.cats button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.item{background:var(--card);border-radius:var(--r);overflow:hidden;border:1px solid var(--line);transition:.25s;position:relative;display:flex;flex-direction:column}
+.item:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(238,113,158,.18)}
+.item .pic{height:150px;display:grid;place-items:center;position:relative}
+.item .pic svg{height:125px}
+.item .badge{position:absolute;top:10px;right:10px;background:var(--ink);color:#fff;font-size:11px;padding:4px 10px;border-radius:20px}
+.item .body{padding:12px 14px 14px;display:flex;flex-direction:column;flex:1}
+.item h4{font-size:15px}
+.item .desc{font-size:12px;color:var(--muted);margin:4px 0 10px;flex:1;line-height:1.6}
+.item .row{display:flex;justify-content:space-between;align-items:center}
+.price{font-weight:700;color:var(--pink-d)}
+.price small{font-weight:400;font-size:11px;color:var(--muted)}
+.add{background:var(--pink);color:#fff;width:36px;height:36px;border-radius:12px;font-size:20px;line-height:1}
+.item.out{opacity:.55}
+.item.out .add{background:#ccc;cursor:not-allowed}
+.soldout{position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.4);font-weight:700;color:var(--ink);font-size:14px}
+
+/* ===== Sheet / modal ===== */
+.overlay{position:fixed;inset:0;background:rgba(59,42,49,.45);z-index:70;display:none;align-items:flex-end;justify-content:center}
+.overlay.on{display:flex;animation:fade .25s}
+@keyframes fade{from{opacity:0}}
+.sheet{background:var(--blush);width:100%;max-width:560px;max-height:92vh;overflow-y:auto;border-radius:28px 28px 0 0;padding:20px;animation:up .35s cubic-bezier(.2,1,.4,1)}
+@keyframes up{from{transform:translateY(100%)}}
+@media(min-width:700px){.overlay{align-items:center}.sheet{border-radius:28px}}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.x{background:var(--card);width:34px;height:34px;border-radius:50%;font-size:18px;color:var(--ink)}
+.builder{display:flex;gap:16px;align-items:center;background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:14px}
+.builder svg{width:120px;flex-shrink:0}
+.builder .info h3{font-size:18px}
+.builder .info p{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6}
+.opt{margin-bottom:14px}
+.opt label.t{font-size:13px;font-weight:600;display:block;margin-bottom:8px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{background:var(--card);border:1.5px solid var(--line);padding:8px 14px;border-radius:14px;font-size:13px;color:var(--ink)}
+.chips button.on{border-color:var(--pink);background:var(--pink-l);color:var(--pink-d);font-weight:600}
+.chips button small{color:var(--muted);font-size:11px}
+.qty{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:6px}
+.qty button{width:32px;height:32px;border-radius:10px;background:var(--pink-l);color:var(--pink-d);font-size:18px}
+.big{width:100%;background:var(--pink);color:#fff;padding:15px;border-radius:18px;font-size:15px;font-weight:600;display:flex;justify-content:space-between;box-shadow:0 8px 20px rgba(238,113,158,.35)}
+.big:disabled{background:#ddd;box-shadow:none;cursor:not-allowed}
+.liquid{transition:all .6s cubic-bezier(.2,1,.4,1)}
+
+/* cart */
+.cline{display:flex;gap:10px;align-items:center;background:var(--card);border-radius:16px;padding:10px;margin-bottom:8px}
+.cline .sw{width:44px;height:44px;border-radius:12px;flex-shrink:0}
+.cline .d{flex:1;font-size:13px}
+.cline .d small{color:var(--muted);display:block;font-size:11px;margin-top:2px}
+.fld{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);font-size:14px;margin-bottom:10px;color:var(--ink)}
+.fld:focus{outline:none;border-color:var(--pink)}
+.sum{background:var(--card);border-radius:16px;padding:12px 14px;font-size:13px;margin:12px 0}
+.sum div{display:flex;justify-content:space-between;padding:3px 0}
+.sum .tot{font-weight:700;font-size:15px;border-top:1px dashed var(--line);margin-top:6px;padding-top:8px}
+.bank{background:var(--matcha-l);border-radius:16px;padding:12px 14px;font-size:12px;line-height:1.8;margin-bottom:10px}
+.upload{display:block;border:2px dashed var(--pink);border-radius:16px;padding:14px;text-align:center;font-size:13px;color:var(--pink-d);cursor:pointer;margin-bottom:12px;background:var(--card)}
+.upload.ok{border-color:var(--matcha);color:var(--matcha-d);background:var(--matcha-l)}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.slots button{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:8px 4px;font-size:12px;color:var(--ink)}
+.slots button.on{border-color:var(--pink);background:var(--pink-l);color:var(--pink-d)}
+.slots button:disabled{opacity:.35;text-decoration:line-through}
+
+/* tracking */
+.track{text-align:center;padding:10px 0}
+.track .num{font-size:30px;font-weight:700;color:var(--pink-d);letter-spacing:2px}
+.steps{display:flex;justify-content:space-between;margin:22px 0;position:relative}
+.steps::before{content:"";position:absolute;top:17px;right:8%;left:8%;height:3px;background:var(--line)}
+.step{position:relative;z-index:1;flex:1;font-size:11px;color:var(--muted)}
+.step i{width:36px;height:36px;border-radius:50%;background:var(--card);border:3px solid var(--line);display:grid;place-items:center;margin:0 auto 6px;font-style:normal;font-size:15px}
+.step.done i{background:var(--pink);border-color:var(--pink);color:#fff}
+.step.done{color:var(--ink);font-weight:600}
+.step.now i{animation:pulse 1.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(238,113,158,.6)}100%{box-shadow:0 0 0 14px rgba(238,113,158,0)}}
+
+/* ===== CASHIER ===== */
+.panelh{padding:22px 0 12px;display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap}
+.panelh h2{font-size:22px}
+.panelh p{font-size:13px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border-radius:18px;padding:14px;border:1px solid var(--line)}
+.kpi small{color:var(--muted);font-size:12px}
+.kpi b{display:block;font-size:24px;margin-top:4px}
+.kpi.p b{color:var(--pink-d)}
+.kpi.g b{color:var(--matcha-d)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.col{background:#fff;border-radius:var(--r);padding:12px;border:1px solid var(--line);min-height:200px}
+.col h3{font-size:14px;margin-bottom:10px;display:flex;justify-content:space-between}
+.col h3 span{background:var(--pink-l);color:var(--pink-d);border-radius:20px;padding:1px 10px;font-size:12px}
+.ord{background:var(--blush);border-radius:16px;padding:12px;margin-bottom:10px;font-size:13px;border-right:4px solid var(--pink)}
+.ord.new{animation:flash 1.2s 2}
+@keyframes flash{50%{background:var(--pink-l)}}
+.ord .top{display:flex;justify-content:space-between;font-weight:600;margin-bottom:6px}
+.ord ul{list-style:none;color:var(--ink);line-height:1.8;font-size:12px}
+.ord .meta{font-size:11px;color:var(--muted);margin:6px 0;display:flex;gap:8px;flex-wrap:wrap}
+.ord .meta span{background:#fff;border-radius:8px;padding:2px 8px}
+.ord .rc{color:var(--matcha-d)}
+.ord .act{display:flex;gap:6px;margin-top:8px}
+.ord .act button{flex:1;padding:8px;border-radius:10px;font-size:12px;background:var(--pink);color:#fff}
+.ord .act button.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);flex:0 0 auto}
+.empty{text-align:center;color:var(--muted);font-size:12px;padding:30px 0}
+
+/* ===== ADMIN ===== */
+.tbl{background:#fff;border-radius:var(--r);border:1px solid var(--line);overflow:hidden;margin-bottom:16px}
+.tr{display:grid;grid-template-columns:1fr 90px 90px;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px}
+.tr:last-child{border:none}
+.tr.h{background:var(--pink-l);font-weight:600;font-size:12px}
+.tr input{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;text-align:center}
+.tog{width:46px;height:26px;border-radius:20px;background:#ddd;position:relative;transition:.25s}
+.tog::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s}
+.tog.on{background:var(--matcha)}
+.tog.on::after{right:23px}
+.sheetnote{display:flex;gap:12px;align-items:center;background:var(--matcha-l);border-radius:18px;padding:14px;font-size:13px;line-height:1.7;margin-bottom:16px}
+.sheetnote .ic{font-size:28px}
+.bars{background:#fff;border-radius:var(--r);border:1px solid var(--line);padding:16px;margin-bottom:16px}
+.bars h3{font-size:14px;margin-bottom:12px}
+.bar{display:flex;align-items:center;gap:10px;font-size:12px;margin-bottom:8px}
+.bar .lbl{width:120px;flex-shrink:0}
+.bar .trk{flex:1;background:var(--blush);border-radius:10px;height:14px;overflow:hidden}
+.bar .fill{height:100%;background:linear-gradient(90deg,var(--pink),#f7a9c4);border-radius:10px;transition:width .8s}
+.toast{position:fixed;top:20px;left:50%;transform:translate(-50%,-120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:16px;font-size:13px;z-index:200;transition:.4s;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.toast.on{transform:translate(-50%,0)}
+.demo-tag{text-align:center;font-size:11px;color:var(--muted);padding:20px 0 0}
+@media(max-width:520px){.hero h1{font-size:20px}.hero-cup{width:95px}.switcher button{padding:8px 11px;font-size:12px}}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+  <div class="flower">
+    <svg viewBox="0 0 200 200" id="flowerSvg"></svg>
+  </div>
+  <div class="intro-title">Zahra Matcha</div>
+  <div class="intro-sub">ماتشا سحابية تحضر بحب من البيت ❣️</div>
+  <button class="skip" onclick="closeIntro()">ادخلي المنيو ←</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============ CUSTOMER ============ -->
+<section class="screen on" id="s-customer">
+  <header><div class="hwrap">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 200 200" id="miniLogo"></svg>
+      <div><b>Zahra Matcha</b><small>ماتشا سحابية من البيت</small></div>
+    </div>
+    <button class="cartbtn" id="cartBtn" onclick="openCart()">🛍️ السلة <span class="n" id="cartN">0</span></button>
+  </div></header>
+
+  <div class="wrap">
+    <div class="hero">
+      <span class="tag">☁️ طلب مسبق • استلام أو توصيل</span>
+      <h1>غيمة ماتشا ناعمة،<br>تتحضّر لك بحب 🌸</h1>
+      <p>اختاري مشروبك، ركّبيه على ذوقك، وحددي وقت الاستلام — وإحنا نجهزه طازج بوقته.</p>
+      <svg class="hero-cup" viewBox="0 0 120 160" id="heroCup"></svg>
+    </div>
+
+    <div class="daybar"><span class="dot"></span><div id="dayText"></div></div>
+
+    <div class="mood">
+      <h3>🌸 وش مزاجك اليوم؟</h3>
+      <p>قولي لنا مزاجك ونختار لك غيمتك المناسبة</p>
+      <div class="moods" id="moods"></div>
+      <div class="mood-res" id="moodRes"></div>
+    </div>
+
+    <div class="cats" id="cats"></div>
+    <div class="grid" id="grid"></div>
+    <div class="demo-tag">نسخة عرض توضيحية — المنيو والأسعار تجريبية • صُمم بواسطة نرجس العمري</div>
+  </div>
+</section>
+
+<!-- ============ CASHIER ============ -->
+<section class="screen" id="s-cashier">
+  <header><div class="hwrap">
+    <div class="brand"><svg class="logo" viewBox="0 0 200 200" class="ml2"></svg><div><b>Zahra Matcha</b><small>شاشة التحضير</small></div></div>
+    <span style="font-size:12px;color:var(--muted)" id="clock"></span>
+  </div></header>
+  <div class="wrap">
+    <div class="panelh"><div><h2>طلبات اليوم 🍵</h2><p>كل طلب جديد يوصلك هنا فوراً — حرّكيه بضغطة</p></div></div>
+    <div class="cols">
+      <div class="col"><h3>🆕 جديدة <span id="c-new">0</span></h3><div id="l-new"></div></div>
+      <div class="col"><h3>🍵 قيد التحضير <span id="c-prep">0</span></h3><div id="l-prep"></div></div>
+      <div class="col"><h3>✅ جاهزة <span id="c-ready">0</span></h3><div id="l-ready"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ADMIN ============ -->
+<section class="screen" id="s-admin">
+  <header><div class="hwrap">
+    <div class="brand"><svg class="logo" viewBox="0 0 200 200"></svg><div><b>Zahra Matcha</b><small>لوحة الإدارة</small></div></div>
+  </div></header>
+  <div class="wrap">
+    <div class="panelh"><div><h2>أهلاً بك 🌸</h2><p>نظرة سريعة على مشروعك اليوم</p></div></div>
+    <div class="kpis">
+      <div class="kpi p"><small>مبيعات اليوم</small><b id="k-rev">0</b></div>
+      <div class="kpi"><small>عدد الطلبات</small><b id="k-cnt">0</b></div>
+      <div class="kpi g"><small>متوسط الطلب</small><b id="k-avg">0</b></div>
+      <div class="kpi"><small>إيصالات بانتظار المراجعة</small><b id="k-rc">0</b></div>
+    </div>
+    <div class="bars"><h3>📊 الأكثر طلباً</h3><div id="bars"></div></div>
+    <div class="sheetnote"><span class="ic">📗</span><div>في النسخة الفعلية: المنيو والأسعار والكميات تتعدّل من <b>Google Sheets</b> — تعدّلين الخلية وتتحدث الصفحة لحالها، بدون ما تلمسين أي كود.</div></div>
+    <div class="tbl" id="tbl"></div>
+    <div class="tbl">
+      <div class="tr h" style="grid-template-columns:1fr 90px"><span>إعدادات الاستلام</span><span>الحالة</span></div>
+      <div class="tr" style="grid-template-columns:1fr 90px"><span>استقبال الطلبات اليوم</span><button class="tog on" onclick="toggleOpen(this)"></button></div>
+      <div class="tr" style="grid-template-columns:1fr 90px"><span>رسوم التوصيل (ر.س)</span><input type="number" value="15" onchange="S.delivery=+this.value;save()"></div>
+    </div>
+  </div>
+</section>
+
+<div class="switcher">
+  <button class="on" data-s="customer">👩🏻 العميل</button>
+  <button data-s="cashier">🍵 التحضير</button>
+  <button data-s="admin">📊 الإدارة</button>
+</div>
+
+<!-- Sheets -->
+<div class="overlay" id="ovItem" onclick="if(event.target===this)closeOv('ovItem')"><div class="sheet" id="itemSheet"></div></div>
+<div class="overlay" id="ovCart" onclick="if(event.target===this)closeOv('ovCart')"><div class="sheet" id="cartSheet"></div></div>
+
+<script>
+/* ---------- Data ---------- */
+const MENU=[
+ {id:'rose',cat:'cloud',name:'غيمة زهرة',en:'Zahra Rose Cloud',price:24,cloud:'#f7a9c4',desc:'توقيعنا: ماتشا على حليب بارد وغيمة ورد ناعمة',badge:'توقيع زهرة 🌸'},
+ {id:'straw',cat:'cloud',name:'كلاود ماتشا فراولة',en:'Strawberry Cloud',price:22,cloud:'#f48aa8',base:'#f7c6d2',desc:'صوص فراولة بيتي تحت، ماتشا وغيمة كريمية فوق',badge:'الأكثر طلباً'},
+ {id:'van',cat:'cloud',name:'كلاود ماتشا فانيلا',en:'Vanilla Cloud',price:21,cloud:'#fff4dc',desc:'غيمة فانيلا ناعمة تذوب مع الماتشا'},
+ {id:'mango',cat:'cloud',name:'كلاود ماتشا مانجو',en:'Mango Cloud',price:22,cloud:'#ffd27a',base:'#ffe2a3',desc:'مانجو طازج مع ماتشا وغيمة خفيفة'},
+ {id:'blue',cat:'cloud',name:'كلاود ماتشا بلوبيري',en:'Blueberry Cloud',price:23,cloud:'#b9a6e8',base:'#d8cdf3',desc:'بلوبيري وماتشا وغيمة بلون السما'},
+ {id:'classic',cat:'cloud',name:'كلاود ماتشا كلاسيك',en:'Classic Cloud',price:19,cloud:'#ffffff',desc:'للي تحب الماتشا على أصلها مع غيمة بيضاء'},
+ {id:'latte',cat:'classic',name:'آيس ماتشا لاتيه',en:'Iced Matcha Latte',price:17,cloud:null,desc:'ماتشا سيريمونيال مع حليب بارد'},
+ {id:'hot',cat:'classic',name:'ماتشا لاتيه حار',en:'Hot Matcha Latte',price:17,cloud:null,hot:true,desc:'دافي ورايق لأيام الشتا'},
+ {id:'pure',cat:'classic',name:'أوسوتشا سادة',en:'Usucha',price:14,cloud:null,pure:true,desc:'ماتشا مخفوقة بالماء على الطريقة اليابانية'},
+ {id:'powder',cat:'home',name:'بودرة ماتشا سيريمونيال',en:'Ceremonial Matcha 30g',price:65,tin:true,desc:'نفس البودرة اللي نستخدمها — حضّريها ببيتك',noCustom:true},
+ {id:'kit',cat:'home',name:'بكج زهرة المنزلي',en:'Zahra Home Kit',price:129,tin:true,kit:true,desc:'بودرة 30g + مخفقة بامبو + ملعقة + كرت طريقة التحضير',noCustom:true,badge:'هدية مثالية 🎁'}
+];
+const CATS=[{id:'all',n:'الكل'},{id:'cloud',n:'☁️ ماتشا سحابية'},{id:'classic',n:'🍵 كلاسيك'},{id:'home',n:'🏡 لبيتك'}];
+const MOODS=[
+ {e:'😴',n:'نعسانة',pick:'classic',msg:'تحتاجين دفعة! كلاود كلاسيك مع شوت ماتشا إضافي ⚡'},
+ {e:'🥰',n:'رايقة',pick:'rose',msg:'المزاج الرايق له غيمة زهرة — ناعمة مثل يومك 🌸'},
+ {e:'🔥',n:'حرّانة',pick:'mango',msg:'كلاود مانجو بارد يرد الروح 🥭'},
+ {e:'📚',n:'عندي مذاكرة',pick:'latte',msg:'آيس ماتشا لاتيه — تركيز بدون رجفة القهوة 📖'},
+ {e:'🎉',n:'أبي أدلّع نفسي',pick:'blue',msg:'بلوبيري كلاود! لأنك تستاهلين شي مختلف 💜'}
+];
+const SIZES=[{n:'وسط',p:0,h:0},{n:'كبير',p:4,h:1}];
+const MILKS=[{n:'كامل الدسم',p:0,c:'#fbf7ef'},{n:'لوز',p:3,c:'#f3e6d3'},{n:'شوفان',p:3,c:'#efe2c8'}];
+const SWEET=[{n:'بدون سكر'},{n:'خفيف'},{n:'عادي'}];
+
+let S={avail:{},prices:{},orders:[],delivery:15,seq:1041,open:true};
+MENU.forEach(m=>{S.avail[m.id]=m.id!=='blue';S.prices[m.id]=m.price});
+try{const d=JSON.parse(localStorage.getItem('zahraDemo')||'null');if(d&&d.v===2)S=d.s}catch(e){}
+function save(){try{localStorage.setItem('zahraDemo',JSON.stringify({v:2,s:S}))}catch(e){}}
+let cart=[],cat='all',cur=null,myOrder=null;
+
+/* seed sample orders */
+if(!S.orders.length){
+ const now=Date.now();
+ S.orders=[
+  {no:1038,name:'ريم',phone:'05xxxxxxx',method:'pickup',slot:'4:00 م',items:[{id:'rose',name:'غيمة زهرة',opts:'وسط • شوفان • خفيف',qty:2,price:27}],total:54,status:'ready',receipt:true,t:now-3600e3},
+  {no:1039,name:'جود',phone:'05xxxxxxx',method:'delivery',slot:'4:30 م',items:[{id:'straw',name:'كلاود ماتشا فراولة',opts:'كبير • كامل الدسم • عادي',qty:1,price:26},{id:'latte',name:'آيس ماتشا لاتيه',opts:'وسط • لوز • بدون سكر',qty:1,price:20}],total:61,status:'prep',receipt:true,t:now-1800e3},
+  {no:1040,name:'شهد',phone:'05xxxxxxx',method:'pickup',slot:'5:00 م',items:[{id:'kit',name:'بكج زهرة المنزلي',opts:'',qty:1,price:129}],total:129,status:'new',receipt:true,t:now-600e3}
+ ];
+ S.seq=1041;save();
+}
+
+/* ---------- SVG helpers ---------- */
+function flowerSVG(anim){
+ let s='';const cols=['#ee719e','#f48aa8','#f7a9c4','#ee719e','#f48aa8','#f7a9c4'];
+ for(let i=0;i<6;i++){const r=i*60;
+  s+=`<g class="${anim?'petal':''}" style="--rot:${r}deg;animation-delay:${i*.1}s;${anim?'':'transform:rotate('+r+'deg);transform-origin:100px 100px'}"><ellipse cx="100" cy="55" rx="28" ry="45" fill="${cols[i]}" opacity=".92"/></g>`}
+ s+=`<g class="${anim?'core':''}"><circle cx="100" cy="100" r="30" fill="#7fa35a"/><circle cx="100" cy="100" r="22" fill="#9fc27a"/><path d="M88 102q12 10 24 0" stroke="#56743a" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="91" cy="94" r="3" fill="#56743a"/><circle cx="109" cy="94" r="3" fill="#56743a"/></g>`;
+ return s;
+}
+function cupSVG(o){
+ // o: cloud, base, milk, big, hot, pure, tin, kit
+ if(o.tin){return `<svg viewBox="0 0 120 160"><rect x="28" y="40" width="64" height="100" rx="10" fill="#ee719e"/><rect x="24" y="30" width="72" height="18" rx="6" fill="#d9517f"/><rect x="36" y="70" width="48" height="40" rx="8" fill="#fff"/><text x="60" y="88" text-anchor="middle" font-size="9" fill="#d9517f" font-family="serif" font-style="italic">Zahra</text><text x="60" y="101" text-anchor="middle" font-size="8" fill="#7fa35a">matcha</text>${o.kit?'<g transform="translate(86,70)"><rect x="0" y="40" width="22" height="30" rx="4" fill="#d8b98a"/><path d="M2 40 Q11 0 20 40" fill="none" stroke="#c9a46e" stroke-width="2"/><path d="M6 40 Q11 10 16 40" fill="none" stroke="#c9a46e" stroke-width="2"/></g>':''}</svg>`}
+ if(o.hot||o.pure){return `<svg viewBox="0 0 120 160"><path d="M50 30q-6 -10 0 -20M62 30q-6 -10 0 -20M74 30q-6 -10 0 -20" stroke="#e0c4cf" stroke-width="3" fill="none" stroke-linecap="round"><animate attributeName="opacity" values=".2;1;.2" dur="2s" repeatCount="indefinite"/></path><path d="M22 60h76l-8 70q-2 12-14 12H44q-12 0-14-12z" fill="#fff" stroke="#f6d5e0" stroke-width="3"/><ellipse cx="60" cy="62" rx="36" ry="8" fill="${o.pure?'#6c9a3d':'#a9c98a'}"/>${o.pure?'':'<path d="M48 62q12 -6 24 0q-12 6 -24 0" fill="#f3f7ea"/>'}<path d="M98 76q18 0 16 18t-20 16" fill="none" stroke="#f6d5e0" stroke-width="6"/></svg>`}
+ const top=o.big?22:34, h=146-top;
+ const baseH=o.base?h*.22:0, matH=h*.42, cloudH=o.cloud?h*.26:0, milkH=h-baseH-matH-cloudH;
+ let y=146;const L=[];
+ if(o.base){y-=baseH;L.push(`<rect class="liquid" x="0" y="${y}" width="120" height="${baseH}" fill="${o.base}"/>`)}
+ y-=matH;L.push(`<rect class="liquid" x="0" y="${y}" width="120" height="${matH}" fill="#8fb565"/>`);
+ y-=milkH;L.push(`<rect class="liquid" x="0" y="${y}" width="120" height="${milkH}" fill="${o.milk||'#fbf7ef'}"/>`);
+ if(o.cloud){y-=cloudH;L.push(`<path class="liquid" d="M0 ${y+8} q15 -12 30 0 q15 -12 30 0 q15 -12 30 0 q15 -12 30 0 V${y+cloudH} H0z" fill="${o.cloud}" stroke="#00000010"/>`)}
+ const id='c'+Math.random().toString(36).slice(2,7);
+ return `<svg viewBox="0 0 120 160"><defs><clipPath id="${id}"><path d="M26 ${top}h68l-7 108q-1 10-11 10H44q-10 0-11-10z"/></clipPath></defs>
+ <rect x="56" y="${top-26}" width="7" height="${(170-top)}" rx="3" fill="#ee719e" transform="rotate(8 60 80)"/>
+ <g clip-path="url(#${id})">${L.join('')}<circle cx="45" cy="${top+60}" r="5" fill="#fff" opacity=".5"/><circle cx="70" cy="${top+80}" r="4" fill="#fff" opacity=".5"/></g>
+ <path d="M26 ${top}h68l-7 108q-1 10-11 10H44q-10 0-11-10z" fill="none" stroke="#f0c5d5" stroke-width="3"/>
+ <rect x="22" y="${top-6}" width="76" height="8" rx="4" fill="#fde3ec" stroke="#f0c5d5" stroke-width="2"/></svg>`;
+}
+
+/* ---------- Intro ---------- */
+document.getElementById('flowerSvg').innerHTML=flowerSVG(true);
+document.querySelectorAll('.logo').forEach(l=>l.innerHTML=flowerSVG(false));
+document.getElementById('heroCup').outerHTML=cupSVG({cloud:'#f7a9c4',base:'#f7c6d2'}).replace('<svg','<svg class="hero-cup"');
+for(let i=0;i<14;i++){const p=document.createElement('span');p.className='fall';p.textContent=['🌸','☁️','🍃'][i%3];p.style.left=Math.random()*100+'%';p.style.animationDuration=(4+Math.random()*4)+'s';p.style.animationDelay=(Math.random()*2)+'s';document.getElementById('intro').appendChild(p)}
+function closeIntro(){document.getElementById('intro').classList.add('hide')}
+setTimeout(closeIntro,4200);
+
+/* ---------- Customer ---------- */
+function money(n){return n+' ر.س'}
+function dayText(){
+ const h=new Date().getHours();
+ document.getElementById('dayText').innerHTML=S.open?`<b>نستقبل طلبات اليوم</b> — آخر موعد للاستلام 10:00 م • ${h<12?'صباح الماتشا ☀️':h<18?'عصرية ماتشا 🌤️':'مساء الغيوم 🌙'}`:'<b>الطلبات مقفلة اليوم</b> — تقدرين تحجزين لبكرة 🌸';
+}
+function renderCats(){document.getElementById('cats').innerHTML=CATS.map(c=>`<button class="${c.id===cat?'on':''}" onclick="cat='${c.id}';renderCats();renderGrid()">${c.n}</button>`).join('')}
+function renderGrid(){
+ document.getElementById('grid').innerHTML=MENU.filter(m=>cat==='all'||m.cat===cat).map(m=>{
+  const out=!S.avail[m.id];
+  return `<div class="item ${out?'out':''}" id="it-${m.id}">
+   <div class="pic" style="background:linear-gradient(180deg,${m.cloud&&m.cloud!=='#ffffff'?m.cloud+'33':'#fde3ec'},#fff)">${m.badge?`<span class="badge">${m.badge}</span>`:''}${cupSVG(m)}${out?'<div class="soldout">نفدت الكمية اليوم 💔</div>':''}</div>
+   <div class="body"><h4>${m.name}</h4><div class="desc">${m.desc}</div>
+   <div class="row"><span class="price">${money(S.prices[m.id])}</span><button class="add" ${out?'disabled':''} onclick="openItem('${m.id}')">+</button></div></div></div>`}).join('');
+}
+function renderMoods(){
+ document.getElementById('moods').innerHTML=MOODS.map((m,i)=>`<button onclick="pickMood(${i},this)">${m.e} ${m.n}</button>`).join('');
+}
+function pickMood(i,b){
+ document.querySelectorAll('.moods button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+ const m=MOODS[i],it=MENU.find(x=>x.id===m.pick);const r=document.getElementById('moodRes');
+ r.innerHTML=`<span>${m.msg}</span><button onclick="openItem('${it.id}')">جربيها ←</button>`;r.classList.add('show');
+}
+function openItem(id){
+ const m=MENU.find(x=>x.id===id);if(!S.avail[id])return;
+ cur={m,size:0,milk:0,sweet:1,extra:false,qty:1};
+ if(m.noCustom){addToCart();return}
+ drawItem();document.getElementById('ovItem').classList.add('on');
+}
+function curPrice(){const c=cur;return S.prices[c.m.id]+SIZES[c.size].p+MILKS[c.milk].p+(c.extra?4:0)}
+function drawItem(){
+ const c=cur,m=c.m,canMilk=!m.pure;
+ document.getElementById('itemSheet').innerHTML=`
+ <div class="sheet-h"><b>ركّبي مشروبك ✨</b><button class="x" onclick="closeOv('ovItem')">×</button></div>
+ <div class="builder"><div id="liveCup">${cupSVG({...m,milk:MILKS[c.milk].c,big:c.size===1})}</div>
+  <div class="info"><h3>${m.name}</h3><p>${m.desc}</p><p style="color:var(--pink-d);margin-top:8px">👀 شوفي كوبك يتغير مع اختياراتك</p></div></div>
+ ${m.hot||m.pure?'':`<div class="opt"><label class="t">الحجم</label><div class="chips">${SIZES.map((s,i)=>`<button class="${c.size===i?'on':''}" onclick="cur.size=${i};drawItem()">${s.n} ${s.p?`<small>+${s.p}</small>`:''}</button>`).join('')}</div></div>`}
+ ${canMilk?`<div class="opt"><label class="t">نوع الحليب</label><div class="chips">${MILKS.map((s,i)=>`<button class="${c.milk===i?'on':''}" onclick="cur.milk=${i};drawItem()">${s.n} ${s.p?`<small>+${s.p}</small>`:''}</button>`).join('')}</div></div>`:''}
+ <div class="opt"><label class="t">السكر</label><div class="chips">${SWEET.map((s,i)=>`<button class="${c.sweet===i?'on':''}" onclick="cur.sweet=${i};drawItem()">${s.n}</button>`).join('')}</div></div>
+ <div class="opt"><label class="t">إضافات</label><div class="chips"><button class="${c.extra?'on':''}" onclick="cur.extra=!cur.extra;drawItem()">⚡ شوت ماتشا إضافي <small>+4</small></button></div></div>
+ <div class="opt" style="display:flex;justify-content:space-between;align-items:center"><label class="t" style="margin:0">الكمية</label>
+  <div class="qty"><button onclick="cur.qty=Math.max(1,cur.qty-1);drawItem()">−</button><b>${c.qty}</b><button onclick="cur.qty++;drawItem()">+</button></div></div>
+ <button class="big" onclick="addToCart()"><span>أضيفي للسلة</span><span>${money(curPrice()*c.qty)}</span></button>`;
+}
+function addToCart(){
+ const c=cur,m=c.m;
+ const opts=m.noCustom?'':[m.hot||m.pure?null:SIZES[c.size].n,m.pure?null:MILKS[c.milk].n,SWEET[c.sweet].n,c.extra?'شوت إضافي':null].filter(Boolean).join(' • ');
+ const price=m.noCustom?S.prices[m.id]:curPrice();
+ const ex=cart.find(x=>x.id===m.id&&x.opts===opts);
+ if(ex)ex.qty+=c.qty;else cart.push({id:m.id,name:m.name,opts,qty:c.qty,price,color:m.cloud||'#a9c98a'});
+ closeOv('ovItem');updCart();toast(`انضافت ${m.name} للسلة 🌸`);
+ const b=document.getElementById('cartBtn');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');
+}
+function updCart(){document.getElementById('cartN').textContent=cart.reduce((a,b)=>a+b.qty,0)}
+let co={method:'pickup',slot:null,receipt:false,day:0};
+function slotsFor(){const out=[];for(let h=14;h<=22;h++){out.push(h);}return out}
+function fmt(h,m){const hh=h>12?h-12:h;return `${hh}:${m?'30':'00'} ${h>=12?'م':'ص'}`}
+function openCart(){drawCart();document.getElementById('ovCart').classList.add('on')}
+function drawCart(){
+ const el=document.getElementById('cartSheet');
+ if(myOrder){drawTrack();return}
+ if(!cart.length){el.innerHTML=`<div class="sheet-h"><b>السلة</b><button class="x" onclick="closeOv('ovCart')">×</button></div><div class="empty" style="font-size:14px">سلتك فاضية 🌸<br>اختاري غيمتك من المنيو</div>`;return}
+ const sub=cart.reduce((a,b)=>a+b.price*b.qty,0),del=co.method==='delivery'?S.delivery:0;
+ const nowH=new Date().getHours();
+ let slots='';for(let h=14;h<=21;h++)for(const m of [0,1]){const lbl=fmt(h,m);const dis=co.day===0&&(h<=nowH);slots+=`<button ${dis?'disabled':''} class="${co.slot===lbl?'on':''}" onclick="co.slot='${lbl}';drawCart()">${lbl}</button>`}
+ el.innerHTML=`<div class="sheet-h"><b>سلتك 🛍️</b><button class="x" onclick="closeOv('ovCart')">×</button></div>
+ ${cart.map((c,i)=>`<div class="cline"><div class="sw" style="background:linear-gradient(180deg,${c.color==='#ffffff'?'#fde3ec':c.color},#a9c98a)"></div><div class="d"><b>${c.name}</b> ×${c.qty}<small>${c.opts}</small></div><b style="font-size:13px">${money(c.price*c.qty)}</b><button class="x" style="width:28px;height:28px;font-size:14px" onclick="cart.splice(${i},1);updCart();drawCart()">×</button></div>`).join('')}
+ <div class="opt" style="margin-top:14px"><label class="t">طريقة الاستلام</label><div class="chips">
+  <button class="${co.method==='pickup'?'on':''}" onclick="co.method='pickup';drawCart()">🏡 استلام من البيت</button>
+  <button class="${co.method==='delivery'?'on':''}" onclick="co.method='delivery';drawCart()">🛵 توصيل <small>+${S.delivery}</small></button></div></div>
+ <div class="opt"><label class="t">يوم الاستلام</label><div class="chips">
+  <button class="${co.day===0?'on':''}" onclick="co.day=0;co.slot=null;drawCart()">اليوم</button>
+  <button class="${co.day===1?'on':''}" onclick="co.day=1;co.slot=null;drawCart()">بكرة</button></div></div>
+ <label class="t" style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">الوقت</label><div class="slots">${slots}</div>
+ <input class="fld" id="fName" placeholder="الاسم">
+ <input class="fld" id="fPhone" placeholder="رقم الجوال" inputmode="tel">
+ ${co.method==='delivery'?'<input class="fld" id="fAddr" placeholder="الحي / رابط الموقع">':''}
+ <textarea class="fld" id="fNote" rows="2" placeholder="ملاحظة (اختياري) — مثلاً: اكتبوا اسم على الكوب 💌"></textarea>
+ <div class="sum"><div><span>المجموع</span><span>${money(sub)}</span></div>${del?`<div><span>التوصيل</span><span>${money(del)}</span></div>`:''}<div class="tot"><span>الإجمالي</span><span>${money(sub+del)}</span></div></div>
+ <div class="bank">💳 <b>الدفع بالتحويل البنكي</b><br>البنك: (اسم البنك) • الآيبان: SA00 0000 0000 0000 0000 0000<br>حوّلي المبلغ وارفعي صورة الإيصال 👇</div>
+ <label class="upload ${co.receipt?'ok':''}">${co.receipt?'✅ تم إرفاق الإيصال':'📎 ارفعي صورة إيصال التحويل'}<input type="file" accept="image/*,.pdf" hidden onchange="co.receipt=!!this.files.length;keepForm();drawCart();restoreForm()"></label>
+ <button class="big" ${!co.slot||!co.receipt?'disabled':''} onclick="placeOrder(${sub+del})"><span>${!co.slot?'اختاري الوقت':!co.receipt?'ارفعي الإيصال':'أكّدي الطلب'}</span><span>${money(sub+del)}</span></button>`;
+}
+let saved={};function keepForm(){['fName','fPhone','fAddr','fNote'].forEach(i=>{const e=document.getElementById(i);if(e)saved[i]=e.value})}
+function restoreForm(){Object.keys(saved).forEach(i=>{const e=document.getElementById(i);if(e)e.value=saved[i]})}
+const _dc=drawCart;drawCart=function(){keepForm();_dc();restoreForm()};
+function placeOrder(total){
+ const name=(document.getElementById('fName').value||'').trim(),phone=(document.getElementById('fPhone').value||'').trim();
+ if(!name||!phone){toast('اكتبي الاسم ورقم الجوال 🌸');return}
+ const o={no:S.seq++,name,phone,method:co.method,slot:(co.day?'بكرة ':'')+co.slot,items:cart.map(c=>({...c})),total,status:'new',receipt:true,note:(document.getElementById('fNote').value||''),t:Date.now(),fresh:true};
+ S.orders.push(o);save();myOrder=o.no;cart=[];updCart();saved={};co={method:'pickup',slot:null,receipt:false,day:0};
+ drawTrack();renderCashier();renderAdmin();
+}
+function drawTrack(){
+ const o=S.orders.find(x=>x.no===myOrder);if(!o)return;
+ const st=['new','prep','ready','done'],idx=st.indexOf(o.status);
+ const L=[['📥','استلمنا طلبك'],['🍵','نحضّره'],['🌸','جاهز'],[o.method==='delivery'?'🛵':'🤍','تم التسليم']];
+ document.getElementById('cartSheet').innerHTML=`<div class="sheet-h"><b>طلبك 💌</b><button class="x" onclick="closeOv('ovCart')">×</button></div>
+ <div class="track"><div style="font-size:50px">🌸</div><p style="color:var(--muted);font-size:13px">رقم الطلب</p><div class="num">#${o.no}</div>
+ <p style="font-size:14px;margin-top:6px">شكراً ${o.name}! موعدك <b>${o.slot}</b> — ${o.method==='delivery'?'بنوصله لك':'استلام من البيت'}</p>
+ <div class="steps">${L.map((s,i)=>`<div class="step ${i<=idx?'done':''} ${i===idx?'now':''}"><i>${s[0]}</i>${s[1]}</div>`).join('')}</div>
+ <p style="font-size:12px;color:var(--muted)">تتحدث الحالة تلقائياً — جربي تحرّكين الطلب من شاشة "التحضير" 👇</p>
+ <button class="big" style="margin-top:16px;justify-content:center" onclick="myOrder=null;closeOv('ovCart')">طلب جديد</button></div>`;
+}
+
+/* ---------- Cashier ---------- */
+const NEXT={new:['prep','ابدئي التحضير'],prep:['ready','جاهز ✓'],ready:['done','تم التسليم']};
+function renderCashier(){
+ ['new','prep','ready'].forEach(s=>{
+  const L=S.orders.filter(o=>o.status===s).sort((a,b)=>a.t-b.t);
+  document.getElementById('c-'+s).textContent=L.length;
+  document.getElementById('l-'+s).innerHTML=L.length?L.map(o=>`<div class="ord ${o.fresh?'new':''}">
+   <div class="top"><span>#${o.no} • ${o.name}</span><span>${money(o.total)}</span></div>
+   <ul>${o.items.map(i=>`<li>${i.qty}× ${i.name} ${i.opts?`<span style="color:var(--muted)">(${i.opts})</span>`:''}</li>`).join('')}</ul>
+   ${o.note?`<div style="font-size:11px;background:#fff;border-radius:8px;padding:6px;margin-top:6px">💌 ${o.note}</div>`:''}
+   <div class="meta"><span>⏰ ${o.slot}</span><span>${o.method==='delivery'?'🛵 توصيل':'🏡 استلام'}</span><span class="rc">🧾 إيصال مرفق</span></div>
+   <div class="act"><button class="ghost" onclick="toast('📞 ${o.phone}')">📞</button><button onclick="move(${o.no})">${NEXT[s][1]}</button></div></div>`).join(''):'<div class="empty">ما فيه طلبات هنا</div>';
+ });
+ S.orders.forEach(o=>o.fresh=false);
+}
+function move(no){const o=S.orders.find(x=>x.no===no);o.status=NEXT[o.status][0];save();renderCashier();renderAdmin();if(myOrder===no&&document.getElementById('ovCart').classList.contains('on'))drawTrack();toast(`طلب #${no} ← ${({prep:'قيد التحضير',ready:'جاهز',done:'تم التسليم'})[o.status]}`)}
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})},1000);
+
+/* ---------- Admin ---------- */
+function renderAdmin(){
+ const O=S.orders,rev=O.reduce((a,b)=>a+b.total,0);
+ document.getElementById('k-rev').textContent=money(rev);
+ document.getElementById('k-cnt').textContent=O.length;
+ document.getElementById('k-avg').textContent=money(O.length?Math.round(rev/O.length):0);
+ document.getElementById('k-rc').textContent=O.filter(o=>o.status==='new').length;
+ const cnt={};O.forEach(o=>o.items.forEach(i=>cnt[i.name]=(cnt[i.name]||0)+i.qty));
+ const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5),mx=top.length?top[0][1]:1;
+ document.getElementById('bars').innerHTML=top.map(([n,v])=>`<div class="bar"><span class="lbl">${n}</span><div class="trk"><div class="fill" style="width:${v/mx*100}%"></div></div><b>${v}</b></div>`).join('')||'<div class="empty">لا توجد بيانات</div>';
+ document.getElementById('tbl').innerHTML=`<div class="tr h"><span>المنتج</span><span>السعر</span><span>متوفر؟</span></div>`+MENU.map(m=>`<div class="tr"><span>${m.name}</span><input type="number" value="${S.prices[m.id]}" onchange="S.prices['${m.id}']=+this.value;save();renderGrid();toast('تم تحديث السعر ✓')"><button class="tog ${S.avail[m.id]?'on':''}" onclick="S.avail['${m.id}']=!S.avail['${m.id}'];save();renderAdmin();renderGrid();toast(S.avail['${m.id}']?'رجع متوفر 🌸':'انخفى من المنيو كـ (نفدت الكمية)')"></button></div>`).join('');
+}
+function toggleOpen(b){S.open=!S.open;b.classList.toggle('on',S.open);save();dayText();toast(S.open?'الطلبات مفتوحة ✓':'الطلبات مقفلة اليوم')}
+
+/* ---------- General ---------- */
+function closeOv(id){document.getElementById(id).classList.remove('on')}
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
+document.querySelectorAll('.switcher button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.switcher button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById('s-'+b.dataset.s).classList.add('on');
+ renderCashier();renderAdmin();renderGrid();window.scrollTo(0,0);
+});
+dayText();renderCats();renderGrid();renderMoods();renderCashier();renderAdmin();
+</script>
+</body>
+</html>
