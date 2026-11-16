@@ -161,6 +161,25 @@ header.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:58%;bac
 .big{width:100%;background:var(--ink);color:var(--y);font-weight:800;font-size:16px;padding:15px;border-radius:16px}
 .big:disabled{opacity:.4}
 
+.cal{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:12px}
+.calH{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.calH b{font-size:15px}
+.calH button{width:32px;height:32px;border-radius:50%;background:var(--cream);font-size:16px;font-weight:800}
+.calH button:disabled{opacity:.3}
+.calG{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.calG .wd{font-size:11px;color:var(--mute);padding:4px 0}
+.dc{aspect-ratio:1;border-radius:12px;font-size:14px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;border:1.5px solid transparent}
+.dc small{font-size:8px;font-weight:700;line-height:1;margin-top:2px}
+.dc.av{background:#eef6e3;color:var(--matcha)}
+.dc.low{background:#fff4cc;color:#9a6b00}
+.dc.full{background:#f6e3e3;color:#b9a3a3;text-decoration:line-through}
+.dc.full small{text-decoration:none;color:#c0392b}
+.dc.past{color:#d5cdbd}
+.dc.closed{background:#eee;color:#aaa}
+.dc.sel{border-color:var(--ink);background:var(--y);color:var(--ink)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;margin-top:10px;color:var(--mute)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.selDay{font-size:13px;font-weight:700;color:var(--matcha);min-height:18px}
 footer{text-align:center;padding:30px 20px;color:var(--mute);font-size:13px}
 footer .serif{font-size:28px;color:var(--ink);font-weight:900}
 
@@ -337,7 +356,7 @@ footer .serif{font-size:28px;color:var(--ink);font-weight:900}
       <label>اختاري 4 مشروبات <small id="pc" style="color:var(--mute)">(0/4)</small></label>
       <div class="pick" id="pick"></div>
       <label>تاريخ المناسبة</label>
-      <input class="field" type="date" id="cDate">
+      <div class="cal" id="calC"></div><div class="selDay" id="selDay"></div>
       <label>نوع المكان</label>
       <select class="field" id="cPlace"><option>داخل المنزل</option><option>شاليه / استراحة</option><option>حفل تخرج</option><option>قاعة / مناسبة خارجية</option></select>
       <label>الاسم والجوال</label>
@@ -378,6 +397,7 @@ footer .serif{font-size:28px;color:var(--ink);font-weight:900}
     <div id="sendLog" style="margin-top:12px"></div>
   </div>
   <div class="panel"><h4>🎉 حجوزات الحفلات</h4><div id="caterList"></div></div>
+  <div class="panel"><h4>📅 تقويم الحفلات <small style="color:var(--mute);font-weight:400">اضغطي على يوم لقفله أو فتحه</small></h4><div class="cal" id="calA"></div></div>
   <div class="panel"><h4>📋 المنيو والتوفر <small style="color:var(--mute);font-weight:400">اطفي الصنف لو خلص</small></h4><div id="avail"></div></div>
   </div>
 </section>
@@ -540,10 +560,39 @@ function renderCater(){$('#packs').innerHTML=PACKS.map(([c,p],i)=>`<button class
  const drinks=MENU.filter(m=>['sig','latte','cream','tonic','classic'].includes(m.cat)&&!m.isNew);
  $('#pick').innerHTML=drinks.map(m=>`<button class="${picks.includes(m.id)?'on':''}" onclick="pickD('${m.id}')">${m.ar}</button>`).join('');$('#pc').textContent=`(${picks.length}/4)`}
 function pickD(id){if(picks.includes(id))picks=picks.filter(x=>x!==id);else{if(picks.length>=4)return toast('الباقة تشمل 4 مشروبات فقط');picks.push(id)}renderCater()}
-function bookCater(){const d=$('#cDate').value,n=$('#cName').value.trim(),ph=$('#cPhone').value.trim();
- if(picks.length<4)return toast('اختاري 4 مشروبات أول');if(!d||!n)return toast('كمّلي التاريخ والاسم');
+function bookCater(){const d=cDate,n=$('#cName').value.trim(),ph=$('#cPhone').value.trim();
+ if(picks.length<4)return toast('اختاري 4 مشروبات أول');if(!d)return toast('اختاري يوم من التقويم');if(!n)return toast('اكتبي الاسم');
  caterings.unshift({n,ph,d,place:$('#cPlace').value,pack:PACKS[pack],drinks:picks.map(id=>MENU.find(m=>m.id===id).ar)});
- picks=[];$('#cName').value='';$('#cPhone').value='';renderCater();renderStaff();toast('🎉 وصل طلب الحجز، بنتواصل معك للتأكيد')}
+ dayCount[d]=(dayCount[d]||0)+1;cDate=null;$('#selDay').textContent='';renderCal('C');renderCal('A');picks=[];$('#cName').value='';$('#cPhone').value='';renderCater();renderStaff();toast('🎉 وصل طلب الحجز، بنتواصل معك للتأكيد')}
+
+
+/* ---------- calendar ---------- */
+const CAP=2; // عدد الحفلات الممكنة باليوم (عدد العاملات)
+const WD=['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const key=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const T0=new Date();T0.setHours(0,0,0,0);
+const addD=n=>{const d=new Date(T0);d.setDate(d.getDate()+n);return key(d)};
+let dayCount={},closedDays=new Set(),calMonth={C:new Date(T0.getFullYear(),T0.getMonth(),1),A:new Date(T0.getFullYear(),T0.getMonth(),1)},cDate=null;
+[[1,2],[3,2],[4,1],[8,1],[10,2],[11,2],[13,1],[17,2],[19,1],[24,2]].forEach(([n,c])=>dayCount[addD(n)]=c);
+['2026-11-21','2026-11-27','2026-12-02'].forEach(k=>dayCount[k]=Math.max(dayCount[k]||0,1));
+closedDays.add(addD(6));
+function dayState(k,d){if(d<=T0)return 'past';if(closedDays.has(k))return 'closed';const c=dayCount[k]||0;return c>=CAP?'full':c===CAP-1?'low':'av'}
+function renderCal(w){const el=$('#cal'+w),m=calMonth[w],y=m.getFullYear(),mo=m.getMonth();
+ const first=new Date(y,mo,1).getDay(),days=new Date(y,mo+1,0).getDate();
+ const isFirst=y===T0.getFullYear()&&mo===T0.getMonth();
+ let h=`<div class="calH"><button onclick="calNav('${w}',-1)" ${isFirst?'disabled':''}>›</button><b>${MONTHS[mo]} ${y}</b><button onclick="calNav('${w}',1)">‹</button></div><div class="calG">${WD.map(x=>`<div class="wd">${x}</div>`).join('')}`;
+ for(let i=0;i<first;i++)h+='<div></div>';
+ for(let d=1;d<=days;d++){const dt=new Date(y,mo,d),k=key(dt),st=dayState(k,dt),lab={av:'متاح',low:'باقي 1',full:'مكتمل',closed:'مغلق',past:''}[st];
+  const sel=w==='C'&&cDate===k?' sel':'';
+  h+=`<button class="dc ${st}${sel}" onclick="pickDay('${w}','${k}','${st}')">${d}${lab?`<small>${lab}</small>`:''}</button>`}
+ h+=`</div><div class="legend"><span><i style="background:#cfe5b4"></i>متاح</span><span><i style="background:#ffe48a"></i>باقي مكان واحد</span><span><i style="background:#efc9c9"></i>مكتمل</span><span><i style="background:#ddd"></i>مغلق</span></div>`;
+ el.innerHTML=h}
+function calNav(w,n){const m=calMonth[w];calMonth[w]=new Date(m.getFullYear(),m.getMonth()+n,1);renderCal(w)}
+function pickDay(w,k,st){
+ if(w==='A'){if(st==='past')return;closedDays.has(k)?closedDays.delete(k):closedDays.add(k);renderCal('A');renderCal('C');toast(closedDays.has(k)?'اليوم صار مغلق عند العملاء':'اليوم رجع متاح');return}
+ if(st==='past')return;if(st==='full')return toast('هذا اليوم مكتمل 💛 اختاري يوم ثاني');if(st==='closed')return toast('ما نستقبل حجوزات هذا اليوم');
+ cDate=k;const d=new Date(k+'T00:00');$('#selDay').textContent=`📅 اخترتي: ${d.toLocaleDateString('ar-SA-u-ca-gregory',{weekday:'long',day:'numeric',month:'long'})}${st==='low'?' · باقي مكان واحد بس!':''}`;renderCal('C')}
 
 /* ---------- staff ---------- */
 function renderStaff(){
@@ -584,7 +633,7 @@ orders=[
  {no:seq++,name:'جود',mode:'delivery',time:'بعد 30 د',items:[{ar:'لوتس ماتشا',qty:1,note:''},{ar:'مانجو ماتشا تونك',qty:1,note:''}],total:62,status:'prep',at:new Date(now-9*6e4)},
  {no:seq++,name:'لمى',mode:'pickup',time:'أقرب وقت',items:[{ar:'بينك كريم ماتشا',qty:1,note:'حليب لوز'}],total:28,status:'ready',at:new Date(now-15*6e4)}];
 $('#today').textContent=new Date().toLocaleDateString('ar-SA',{weekday:'long',day:'numeric',month:'long'});
-renderTabs();renderGrid();renderPoll();renderCater();renderStaff();
+renderTabs();renderGrid();renderPoll();renderCater();renderStaff();renderCal('C');renderCal('A');
 </script>
 </body>
 </html>
