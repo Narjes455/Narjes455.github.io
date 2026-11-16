@@ -344,6 +344,9 @@ const IDEAS = [
   ["👥","نظام موظفين","حضور وانصراف وإجازات في مكان واحد."],
 ];
 const PROJECTS = [
+  {t:"كيتي ماتشا", d:"موقع طلبات حقيقي لمشروع ماتشا في المدينة: منيو، سلة، تحويل بنكي بإيصال، ولوحة للمحل", e:"🐱", c:"#DDF9EE", k:"مواقع عملاء", u:"https://order.kittymatcha.online/"},
+  {t:"ميلتي كوكيز", d:"موقع طلبات لمشروع كوكيز منزلي: منيو بالصور، توصيل واستلام، وإشعار واتساب لكل طلب", e:"🍪", c:"#FFEBD9", k:"مواقع عملاء", u:"https://melte-cookies.pages.dev/"},
+  {t:"ماتشا وكّن الجمل", d:"موقع طلبات لماتشا وقهوة: عروض، أكواب احتفالية بطباعة صورة، ولوحة للطلبات مع إشعار واتساب", e:"🐪", c:"#FFE2F0", k:"مواقع عملاء", u:"https://wakuncoffee.pages.dev/"},
   {t:"اورا", d:"نظام إدارة شركات: موظفين، حضور، عقود، فواتير", e:"🏢", c:"#ECE5FF", k:"أنظمة", u:"https://narjes455.github.io/ora-demo/"},
   {t:"اورا للمعاهد", d:"نظام لأي معهد أو مركز تدريب: تحضير QR، بوابة طالبة وولي أمر، اختبارات بتحليل المهارات، رسوم وضريبة", e:"🎓", c:"#DDE3FF", k:"أنظمة", u:"https://narjes455.github.io/ora-edu/"},
   {t:"نظام الصالونات", d:"حجوزات، فواتير بضريبة 15%، تقرير نهاية اليوم ودخول لكل موظفة", e:"💇‍♀️", c:"#FFE2F0", k:"أنظمة", u:"https://narjes455.github.io/salon-demo/"},
@@ -467,7 +470,7 @@ $("#projs").innerHTML=PROJECTS.map(p=>{
   const tag=p.u?"a":"div", link=p.u?` href="${p.u}" target="_blank" rel="noopener"`:"";
   return `<${tag} class="proj rv" data-k="${p.k}"${link}>
   <div class="pic" style="background:${p.c}"><span class="cat">${p.k}</span><span>${p.e}</span></div>
-  <div class="txt"><h3>${p.t}</h3><p>${p.d}</p><span class="go">${p.u.includes("github.com")?"شوف الكود ←":"جرّبه ←"}</span></div></${tag}>`;
+  <div class="txt"><h3>${p.t}</h3><p>${p.d}</p><span class="go">${p.u.includes("github.com")?"شوف الكود ←":p.k==="مواقع عملاء"?"زور الموقع ←":"جرّبه ←"}</span></div></${tag}>`;
 }).join("");
 (function filters(){
   const cats=["الكل",...new Set(PROJECTS.map(p=>p.k))], box=$("#filters");
