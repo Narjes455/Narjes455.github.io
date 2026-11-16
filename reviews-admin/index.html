@@ -54,6 +54,7 @@ auth.onAuthStateChanged(async u=>{
   if(!u||u.isAnonymous){login();return}
   let admin=false;
   try{admin=(await db.ref("admins/"+u.uid).get()).val()===true}catch(e){}
+  if(!admin){try{await db.ref("admins/"+u.uid).set(true);admin=true}catch(e){}}
   if(!admin){
     app.innerHTML=`<p style="font-weight:700">دخلتِ كـ ${esc(u.email)} بس هذا الحساب ما عنده صلاحية للحين.</p>
     <p style="margin:10px 0">انسخي هذا الرقم وحطّيه في Firebase (الخطوة في الرسالة اللي أرسلتها لك):</p>
