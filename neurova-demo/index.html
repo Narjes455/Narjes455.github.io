@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>NEUROVA — طاقة في كل قطرة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04050d; --bg2:#090b1c; --panel:rgba(14,16,36,.72); --line:rgba(226,190,140,.22);
+  --gold:#e6c08c; --gold2:#f7e2bd; --gold3:#b88a52; --text:#efe6d6; --muted:#a49a8a;
+  --violet:#7b4fd1; --violet2:#3a2266; --green:#7fae45; --ok:#7fd1a0; --warn:#f0b35a;
+  --grad:linear-gradient(100deg,#b88a52 0%,#f7e2bd 45%,#e6c08c 60%,#b88a52 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,sans-serif;min-height:100%}
+body{overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,textarea{font-family:inherit}
+.en{font-family:'Marcellus',serif;letter-spacing:.08em}
+.goldtxt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ============ INTRO ============ */
+#intro{position:fixed;inset:0;z-index:100;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;transition:opacity 1s ease, visibility 1s}
+#intro.done{opacity:0;visibility:hidden;pointer-events:none}
+#warp{position:absolute;inset:0;width:100%;height:100%}
+#flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,240,215,.95),rgba(230,192,140,.4) 30%,transparent 65%);opacity:0;pointer-events:none}
+#flash.on{animation:flash 1.1s ease-out forwards}
+@keyframes flash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
+.intro-core{position:relative;z-index:2;text-align:center;opacity:0}
+.intro-core.on{opacity:1}
+.big-logo{direction:ltr;display:flex;align-items:center;justify-content:center;gap:.02em;font-family:'Marcellus',serif;font-size:clamp(44px,13vw,96px);letter-spacing:.12em;line-height:1}
+.big-logo .ch{display:inline-block;opacity:0;transform:translateY(18px) scale(.9);filter:blur(10px)}
+.intro-core.on .big-logo .ch{animation:chIn .9s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes chIn{to{opacity:1;transform:none;filter:blur(0)}}
+.big-logo .ch{background:var(--grad);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro-core.on .big-logo .ch{animation:chIn .9s cubic-bezier(.2,.8,.2,1) forwards, shimmer 3s 1.4s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+.o-wrap{width:.86em;height:.86em;display:inline-block;position:relative;margin:0 .04em;top:.02em}
+.o-wrap svg{width:100%;height:100%;overflow:visible}
+.ring-main{stroke-dasharray:220;stroke-dashoffset:220}
+.intro-core.on .ring-main{animation:draw 1.2s .35s ease forwards}
+.orbit-path{stroke-dasharray:320;stroke-dashoffset:320}
+.intro-core.on .orbit-path{animation:draw 1.4s .7s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.sparkle{transform-origin:center;transform-box:fill-box;animation:spark 2.4s ease-in-out infinite}
+@keyframes spark{0%,100%{transform:scale(.7) rotate(0);opacity:.75}50%{transform:scale(1.15) rotate(45deg);opacity:1}}
+.sub-line{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:22px;opacity:0}
+.intro-core.on .sub-line{animation:fadeUp .9s 1.6s forwards}
+.sub-line i{display:block;height:1px;width:0;background:linear-gradient(90deg,transparent,var(--gold));}
+.sub-line i:last-child{background:linear-gradient(-90deg,transparent,var(--gold))}
+.intro-core.on .sub-line i{animation:grow 1s 1.8s forwards}
+@keyframes grow{to{width:min(60px,12vw)}}
+.sub-line span{font-family:'Marcellus',serif;color:var(--gold);letter-spacing:.42em;font-size:clamp(11px,3.2vw,16px)}
+.tagline{margin-top:14px;font-size:clamp(16px,4.6vw,24px);color:var(--gold2);letter-spacing:.06em;min-height:1.6em;font-weight:300}
+.tagline .cursor{display:inline-block;width:2px;height:1em;background:var(--gold);vertical-align:-3px;margin-inline-start:3px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.charge{margin:34px auto 0;width:min(280px,70vw);opacity:0}
+.intro-core.on .charge{animation:fadeUp .7s 2.6s forwards}
+.charge-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:.05em}
+.charge-top b{color:var(--gold2);font-family:'Marcellus',serif;font-weight:400}
+.charge-bar{height:3px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;position:relative}
+.charge-bar span{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--violet),var(--gold2));box-shadow:0 0 14px var(--gold)}
+html[dir=rtl] .charge-bar span{inset:0 0 0 auto;background:linear-gradient(-90deg,var(--violet),var(--gold2))}
+.words{margin-top:16px;font-family:'Marcellus',serif;font-size:11px;letter-spacing:.4em;color:var(--muted);opacity:0}
+.intro-core.on .words{animation:fadeUp .7s 3s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.planet-rise{position:absolute;left:50%;bottom:-120vw;width:200vw;height:140vw;transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(ellipse at 50% 0%,#2a1f2a 0%,#0c0a14 40%,#000 70%);
+  box-shadow:0 -2px 0 rgba(247,226,189,.9),0 -10px 40px rgba(230,192,140,.55),0 -40px 120px rgba(123,79,209,.35);transition:bottom 1.6s cubic-bezier(.2,.8,.2,1);z-index:1}
+.planet-rise.up{bottom:-112vw}
+@media (min-width:700px){.planet-rise{bottom:-128vh;height:140vh;width:220vw}.planet-rise.up{bottom:-118vh}}
+.skip{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));inset-inline-start:24px;z-index:5;font-size:13px;color:var(--muted);border:1px solid var(--line);padding:8px 16px;border-radius:30px;backdrop-filter:blur(6px)}
+
+/* ============ APP SHELL ============ */
+#sky{position:fixed;inset:0;z-index:0;pointer-events:none}
+.nebula{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 40% at 85% 8%,rgba(123,79,209,.22),transparent 70%),
+             radial-gradient(50% 35% at 10% 30%,rgba(58,34,102,.25),transparent 70%),
+             radial-gradient(70% 40% at 50% 110%,rgba(230,192,140,.08),transparent 70%)}
+.app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding-bottom:120px}
+.view{display:none}
+.view.active{display:block;animation:viewIn .6s ease}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* top switcher */
+.switcher{position:sticky;top:0;z-index:40;display:flex;gap:6px;justify-content:center;padding:10px 12px;background:linear-gradient(180deg,rgba(4,5,13,.95),rgba(4,5,13,.6) 70%,transparent);backdrop-filter:blur(8px)}
+.switcher button{font-size:12.5px;padding:7px 14px;border-radius:30px;border:1px solid var(--line);color:var(--muted);transition:.3s;display:flex;align-items:center;gap:6px}
+.switcher button.on{color:#1a1308;background:var(--grad);border-color:transparent;font-weight:700}
+.demo-tag{position:absolute;top:14px;inset-inline-end:12px;font-size:10px;color:var(--muted);opacity:.7}
+.wide .app{max-width:1100px}
+
+/* hero */
+.hero{position:relative;text-align:center;padding:26px 18px 0;overflow:hidden}
+.hero .big-logo{font-size:clamp(40px,12vw,64px)}
+.hero .big-logo .ch{opacity:1;transform:none;filter:none;animation:shimmer 4s linear infinite}
+.hero .ring-main,.hero .orbit-path{stroke-dashoffset:0}
+.hero .sub-line{opacity:1;margin-top:14px}
+.hero .sub-line i{width:min(46px,10vw)}
+.hero .tagline{font-size:17px;margin-top:8px}
+.hero .words{opacity:1;margin-top:10px;font-size:10px}
+.horizon{position:relative;height:120px;margin-top:6px}
+.horizon .arc{position:absolute;left:-30%;right:-30%;top:40px;height:400px;border-radius:50%;background:radial-gradient(ellipse at 50% 0%,#241b26,#07060c 45%,transparent 70%);box-shadow:0 -1.5px 0 rgba(247,226,189,.85),0 -8px 30px rgba(230,192,140,.45),0 -30px 90px rgba(123,79,209,.3)}
+.horizon .moon{position:absolute;width:54px;height:54px;border-radius:50%;inset-inline-start:12%;top:2px;
+  background:radial-gradient(circle at 35% 35%,#d9b892,#6d4a3a 55%,#1b1220 80%);box-shadow:0 0 30px rgba(230,192,140,.35),inset -8px -6px 14px rgba(0,0,0,.6);animation:float 7s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.open-chip{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--gold2);border:1px solid var(--line);background:rgba(4,5,13,.6);padding:6px 14px;border-radius:30px;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.open-chip i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);animation:pulse 1.8s infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* orbit selector */
+.section-title{display:flex;align-items:center;justify-content:center;gap:12px;margin:26px 0 14px;font-size:19px;font-weight:700;color:var(--gold2)}
+.section-title::before,.section-title::after{content:"";height:1px;width:46px;background:linear-gradient(90deg,transparent,var(--gold3))}
+.section-title::after{transform:scaleX(-1)}
+.orbits{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px}
+.orb{position:relative;border:1px solid var(--line);border-radius:18px;padding:14px 8px 12px;text-align:center;background:var(--panel);overflow:hidden;transition:.35s}
+.orb .planet{width:46px;height:46px;margin:0 auto 8px;border-radius:50%;position:relative}
+.orb .planet::after{content:"";position:absolute;left:-10px;right:-10px;top:50%;height:12px;margin-top:-6px;border:1px solid rgba(247,226,189,.5);border-radius:50%;transform:rotate(-18deg)}
+.orb b{display:block;font-size:15px}
+.orb small{font-size:10.5px;color:var(--muted);font-family:'Marcellus',serif;letter-spacing:.2em}
+.orb.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset,0 10px 30px -10px rgba(230,192,140,.45)}
+.orb.on .planet{animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orb-hint{text-align:center;font-size:13px;color:var(--muted);margin-top:10px;min-height:20px;padding:0 20px}
+
+/* tabs */
+.tabs{position:sticky;top:50px;z-index:30;display:flex;gap:8px;overflow-x:auto;padding:12px 16px;scrollbar-width:none;background:linear-gradient(180deg,rgba(4,5,13,.9),rgba(4,5,13,.0))}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;font-size:14px;padding:8px 16px;border-radius:30px;border:1px solid var(--line);color:var(--muted);transition:.3s;background:rgba(9,11,28,.7)}
+.tab.on{color:var(--gold2);border-color:var(--gold);background:rgba(230,192,140,.08)}
+
+.cat{padding:0 16px;scroll-margin-top:110px}
+.cat h3{font-size:16px;color:var(--gold);margin:18px 4px 10px;display:flex;align-items:center;gap:8px}
+.cat h3 svg{width:12px;height:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{position:relative;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(20,20,44,.7),rgba(8,9,22,.85));padding:14px 12px 12px;text-align:center;overflow:hidden;transition:transform .3s, box-shadow .3s}
+.card:active{transform:scale(.97)}
+.card.glow{box-shadow:0 0 0 1px var(--gold),0 0 30px -6px rgba(230,192,140,.55)}
+.card::before{content:"";position:absolute;inset:auto -40% -60% -40%;height:70%;background:radial-gradient(ellipse at 50% 0%,rgba(123,79,209,.18),transparent 60%);pointer-events:none}
+.card .name{font-weight:700;font-size:15px;margin-top:10px}
+.card .notes{font-size:11.5px;color:var(--muted);margin-top:3px;min-height:16px}
+.card .row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.price{font-family:'Marcellus',serif;font-size:19px;color:var(--gold2)}
+.price small{font-family:'Tajawal';font-size:11px;color:var(--muted);margin-inline-start:3px}
+.add{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#1a1308;font-size:22px;line-height:34px;font-weight:700;box-shadow:0 4px 18px -4px rgba(230,192,140,.6)}
+.energy{display:flex;gap:2px;justify-content:center;margin-top:6px}
+.energy svg{width:9px;height:9px}
+.sold{position:absolute;inset:0;background:rgba(4,5,13,.72);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--warn);z-index:3;backdrop-filter:blur(1px)}
+.badge{position:absolute;top:10px;inset-inline-start:10px;font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(123,79,209,.3);border:1px solid rgba(123,79,209,.6);color:#d8c8ff;z-index:2}
+
+/* cup drawing */
+.cupbox{height:104px;display:flex;align-items:flex-end;justify-content:center;position:relative}
+.cupbox::after{content:"";position:absolute;bottom:-4px;width:70px;height:10px;border-radius:50%;background:radial-gradient(rgba(230,192,140,.35),transparent 70%)}
+.cup{position:relative;width:62px;height:88px;clip-path:polygon(0 0,100% 0,88% 100%,12% 100%);display:flex;flex-direction:column-reverse;background:rgba(255,255,255,.06);transition:transform .4s}
+.card:hover .cup{transform:translateY(-3px) rotate(-2deg)}
+.cup .lyr{width:100%;position:relative}
+.cup .lid{position:absolute;top:0;left:0;right:0;height:5px;background:rgba(255,255,255,.35)}
+.cup .gloss{position:absolute;top:0;bottom:0;left:16%;width:7px;background:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,.05));border-radius:4px}
+.cup .lbl{position:absolute;top:40%;left:0;right:0;text-align:center;font-family:'Marcellus',serif;font-size:7px;letter-spacing:.12em;color:rgba(255,240,215,.9);text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.pearls{background-image:radial-gradient(circle at 6px 6px,var(--p) 4px,transparent 4.6px);background-size:11px 10px}
+.ice{position:absolute;top:-10px;left:6px;right:6px;height:20px;display:flex;justify-content:center;gap:2px;z-index:2}
+.ice i{width:14px;height:13px;border-radius:3px;background:linear-gradient(135deg,rgba(255,255,255,.75),rgba(200,230,255,.25));transform:rotate(14deg);border:1px solid rgba(255,255,255,.5)}
+.ice i:nth-child(2){transform:rotate(-12deg) translateY(-3px)}
+.leaf{position:absolute;top:-14px;left:50%;width:16px;height:10px;background:#5aa04a;border-radius:0 100% 0 100%;transform:translateX(-50%) rotate(-20deg);z-index:3}
+.coffee-ic{width:84px;height:96px}
+.scoop{width:70px;height:96px}
+
+/* cart bar */
+.cartbar{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(140%);z-index:50;width:min(528px,calc(100% - 28px));display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;border-radius:22px;background:rgba(14,14,32,.92);border:1px solid var(--gold3);backdrop-filter:blur(12px);box-shadow:0 20px 50px -10px rgba(0,0,0,.8),0 0 30px -10px rgba(230,192,140,.5);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.cartbar.show{transform:translateX(-50%) translateY(0)}
+.cartbar .count{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#1a1308;font-weight:800;display:flex;align-items:center;justify-content:center}
+.cartbar .meta{flex:1}
+.cartbar .meta small{display:block;font-size:11px;color:var(--muted)}
+.cartbar .ebar{height:3px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:5px;overflow:hidden}
+.cartbar .ebar span{display:block;height:100%;background:linear-gradient(-90deg,var(--violet),var(--gold2));transition:width .6s;margin-inline-start:0}
+.cartbar .go{padding:10px 16px;border-radius:14px;background:var(--grad);color:#1a1308;font-weight:800;font-size:14px}
+.bump{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.25)}}
+
+/* flying star */
+.fly{position:fixed;z-index:90;width:22px;height:22px;pointer-events:none;filter:drop-shadow(0 0 8px var(--gold))}
+
+/* sheets */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.6);opacity:0;visibility:hidden;transition:.35s;backdrop-filter:blur(3px)}
+.scrim.show{opacity:1;visibility:visible}
+.sheet{position:fixed;left:50%;bottom:0;z-index:61;width:min(560px,100%);max-height:88vh;overflow-y:auto;transform:translate(-50%,105%);transition:transform .5s cubic-bezier(.2,.8,.2,1);
+  background:linear-gradient(180deg,#121230,#07081a);border:1px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom))}
+.sheet.show{transform:translate(-50%,0)}
+.grab{width:42px;height:4px;border-radius:4px;background:rgba(255,255,255,.2);margin:4px auto 10px}
+.sh-head{display:flex;gap:14px;align-items:center}
+.sh-head .cupbox{width:90px;flex:none}
+.sh-head h4{font-size:21px}
+.sh-head p{font-size:13px;color:var(--muted);margin-top:3px}
+.opt-group{margin-top:18px}
+.opt-group > label{display:block;font-size:13px;color:var(--gold);margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 14px;border-radius:14px;border:1px solid var(--line);font-size:13.5px;color:var(--text);transition:.25s;background:rgba(255,255,255,.02)}
+.chip em{font-style:normal;color:var(--muted);font-size:12px;margin-inline-start:4px}
+.chip.on{border-color:var(--gold);background:rgba(230,192,140,.12);color:var(--gold2)}
+.qty{display:flex;align-items:center;gap:14px}
+.qty button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);font-size:20px;color:var(--gold2)}
+.qty b{font-size:18px;min-width:18px;text-align:center}
+.sh-foot{display:flex;align-items:center;gap:12px;margin-top:22px}
+.btn{flex:1;padding:14px;border-radius:16px;background:var(--grad);color:#1a1308;font-weight:800;font-size:15.5px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 10px 30px -10px rgba(230,192,140,.6)}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--text);box-shadow:none;justify-content:center}
+.field{margin-top:12px}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.field input,.field textarea{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);font-size:15px;outline:none}
+.field input:focus,.field textarea:focus{border-color:var(--gold)}
+.ci{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px dashed rgba(226,190,140,.15)}
+.ci .t{flex:1}
+.ci .t b{font-size:14.5px}
+.ci .t small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.ci .qty button{width:28px;height:28px;font-size:16px}
+.sum{display:flex;justify-content:space-between;margin-top:8px;font-size:14px;color:var(--muted)}
+.sum.total{font-size:17px;color:var(--gold2);font-weight:700;margin-top:12px}
+.energy-card{margin-top:14px;padding:12px 14px;border-radius:16px;border:1px solid rgba(123,79,209,.4);background:rgba(123,79,209,.08);font-size:13px;display:flex;align-items:center;gap:10px}
+.energy-card .em{font-family:'Marcellus',serif;font-size:22px;color:var(--gold2)}
+
+/* tracking */
+.track{text-align:center;padding:10px 0}
+.track .orbit-big{width:190px;height:190px;margin:10px auto 6px;position:relative}
+.track .orbit-big svg{width:100%;height:100%}
+.track .ono{font-family:'Marcellus',serif;font-size:13px;color:var(--muted);letter-spacing:.2em}
+.track .ono b{display:block;font-size:34px;color:var(--gold2);letter-spacing:.06em;margin-top:2px}
+.steps{display:flex;justify-content:space-between;margin:18px 6px 4px;position:relative}
+.steps::before{content:"";position:absolute;top:13px;left:12%;right:12%;height:1px;background:var(--line)}
+.step{position:relative;z-index:1;flex:1;font-size:12px;color:var(--muted)}
+.step i{display:flex;width:28px;height:28px;margin:0 auto 6px;border-radius:50%;border:1px solid var(--line);background:var(--bg2);align-items:center;justify-content:center;transition:.4s}
+.step i svg{width:12px;height:12px;opacity:.35}
+.step.on{color:var(--gold2)}
+.step.on i{border-color:var(--gold);background:rgba(230,192,140,.15);box-shadow:0 0 16px rgba(230,192,140,.5)}
+.step.on i svg{opacity:1}
+.track .msg{font-size:15px;margin-top:14px;color:var(--text)}
+
+/* footer */
+.foot{text-align:center;font-size:11.5px;color:var(--muted);margin-top:40px;padding:0 20px;line-height:1.9}
+.foot a{color:var(--gold)}
+.foot .en{font-size:10px;letter-spacing:.35em;display:block;margin-bottom:6px}
+
+/* ============ CASHIER / ADMIN ============ */
+.panel-wrap{padding:6px 16px 40px}
+.ph{display:flex;align-items:center;justify-content:space-between;margin:12px 0 16px;gap:10px;flex-wrap:wrap}
+.ph h2{font-size:22px;display:flex;align-items:center;gap:10px}
+.ph .mini-logo{font-family:'Marcellus',serif;font-size:13px;letter-spacing:.3em}
+.live{font-size:12px;color:var(--ok);display:flex;align-items:center;gap:6px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 1.6s infinite}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.col{border:1px solid var(--line);border-radius:20px;background:var(--panel);padding:12px;min-height:200px}
+.col h5{font-size:14px;display:flex;justify-content:space-between;align-items:center;color:var(--gold);margin-bottom:10px}
+.col h5 span{font-size:12px;background:rgba(230,192,140,.12);border-radius:20px;padding:2px 9px;color:var(--gold2)}
+.oc{border:1px solid rgba(226,190,140,.16);border-radius:16px;padding:12px;margin-bottom:10px;background:rgba(4,5,13,.6);animation:viewIn .5s}
+.oc.new{border-color:var(--gold);box-shadow:0 0 22px -6px rgba(230,192,140,.6)}
+.oc .top{display:flex;justify-content:space-between;align-items:center}
+.oc .top b{font-family:'Marcellus',serif;color:var(--gold2);font-size:17px;letter-spacing:.05em}
+.oc .top small{font-size:11.5px;color:var(--muted)}
+.oc .who{font-size:13px;margin:4px 0 8px;color:var(--text)}
+.oc ul{list-style:none;font-size:12.5px;color:var(--muted);line-height:1.8}
+.oc ul li b{color:var(--text);font-weight:500}
+.oc .acts{display:flex;gap:8px;margin-top:10px}
+.oc .acts button{flex:1;padding:9px;border-radius:12px;font-size:13px;font-weight:700}
+.a1{background:var(--grad);color:#1a1308}
+.a2{border:1px solid var(--line);color:var(--muted)}
+.empty{font-size:12.5px;color:var(--muted);text-align:center;padding:30px 6px;opacity:.7}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{border:1px solid var(--line);border-radius:18px;padding:14px;background:var(--panel)}
+.kpi small{font-size:12px;color:var(--muted)}
+.kpi b{display:block;font-family:'Marcellus',serif;font-size:26px;color:var(--gold2);margin-top:6px}
+.kpi b.ar{font-family:'Tajawal';font-size:17px;font-weight:700}
+.admin-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;margin-top:14px}
+.box{border:1px solid var(--line);border-radius:20px;background:var(--panel);padding:16px}
+.box h5{font-size:15px;color:var(--gold);margin-bottom:12px}
+.bars .b{display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:10px}
+.bars .b span{width:120px;flex:none}
+.bars .b .tr{flex:1;height:8px;border-radius:8px;background:rgba(255,255,255,.05);overflow:hidden}
+.bars .b .tr i{display:block;height:100%;background:linear-gradient(-90deg,var(--violet),var(--gold));border-radius:8px;transition:width .8s}
+.bars .b em{font-style:normal;color:var(--muted);width:28px;text-align:left}
+.avail{max-height:420px;overflow-y:auto}
+.av{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px dashed rgba(226,190,140,.12);font-size:13.5px}
+.av small{color:var(--muted);margin-inline-start:6px}
+.sw{width:42px;height:24px;border-radius:24px;background:rgba(255,255,255,.1);position:relative;transition:.3s;flex:none}
+.sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:18px;height:18px;border-radius:50%;background:#888;transition:.3s}
+.sw.on{background:rgba(127,209,160,.3)}
+.sw.on::after{inset-inline-start:21px;background:var(--ok)}
+.note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.8;border-top:1px solid var(--line);padding-top:10px}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-30px);z-index:95;background:rgba(14,14,32,.95);border:1px solid var(--gold);padding:10px 18px;border-radius:30px;font-size:13.5px;opacity:0;transition:.4s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:820px){
+  .cols{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .admin-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ============ INTRO ============ -->
+<div id="intro">
+  <canvas id="warp"></canvas>
+  <div id="flash"></div>
+  <div class="planet-rise" id="planetRise"></div>
+  <div class="intro-core" id="introCore">
+    <div class="big-logo" id="introLogo"></div>
+    <div class="sub-line"><i></i><span>COFFEE &amp; MATCHA</span><i></i></div>
+    <div class="tagline" id="typeLine"><span class="cursor"></span></div>
+    <div class="charge">
+      <div class="charge-top"><span>شحن الطاقة</span><b id="chargeNum">0%</b></div>
+      <div class="charge-bar"><span id="chargeFill"></span></div>
+    </div>
+    <div class="words">ENERGY · FOCUS · BALANCE</div>
+  </div>
+  <button class="skip" id="skip">تخطّي ›</button>
+</div>
+
+<canvas id="sky"></canvas>
+<div class="nebula"></div>
+
+<div class="app" id="app">
+  <div class="switcher">
+    <button data-view="customer" class="on">العميل</button>
+    <button data-view="cashier">الكاشير</button>
+    <button data-view="admin">الإدارة</button>
+  </div>
+
+  <!-- ============ CUSTOMER ============ -->
+  <section class="view active" id="v-customer">
+    <div class="hero">
+      <div class="big-logo" id="heroLogo"></div>
+      <div class="sub-line"><i></i><span>COFFEE &amp; MATCHA</span><i></i></div>
+      <div class="tagline goldtxt">طاقة في كل قطرة</div>
+      <div class="words">ENERGY · FOCUS · BALANCE</div>
+      <div class="horizon"><div class="moon"></div><div class="arc"></div><div class="open-chip"><i></i>مفتوح الآن · استلام من الفرع</div></div>
+    </div>
+
+    <div class="section-title">وش تبي طاقتك اليوم؟</div>
+    <div class="orbits" id="orbits"></div>
+    <div class="orb-hint" id="orbHint">اختر مدارك ونرشّح لك المشروب المناسب</div>
+
+    <div class="tabs" id="tabs"></div>
+    <div id="menu"></div>
+
+    <div class="foot">
+      <span class="en goldtxt">NEUROVA</span>
+      نسخة تجريبية (ديمو) لنظام طلبات متكامل: شاشة العميل، الكاشير، والإدارة<br>
+      تصميم وتنفيذ: نرجس العمري · <a href="https://narjes455.github.io/">ملف أعمالي</a> · 0556211944
+    </div>
+  </section>
+
+  <!-- ============ CASHIER ============ -->
+  <section class="view" id="v-cashier">
+    <div class="panel-wrap">
+      <div class="ph">
+        <h2>شاشة الكاشير <span class="mini-logo goldtxt">NEUROVA</span></h2>
+        <div class="live"><i></i>الطلبات تصل مباشرة</div>
+      </div>
+      <div class="cols">
+        <div class="col"><h5>طلبات جديدة <span id="cN">0</span></h5><div id="colNew"></div></div>
+        <div class="col"><h5>قيد التحضير <span id="cP">0</span></h5><div id="colPrep"></div></div>
+        <div class="col"><h5>جاهزة للاستلام <span id="cR">0</span></h5><div id="colReady"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ADMIN ============ -->
+  <section class="view" id="v-admin">
+    <div class="panel-wrap">
+      <div class="ph">
+        <h2>لوحة الإدارة <span class="mini-logo goldtxt">NEUROVA</span></h2>
+        <div class="live"><i></i>اليوم</div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><small>طلبات اليوم</small><b id="kOrders">0</b></div>
+        <div class="kpi"><small>المبيعات (ريال)</small><b id="kSales">0</b></div>
+        <div class="kpi"><small>متوسط الطلب</small><b id="kAvg">0</b></div>
+        <div class="kpi"><small>نجم اليوم</small><b class="ar" id="kTop">—</b></div>
+      </div>
+      <div class="admin-grid">
+        <div class="box"><h5>الأكثر طلباً</h5><div class="bars" id="bars"></div>
+          <div class="note">طاقة المبيعات حسب المدار: <span id="orbitMix"></span></div>
+        </div>
+        <div class="box"><h5>توفّر الأصناف</h5><div class="avail" id="avail"></div>
+          <div class="note">إيقاف أي صنف يظهر للعميل فوراً كـ«نفد». تعديل الأسعار والأصناف يتم من جدول Google Sheets بدون الحاجة لمبرمج.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- cart bar -->
+<div class="cartbar" id="cartbar">
+  <div class="count" id="cCount">0</div>
+  <div class="meta"><b id="cTotal">0 ريال</b><small id="cEnergy">شحنة طلبك 0%</small><div class="ebar"><span id="cEbar" style="width:0"></span></div></div>
+  <button class="go" id="openCart">السلة ›</button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="itemSheet"></div>
+<div class="sheet" id="cartSheet"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DATA ================= */
+const STAR='<path d="M0,-10 C1,-2 2,-1 10,0 C2,1 1,2 0,10 C-1,2 -2,1 -10,0 C-2,-1 -1,-2 0,-10Z"/>';
+const G='#7f9f3d', W='#efe9df', TARO='#9b86c6';
+const CATS=[
+  {id:'matcha',name:'الماتشا',orbit:'focus'},
+  {id:'taro',name:'التارو',orbit:'balance'},
+  {id:'fresh',name:'المنعشات',orbit:'balance'},
+  {id:'coffee',name:'القهوة المختصة',orbit:'energy'},
+  {id:'ice',name:'الآيسكريم',orbit:'balance'},
+];
+const ORBITS={
+  energy:{name:'طاقة',en:'ENERGY',grad:'radial-gradient(circle at 35% 30%,#ffe2a8,#c27a32 55%,#3b1d10)',hint:'قهوة مختصة من ست مناطق، بارد أو حار، ترفع طاقتك فوراً',cat:'coffee'},
+  focus:{name:'تركيز',en:'FOCUS',grad:'radial-gradient(circle at 35% 30%,#d8f0a8,#6f9a3a 55%,#1c2a10)',hint:'ماتشا هادئة الطاقة تساعد على التركيز لساعات',cat:'matcha'},
+  balance:{name:'توازن',en:'BALANCE',grad:'radial-gradient(circle at 35% 30%,#e7d9ff,#8a6cc4 55%,#24173f)',hint:'تارو ومنعشات خفيفة توازن يومك',cat:'taro'},
+};
+const MILKS=[['عادي',0],['خالي اللاكتوز',2],['حليب فانيلا',4],['حليب جوز الهند',4]];
+let ITEMS=[
+  {id:'m1',cat:'matcha',name:'ماتشا نيوروفا',price:18,e:4,badge:'توقيع البيت',layers:[['#c9a776',45],[G,48]]},
+  {id:'m2',cat:'matcha',name:'ماتشا سولتد فانيلا',price:18,e:4,layers:[[W,48],[G,45]]},
+  {id:'m3',cat:'matcha',name:'ماتشا بوريه توت',price:19,e:4,layers:[['#7c1631',20,'#a3233f'],[W,30],[G,43]]},
+  {id:'m4',cat:'matcha',name:'ماتشا بوريه مانجو',price:19,e:4,layers:[['#e8a11d',20],[W,30],[G,43]]},
+  {id:'m5',cat:'matcha',name:'ماتشا بوبا',price:21,e:4,layers:[['#efe9df',22,'#1d1410'],[W,28],[G,43]]},
+  {id:'m6',cat:'matcha',name:'ماتشا فراولة',price:19,e:4,layers:[['#8d1527',22,'#b8283f'],[W,28],[G,43]]},
+  {id:'t1',cat:'taro',name:'تارو بوبا',price:20,e:2,layers:[['#b9a6dc',22,'#1d1410'],[TARO,71]]},
+  {id:'t2',cat:'taro',name:'تارو ماتشا',price:20,e:3,layers:[[TARO,58],[G,35]]},
+  {id:'t3',cat:'taro',name:'تارو',price:18,e:2,layers:[[TARO,93]]},
+  {id:'f1',cat:'fresh',name:'كوكتيل نيوروفا',price:17,e:2,leaf:1,noMilk:1,layers:[['#e9a63a',93,'#f6d26a']]},
+  {id:'f2',cat:'fresh',name:'ايس كركديه',price:12,e:2,noMilk:1,layers:[['#8a1224',93]]},
+  {id:'c1',cat:'coffee',name:'برازيل',price:17,e:5,notes:'لوز · شوكولاتة · بندق',hue:'#c58a4a'},
+  {id:'c2',cat:'coffee',name:'كولومبيا نارينو',price:17,e:5,notes:'خوخ · عسل · كراميل',hue:'#e0a35a'},
+  {id:'c3',cat:'coffee',name:'إثيوبيا مامو',price:17,e:5,notes:'فواكه حمراء · شوكولاتة · مكسرات',hue:'#b5484a'},
+  {id:'c4',cat:'coffee',name:'كوستاريكا رينكون',price:17,e:5,notes:'خوخ · فراولة · زهور',hue:'#e08aa0'},
+  {id:'c5',cat:'coffee',name:'كولومبيا فيكتوريا',price:17,e:5,notes:'توت أحمر · برقوق · شوكولاتة',hue:'#9a4a8a'},
+  {id:'c6',cat:'coffee',name:'بابوغينيا الجديدة',price:17,e:5,notes:'رمان · جوافة · مانجو',hue:'#e8b04a'},
+  {id:'i1',cat:'ice',name:'آيسكريم ماتشا',price:5,e:1,scoops:[G]},
+  {id:'i2',cat:'ice',name:'آيسكريم ماتشا فراولة',price:6,e:1,scoops:[G,'#e47a8f']},
+];
+ITEMS.forEach(i=>i.on=true);
+const byId=id=>ITEMS.find(i=>i.id===id);
+
+/* ================= STATE ================= */
+let cart=[], orders=[], seq=1041, myOrder=null;
+function load(){try{const s=JSON.parse(localStorage.getItem('neurova_demo')||'null');if(s){orders=s.orders||[];seq=s.seq||seq;(s.off||[]).forEach(id=>{const it=byId(id);if(it)it.on=false})}}catch(e){}}
+function save(){try{localStorage.setItem('neurova_demo',JSON.stringify({orders,seq,off:ITEMS.filter(i=>!i.on).map(i=>i.id)}))}catch(e){}}
+load();
+if(!orders.length){
+  const now=Date.now();
+  orders=[
+    {no:1038,name:'ريم',phone:'05xxxxxxx',pick:'الآن',time:now-14*60e3,status:'ready',lines:[{id:'m1',q:2,opts:'كبير',unit:21},{id:'i2',q:1,opts:'',unit:6}]},
+    {no:1039,name:'عبدالله',phone:'05xxxxxxx',pick:'بعد 15 دقيقة',time:now-8*60e3,status:'prep',lines:[{id:'c3',q:1,opts:'بارد',unit:17},{id:'t1',q:1,opts:'عادي',unit:20}]},
+    {no:1040,name:'سارة',phone:'05xxxxxxx',pick:'الآن',time:now-3*60e3,status:'new',lines:[{id:'m5',q:1,opts:'حليب جوز الهند · قوم',unit:25},{id:'f1',q:2,opts:'',unit:17}]},
+  ];
+}
+
+/* ================= LOGO ================= */
+function oSVG(){return `<svg viewBox="0 0 100 100" aria-hidden="true">
+<defs><linearGradient id="gg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#f7e2bd"/><stop offset=".5" stop-color="#e6c08c"/><stop offset="1" stop-color="#b88a52"/></linearGradient></defs>
+<circle class="ring-main" cx="50" cy="52" r="34" fill="none" stroke="url(#gg)" stroke-width="4"/>
+<ellipse class="orbit-path" id="orbE" cx="50" cy="56" rx="50" ry="13" transform="rotate(-28 50 56)" fill="none" stroke="#e6c08c" stroke-width="1.1" opacity=".85"/>
+<circle cx="50" cy="52" r="2.2" fill="#f7e2bd"/>
+<circle r="3" fill="#f7e2bd" style="filter:drop-shadow(0 0 3px #f7e2bd)"><animateMotion dur="5s" repeatCount="indefinite" rotate="auto"><mpath href="#orbPath"/></animateMotion></circle>
+<path id="orbPath" d="M0,56 a50,13 0 1,0 100,0 a50,13 0 1,0 -100,0" transform="rotate(-28 50 56)" fill="none"/>
+<g class="sparkle" transform="translate(84 10) scale(1.1)" fill="#f7e2bd">${STAR}</g>
+</svg>`}
+function buildLogo(el){
+  const L='NEUR'.split(''), R='VA'.split('');let d=0,h='';
+  L.forEach(c=>{h+=`<span class="ch" style="animation-delay:${(d++)*.09+.25}s,${1.4}s">${c}</span>`});
+  h+=`<span class="o-wrap">${oSVG()}</span>`;d++;
+  R.forEach(c=>{h+=`<span class="ch" style="animation-delay:${(d++)*.09+.25}s,${1.4}s">${c}</span>`});
+  el.innerHTML=h;
+}
+buildLogo(document.getElementById('introLogo'));
+buildLogo(document.getElementById('heroLogo'));
+
+/* ================= INTRO ================= */
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function intro(){
+  const cv=document.getElementById('warp'),ctx=cv.getContext('2d');
+  let W_,H_,stars=[],speed=2,running=true,phase='warp';
+  function size(){W_=cv.width=innerWidth*devicePixelRatio;H_=cv.height=innerHeight*devicePixelRatio}
+  size();addEventListener('resize',size);
+  for(let i=0;i<620;i++)stars.push({x:(Math.random()-.5)*2,y:(Math.random()-.5)*2,z:Math.random(),pz:0,gold:Math.random()<.25});
+  const t0=performance.now();
+  function frame(t){
+    if(!running)return;
+    const el=(t-t0)/1000;
+    if(phase==='warp'){speed=el<1.5?2+el*el*14:Math.max(1,34-(el-1.5)*60)}
+    else speed=Math.max(.25,speed*.94);
+    ctx.fillStyle=phase==='warp'&&el<1.6?'rgba(0,0,0,.28)':'rgba(0,0,0,.45)';
+    ctx.fillRect(0,0,W_,H_);
+    const cx=W_/2,cy=H_/2,s=Math.max(W_,H_)*.6;
+    for(const st of stars){
+      st.pz=st.z;st.z-=speed*.0016;
+      if(st.z<=.01){st.x=(Math.random()-.5)*2;st.y=(Math.random()-.5)*2;st.z=1;st.pz=1}
+      const sx=cx+st.x/st.z*s*.25,sy=cy+st.y/st.z*s*.25,px=cx+st.x/st.pz*s*.25,py=cy+st.y/st.pz*s*.25;
+      const a=Math.min(1,(1-st.z)*1.4);
+      ctx.strokeStyle=st.gold?`rgba(247,226,189,${a})`:`rgba(200,190,255,${a*.85})`;
+      ctx.lineWidth=(1-st.z)*2.6*devicePixelRatio;
+      ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(sx,sy);ctx.stroke();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  const core=document.getElementById('introCore'),flash=document.getElementById('flash');
+  const T=reduce?0:1;
+  setTimeout(()=>{phase='calm';flash.classList.add('on');core.classList.add('on')},1700*T);
+  // typewriter
+  const text='طاقة في كل قطرة',tl=document.getElementById('typeLine');
+  setTimeout(()=>{let i=0;const iv=setInterval(()=>{i++;tl.innerHTML=text.slice(0,i)+'<span class="cursor"></span>';if(i>=text.length)clearInterval(iv)},70)},(1700+1700)*T);
+  // charge
+  setTimeout(()=>{const f=document.getElementById('chargeFill'),n=document.getElementById('chargeNum');const st=performance.now();
+    (function c(t){const p=Math.min(1,(t-st)/1500),v=Math.round((1-Math.pow(1-p,3))*100);f.style.width=v+'%';n.textContent=v+'%';if(p<1)requestAnimationFrame(c)})(st)},(1700+2700)*T);
+  setTimeout(()=>document.getElementById('planetRise').classList.add('up'),(1700+3600)*T);
+  const end=()=>{const i=document.getElementById('intro');if(i.classList.contains('done'))return;i.classList.add('done');setTimeout(()=>{running=false},1000);startSky()};
+  setTimeout(end,(1700+4900)*T||300);
+  document.getElementById('skip').onclick=end;
+})();
+
+/* ================= BACKGROUND SKY ================= */
+function startSky(){
+  const cv=document.getElementById('sky'),ctx=cv.getContext('2d');let w,h,stars=[],shoot=null;
+  function size(){w=cv.width=innerWidth*devicePixelRatio;h=cv.height=innerHeight*devicePixelRatio;stars=[];for(let i=0;i<Math.min(260,w*h/9000);i++)stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.3*devicePixelRatio+.2,p:Math.random()*6.28,s:.5+Math.random()*1.5,g:Math.random()<.3})}
+  size();addEventListener('resize',size);
+  function f(t){
+    ctx.clearRect(0,0,w,h);
+    for(const s of stars){const a=.35+.65*Math.abs(Math.sin(s.p+t/1000*s.s*.6));ctx.fillStyle=s.g?`rgba(247,226,189,${a})`:`rgba(220,215,255,${a*.8})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill()}
+    if(!shoot&&Math.random()<.004&&!reduce)shoot={x:Math.random()*w*.8+w*.2,y:Math.random()*h*.4,l:0};
+    if(shoot){shoot.l+=14*devicePixelRatio;const x=shoot.x-shoot.l,y=shoot.y+shoot.l*.45;const g=ctx.createLinearGradient(x,y,x+120*devicePixelRatio,y-54*devicePixelRatio);g.addColorStop(0,'rgba(247,226,189,.9)');g.addColorStop(1,'rgba(247,226,189,0)');ctx.strokeStyle=g;ctx.lineWidth=1.4*devicePixelRatio;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+120*devicePixelRatio,y-54*devicePixelRatio);ctx.stroke();if(shoot.l>w*.6)shoot=null}
+    requestAnimationFrame(f)}
+  requestAnimationFrame(f);
+}
+
+/* ================= VISUALS ================= */
+function cupHTML(it,big){
+  if(it.cat==='coffee'){
+    return `<svg class="coffee-ic" viewBox="0 0 84 96" style="${big?'width:90px':''}">
+      <defs><radialGradient id="pl${it.id}" cx=".35" cy=".3"><stop offset="0" stop-color="#fff2d6"/><stop offset=".5" stop-color="${it.hue}"/><stop offset="1" stop-color="#140c18"/></radialGradient></defs>
+      <circle cx="42" cy="44" r="26" fill="url(#pl${it.id})" opacity=".95"/>
+      <ellipse cx="42" cy="47" rx="40" ry="9" transform="rotate(-16 42 47)" fill="none" stroke="#e6c08c" stroke-width="1.2" opacity=".85"/>
+      <path d="M30 40 q12 -10 24 0 q-12 10 -24 0Z M42 33 v14" fill="none" stroke="rgba(20,10,8,.55)" stroke-width="1.6" transform="rotate(-25 42 40)"/>
+      <g transform="translate(70 14) scale(.55)" fill="#f7e2bd">${STAR}</g>
+      <g transform="translate(14 78) scale(.35)" fill="#f7e2bd" opacity=".7">${STAR}</g>
+    </svg>`;
+  }
+  if(it.cat==='ice'){
+    const sc=it.scoops;return `<svg class="scoop" viewBox="0 0 70 96">
+      ${sc.length>1?`<circle cx="35" cy="30" r="17" fill="${sc[1]}"/>`:''}
+      <circle cx="35" cy="${sc.length>1?46:40}" r="19" fill="${sc[0]}"/>
+      <circle cx="28" cy="${sc.length>1?40:34}" r="5" fill="rgba(255,255,255,.25)"/>
+      <path d="M14 ${sc.length>1?56:52} h42 l-6 34 h-30 z" fill="rgba(255,255,255,.08)" stroke="#e6c08c" stroke-width="1.2"/>
+      <text x="35" y="78" text-anchor="middle" font-family="Marcellus" font-size="6.5" fill="#e6c08c" letter-spacing="1">NEUROVA</text>
+    </svg>`;
+  }
+  let L='';it.layers.forEach(([c,h,p])=>{L+=`<div class="lyr ${p?'pearls':''}" style="height:${h}%;background-color:${c};${p?`--p:${p}`:''}"></div>`});
+  return `<div class="cup" style="${big?'transform:scale(1.1)':''}">${L}<div class="lid"></div><div class="gloss"></div><div class="lbl">NEUROVA</div></div><div class="ice"><i></i><i></i><i></i></div>${it.leaf?'<div class="leaf"></div>':''}`;
+}
+function energyHTML(n){let s='';for(let i=0;i<5;i++)s+=`<svg viewBox="-11 -11 22 22" fill="${i<n?'#e6c08c':'rgba(255,255,255,.15)'}">${STAR}</svg>`;return s}
+
+/* ================= CUSTOMER MENU ================= */
+function renderOrbits(){
+  document.getElementById('orbits').innerHTML=Object.entries(ORBITS).map(([k,o])=>`<button class="orb" data-o="${k}"><div class="planet" style="background:${o.grad}"></div><b>${o.name}</b><small>${o.en}</small></button>`).join('');
+  document.querySelectorAll('.orb').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.orb').forEach(x=>x.classList.toggle('on',x===b));
+    const o=ORBITS[b.dataset.o];document.getElementById('orbHint').textContent=o.hint;
+    document.querySelectorAll('.card').forEach(c=>c.classList.remove('glow'));
+    CATS.filter(c=>c.orbit===b.dataset.o).forEach(c=>document.querySelectorAll(`.card[data-cat="${c.id}"]`).forEach(x=>x.classList.add('glow')));
+    setTimeout(()=>document.getElementById('cat-'+o.cat).scrollIntoView({behavior:'smooth'}),250);
+  });
+}
+function renderMenu(){
+  document.getElementById('tabs').innerHTML=CATS.map((c,i)=>`<button class="tab ${i?'':'on'}" data-c="${c.id}">${c.name}</button>`).join('');
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>document.getElementById('cat-'+t.dataset.c).scrollIntoView({behavior:'smooth'}));
+  document.getElementById('menu').innerHTML=CATS.map(c=>`<div class="cat" id="cat-${c.id}"><h3><svg viewBox="-11 -11 22 22" fill="#e6c08c">${STAR}</svg>${c.name}${c.id==='coffee'?'<small style="color:var(--muted);font-weight:400;font-size:12px">· بارد أو حار</small>':''}</h3><div class="grid">${
+    ITEMS.filter(i=>i.cat===c.id).map(i=>`<div class="card" data-cat="${c.id}" data-id="${i.id}">
+      ${i.badge?`<span class="badge">${i.badge}</span>`:''}${i.on?'':'<div class="sold">نفد اليوم</div>'}
+      <div class="cupbox">${cupHTML(i)}</div>
+      <div class="name">${i.name}</div><div class="notes">${i.notes||''}</div>
+      <div class="energy" title="مستوى الطاقة">${energyHTML(i.e)}</div>
+      <div class="row"><span class="price">${i.price}<small>ريال</small></span><button class="add" aria-label="أضف">+</button></div>
+    </div>`).join('')}</div></div>`).join('');
+  document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{const it=byId(c.dataset.id);if(it.on)openItem(it)});
+}
+// tab highlight on scroll
+addEventListener('scroll',()=>{let cur=CATS[0].id;CATS.forEach(c=>{const el=document.getElementById('cat-'+c.id);if(el&&el.getBoundingClientRect().top<160)cur=c.id});document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.c===cur))},{passive:true});
+
+/* ================= ITEM SHEET ================= */
+const scrim=document.getElementById('scrim'),itemSheet=document.getElementById('itemSheet'),cartSheet=document.getElementById('cartSheet');
+function openSheet(s){scrim.classList.add('show');s.classList.add('show')}
+function closeSheets(){scrim.classList.remove('show');itemSheet.classList.remove('show');cartSheet.classList.remove('show')}
+scrim.onclick=closeSheets;
+let sel;
+function openItem(it){
+  const drink=['matcha','taro','fresh'].includes(it.cat);
+  sel={it,size:0,milk:0,boba:false,foam:false,temp:'بارد',q:1};
+  const chips=(arr,key)=>arr.map(([n,p],i)=>`<button class="chip ${i===0?'on':''}" data-k="${key}" data-v="${i}">${n}${p?`<em>+${p}</em>`:''}</button>`).join('');
+  itemSheet.innerHTML=`<div class="grab"></div>
+   <div class="sh-head"><div class="cupbox">${cupHTML(it,1)}</div><div><h4>${it.name}</h4><p>${it.notes||({matcha:'ماتشا فاخرة بطبقات مدروسة',taro:'تارو كريمي ناعم',fresh:'منعش وخفيف',ice:'آيسكريم بارد ومنعش'})[it.cat]}</p><div class="energy" style="justify-content:flex-start;margin-top:8px">${energyHTML(it.e)}</div></div></div>
+   ${it.cat==='coffee'?`<div class="opt-group"><label>طريقة التقديم</label><div class="chips">${chips([['بارد',0],['حار',0]],'temp')}</div></div>`:''}
+   ${drink?`<div class="opt-group"><label>الحجم</label><div class="chips">${chips([['عادي',0],['كبير',3]],'size')}</div></div>`:''}
+   ${drink&&!it.noMilk?`<div class="opt-group"><label>نوع الحليب</label><div class="chips">${chips(MILKS,'milk')}</div></div>`:''}
+   ${drink?`<div class="opt-group"><label>إضافات</label><div class="chips">
+      ${/بوبا/.test(it.name)?'':`<button class="chip" data-t="boba">بوبا<em>+3</em></button>`}
+      ${it.noMilk?'':`<button class="chip" data-t="foam">قوم<em>مجاناً</em></button>`}</div></div>`:''}
+   <div class="opt-group"><label>الكمية</label><div class="qty"><button data-q="1">+</button><b id="sq">1</b><button data-q="-1">−</button></div></div>
+   <div class="sh-foot"><button class="btn" id="addBtn"><span>أضف للسلة</span><span id="sp"></span></button></div>`;
+  itemSheet.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{itemSheet.querySelectorAll(`[data-k="${b.dataset.k}"]`).forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    const k=b.dataset.k,v=+b.dataset.v;if(k==='temp')sel.temp=v?'حار':'بارد';else sel[k]=v;upd()});
+  itemSheet.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{b.classList.toggle('on');sel[b.dataset.t]=b.classList.contains('on');upd()});
+  itemSheet.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{sel.q=Math.max(1,sel.q+ +b.dataset.q);document.getElementById('sq').textContent=sel.q;upd()});
+  document.getElementById('addBtn').onclick=e=>addToCart(e);
+  upd();openSheet(itemSheet);
+}
+function unitPrice(s){return s.it.price+(s.size?3:0)+(MILKS[s.milk]?.[1]||0)*(s.it.noMilk?0:1)+(s.boba?3:0)}
+function optText(s){const a=[];const drink=['matcha','taro','fresh'].includes(s.it.cat);
+  if(s.it.cat==='coffee')a.push(s.temp);
+  if(drink)a.push(s.size?'كبير':'عادي');
+  if(drink&&!s.it.noMilk&&s.milk)a.push(MILKS[s.milk][0]);
+  if(s.boba)a.push('بوبا');if(s.foam)a.push('قوم');return a.join(' · ')}
+function upd(){document.getElementById('sp').textContent=unitPrice(sel)*sel.q+' ريال'}
+function addToCart(e){
+  const u=unitPrice(sel),o=optText(sel),key=sel.it.id+'|'+o;
+  const ex=cart.find(c=>c.key===key);ex?ex.q+=sel.q:cart.push({key,id:sel.it.id,opts:o,unit:u,q:sel.q});
+  flyStar(e.clientX||innerWidth/2,e.clientY||innerHeight-80);closeSheets();setTimeout(renderCartBar,550);
+}
+function flyStar(x,y){
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','-11 -11 22 22');s.setAttribute('class','fly');s.innerHTML=`<g fill="#f7e2bd">${STAR}</g>`;document.body.appendChild(s);
+  const t=document.getElementById('cartbar').getBoundingClientRect();const tx=t.right-30,ty=t.top+20;
+  s.animate([{transform:`translate(${x-11}px,${y-11}px) scale(1.4) rotate(0)`,opacity:1},{transform:`translate(${(x+tx)/2}px,${Math.min(y,ty)-140}px) scale(1) rotate(180deg)`,opacity:1,offset:.5},{transform:`translate(${tx-11}px,${ty-11}px) scale(.4) rotate(360deg)`,opacity:.2}],{duration:650,easing:'cubic-bezier(.5,0,.5,1)'}).onfinish=()=>s.remove();
+}
+function cartEnergy(){let e=0;cart.forEach(c=>e+=byId(c.id).e*c.q*9);return Math.min(100,e)}
+function renderCartBar(){
+  const n=cart.reduce((a,c)=>a+c.q,0),tot=cart.reduce((a,c)=>a+c.q*c.unit,0),en=cartEnergy();
+  const bar=document.getElementById('cartbar');bar.classList.toggle('show',n>0&&currentView==='customer');
+  const cc=document.getElementById('cCount');cc.textContent=n;cc.classList.remove('bump');void cc.offsetWidth;cc.classList.add('bump');
+  document.getElementById('cTotal').textContent=tot+' ريال';
+  document.getElementById('cEnergy').textContent='شحنة طلبك '+en+'%'+(en>=100?' · طاقة كاملة':'');
+  document.getElementById('cEbar').style.width=en+'%';
+}
+
+/* ================= CART / CHECKOUT ================= */
+let pick='الآن';
+function openCart(){
+  if(!cart.length){closeSheets();return}
+  const tot=cart.reduce((a,c)=>a+c.q*c.unit,0),en=cartEnergy();
+  cartSheet.innerHTML=`<div class="grab"></div><h4 style="font-size:20px;margin-bottom:6px">سلة الطلب</h4>
+   ${cart.map((c,i)=>`<div class="ci"><div class="t"><b>${byId(c.id).name}</b><small>${c.opts||'—'} · ${c.unit} ريال</small></div><div class="qty"><button data-i="${i}" data-d="1">+</button><b>${c.q}</b><button data-i="${i}" data-d="-1">−</button></div></div>`).join('')}
+   <div class="sum total"><span>الإجمالي</span><span>${tot} ريال</span></div>
+   <div class="sum"><span>شامل الضريبة · الدفع عند الاستلام</span></div>
+   <div class="energy-card"><span class="em">${en}%</span><span>${en>=100?'طلبك مشحون بطاقة كاملة، جاهز للانطلاق':'شحنة طاقة طلبك، كل مشروب يضيف نجوماً لمدارك'}</span></div>
+   <div class="field"><label>الاسم</label><input id="fName" placeholder="اسمك لنناديك عند الاستلام"></div>
+   <div class="field"><label>رقم الجوال</label><input id="fPhone" inputmode="tel" placeholder="05xxxxxxxx"></div>
+   <div class="opt-group"><label>وقت الاستلام</label><div class="chips">${['الآن','بعد 15 دقيقة','بعد 30 دقيقة'].map(p=>`<button class="chip ${p===pick?'on':''}" data-p="${p}">${p}</button>`).join('')}</div></div>
+   <div class="field"><label>ملاحظة (اختياري)</label><input id="fNote" placeholder="مثلاً: سكر خفيف"></div>
+   <div class="sh-foot"><button class="btn" id="placeBtn"><span>أرسل الطلب</span><span>${tot} ريال</span></button></div>`;
+  cartSheet.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const c=cart[+b.dataset.i];c.q+= +b.dataset.d;if(c.q<=0)cart.splice(+b.dataset.i,1);renderCartBar();openCart()});
+  cartSheet.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{pick=b.dataset.p;cartSheet.querySelectorAll('[data-p]').forEach(x=>x.classList.toggle('on',x===b))});
+  document.getElementById('placeBtn').onclick=placeOrder;
+  openSheet(cartSheet);
+}
+document.getElementById('openCart').onclick=openCart;
+function placeOrder(){
+  const name=document.getElementById('fName').value.trim()||'ضيف نيوروفا';
+  const phone=document.getElementById('fPhone').value.trim()||'—';
+  const note=document.getElementById('fNote').value.trim();
+  const o={no:seq++,name,phone,pick,note,time:Date.now(),status:'new',mine:true,lines:cart.map(c=>({id:c.id,q:c.q,opts:c.opts,unit:c.unit}))};
+  orders.push(o);myOrder=o.no;cart=[];save();renderCartBar();renderTrack();renderCashier();renderAdmin();
+  setTimeout(()=>{const x=orders.find(z=>z.no===o.no);if(x&&x.status==='new'){x.status='prep';save();refreshAll()}},4000);
+}
+function renderTrack(){
+  const o=orders.find(z=>z.no===myOrder);if(!o)return;
+  const st={new:0,prep:1,ready:2,done:3}[o.status];
+  const msg=['استلمنا طلبك، يدخل المدار الآن','نحضّر طاقتك بعناية…','طلبك جاهز! تفضّل للاستلام','تم الاستلام، يومك مشحون بالطاقة'][st];
+  const ang=[40,160,300,360][st];
+  const ic=['<path d="M-6 0 l4 4 l8 -8" stroke="#f7e2bd" stroke-width="2.4" fill="none"/>'];
+  cartSheet.innerHTML=`<div class="grab"></div><div class="track">
+    <div class="orbit-big"><svg viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(226,190,140,.15)" stroke-width="2"/>
+      <circle cx="100" cy="100" r="80" fill="none" stroke="url(#tg)" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(ang/360)*502} 502" transform="rotate(-90 100 100)" style="transition:stroke-dasharray 1s"/>
+      <defs><linearGradient id="tg"><stop offset="0" stop-color="#7b4fd1"/><stop offset="1" stop-color="#f7e2bd"/></linearGradient></defs>
+      <g transform="rotate(${ang-90} 100 100)"><circle cx="180" cy="100" r="6" fill="#f7e2bd" style="filter:drop-shadow(0 0 6px #f7e2bd)"/></g>
+      <g transform="translate(100 100)"><foreignObject x="-70" y="-34" width="140" height="70"><div xmlns="http://www.w3.org/1999/xhtml" class="ono">ORDER<b>#${o.no}</b></div></foreignObject></g>
+    </svg></div>
+    <div class="steps">${['استلمنا','يُحضَّر','جاهز'].map((s,i)=>`<div class="step ${st>=i?'on':''}"><i><svg viewBox="-11 -11 22 22" fill="#f7e2bd">${STAR}</svg></i>${s}</div>`).join('')}</div>
+    <div class="msg">${msg}</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-top:6px">${o.name} · الاستلام ${o.pick}</div>
+    <div class="sh-foot"><button class="btn ghost" id="closeTrack">العودة للمنيو</button></div>
+    <div style="font-size:11.5px;color:var(--muted);margin-top:10px">جرّب: افتح «الكاشير» وغيّر حالة الطلب، تتحدث هنا مباشرة</div>
+  </div>`;
+  document.getElementById('closeTrack').onclick=closeSheets;
+  if(!cartSheet.classList.contains('show'))openSheet(cartSheet);
+}
+
+/* ================= CASHIER ================= */
+const ago=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'الآن':`قبل ${m} د`};
+const oTotal=o=>o.lines.reduce((a,l)=>a+l.q*l.unit,0);
+function ocHTML(o){
+  const act={new:['ابدأ التحضير','prep'],prep:['جاهز','ready'],ready:['تم التسليم','done']}[o.status];
+  return `<div class="oc ${o.status==='new'?'new':''}"><div class="top"><b>#${o.no}</b><small>${ago(o.time)}</small></div>
+   <div class="who">${o.name} · <span style="color:var(--muted)">${o.pick}</span></div>
+   <ul>${o.lines.map(l=>`<li><b>${l.q}× ${byId(l.id).name}</b>${l.opts?' — '+l.opts:''}</li>`).join('')}${o.note?`<li style="color:var(--warn)">ملاحظة: ${o.note}</li>`:''}</ul>
+   <div class="top" style="margin-top:8px"><small>الإجمالي</small><b style="font-size:15px">${oTotal(o)} ريال</b></div>
+   <div class="acts"><button class="a1" data-no="${o.no}" data-to="${act[1]}">${act[0]}</button>${o.status==='new'?`<button class="a2" data-no="${o.no}" data-to="done">إلغاء</button>`:''}</div></div>`;
+}
+function renderCashier(){
+  const g=s=>orders.filter(o=>o.status===s).sort((a,b)=>a.time-b.time);
+  [['new','colNew','cN'],['prep','colPrep','cP'],['ready','colReady','cR']].forEach(([s,c,n])=>{const L=g(s);document.getElementById(n).textContent=L.length;document.getElementById(c).innerHTML=L.length?L.map(ocHTML).join(''):'<div class="empty">لا توجد طلبات</div>'});
+  document.querySelectorAll('#v-cashier [data-no]').forEach(b=>b.onclick=()=>{const o=orders.find(z=>z.no==b.dataset.no);o.status=b.dataset.to;save();toast(`طلب #${o.no}: ${{prep:'قيد التحضير',ready:'جاهز للاستلام',done:'تم'}[o.status]}`);refreshAll()});
+}
+
+/* ================= ADMIN ================= */
+function renderAdmin(){
+  const n=orders.length,sales=orders.reduce((a,o)=>a+oTotal(o),0);
+  document.getElementById('kOrders').textContent=n;document.getElementById('kSales').textContent=sales;
+  document.getElementById('kAvg').textContent=n?Math.round(sales/n):0;
+  const cnt={};orders.forEach(o=>o.lines.forEach(l=>cnt[l.id]=(cnt[l.id]||0)+l.q));
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,6),mx=top[0]?.[1]||1;
+  document.getElementById('kTop').textContent=top[0]?byId(top[0][0]).name:'—';
+  document.getElementById('bars').innerHTML=top.map(([id,q])=>`<div class="b"><span>${byId(id).name}</span><div class="tr"><i style="width:${q/mx*100}%"></i></div><em>${q}</em></div>`).join('')||'<div class="empty">لا توجد مبيعات بعد</div>';
+  const om={energy:0,focus:0,balance:0};Object.entries(cnt).forEach(([id,q])=>{om[CATS.find(c=>c.id===byId(id).cat).orbit]+=q});
+  const tq=Object.values(om).reduce((a,b)=>a+b,0)||1;
+  document.getElementById('orbitMix').textContent=Object.entries(om).map(([k,v])=>`${ORBITS[k].name} ${Math.round(v/tq*100)}%`).join(' · ');
+  document.getElementById('avail').innerHTML=ITEMS.map(i=>`<div class="av"><span>${i.name}<small>${i.price} ريال</small></span><button class="sw ${i.on?'on':''}" data-av="${i.id}" aria-label="توفر"></button></div>`).join('');
+  document.querySelectorAll('[data-av]').forEach(b=>b.onclick=()=>{const it=byId(b.dataset.av);it.on=!it.on;save();b.classList.toggle('on',it.on);toast(it.on?`${it.name} متوفر الآن`:`${it.name} يظهر للعميل «نفد»`);renderMenu()});
+}
+
+/* ================= VIEWS ================= */
+let currentView='customer';
+function setView(v){
+  if(!['customer','cashier','admin'].includes(v))v='customer';currentView=v;
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.id==='v-'+v));
+  document.querySelectorAll('.switcher button').forEach(b=>b.classList.toggle('on',b.dataset.view===v));
+  document.body.classList.toggle('wide',v!=='customer');
+  closeSheets();renderCartBar();refreshAll();scrollTo(0,0);
+  const mo=orders.find(z=>z.no===myOrder);
+  if(v==='customer'&&mo&&mo.status!=='done')setTimeout(renderTrack,350);
+}
+document.querySelectorAll('.switcher button').forEach(b=>b.onclick=()=>{try{history.replaceState(null,'','#'+b.dataset.view)}catch(e){location.hash=b.dataset.view}setView(b.dataset.view)});
+addEventListener('hashchange',()=>setView(location.hash.slice(1)));
+function refreshAll(){renderCashier();renderAdmin();if(myOrder&&cartSheet.classList.contains('show')&&currentView==='customer')renderTrack()}
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200)}
+setInterval(()=>{if(currentView==='cashier')renderCashier()},30000);
+
+renderOrbits();renderMenu();
+setView(location.hash.slice(1)||'customer');
+</script>
+</body>
+</html>
