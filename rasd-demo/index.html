@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>رَصد — نظام متابعة خروج الطالبات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f6f5; --card:#fff; --ink:#1d2a2e; --muted:#6b7b80; --line:#e3e8e7;
+  --brand:#1f6f68; --brand2:#2f9a8f; --soft:#e6f2f0;
+  --wc:#3d7bd9; --perm:#8a5cd1; --clinic:#d9534f; --abs:#5d6b70; --other:#d99a2b; --early:#c2577a;
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:15px}
+
+/* header */
+header{background:linear-gradient(135deg,var(--brand),#174f4a);color:#fff;padding:18px 20px 64px;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;inset:auto -60px -90px auto;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.06)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1100px;margin:auto;position:relative;z-index:1}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .mark{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.15);display:grid;place-items:center;font-size:22px;font-weight:700}
+.logo h1{font-size:20px;font-weight:700}
+.logo small{display:block;font-size:12px;opacity:.8;font-weight:400}
+.clock{font-size:13px;opacity:.9;text-align:left}
+.clock b{display:block;font-size:20px;font-weight:600;letter-spacing:.5px}
+.roles{max-width:1100px;margin:16px auto 0;display:flex;gap:6px;background:rgba(0,0,0,.18);padding:5px;border-radius:14px;width:fit-content;position:relative;z-index:1}
+.roles button{padding:9px 18px;border-radius:10px;font-weight:600;font-size:14px;color:#d8ecea}
+.roles button.on{background:#fff;color:var(--brand)}
+
+main{max-width:1100px;margin:-44px auto 40px;padding:0 14px;position:relative;z-index:2}
+.card{background:var(--card);border-radius:var(--r);box-shadow:0 2px 10px rgba(20,50,50,.06);padding:16px;margin-bottom:14px}
+.card h2{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2 .cnt{background:var(--soft);color:var(--brand);font-size:12px;padding:2px 9px;border-radius:20px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.field{flex:1;min-width:140px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.field select,.field input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.hidden{display:none!important}
+
+/* students grid */
+.search{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fafcfb}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.stu{background:#fafcfb;border:1.5px solid var(--line);border-radius:14px;padding:12px;text-align:right;display:flex;flex-direction:column;gap:6px;transition:.15s;min-height:84px;position:relative}
+.stu:hover{border-color:var(--brand2);transform:translateY(-1px)}
+.stu .nm{font-weight:600;font-size:14px}
+.stu .st{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.stu.out{border-color:currentColor;background:#fff}
+.stu .tm{font-variant-numeric:tabular-nums;font-weight:600}
+.stu.late{animation:pulse 1.4s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 4px rgba(217,83,79,.18)}}
+.dot{width:8px;height:8px;border-radius:50%;background:#43a047;display:inline-block}
+
+/* live list */
+.live{display:flex;flex-direction:column;gap:8px}
+.li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#fafcfb;border:1px solid var(--line)}
+.li .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.li .info{flex:1;min-width:0}
+.li .info b{font-size:14px;display:block}
+.li .info span{font-size:12px;color:var(--muted)}
+.li .t{font-variant-numeric:tabular-nums;font-weight:600;font-size:15px}
+.li.late{border-color:#f0b9b7;background:#fff6f6}
+.li.late .t{color:var(--clinic)}
+.btn{padding:9px 14px;border-radius:10px;font-weight:600;font-size:13px;background:var(--soft);color:var(--brand)}
+.btn.pri{background:var(--brand);color:#fff}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:18px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:#fff;border-radius:var(--r);padding:14px 16px;box-shadow:0 2px 10px rgba(20,50,50,.06)}
+.stat span{font-size:12px;color:var(--muted)}
+.stat b{display:block;font-size:28px;margin-top:4px}
+.stat.alert b{color:var(--clinic)}
+
+/* table */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+th{text-align:right;color:var(--muted);font-weight:500;font-size:12px;padding:8px;border-bottom:1px solid var(--line)}
+td{padding:10px 8px;border-bottom:1px solid #f0f3f2}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+@media(max-width:820px){.two{grid-template-columns:1fr}}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:flex;align-items:center;gap:10px;font-size:13px}
+.bar .lb{width:100px}
+.bar .tr{flex:1;height:10px;background:#eef2f1;border-radius:6px;overflow:hidden}
+.bar .fl{height:100%;border-radius:6px}
+.bar .n{width:26px;text-align:left;font-weight:600}
+
+/* sheet */
+.ov{position:fixed;inset:0;background:rgba(10,30,30,.45);display:flex;align-items:flex-end;justify-content:center;z-index:50;opacity:0;pointer-events:none;transition:.2s}
+.ov.show{opacity:1;pointer-events:auto}
+.sheet{background:#fff;width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:18px 18px 24px;transform:translateY(30px);transition:.25s}
+.ov.show .sheet{transform:none}
+@media(min-width:700px){.ov{align-items:center}.sheet{border-radius:22px}}
+.sheet h3{font-size:18px}
+.sheet .sub{color:var(--muted);font-size:13px;margin:3px 0 14px}
+.reasons{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.rs{border:1.5px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px;text-align:right}
+.rs .e{font-size:20px}
+.rs.on{border-color:currentColor;background:color-mix(in srgb,currentColor 8%,#fff)}
+.sheet textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:12px;min-height:56px;resize:none}
+.sheet .acts{display:flex;gap:8px;margin-top:14px}
+.sheet .acts .btn{flex:1;padding:13px;font-size:15px}
+.hist{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin-top:6px}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;z-index:60;transition:.3s}
+.toast.show{transform:translateX(-50%)}
+.foot{text-align:center;color:var(--muted);font-size:12px;margin:10px 0 30px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <div class="logo">
+      <div class="mark">ر</div>
+      <div><h1>رَصد</h1><small>نظام متابعة خروج الطالبات من الحصص</small></div>
+    </div>
+    <div class="clock"><span id="today"></span><b id="now"></b></div>
+  </div>
+  <div class="roles">
+    <button data-role="teacher" class="on">👩‍🏫 المعلمة</button>
+    <button data-role="admin">🏫 الإدارة / الوكيلة</button>
+  </div>
+</header>
+
+<main>
+  <!-- ===== TEACHER ===== -->
+  <section id="teacher">
+    <div class="card">
+      <div class="row">
+        <div class="field"><label>المعلمة</label><select id="tName"></select></div>
+        <div class="field"><label>الفصل</label><select id="tClass"></select></div>
+        <div class="field"><label>الحصة</label><select id="tPeriod"></select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>خارج الفصل الآن <span class="cnt" id="tOutCnt">0</span></h2>
+      <div class="live" id="tLive"></div>
+    </div>
+
+    <div class="card">
+      <h2>طالبات الفصل <span class="cnt" id="tCount"></span></h2>
+      <input class="search" id="tSearch" placeholder="🔍 ابحثي باسم الطالبة…">
+      <div class="grid" id="tGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== ADMIN ===== -->
+  <section id="admin" class="hidden">
+    <div class="stats">
+      <div class="stat"><span>خارج الفصول الآن</span><b id="sOut">0</b></div>
+      <div class="stat alert"><span>تجاوزن المدة</span><b id="sLate">0</b></div>
+      <div class="stat"><span>غياب اليوم</span><b id="sAbs">0</b></div>
+      <div class="stat"><span>استئذان اليوم</span><b id="sPerm">0</b></div>
+      <div class="stat"><span>إجمالي حركات اليوم</span><b id="sAll">0</b></div>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <h2>خارج الفصول الآن (كل المدرسة) <span class="cnt" id="aOutCnt">0</span></h2>
+        <div class="live" id="aLive"></div>
+      </div>
+      <div class="card">
+        <h2>حركات اليوم حسب السبب</h2>
+        <div class="bars" id="aBars"></div>
+        <h2 style="margin-top:18px">أكثر الطالبات خروجاً اليوم</h2>
+        <div class="live" id="aTop"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>سجل اليوم</h2>
+      <div class="row" style="margin-bottom:12px">
+        <div class="field"><label>الفصل</label><select id="fClass"><option value="">كل الفصول</option></select></div>
+        <div class="field"><label>السبب</label><select id="fReason"><option value="">كل الأسباب</option></select></div>
+        <div class="field"><label>بحث</label><input id="fSearch" placeholder="اسم الطالبة"></div>
+        <div class="field" style="flex:0;min-width:auto;align-self:flex-end;display:flex;gap:6px">
+          <button class="btn pri" id="exportBtn">📋 نسخ لـ Excel</button>
+          <button class="btn ghost" id="resetBtn">↺ إعادة الديمو</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>الطالبة</th><th>الفصل</th><th>السبب</th><th>خرجت</th><th>رجعت</th><th>المدة</th><th>المعلمة</th><th>ملاحظة</th></tr></thead>
+        <tbody id="aTable"></tbody>
+      </table></div>
+    </div>
+  </section>
+  <p class="foot">نسخة تجريبية للعرض — جميع الأسماء وهمية</p>
+</main>
+
+<!-- sheet: record -->
+<div class="ov" id="ov">
+  <div class="sheet">
+    <h3 id="shName"></h3>
+    <div class="sub" id="shSub"></div>
+    <div id="shBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const REASONS = {
+  wc:    {t:'دورة المياه', e:'🚻', c:'var(--wc)',    limit:10, back:true},
+  perm:  {t:'استئذان للإدارة', e:'📝', c:'var(--perm)', limit:15, back:true},
+  clinic:{t:'العيادة / الإسعافات', e:'🩺', c:'var(--clinic)', limit:20, back:true},
+  other: {t:'مهمة (مكتبة/مصلى…)', e:'📚', c:'var(--other)', limit:15, back:true},
+  early: {t:'خروج مبكر مع ولي الأمر', e:'🚗', c:'var(--early)', limit:0, back:false},
+  abs:   {t:'غياب', e:'✖️', c:'var(--abs)', limit:0, back:false},
+};
+const CLASSES = ['أول متوسط / أ','أول متوسط / ب','ثاني متوسط / أ','ثالث متوسط / أ'];
+const TEACHERS = ['أ. منيرة العتيبي','أ. ريم الحربي','أ. هيفاء الجهني','أ. سارة المطيري'];
+const PERIODS = ['الأولى','الثانية','الثالثة','الرابعة','الخامسة','السادسة','السابعة'];
+const FIRST = ['لمى','جود','رهف','شهد','ريما','ديم','غلا','يارا','لين','جنى','رغد','ميار','أسيل','هيا','نوف','تالا','دانة','سديم','وعد','لجين','بيان','مرام','العنود','ملاك','حلا','روان','أريج','جمانة','سلمى','تولين','رزان','شوق'];
+const LAST = ['الحربي','الجهني','العتيبي','المطيري','الأحمدي','الصاعدي','الردادي','المحمدي','الشمري','القرشي','السناني','الزهراني'];
+const STUDENTS = {};
+CLASSES.forEach((c,ci)=>{STUDENTS[c]=[];for(let i=0;i<14;i++){STUDENTS[c].push(FIRST[(i*3+ci*7)%FIRST.length]+' '+LAST[(i*5+ci*3)%LAST.length])}});
+
+const KEY='rasd-demo-v1';
+let log=[];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(log))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(Array.isArray(d)&&d.length&&new Date(d[0].out).toDateString()===new Date().toDateString())return d}catch(e){}return null}
+function seed(){
+  const n=Date.now(),m=60000;log=[];
+  const add=(cls,si,r,ago,dur,tch,note='')=>log.push({id:Math.random().toString(36).slice(2),stu:STUDENTS[CLASSES[cls]][si],cls:CLASSES[cls],r,out:n-ago*m,back:dur==null?null:n-ago*m+dur*m,teacher:TEACHERS[tch],period:PERIODS[2],note});
+  add(1,2,'abs',180,0,1); add(2,5,'abs',180,0,2); add(3,9,'abs',180,0,3);
+  add(1,4,'wc',95,6,1); add(2,1,'perm',80,12,2,'مراجعة الوكيلة'); add(3,3,'clinic',70,25,3,'صداع');
+  add(0,6,'wc',60,4,0); add(2,1,'wc',45,7,2); add(1,8,'early',40,0,1,'والدتها حضرت');
+  add(3,11,'other',30,10,3,'المكتبة'); add(0,6,'wc',25,5,0);
+  // currently out
+  add(1,10,'wc',13,null,1); add(2,7,'perm',6,null,2); add(3,0,'clinic',4,null,3,'ألم بطن');
+  log.forEach(x=>{if(!REASONS[x.r].back)x.back=x.out});
+}
+log=load()||(seed(),log);save();
+
+// ---------- helpers ----------
+const $=s=>document.querySelector(s);
+const fmtT=t=>new Date(t).toLocaleTimeString('ar-SA',{hour:'numeric',minute:'2-digit'});
+const mins=(a,b)=>Math.max(0,Math.round(((b||Date.now())-a)/60000));
+function mmss(ms){ms=Math.max(0,ms);const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+const isOut=x=>REASONS[x.r].back&&!x.back;
+const isLate=x=>isOut(x)&&REASONS[x.r].limit&&(Date.now()-x.out)>REASONS[x.r].limit*60000;
+const current=(stu,cls)=>log.find(x=>x.stu===stu&&x.cls===cls&&isOut(x));
+const absent=(stu,cls)=>log.find(x=>x.stu===stu&&x.cls===cls&&x.r==='abs');
+const tag=r=>`<span class="tag" style="color:${REASONS[r].c};background:color-mix(in srgb,${REASONS[r].c} 12%,#fff)">${REASONS[r].e} ${REASONS[r].t}</span>`;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
+
+// ---------- setup selects ----------
+const fill=(el,arr)=>arr.forEach(v=>el.insertAdjacentHTML('beforeend',`<option>${v}</option>`));
+fill($('#tName'),TEACHERS);fill($('#tClass'),CLASSES);fill($('#tPeriod'),PERIODS);fill($('#fClass'),CLASSES);
+Object.entries(REASONS).forEach(([k,v])=>$('#fReason').insertAdjacentHTML('beforeend',`<option value="${k}">${v.t}</option>`));
+$('#tClass').value=CLASSES[1];$('#tName').value=TEACHERS[1];$('#tPeriod').value=PERIODS[3];
+$('#tClass').onchange=()=>{const i=CLASSES.indexOf($('#tClass').value);$('#tName').value=TEACHERS[i];render()};
+['#tSearch','#fClass','#fReason','#fSearch'].forEach(s=>$(s).oninput=render);
+
+document.querySelectorAll('.roles button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.roles button').forEach(x=>x.classList.toggle('on',x===b));
+  $('#teacher').classList.toggle('hidden',b.dataset.role!=='teacher');
+  $('#admin').classList.toggle('hidden',b.dataset.role!=='admin');render();
+});
+
+// ---------- teacher ----------
+function liveItem(x,showCls,withBtn){
+  const R=REASONS[x.r],late=isLate(x);
+  return `<div class="li ${late?'late':''}">
+    <div class="ic" style="background:color-mix(in srgb,${R.c} 14%,#fff)">${R.e}</div>
+    <div class="info"><b>${x.stu}</b><span>${R.t}${showCls?' · '+x.cls:''} · خرجت ${fmtT(x.out)}${late?' · ⚠️ تجاوزت '+R.limit+' د':''}</span></div>
+    <div class="t" data-timer="${x.out}">${mmss(Date.now()-x.out)}</div>
+    ${withBtn?`<button class="btn pri" onclick="markBack('${x.id}')">رجعت ✓</button>`:''}
+  </div>`;
+}
+function renderTeacher(){
+  const cls=$('#tClass').value,q=$('#tSearch').value.trim();
+  const outs=log.filter(x=>x.cls===cls&&isOut(x));
+  $('#tOutCnt').textContent=outs.length;
+  $('#tLive').innerHTML=outs.length?outs.map(x=>liveItem(x,false,true)).join(''):'<div class="empty">كل الطالبات داخل الفصل ✅</div>';
+  const list=STUDENTS[cls].filter(s=>!q||s.includes(q));
+  $('#tCount').textContent=STUDENTS[cls].length;
+  $('#tGrid').innerHTML=list.map(s=>{
+    const c=current(s,cls),a=absent(s,cls),early=log.find(x=>x.stu===s&&x.cls===cls&&x.r==='early');
+    const cnt=log.filter(x=>x.stu===s&&x.cls===cls&&x.r!=='abs').length;
+    let st=`<span class="dot"></span> داخل الفصل`,col='',cl='';
+    if(a){st=`${REASONS.abs.e} غائبة`;col=REASONS.abs.c;cl='out'}
+    else if(early){st=`${REASONS.early.e} خرجت مع ولي الأمر`;col=REASONS.early.c;cl='out'}
+    else if(c){st=`${REASONS[c.r].e} ${REASONS[c.r].t} · <span class="tm" data-timer="${c.out}">${mmss(Date.now()-c.out)}</span>`;col=REASONS[c.r].c;cl='out'+(isLate(c)?' late':'')}
+    return `<button class="stu ${cl}" style="${col?'color:'+col:''}" onclick="openStu('${s}')">
+      <span class="nm" style="color:var(--ink)">${s}</span><span class="st" style="${col?'color:'+col:''}">${st}</span>
+      ${cnt?`<span class="st">خروج اليوم: ${cnt}</span>`:''}</button>`;
+  }).join('')||'<div class="empty">لا توجد نتائج</div>';
+}
+
+let sel=null;
+function openStu(s){
+  const cls=$('#tClass').value,c=current(s,cls),hist=log.filter(x=>x.stu===s&&x.cls===cls).sort((a,b)=>b.out-a.out);
+  $('#shName').textContent=s;$('#shSub').textContent=cls+' · الحصة '+$('#tPeriod').value;
+  let h='';
+  if(c){
+    h+=`<div class="li ${isLate(c)?'late':''}" style="margin-bottom:10px"><div class="ic">${REASONS[c.r].e}</div><div class="info"><b>${REASONS[c.r].t}</b><span>خرجت ${fmtT(c.out)}</span></div><div class="t" data-timer="${c.out}">${mmss(Date.now()-c.out)}</div></div>
+    <div class="acts"><button class="btn pri" onclick="markBack('${c.id}');closeSheet()">✓ رجعت للفصل</button><button class="btn ghost" onclick="closeSheet()">إغلاق</button></div>`;
+  }else{
+    sel=null;
+    h+=`<div class="reasons">${Object.entries(REASONS).map(([k,v])=>`<button class="rs" style="color:${v.c}" data-k="${k}" onclick="pick(this)"><span class="e">${v.e}</span><span style="color:var(--ink)">${v.t}</span></button>`).join('')}</div>
+    <textarea id="note" placeholder="ملاحظة (اختياري)"></textarea>
+    <div class="acts"><button class="btn pri" onclick="record('${s}')">تسجيل</button><button class="btn ghost" onclick="closeSheet()">إلغاء</button></div>`;
+  }
+  if(hist.length){h+=`<div class="sub" style="margin:16px 0 4px">سجل اليوم</div><div class="hist">${hist.map(x=>`<div class="li"><div class="info">${tag(x.r)}<span style="display:block;margin-top:4px">${fmtT(x.out)}${REASONS[x.r].back?(x.back?' ← '+fmtT(x.back)+' ('+mins(x.out,x.back)+' د)':' — لم ترجع بعد'):''}${x.note?' · '+x.note:''}</span></div></div>`).join('')}</div>`}
+  $('#shBody').innerHTML=h;$('#ov').classList.add('show');
+}
+function pick(b){document.querySelectorAll('.rs').forEach(x=>x.classList.toggle('on',x===b));sel=b.dataset.k}
+function record(s){
+  if(!sel){toast('اختاري السبب أولاً');return}
+  const now=Date.now();
+  log.push({id:Math.random().toString(36).slice(2),stu:s,cls:$('#tClass').value,r:sel,out:now,back:REASONS[sel].back?null:now,teacher:$('#tName').value,period:$('#tPeriod').value,note:$('#note').value.trim()});
+  save();closeSheet();render();toast(`تم تسجيل ${s} — ${REASONS[sel].t}`);
+}
+function markBack(id){const x=log.find(x=>x.id===id);if(!x)return;x.back=Date.now();save();render();toast(`رجعت ${x.stu} بعد ${mins(x.out,x.back)} دقيقة`)}
+function closeSheet(){$('#ov').classList.remove('show')}
+$('#ov').onclick=e=>{if(e.target.id==='ov')closeSheet()};
+
+// ---------- admin ----------
+function renderAdmin(){
+  const outs=log.filter(isOut).sort((a,b)=>a.out-b.out);
+  $('#sOut').textContent=outs.length;$('#sLate').textContent=outs.filter(isLate).length;
+  $('#sAbs').textContent=log.filter(x=>x.r==='abs').length;
+  $('#sPerm').textContent=log.filter(x=>x.r==='perm'||x.r==='early').length;
+  $('#sAll').textContent=log.length;
+  $('#aOutCnt').textContent=outs.length;
+  $('#aLive').innerHTML=outs.length?outs.map(x=>liveItem(x,true,false)).join(''):'<div class="empty">لا توجد طالبات خارج الفصول</div>';
+  const counts=Object.keys(REASONS).map(k=>[k,log.filter(x=>x.r===k).length]),max=Math.max(1,...counts.map(c=>c[1]));
+  $('#aBars').innerHTML=counts.map(([k,n])=>`<div class="bar"><span class="lb">${REASONS[k].e} ${REASONS[k].t.split(' ')[0]}</span><div class="tr"><div class="fl" style="width:${n/max*100}%;background:${REASONS[k].c}"></div></div><span class="n">${n}</span></div>`).join('');
+  const per={};log.filter(x=>x.r!=='abs').forEach(x=>{const k=x.stu+'|'+x.cls;per[k]=(per[k]||0)+1});
+  const top=Object.entries(per).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  $('#aTop').innerHTML=top.map(([k,n])=>{const[s,c]=k.split('|');return `<div class="li"><div class="info"><b>${s}</b><span>${c}</span></div><div class="t">${n} مرات</div></div>`}).join('')||'<div class="empty">—</div>';
+  $('#aTable').innerHTML=filtered().map(x=>`<tr${isLate(x)?' style="background:#fff6f6"':''}><td><b>${x.stu}</b></td><td>${x.cls}</td><td>${tag(x.r)}</td><td>${fmtT(x.out)}</td>
+    <td>${!REASONS[x.r].back?'—':x.back?fmtT(x.back):'<span style="color:var(--clinic);font-weight:600">لم ترجع</span>'}</td>
+    <td>${REASONS[x.r].back?mins(x.out,x.back)+' د':'—'}</td><td>${x.teacher}</td><td style="color:var(--muted)">${x.note||''}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">لا توجد سجلات</td></tr>';
+}
+function filtered(){
+  const c=$('#fClass').value,r=$('#fReason').value,q=$('#fSearch').value.trim();
+  return log.filter(x=>(!c||x.cls===c)&&(!r||x.r===r)&&(!q||x.stu.includes(q))).sort((a,b)=>b.out-a.out);
+}
+$('#exportBtn').onclick=()=>{
+  const rows=[['الطالبة','الفصل','السبب','الحصة','خرجت','رجعت','المدة بالدقائق','المعلمة','ملاحظة']].concat(filtered().map(x=>[x.stu,x.cls,REASONS[x.r].t,x.period,fmtT(x.out),REASONS[x.r].back?(x.back?fmtT(x.back):'لم ترجع'):'',REASONS[x.r].back?mins(x.out,x.back):'',x.teacher,x.note||'']));
+  const tsv=rows.map(r=>r.map(v=>String(v).replace(/\t|\n/g,' ')).join('\t')).join('\n');
+  try{navigator.clipboard.writeText(tsv).then(()=>toast('تم نسخ السجل — الصقيه في Excel'),()=>toast('تعذّر النسخ'))}catch(e){toast('تعذّر النسخ')}
+};
+$('#resetBtn').onclick=()=>{seed();save();render();toast('تمت إعادة بيانات الديمو')};
+
+// ---------- loop ----------
+function render(){renderTeacher();renderAdmin()}
+function tick(){
+  const d=new Date();$('#now').textContent=d.toLocaleTimeString('ar-SA',{hour:'numeric',minute:'2-digit',second:'2-digit'});
+  $('#today').textContent=d.toLocaleDateString('ar-SA',{weekday:'long',day:'numeric',month:'long'});
+  document.querySelectorAll('[data-timer]').forEach(el=>el.textContent=mmss(Date.now()-(+el.dataset.timer)));
+}
+render();tick();setInterval(tick,1000);setInterval(render,30000);
+</script>
+</body>
+</html>
