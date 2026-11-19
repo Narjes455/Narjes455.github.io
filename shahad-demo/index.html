@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shahad Corner · شهد كورنر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Parisienne&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#fbf6ea; --cream2:#f4ecd9; --paper:#fffdf7;
+  --sage:#a9bfa2; --sage-l:#dfe8d9; --green:#5b8365; --green-d:#3f6249;
+  --honey:#e3a73c; --honey-d:#c8862a; --gold:#b98f45; --brown:#5a3d24; --ink:#3d3426;
+  --muted:#8a7f6c; --line:#e7dcc4; --red:#c4664f;
+  --r:20px; --sh:0 10px 30px -14px rgba(90,61,36,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"IBM Plex Sans Arabic",sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:15px}
+.script{font-family:"Parisienne",cursive}
+.latin{font-family:"Marcellus",serif;letter-spacing:.25em}
+
+/* ===== INTRO ===== */
+#intro{position:fixed;inset:0;z-index:100;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;transition:opacity .8s, visibility .8s}
+#intro.hide{opacity:0;visibility:hidden}
+.awning{position:absolute;top:0;left:0;right:0;height:110px;
+  background:repeating-linear-gradient(90deg,var(--green) 0 44px,var(--cream) 44px 88px);
+  transform:translateY(-120%);animation:drop .9s cubic-bezier(.3,1.5,.5,1) .2s forwards;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.awning::after{content:"";position:absolute;bottom:-21px;left:0;right:0;height:22px;
+  background:radial-gradient(circle at 22px 0,var(--green) 21px,transparent 22px) 0 0/88px 22px repeat-x,
+             radial-gradient(circle at 66px 0,var(--cream) 21px,transparent 22px) 0 0/88px 22px repeat-x;
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.08))}
+@keyframes drop{to{transform:translateY(0)}}
+.intro-logo{width:min(62vw,300px);aspect-ratio:1;border-radius:50%;overflow:hidden;opacity:0;transform:scale(.6) rotate(-8deg);animation:pop 1s cubic-bezier(.3,1.4,.5,1) 1s forwards;box-shadow:0 20px 50px -20px rgba(90,61,36,.45)}
+.intro-logo img{width:100%;height:100%;object-fit:cover;transform:scale(1.04)}
+@keyframes pop{to{opacity:1;transform:none}}
+.intro-tag{margin-top:26px;opacity:0;animation:fadeUp .8s ease 1.8s forwards;text-align:center}
+.intro-tag b{display:block;font-size:20px;color:var(--brown);font-weight:600}
+.intro-tag span{font-size:14px;color:var(--muted)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.drip{position:absolute;top:110px;width:16px;background:linear-gradient(var(--honey),var(--honey-d));border-radius:0 0 10px 10px;height:0;animation:drip 1.6s ease-in forwards}
+.drip::after{content:"";position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:var(--honey-d)}
+@keyframes drip{to{height:var(--h)}}
+.fbee{position:absolute;width:46px;height:46px;offset-rotate:0deg;animation:fly 3.2s ease-in-out forwards}
+@keyframes fly{from{offset-distance:0%}to{offset-distance:100%}}
+.skip{position:absolute;bottom:28px;font-size:13px;color:var(--muted);border:1px solid var(--line);padding:7px 18px;border-radius:30px;opacity:0;animation:fadeUp .5s 1.4s forwards}
+
+/* ===== HEADER ===== */
+.topawn{height:16px;background:repeating-linear-gradient(90deg,var(--green) 0 30px,var(--cream) 30px 60px);position:relative}
+.topawn::after{content:"";position:absolute;bottom:-14px;left:0;right:0;height:15px;
+  background:radial-gradient(circle at 15px 0,var(--green) 14px,transparent 15px) 0 0/60px 15px repeat-x,
+             radial-gradient(circle at 45px 0,var(--cream) 14px,transparent 15px) 0 0/60px 15px repeat-x}
+header{position:sticky;top:0;z-index:30;background:rgba(251,246,234,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hbar{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 18px}
+.hlogo{width:46px;height:46px;border-radius:50%;overflow:hidden;border:2px solid var(--sage);flex:none}
+.hlogo img{width:100%;height:100%;object-fit:cover;transform:scale(1.06)}
+.hname{line-height:1.1}
+.hname .script{font-size:26px;color:var(--gold)}
+.hname small{display:block;font-size:11px;color:var(--muted)}
+.open{margin-inline-start:auto;font-size:12px;background:var(--sage-l);color:var(--green-d);padding:5px 11px;border-radius:30px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.open i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(91,131,101,.2);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(91,131,101,0)}}
+.tabs{max-width:1100px;margin:auto;display:flex;gap:6px;padding:0 18px 10px;overflow-x:auto;scrollbar-width:none}
+.tab{padding:9px 16px;border-radius:30px;font-size:14px;font-weight:500;color:var(--muted);white-space:nowrap;transition:.25s;display:flex;gap:7px;align-items:center}
+.tab.on{background:var(--green);color:#fff;box-shadow:0 6px 16px -8px var(--green)}
+.tab svg{width:17px;height:17px}
+
+main{max-width:1100px;margin:auto;padding:22px 18px 120px}
+.view{display:none;animation:fadeUp .45s}
+.view.on{display:block}
+
+/* ===== HERO ===== */
+.hero{position:relative;border-radius:28px;overflow:hidden;background:var(--paper);border:1px solid var(--line);display:grid;grid-template-columns:1.1fr .9fr;min-height:250px;box-shadow:var(--sh)}
+.hero .txt{padding:30px 28px;display:flex;flex-direction:column;justify-content:center;gap:10px;position:relative;z-index:2}
+.eyebrow{font-size:12px;color:var(--honey-d);font-weight:600;display:flex;align-items:center;gap:6px}
+.hero h1{font-size:clamp(24px,4vw,36px);line-height:1.35;color:var(--brown);font-weight:700}
+.hero h1 em{font-style:normal;color:var(--green)}
+.hero p{color:var(--muted);font-size:14.5px;line-height:1.8}
+.hero .art{background:url(stripes.jpg) center/cover;position:relative}
+.hero .art::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 40%,var(--paper))}
+html[dir=rtl] .hero .art::before{background:linear-gradient(-90deg,transparent 40%,var(--paper))}
+.hero .art .cup{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.mode{display:inline-flex;background:var(--cream2);border-radius:30px;padding:4px;margin-top:6px;align-self:flex-start}
+.mode button{padding:8px 18px;border-radius:30px;font-size:13.5px;font-weight:500;color:var(--muted);transition:.25s}
+.mode button.on{background:#fff;color:var(--green-d);box-shadow:0 3px 10px -4px rgba(0,0,0,.2)}
+.honeybar{height:5px;border-radius:5px;background:linear-gradient(90deg,var(--honey),var(--gold));width:70px}
+
+/* ===== CATEGORIES ===== */
+.cats{position:sticky;top:112px;z-index:20;display:flex;gap:8px;overflow-x:auto;padding:16px 2px 12px;margin-top:8px;background:linear-gradient(var(--cream) 75%,transparent);scrollbar-width:none}
+.cat{flex:none;display:flex;align-items:center;gap:8px;padding:9px 16px 9px 14px;border-radius:16px;background:var(--paper);border:1px solid var(--line);font-size:14px;font-weight:500;transition:.25s}
+.cat.on{background:var(--brown);color:var(--cream);border-color:var(--brown)}
+.cat .ic{width:22px;height:22px}
+.sec{margin-top:26px;scroll-margin-top:180px}
+.sec-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.sec-h h2{font-size:21px;color:var(--brown)}
+.sec-h .ln{flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--gold) 0 6px,transparent 6px 12px);opacity:.5}
+.notice{display:flex;gap:10px;align-items:flex-start;background:#fff4dc;border:1px dashed var(--honey);color:var(--brown);border-radius:14px;padding:11px 14px;font-size:13.5px;margin:-4px 0 14px;line-height:1.7}
+.notice svg{flex:none;width:20px;height:20px;margin-top:2px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.item{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:.3s;cursor:pointer;position:relative}
+.item:hover{transform:translateY(-4px);box-shadow:var(--sh)}
+.item .pic{height:150px;display:flex;align-items:center;justify-content:center;background:
+  repeating-linear-gradient(90deg,var(--sage-l) 0 18px,#f6f3e6 18px 36px);position:relative}
+.item .pic svg{height:118px;filter:drop-shadow(0 8px 10px rgba(90,61,36,.18));transition:.4s}
+.item:hover .pic svg{transform:rotate(-4deg) scale(1.05)}
+.badge{position:absolute;top:10px;right:10px;background:var(--honey);color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.badge.g{background:var(--green)}
+.item .bd{padding:13px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.item h3{font-size:15.5px;color:var(--brown)}
+.item p{font-size:12.5px;color:var(--muted);line-height:1.65;flex:1}
+.item .ft{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.price{font-weight:700;color:var(--green-d);font-size:16px}
+.price small{font-size:11px;font-weight:500;color:var(--muted)}
+.add{width:36px;height:36px;border-radius:12px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;transition:.2s}
+.add:active{transform:scale(.9)}
+
+/* ===== CART BAR ===== */
+.cartbar{position:fixed;bottom:18px;left:50%;transform:translate(-50%,150%);z-index:40;width:min(560px,calc(100% - 28px));background:var(--brown);color:var(--cream);border-radius:20px;padding:12px 14px 12px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 18px 40px -14px rgba(60,40,20,.6);transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.cartbar.show{transform:translate(-50%,0)}
+.cartbar .cnt{background:var(--honey);color:#fff;width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.cartbar .go{margin-inline-start:auto;background:var(--cream);color:var(--brown);padding:10px 18px;border-radius:14px;font-weight:600;font-size:14px}
+.bump{animation:bump .4s}
+@keyframes bump{50%{transform:scale(1.25)}}
+
+/* ===== SHEET / MODAL ===== */
+.scrim{position:fixed;inset:0;background:rgba(50,36,20,.45);z-index:60;opacity:0;visibility:hidden;transition:.3s;backdrop-filter:blur(2px)}
+.scrim.on{opacity:1;visibility:visible}
+.sheet{position:fixed;z-index:61;left:50%;bottom:0;transform:translate(-50%,105%);width:min(560px,100%);max-height:92vh;overflow:auto;background:var(--paper);border-radius:26px 26px 0 0;transition:transform .45s cubic-bezier(.25,1.1,.4,1);padding-bottom:20px}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .grab{width:44px;height:5px;border-radius:5px;background:var(--line);margin:10px auto 0}
+.sheet .x{position:absolute;top:14px;left:14px;width:34px;height:34px;border-radius:50%;background:var(--cream2);font-size:18px;z-index:3}
+.sheet-head{display:flex;gap:14px;align-items:center;padding:16px 20px 12px}
+.sheet-head .pic{width:84px;height:84px;border-radius:18px;background:repeating-linear-gradient(90deg,var(--sage-l) 0 12px,#f6f3e6 12px 24px);display:flex;align-items:center;justify-content:center;flex:none}
+.sheet-head .pic svg{height:68px}
+.sheet-head h3{font-size:18px;color:var(--brown)}
+.sheet-head p{font-size:13px;color:var(--muted);line-height:1.6}
+.pad{padding:0 20px}
+.opt{margin-top:14px}
+.opt h4{font-size:13.5px;color:var(--brown);margin-bottom:8px;display:flex;justify-content:space-between}
+.opt h4 span{font-weight:400;color:var(--muted);font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:13.5px;background:#fff;transition:.2s}
+.chip.on{border-color:var(--green);background:var(--sage-l);color:var(--green-d);font-weight:600}
+.chip small{color:var(--muted);font-weight:400}
+.chip:disabled{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+.honey-meter{display:flex;gap:6px}
+.honey-meter button{flex:1;padding:10px 4px;border-radius:12px;border:1.5px solid var(--line);font-size:12.5px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:4px}
+.honey-meter button .drops{display:flex;gap:2px;height:12px}
+.honey-meter button .drops i{width:8px;height:11px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:var(--line)}
+.honey-meter button.on{border-color:var(--honey);background:#fff6e2}
+.honey-meter button.on .drops i.f{background:var(--honey)}
+.qty{display:flex;align-items:center;gap:14px;background:var(--cream2);border-radius:14px;padding:5px}
+.qty button{width:34px;height:34px;border-radius:10px;background:#fff;font-size:18px;font-weight:600}
+.qty b{min-width:18px;text-align:center}
+.sheet-foot{display:flex;gap:12px;align-items:center;padding:18px 20px 0}
+.btn{background:var(--green);color:#fff;padding:14px 18px;border-radius:16px;font-weight:600;font-size:15px;flex:1;display:flex;justify-content:space-between;align-items:center;transition:.2s}
+.btn:active{transform:scale(.98)}
+.btn.honey{background:var(--honey-d)}
+.btn.full{justify-content:center}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.field{margin-top:12px}
+.field label{display:block;font-size:13px;color:var(--brown);margin-bottom:6px;font-weight:500}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:#fff;outline:none;transition:.2s;color:var(--ink)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--sage)}
+.err{color:var(--red);font-size:12px;margin-top:5px;display:none}
+.err.on{display:block}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cline{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
+.cline .pic{width:52px;height:52px;border-radius:14px;background:var(--sage-l);display:flex;align-items:center;justify-content:center;flex:none}
+.cline .pic svg{height:42px}
+.cline .inf{flex:1;min-width:0}
+.cline .inf b{font-size:14px;color:var(--brown);display:block}
+.cline .inf small{font-size:11.5px;color:var(--muted)}
+.cline .qty{padding:3px;gap:8px}
+.cline .qty button{width:28px;height:28px;font-size:15px}
+.sum{background:var(--cream2);border-radius:16px;padding:12px 16px;margin-top:14px;font-size:14px}
+.sum div{display:flex;justify-content:space-between;padding:4px 0}
+.sum .tot{font-weight:700;color:var(--brown);font-size:16px;border-top:1px solid var(--line);margin-top:6px;padding-top:9px}
+.bank{border:1.5px dashed var(--sage);border-radius:16px;padding:14px;margin-top:14px;background:#fbfdf9}
+.bank .iban{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:10px;padding:9px 12px;margin-top:8px;font-family:"Marcellus",monospace;font-size:13.5px;direction:ltr;border:1px solid var(--line)}
+.bank .iban button{font-family:"IBM Plex Sans Arabic";font-size:12px;color:var(--green-d);font-weight:600}
+.upload{margin-top:10px;border:1.5px dashed var(--line);border-radius:14px;padding:16px;text-align:center;font-size:13px;color:var(--muted);cursor:pointer;display:block;transition:.2s;background:#fff}
+.upload.ok{border-color:var(--green);color:var(--green-d);background:var(--sage-l)}
+.upload input{display:none}
+.steps{display:flex;gap:6px;justify-content:center;margin:6px 0 2px}
+.steps i{width:22px;height:5px;border-radius:5px;background:var(--line);transition:.3s}
+.steps i.on{background:var(--green);width:34px}
+
+/* success */
+.done{text-align:center;padding:10px 22px 4px}
+.done .seal{width:96px;height:96px;margin:10px auto 8px;border-radius:50%;background:var(--sage-l);display:flex;align-items:center;justify-content:center;animation:pop .6s cubic-bezier(.3,1.5,.5,1) both}
+.done h3{color:var(--brown);font-size:20px}
+.done .code{display:inline-block;margin:10px 0;font-family:"Marcellus";letter-spacing:.15em;background:var(--cream2);padding:7px 16px;border-radius:10px;font-size:17px;color:var(--brown)}
+.track{display:flex;justify-content:space-between;position:relative;margin:18px 6px 6px}
+.track::before{content:"";position:absolute;top:15px;right:8%;left:8%;height:3px;background:var(--line)}
+.track .fill{position:absolute;top:15px;right:8%;height:3px;background:var(--green);transition:width 1s;width:0}
+.track div{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);width:25%}
+.track div span{width:33px;height:33px;border-radius:50%;background:#fff;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;transition:.4s;font-size:14px}
+.track div.on{color:var(--green-d);font-weight:600}
+.track div.on span{background:var(--green);border-color:var(--green);color:#fff}
+
+/* ===== CATERING ===== */
+.chero{position:relative;border-radius:28px;overflow:hidden;background:var(--paper);border:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;box-shadow:var(--sh)}
+.chero .img{background:#f7f1e3 url(cart.jpg) center/cover;min-height:300px}
+.chero .txt{padding:30px 28px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.chero h1{font-size:clamp(23px,3.6vw,33px);color:var(--brown);line-height:1.4}
+.chero h1 .script{color:var(--gold);font-size:1.25em}
+.chero p{color:var(--muted);font-size:14.5px;line-height:1.85}
+.howto{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.howto span{font-size:12.5px;background:var(--cream2);padding:6px 11px;border-radius:30px;color:var(--brown)}
+.howto span b{color:var(--honey-d)}
+.stepbox{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:20px;margin-top:18px}
+.stepbox>h3{font-size:17px;color:var(--brown);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.stepbox>h3 .n{width:28px;height:28px;border-radius:50%;background:var(--honey);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.pkgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.pkg{border:1.5px solid var(--line);border-radius:20px;padding:16px;cursor:pointer;transition:.25s;background:#fff;position:relative;text-align:right}
+.pkg:hover{border-color:var(--sage)}
+.pkg.on{border-color:var(--green);background:linear-gradient(#f5f9f2,#fff);box-shadow:0 10px 24px -16px var(--green)}
+.pkg .tick{position:absolute;top:14px;left:14px;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+.pkg.on .tick{background:var(--green);border-color:var(--green)}
+.pkg h4{font-size:16px;color:var(--brown)}
+.pkg .pp{font-size:22px;font-weight:700;color:var(--green-d);margin:6px 0}
+.pkg .pp small{font-size:12px;color:var(--muted);font-weight:400}
+.pkg ul{list-style:none;font-size:12.5px;color:var(--muted);line-height:2}
+.pkg ul li::before{content:"✦ ";color:var(--honey)}
+.pkg .pop{position:absolute;top:-10px;right:16px;background:var(--honey);color:#fff;font-size:11px;padding:2px 10px;border-radius:20px;font-weight:600}
+
+.calwrap{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-h b{font-size:16px;color:var(--brown)}
+.cal-h button{width:34px;height:34px;border-radius:10px;background:var(--cream2);font-size:16px}
+.cal-h button:disabled{opacity:.3}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .dn{text-align:center;font-size:11.5px;color:var(--muted);padding:4px 0}
+.day{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;font-weight:500;background:#fff;border:1.5px solid var(--line);position:relative;transition:.2s}
+.day i{width:6px;height:6px;border-radius:50%;margin-top:3px;background:var(--green)}
+.day.few i{background:var(--honey)}
+.day.full{background:repeating-linear-gradient(45deg,#f7ece6 0 6px,#fff 6px 12px);color:#c9b6a8;cursor:not-allowed}
+.day.full i{background:var(--red)}
+.day.off{background:transparent;border-color:transparent;color:#d3c8b3;cursor:not-allowed}
+.day.off i{display:none}
+.day.today{box-shadow:inset 0 0 0 1.5px var(--honey)}
+.day.sel{background:var(--green);border-color:var(--green);color:#fff}
+.day.sel i{background:#fff}
+.day:not(.off):not(.full):not(.sel):hover{border-color:var(--sage);transform:translateY(-2px)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:12px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:50%}
+.slots-box{background:var(--cream);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.slots-box .ph{font-size:13.5px;color:var(--muted);text-align:center;margin:auto;line-height:1.8}
+.slot{display:flex;justify-content:space-between;align-items:center;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-size:14px;transition:.2s;width:100%;text-align:right}
+.slot small{color:var(--muted);font-size:12px}
+.slot.on{border-color:var(--green);background:var(--sage-l)}
+.slot:disabled{opacity:.5;cursor:not-allowed;background:#f6f1ea}
+.slot .st{font-size:11.5px;padding:3px 9px;border-radius:20px;background:var(--sage-l);color:var(--green-d)}
+.slot:disabled .st{background:#f3e0d8;color:var(--red)}
+.extras{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.extra{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;cursor:pointer;background:#fff;font-size:13.5px;transition:.2s}
+.extra input{accent-color:var(--green);width:18px;height:18px}
+.extra.on{border-color:var(--green);background:#f5f9f2}
+.extra b{margin-inline-start:auto;color:var(--green-d);font-size:13px;white-space:nowrap}
+.bsum{position:sticky;bottom:14px;margin-top:18px;background:var(--brown);color:var(--cream);border-radius:22px;padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:0 18px 40px -16px rgba(60,40,20,.6);z-index:15}
+.bsum .info{flex:1;min-width:200px;font-size:13px;line-height:1.7;opacity:.95}
+.bsum .info b{font-size:19px;color:#fff}
+.bsum .btn{flex:none;background:var(--honey);min-width:150px;justify-content:center}
+
+/* ===== OWNER ===== */
+.own-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.own-h h2{color:var(--brown);font-size:22px}
+.own-h p{color:var(--muted);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:16px}
+.kpi small{color:var(--muted);font-size:12.5px}
+.kpi b{display:block;font-size:26px;color:var(--brown);margin-top:4px}
+.kpi b span{font-size:13px;color:var(--muted);font-weight:500}
+.kpi.h{background:linear-gradient(135deg,#fff3d6,#fffaf0);border-color:#f0d8a6}
+.own-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px}
+.panel h3{font-size:16px;color:var(--brown);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.panel h3 small{font-size:12px;color:var(--muted);font-weight:400}
+.ord{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;background:#fff;animation:fadeUp .4s}
+.ord.new{border-color:var(--honey);box-shadow:0 0 0 3px rgba(227,167,60,.15)}
+.ord .t{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ord .t b{color:var(--brown);font-size:14.5px}
+.ord .t span{font-size:12px;color:var(--muted)}
+.ord .its{font-size:12.5px;color:var(--muted);margin:6px 0 10px;line-height:1.7}
+.ord .acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{font-size:11.5px;padding:3px 10px;border-radius:20px;font-weight:600}
+.pill.s0{background:#fff1d6;color:var(--honey-d)}
+.pill.s1{background:#e3eefb;color:#3f6a9a}
+.pill.s2{background:var(--sage-l);color:var(--green-d)}
+.pill.s3{background:#eee;color:#777}
+.pill.box{background:#f6e6f0;color:#9a4f7a}
+.ord .acts button.nx{margin-inline-start:auto;background:var(--green);color:#fff;font-size:12.5px;padding:7px 13px;border-radius:10px;font-weight:600}
+.mcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.mcal div{aspect-ratio:1;border-radius:9px;font-size:12px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);position:relative}
+.mcal .dn{border:0;background:none;color:var(--muted);font-size:10.5px}
+.mcal .b1{background:#fff3d9;border-color:#efd39b}
+.mcal .b2{background:var(--honey);color:#fff;border-color:var(--honey)}
+.mcal .x{opacity:.35;border-color:transparent;background:transparent}
+.bk{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.bk .dt{width:48px;text-align:center;background:var(--cream2);border-radius:12px;padding:6px 0;flex:none}
+.bk .dt b{display:block;font-size:17px;color:var(--brown);line-height:1.1}
+.bk .dt small{font-size:10.5px;color:var(--muted)}
+.bk .inf{flex:1;font-size:12.5px;color:var(--muted);line-height:1.6}
+.bk .inf b{color:var(--brown);font-size:13.5px}
+.bk.new .dt{background:var(--honey);}
+.bk.new .dt b,.bk.new .dt small{color:#fff}
+.sheets-note{display:flex;gap:12px;align-items:center;margin-top:16px;background:#f2f8ef;border:1px solid #d5e4cf;border-radius:18px;padding:14px 16px;font-size:13.5px;color:var(--green-d);line-height:1.7}
+.sheets-note svg{flex:none}
+
+footer{text-align:center;padding:28px 18px 40px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);margin-top:30px}
+footer a{color:var(--gold);text-decoration:none;font-weight:600}
+footer .script{font-size:30px;color:var(--gold);display:block}
+.demo-tag{display:inline-block;background:var(--cream2);border-radius:20px;padding:3px 12px;margin-bottom:8px;font-size:11.5px}
+
+.toast{position:fixed;top:20px;left:50%;transform:translate(-50%,-150%);background:var(--brown);color:var(--cream);padding:11px 20px;border-radius:14px;z-index:90;font-size:14px;transition:.4s cubic-bezier(.3,1.4,.5,1);box-shadow:var(--sh);white-space:nowrap}
+.toast.on{transform:translate(-50%,0)}
+
+/* floating bees in page */
+.pbee{position:fixed;width:34px;z-index:5;pointer-events:none;opacity:.9;animation:wander 18s ease-in-out infinite}
+@keyframes wander{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(-40vw,12vh) rotate(-8deg)}50%{transform:translate(-70vw,-4vh) rotate(6deg)}75%{transform:translate(-30vw,-10vh) rotate(-4deg)}100%{transform:translate(0,0) rotate(0)}}
+.wing{transform-origin:center bottom;animation:flap .12s infinite alternate}
+@keyframes flap{to{transform:scaleY(.55)}}
+
+@media (max-width:820px){
+  .hero,.chero{grid-template-columns:1fr}
+  .hero .art{height:170px;order:-1}
+  .hero .art::before{background:linear-gradient(transparent 40%,var(--paper))!important}
+  .chero .img{min-height:240px}
+  .calwrap,.own-grid{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr}
+  .cats{top:108px}
+}
+@media (max-width:420px){.grid{grid-template-columns:1fr 1fr;gap:10px}.item .pic{height:120px}.item .pic svg{height:94px}.item p{display:none}.hero .txt,.chero .txt{padding:22px 20px}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== INTRO ===== -->
+<div id="intro">
+  <div class="awning"></div>
+  <div class="drip" style="right:18%;--h:90px;animation-delay:1.1s"></div>
+  <div class="drip" style="right:46%;--h:150px;animation-delay:1.4s;width:20px"></div>
+  <div class="drip" style="left:22%;--h:70px;animation-delay:1.7s;width:13px"></div>
+  <div class="intro-logo"><img src="logo.jpg" alt="Shahad Corner"></div>
+  <div class="intro-tag"><b>قهوة بطعم العسل… من ركننا لك</b><span>كوفي سحابي · بوكسات احتفالات · كيترنق</span></div>
+  <button class="skip" onclick="closeIntro()">تخطي</button>
+</div>
+
+<div class="topawn"></div>
+<header>
+  <div class="hbar">
+    <div class="hlogo"><img src="logo.jpg" alt=""></div>
+    <div class="hname"><span class="script">Shahad</span><small>شهد كورنر · كوفي سحابي</small></div>
+    <div class="open"><i></i>نستقبل الطلبات الآن</div>
+  </div>
+  <nav class="tabs">
+    <button class="tab on" data-v="menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 8h12v6a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V8Z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17M8 2v3M12 2v3"/></svg>المنيو والطلب</button>
+    <button class="tab" data-v="catering"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg>حجز الكيترنق</button>
+    <button class="tab" data-v="owner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>لوحة شهد</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ===== MENU ===== -->
+  <section class="view on" id="v-menu">
+    <div class="hero">
+      <div class="txt">
+        <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="#e3a73c"><path d="M12 2 20.7 7v10L12 22 3.3 17V7z"/></svg>كوفي سحابي في المدينة</div>
+        <h1>كل كوب فيه <em>لمسة عسل</em><br>وكل طلب يوصلك بحب</h1>
+        <p>اطلب قهوتك ومخبوزاتك من هنا، وحنا نجهزها لك. بوكسات الاحتفالات تنحجز قبلها بـ ٢٤ ساعة.</p>
+        <div class="mode" id="modeSw"><button class="on" data-m="pickup">استلام</button><button data-m="delivery">توصيل</button></div>
+      </div>
+      <div class="art"><div class="cup" id="heroCup"></div></div>
+    </div>
+    <div class="cats" id="cats"></div>
+    <div id="menuSecs"></div>
+  </section>
+
+  <!-- ===== CATERING ===== -->
+  <section class="view" id="v-catering">
+    <div class="chero">
+      <div class="txt">
+        <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="#e3a73c"><path d="M12 2 20.7 7v10L12 22 3.3 17V7z"/></svg>كيترنق القهوة والمشروبات</div>
+        <h1>ركن <span class="script">Shahad</span> في مناسبتك</h1>
+        <p>عربة القهوة بهويتنا، باريستا، وقهوة بالعسل لضيوفك. اختاري الباقة، شوفي الأيام المتاحة في التقويم، واحجزي موعدك مباشرة.</p>
+        <div class="howto"><span><b>١</b> اختاري الباقة</span><span><b>٢</b> اليوم والفترة</span><span><b>٣</b> التفاصيل والعربون</span></div>
+      </div>
+      <div class="img" role="img" aria-label="عربة شهد للقهوة"></div>
+    </div>
+
+    <div class="stepbox">
+      <h3><span class="n">١</span>اختاري الباقة</h3>
+      <div class="pkgs" id="pkgs"></div>
+    </div>
+
+    <div class="stepbox">
+      <h3><span class="n">٢</span>اختاري اليوم والفترة</h3>
+      <div class="calwrap">
+        <div>
+          <div class="cal-h"><button id="calPrev">›</button><b id="calTitle"></b><button id="calNext">‹</button></div>
+          <div class="cal" id="cal"></div>
+          <div class="legend"><span><i style="background:var(--green)"></i>متاح</span><span><i style="background:var(--honey)"></i>فترة وحدة متبقية</span><span><i style="background:var(--red)"></i>محجوز بالكامل</span><span><i style="background:#ddd"></i>الحجز قبلها بـ ٤٨ ساعة</span></div>
+        </div>
+        <div class="slots-box" id="slots"><div class="ph">اختاري يوم من التقويم<br>وتطلع لك الفترات المتاحة</div></div>
+      </div>
+    </div>
+
+    <div class="stepbox">
+      <h3><span class="n">٣</span>تفاصيل المناسبة</h3>
+      <div class="row2">
+        <div class="field"><label>الاسم</label><input id="cName" placeholder="مثال: ريم"></div>
+        <div class="field"><label>رقم الجوال</label><input id="cPhone" inputmode="tel" placeholder="05xxxxxxxx"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>نوع المناسبة</label><select id="cType"><option>زواج / ملكة</option><option>تخرج</option><option>مواليد</option><option>عيد ميلاد</option><option>اجتماع عائلي</option><option>فعالية شركة</option><option>أخرى</option></select></div>
+        <div class="field"><label>عدد الضيوف تقريبًا</label><input id="cGuests" type="number" min="5" value="25"></div>
+      </div>
+      <div class="field"><label>الحي / موقع المناسبة</label><input id="cLoc" placeholder="مثال: حي العزيزية، قاعة ..."></div>
+      <div class="field"><label>إضافات</label><div class="extras" id="extras"></div></div>
+      <div class="field"><label>ملاحظات (اختياري)</label><textarea id="cNotes" rows="2" placeholder="ألوان المناسبة، اسم يُطبع على الكاسات..."></textarea></div>
+    </div>
+
+    <div class="bsum">
+      <div class="info" id="bInfo">اختاري الباقة واليوم عشان يطلع لك الملخص</div>
+      <button class="btn" id="bGo" disabled>متابعة للعربون</button>
+    </div>
+  </section>
+
+  <!-- ===== OWNER ===== -->
+  <section class="view" id="v-owner">
+    <div class="own-h">
+      <div><h2>صباح العسل يا شهد 🍯</h2><p id="ownDate"></p></div>
+      <span class="demo-tag">عرض تجريبي · الطلبات اللي تسوينها في الديمو تظهر هنا</span>
+    </div>
+    <div class="kpis">
+      <div class="kpi h"><small>مبيعات اليوم</small><b id="kSales">0 <span>ر.س</span></b></div>
+      <div class="kpi"><small>طلبات اليوم</small><b id="kOrders">0</b></div>
+      <div class="kpi"><small>بوكسات قادمة</small><b id="kBoxes">0</b></div>
+      <div class="kpi"><small>حجوزات كيترنق هالشهر</small><b id="kCat">0</b></div>
+    </div>
+    <div class="own-grid">
+      <div class="panel"><h3>الطلبات الواردة <small>اضغطي لتحديث حالة الطلب</small></h3><div id="ordList"></div></div>
+      <div class="panel"><h3>تقويم الكيترنق <small id="mcalT"></small></h3><div class="mcal" id="mcal"></div><div id="bkList"></div></div>
+    </div>
+    <div class="sheets-note">
+      <svg width="34" height="34" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2.5" fill="#5b8365"/><path d="M8 9h8M8 13h8M8 17h8M12 9v8" stroke="#fff" stroke-width="1.6"/></svg>
+      <div>المنيو والأسعار والباقات والأيام المقفلة تتعدل كلها من <b>Google Sheets</b>، وأي تعديل يظهر بالموقع مباشرة بدون ما تلمسين الكود.</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span class="script">Shahad</span>
+  <span class="demo-tag">نسخة تجريبية للعرض · الأصناف والأسعار للتوضيح</span><br>
+  تطوير <a href="https://narjes455.github.io/" target="_blank" rel="noopener">نرجس العمري</a>
+</footer>
+
+<div class="cartbar" id="cartbar"><span class="cnt" id="cCnt">0</span><span id="cTot">0 ر.س</span><button class="go" id="openCart">عرض السلة</button></div>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet"><div class="grab"></div><button class="x" onclick="closeSheet()">✕</button><div id="sheetBody"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const sar=n=>n.toLocaleString('en')+' ر.س';
+const DAYS=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200)}
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+
+/* ---------- illustrations ---------- */
+const BEE=`<svg viewBox="0 0 60 50"><g class="wing"><ellipse cx="24" cy="12" rx="9" ry="12" fill="#fff" opacity=".85" stroke="#d9c9a5"/><ellipse cx="36" cy="13" rx="8" ry="11" fill="#fff" opacity=".75" stroke="#d9c9a5"/></g><ellipse cx="30" cy="31" rx="17" ry="13" fill="#f3b93f"/><path d="M24 19c-3 8-3 17 0 25M33 18c-3 9-3 18 0 26" stroke="#4a3320" stroke-width="5" fill="none"/><circle cx="44" cy="28" r="8" fill="#4a3320"/><circle cx="46.5" cy="26" r="2" fill="#fff"/><path d="M45 20q2-8 6-9M42 20q-1-7 1-10" stroke="#4a3320" stroke-width="1.6" fill="none"/><path d="M13 31l-6 1" stroke="#4a3320" stroke-width="2"/></svg>`;
+function hotCup(accent='#a9bfa2'){return `<svg viewBox="0 0 100 130"><path d="M38 14q-6-8 0-12M50 14q-6-8 0-12M62 14q-6-8 0-12" stroke="#c9b9a0" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".8"/><defs><clipPath id="hc${accent.slice(1)}"><path d="M18 28h64l-8 92a6 6 0 0 1-6 5H32a6 6 0 0 1-6-5Z"/></clipPath></defs><g clip-path="url(#hc${accent.slice(1)})"><rect x="10" y="20" width="80" height="110" fill="#fbf7ec"/>${[0,1,2,3,4,5,6].map(i=>`<rect x="${14+i*12}" y="20" width="6" height="110" fill="${accent}"/>`).join('')}<rect x="10" y="104" width="80" height="30" fill="#fbf7ec"/></g><path d="M18 28h64l-8 92a6 6 0 0 1-6 5H32a6 6 0 0 1-6-5Z" fill="none" stroke="#e2d6bd" stroke-width="1.5"/><rect x="14" y="20" width="72" height="10" rx="4" fill="#fffdf6" stroke="#e2d6bd"/><circle cx="50" cy="68" r="11" fill="#fbf7ec"/><path d="M45 64h10l-1 9h-8Z" fill="#e3a73c"/><path d="M50 57v7" stroke="#6b4a2c" stroke-width="1.5"/></svg>`}
+function coldCup(liq='#c58a52',top='#f1e2c8'){const id='cc'+liq.slice(1)+top.slice(1);return `<svg viewBox="0 0 100 130"><rect x="56" y="0" width="7" height="40" rx="3" fill="#a9bfa2" transform="rotate(12 60 20)"/><defs><clipPath id="${id}"><path d="M20 26h60l-7 96a5 5 0 0 1-5 4H32a5 5 0 0 1-5-4Z"/></clipPath><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset=".45" stop-color="${top}"/><stop offset=".55" stop-color="${liq}"/><stop offset="1" stop-color="${liq}"/></linearGradient></defs><g clip-path="url(#${id})"><rect x="10" y="38" width="80" height="95" fill="url(#g${id})"/><rect x="34" y="42" width="15" height="14" rx="3" fill="#fff" opacity=".55" transform="rotate(-12 40 50)"/><rect x="52" y="50" width="14" height="13" rx="3" fill="#fff" opacity=".5" transform="rotate(14 58 56)"/><path d="M20 98q30 10 60 0v30H20Z" fill="#e3a73c" opacity=".35"/></g><path d="M20 26h60l-7 96a5 5 0 0 1-5 4H32a5 5 0 0 1-5-4Z" fill="#fff" fill-opacity=".18" stroke="#d6cbb4" stroke-width="1.5"/><path d="M28 34l3 80" stroke="#fff" stroke-width="3" opacity=".6" stroke-linecap="round"/><rect x="16" y="20" width="68" height="9" rx="4" fill="#fffdf6" stroke="#d6cbb4"/></svg>`}
+function box(c='#5b8365'){return `<svg viewBox="0 0 120 120"><path d="M14 46h92v60a6 6 0 0 1-6 6H20a6 6 0 0 1-6-6Z" fill="#fbf7ec" stroke="#e0d3b8"/>${[0,1,2,3,4,5,6].map(i=>`<rect x="${18+i*13}" y="48" width="6.5" height="62" fill="${c}" opacity=".85"/>`).join('')}<rect x="8" y="34" width="104" height="16" rx="4" fill="#fffdf6" stroke="#e0d3b8"/><rect x="54" y="34" width="12" height="78" fill="#e3a73c"/><path d="M60 34c-10-18-30-16-26-6 3 7 18 6 26 6Zm0 0c10-18 30-16 26-6-3 7-18 6-26 6Z" fill="#e3a73c" stroke="#c8862a" stroke-width="1.2"/><circle cx="60" cy="74" r="12" fill="#fffdf6" stroke="#e3a73c" stroke-width="2"/><path d="M60 67l6 3.5v7L60 81l-6-3.5v-7Z" fill="#e3a73c"/></svg>`}
+function dallah(){return `<svg viewBox="0 0 120 120"><path d="M58 14q2-8 6 0" fill="#c9a24e"/><path d="M48 32q12-20 24 0Z" fill="#c9a24e"/><path d="M44 34h32l6 40q2 24-22 32-24-8-22-32Z" fill="#d7b25e" stroke="#a9842f" stroke-width="1.5"/><path d="M80 52q20-16 24-34" stroke="#a9842f" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M42 48q-18 6-14 30" stroke="#a9842f" stroke-width="4" fill="none"/><ellipse cx="60" cy="106" rx="28" ry="5" fill="#a9842f" opacity=".35"/><circle cx="24" cy="96" r="7" fill="#7b4a24"/><circle cx="96" cy="98" r="6" fill="#7b4a24"/></svg>`}
+function bake(t){
+  if(t==='croissant')return `<svg viewBox="0 0 120 100"><path d="M10 64q8-34 50-38 42 4 50 38-14 10-24 4-12 14-26 14T34 68q-10 6-24-4Z" fill="#e1a64b" stroke="#b57a2c" stroke-width="2"/><path d="M38 34q4 18 0 34M60 26v46M82 34q-4 18 0 34" stroke="#b57a2c" stroke-width="2" fill="none"/><path d="M40 30q20-8 40 0" stroke="#f5d08b" stroke-width="3" fill="none" opacity=".8"/><path d="M50 22q4 6 0 10" stroke="#e3a73c" stroke-width="4" stroke-linecap="round"/></svg>`;
+  if(t==='cake')return `<svg viewBox="0 0 120 100"><path d="M14 46l92-18v50L14 90Z" fill="#f4e4c4"/>${[0,1,2,3,4].map(i=>`<path d="M14 ${50+i*8}l92-18" stroke="#c98a3c" stroke-width="3.5"/>`).join('')}<path d="M14 46l92-18 0-8-92 18Z" fill="#e8c27d"/><path d="M14 38l92-18-30-10-62 12Z" fill="#f0d39c"/><circle cx="60" cy="20" r="5" fill="#e3a73c"/></svg>`;
+  if(t==='roll')return `<svg viewBox="0 0 120 100"><ellipse cx="60" cy="64" rx="46" ry="26" fill="#d89b52" stroke="#a96f2f" stroke-width="2"/><path d="M60 64m-6 0a6 6 0 1 1 12 0 14 14 0 1 1-28 0 22 22 0 1 1 44 0 30 30 0 1 1-60 0" stroke="#8a5424" stroke-width="3" fill="none"/><path d="M28 50q32-18 64 0" stroke="#fff3dc" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"/></svg>`;
+  if(t==='cookie')return `<svg viewBox="0 0 120 100"><circle cx="60" cy="54" r="38" fill="#d9a25d" stroke="#b07b37" stroke-width="2"/>${[[44,40],[70,36],[56,60],[80,62],[40,66],[64,78]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="5" ry="4" fill="#5a3b22"/>`).join('')}<path d="M36 30q8-6 14-4" stroke="#f5d6a2" stroke-width="3" stroke-linecap="round"/></svg>`;
+  if(t==='pancake')return `<svg viewBox="0 0 120 100"><ellipse cx="60" cy="82" rx="50" ry="10" fill="#e8dcc3"/>${[0,1,2,3].map(i=>`<ellipse cx="60" cy="${74-i*11}" rx="38" ry="10" fill="#e0a752" stroke="#b77a33" stroke-width="1.5"/>`).join('')}<path d="M30 40q30-14 60 0 0 10-6 18-4-8-8 0-8-10-18-2-8 6-12-2-10 6-16-14Z" fill="#e3a73c" opacity=".9"/><rect x="52" y="22" width="16" height="10" rx="2" fill="#fff4cf"/></svg>`;
+  if(t==='zaatar')return `<svg viewBox="0 0 120 100"><path d="M10 64q8-34 50-38 42 4 50 38-14 10-24 4-12 14-26 14T34 68q-10 6-24-4Z" fill="#dfae62" stroke="#b07b37" stroke-width="2"/>${Array.from({length:22},(_,i)=>`<circle cx="${26+(i*37)%70}" cy="${40+(i*23)%30}" r="1.8" fill="#5e7a3a"/>`).join('')}</svg>`;
+}
+
+/* ---------- data (sample — edited from Google Sheets in the real build) ---------- */
+const CATS=[
+ {id:'cold',name:'قهوة باردة',ic:coldCup('#b27a45','#efe0c6')},
+ {id:'hot',name:'قهوة حارة',ic:hotCup()},
+ {id:'boxes',name:'بوكسات الاحتفالات',ic:box()},
+ {id:'bakery',name:'المخبوزات',ic:bake('croissant')},
+];
+const ITEMS=[
+ {id:'c1',cat:'cold',name:'آيس لاتيه الشهد',desc:'إسبريسو مع حليب طازج وعسل سدر، توقيعنا الخاص',price:19,tag:'الأكثر طلبًا',art:coldCup('#b98252','#f2e4c9')},
+ {id:'c2',cat:'cold',name:'آيس سبانش لاتيه',desc:'حليب مكثف محلى مع إسبريسو مزدوج',price:18,art:coldCup('#a8743f','#f4e7d2')},
+ {id:'c3',cat:'cold',name:'كولد برو عسل وليمون',desc:'نقع بارد ١٨ ساعة مع عسل وشريحة ليمون',price:17,art:coldCup('#6b4123','#d9b77a')},
+ {id:'c4',cat:'cold',name:'ماتشا عسل مثلجة',desc:'ماتشا سيريمونيال مع حليب وعسل خفيف',price:21,tag:'جديد',tg:'g',art:coldCup('#8fb070','#eef2e2')},
+ {id:'c5',cat:'cold',name:'آيس أمريكانو',desc:'إسبريسو مع ماء وثلج، صافي ومنعش',price:13,art:coldCup('#4e2f1a','#7a4b2b')},
+ {id:'c6',cat:'cold',name:'آيس موكا',desc:'شوكولاتة داكنة مع إسبريسو وحليب',price:19,art:coldCup('#7a4a2c','#e9d6bd')},
+ {id:'h1',cat:'hot',name:'لاتيه الشهد',desc:'لاتيه حار بالعسل وقرفة خفيفة',price:17,tag:'الأكثر طلبًا',art:hotCup('#a9bfa2')},
+ {id:'h2',cat:'hot',name:'سبانش لاتيه حار',desc:'قوام كريمي وحلاوة متوازنة',price:17,art:hotCup('#c9d8c2')},
+ {id:'h3',cat:'hot',name:'فلات وايت',desc:'إسبريسو مزدوج مع حليب مخملي',price:15,art:hotCup('#a9bfa2')},
+ {id:'h4',cat:'hot',name:'كورتادو',desc:'نص إسبريسو ونص حليب',price:14,art:hotCup('#c9d8c2')},
+ {id:'h5',cat:'hot',name:'V60 محصول اليوم',desc:'قهوة مختصة مقطّرة، اسألي عن محصول اليوم',price:18,art:hotCup('#e3c27a')},
+ {id:'h6',cat:'hot',name:'دلة قهوة سعودية',desc:'دلة صغيرة بالهيل والزعفران مع تمر',price:25,art:dallah()},
+ {id:'b1',cat:'boxes',name:'بوكس الشهد الصغير',desc:'٦ أكواب قهوة باختيارك + ٦ ميني كروسان بالعسل',price:120,art:box('#5b8365'),box:6},
+ {id:'b2',cat:'boxes',name:'بوكس الاحتفال',desc:'١٢ كوب + ١٢ قطعة مخبوزات + بطاقة إهداء',price:230,tag:'الأكثر طلبًا',art:box('#a9bfa2'),box:12},
+ {id:'b3',cat:'boxes',name:'بوكس المناسبات المخصص',desc:'١٦ كوب بستيكرات باسم المناسبة + تشكيلة مخبوزات',price:320,tag:'تخصيص بالاسم',tg:'g',art:box('#c98a3c'),box:16,custom:true},
+ {id:'b4',cat:'boxes',name:'بوكس الضيافة',desc:'دلة قهوة سعودية لتر + تمر فاخر + معمول',price:150,art:dallah(),box:0},
+ {id:'k1',cat:'bakery',name:'كروسان العسل والزبدة',desc:'كروسان فرنسي مدهون بزبدة العسل',price:12,tag:'طازج يوميًا',art:bake('croissant')},
+ {id:'k2',cat:'bakery',name:'كيكة العسل',desc:'طبقات رقيقة بكريمة العسل (شريحة)',price:18,art:bake('cake')},
+ {id:'k3',cat:'bakery',name:'سينابون بالعسل',desc:'رول القرفة مع صوص العسل والجبن',price:14,art:bake('roll')},
+ {id:'k4',cat:'bakery',name:'كوكيز الشوفان والعسل',desc:'مقرمش من برا وطري من جوا',price:9,art:bake('cookie')},
+ {id:'k5',cat:'bakery',name:'ميني بان كيك',desc:'١٠ حبات مع عسل وزبدة',price:16,art:bake('pancake')},
+ {id:'k6',cat:'bakery',name:'كروسان زعتر',desc:'زعتر بلدي وزيت زيتون',price:11,art:bake('zaatar')},
+];
+const PKGS=[
+ {id:'p1',name:'ركن الشهد',guests:'حتى ٢٥ ضيف',hours:3,price:750,feats:['عربة شهد بالهوية','باريستا واحد','٣ أنواع قهوة حارة وباردة','ميني كروسان بالعسل']},
+ {id:'p2',name:'ركن المناسبة',guests:'حتى ٦٠ ضيف',hours:4,price:1350,pop:true,feats:['عربة شهد + ورد وإضاءة','باريستا واحد + مساعدة','٥ أنواع مشروبات','تشكيلة مخبوزات']},
+ {id:'p3',name:'ركن الفخامة',guests:'حتى ١٢٠ ضيف',hours:5,price:2400,feats:['عربة + ركن تصوير','٢ باريستا','منيو مشروبات كامل','مخبوزات + كيكة العسل']},
+];
+const EXTRAS=[{id:'e1',name:'دلة قهوة سعودية',price:150},{id:'e2',name:'كاسات مطبوعة بالاسم',price:120},{id:'e3',name:'ركن مخبوزات إضافي',price:250},{id:'e4',name:'ساعة إضافية',price:200}];
+const SLOTS=[{id:'m',name:'الفترة الصباحية',time:'٩ ص – ١٢ م'},{id:'a',name:'الفترة العصرية',time:'٤ م – ٧ م'},{id:'n',name:'الفترة المسائية',time:'٨ م – ١٢ ص'}];
+const IBAN='SA03 8000 0000 6080 1016 7519';
+
+/* ---------- state ---------- */
+const S={mode:'pickup',cart:[],orders:[],bookings:{},pkg:null,day:null,slot:null,extras:new Set(),receipt:false};
+const now=new Date();
+// seeded catering bookings (deterministic)
+(function seed(){
+  const names=['أم فيصل','نوف','ريما','شركة ركاز','أم سلطان','هيفاء','لمى','دانة','أم عبدالله','جود'];
+  const types=['ملكة','تخرج','مواليد','اجتماع عائلي','عيد ميلاد','فعالية شركة'];
+  for(let i=0;i<70;i++){
+    const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
+    const h=(d.getDate()*7+d.getMonth()*13+i*3)%10;
+    let taken=[];
+    if(d.getDay()===4||d.getDay()===5){taken=h<4?['m','a','n']:h<8?['a','n']:['n']}
+    else if(h<2)taken=['a','n'];else if(h<4)taken=['n'];else if(h===5)taken=['a'];
+    if(taken.length) S.bookings[iso(d)]=taken.map((s,j)=>({slot:s,name:names[(h+j+i)%names.length],type:types[(h+j)%types.length],pkg:PKGS[(h+j)%3].name,seed:true}));
+  }
+})();
+// seeded orders
+S.orders=[
+ {no:'SH-1042',name:'أريج',mode:'استلام',items:'آيس لاتيه الشهد ×٢، كروسان العسل ×١',total:50,status:1,time:'09:12'},
+ {no:'SH-1043',name:'منيرة',mode:'توصيل · العزيزية',items:'كولد برو عسل وليمون ×١، كيكة العسل ×٢',total:53,status:0,time:'09:40'},
+ {no:'SH-1039',name:'سارة',mode:'استلام',items:'بوكس الاحتفال ×١',total:230,status:0,time:'أمس',boxDue:new Date(now.getTime()+30*3600e3)},
+ {no:'SH-1036',name:'عبير',mode:'استلام',items:'لاتيه الشهد ×٣',total:51,status:3,time:'08:05'},
+];
+
+/* ---------- intro ---------- */
+(function(){
+  const intro=$('#intro');
+  [['M -60 300 C 100 120, 260 420, 420 200 S 700 80, 900 260','0s'],['M 900 520 C 700 640, 520 380, 360 520 S 80 600, -80 420','.4s']].forEach(([p,dl])=>{
+    const b=document.createElement('div');b.className='fbee';b.innerHTML=BEE;b.style.offsetPath=`path('${p}')`;b.style.animationDelay=dl;
+    b.style.left=Math.max(0,(innerWidth-900)/2)+'px';intro.appendChild(b);
+  });
+  setTimeout(closeIntro,3800);
+})();
+function closeIntro(){$('#intro').classList.add('hide')}
+
+// wandering bee
+const pb=document.createElement('div');pb.className='pbee';pb.innerHTML=BEE;pb.style.cssText+='right:24px;top:42%';document.body.appendChild(pb);
+
+/* ---------- tabs ---------- */
+function show(v){
+  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===v));
+  $$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));
+  if(v==='owner')renderOwner();
+  $('#cartbar').style.display=v==='menu'?'':'none';
+  if(location.hash!=='#'+v)history.replaceState(null,'','#'+v);
+  scrollTo({top:0,behavior:'smooth'});
+}
+$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v));
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(['menu','catering','owner'].includes(h))show(h)});
+
+/* ---------- menu ---------- */
+$('#heroCup').innerHTML=`<div style="width:150px;filter:drop-shadow(0 18px 20px rgba(90,61,36,.3));animation:fadeUp 1s">${hotCup('#a9bfa2')}</div>`;
+$$('#modeSw button').forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;$$('#modeSw button').forEach(x=>x.classList.toggle('on',x===b));toast(S.mode==='pickup'?'تم اختيار الاستلام من الركن':'تم اختيار التوصيل')});
+$('#cats').innerHTML=CATS.map((c,i)=>`<button class="cat ${i?'':'on'}" data-c="${c.id}"><span class="ic">${c.ic}</span>${c.name}</button>`).join('');
+$('#menuSecs').innerHTML=CATS.map(c=>`<div class="sec" id="s-${c.id}"><div class="sec-h"><h2>${c.name}</h2><span class="ln"></span></div>
+ ${c.id==='boxes'?`<div class="notice"><svg viewBox="0 0 24 24" fill="none" stroke="#c8862a" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><b>بوكسات الاحتفالات تنحجز قبل موعد الاستلام بـ ٢٤ ساعة على الأقل.</b> بتختارين اليوم والوقت وقت إتمام الطلب.</div></div>`:''}
+ <div class="grid">${ITEMS.filter(i=>i.cat===c.id).map(i=>`<div class="item" data-id="${i.id}"><div class="pic">${i.art}${i.tag?`<span class="badge ${i.tg||''}">${i.tag}</span>`:''}</div><div class="bd"><h3>${i.name}</h3><p>${i.desc}</p><div class="ft"><span class="price">${i.price} <small>ر.س</small></span><button class="add" aria-label="إضافة">+</button></div></div></div>`).join('')}</div></div>`).join('');
+$$('.cat').forEach(b=>b.onclick=()=>{document.getElementById('s-'+b.dataset.c).scrollIntoView({behavior:'smooth'})});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const id=e.target.id.slice(2);$$('.cat').forEach(c=>c.classList.toggle('on',c.dataset.c===id))}}),{rootMargin:'-45% 0px -50% 0px'});
+$$('.sec').forEach(s=>io.observe(s));
+$$('.item').forEach(el=>el.onclick=()=>openItem(el.dataset.id));
+
+/* ---------- sheet ---------- */
+function openSheet(html){$('#sheetBody').innerHTML=html;$('#scrim').classList.add('on');$('#sheet').classList.add('on');$('#sheet').scrollTop=0}
+function closeSheet(){$('#scrim').classList.remove('on');$('#sheet').classList.remove('on')}
+$('#scrim').onclick=closeSheet;
+
+function openItem(id){
+  const it=ITEMS.find(i=>i.id===id); const drink=it.cat==='cold'||it.cat==='hot';
+  const st={size:'وسط',milk:'عادي',honey:2,qty:1,boxDrink:'مشكّل',name:''};
+  const honeyL=['بدون','خفيف','عادي','زيادة'];
+  const calc=()=>(it.price+(drink&&st.size==='كبير'?4:0)+(drink&&st.milk!=='عادي'?3:0))*st.qty;
+  const r=()=>{
+    openSheet(`<div class="sheet-head"><div class="pic">${it.art}</div><div><h3>${it.name}</h3><p>${it.desc}</p></div></div><div class="pad">
+    ${drink&&id!=='h6'?`
+      <div class="opt"><h4>الحجم</h4><div class="chips">${['وسط','كبير'].map(s=>`<button class="chip ${st.size===s?'on':''}" data-k="size" data-v="${s}">${s}${s==='كبير'?' <small>+٤</small>':''}</button>`).join('')}</div></div>
+      <div class="opt"><h4>نوع الحليب</h4><div class="chips">${['عادي','لوز','شوفان'].map(s=>`<button class="chip ${st.milk===s?'on':''}" data-k="milk" data-v="${s}">${s}${s!=='عادي'?' <small>+٣</small>':''}</button>`).join('')}</div></div>
+      <div class="opt"><h4>نسبة العسل <span>توقيع شهد 🍯</span></h4><div class="honey-meter">${honeyL.map((l,i)=>`<button class="${st.honey===i?'on':''}" data-h="${i}"><span class="drops">${[1,2,3].map(n=>`<i class="${n<=i?'f':''}"></i>`).join('')}</span>${l}</button>`).join('')}</div></div>`:''}
+    ${it.cat==='boxes'&&it.box?`<div class="opt"><h4>نوع القهوة في البوكس</h4><div class="chips">${['مشكّل','باردة كلها','حارة كلها'].map(s=>`<button class="chip ${st.boxDrink===s?'on':''}" data-k="boxDrink" data-v="${s}">${s}</button>`).join('')}</div></div>`:''}
+    ${it.custom?`<div class="field"><label>الاسم أو العبارة على الستيكرات</label><input id="cust" placeholder="مثال: تخرج نوف ٢٠٢٦" value="${st.name}"></div>`:''}
+    ${it.cat==='boxes'?`<div class="notice" style="margin-top:14px"><svg viewBox="0 0 24 24" fill="none" stroke="#c8862a" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div>الحجز قبل الاستلام بـ ٢٤ ساعة. بتحددين الموعد في السلة.</div></div>`:''}
+    </div><div class="sheet-foot"><div class="qty"><button data-q="1">+</button><b>${ar(st.qty)}</b><button data-q="-1">−</button></div><button class="btn" id="addBtn"><span>أضف للسلة</span><span>${sar(calc())}</span></button></div>`);
+    $$('#sheetBody .chip').forEach(b=>b.onclick=()=>{st[b.dataset.k]=b.dataset.v;keep();r()});
+    $$('#sheetBody [data-h]').forEach(b=>b.onclick=()=>{st.honey=+b.dataset.h;r()});
+    $$('#sheetBody [data-q]').forEach(b=>b.onclick=()=>{keep();st.qty=Math.max(1,st.qty+ +b.dataset.q);r()});
+    $('#addBtn').onclick=()=>{keep();
+      const notes=[];if(drink&&id!=='h6'){notes.push(st.size,'حليب '+st.milk,'عسل '+honeyL[st.honey])}
+      if(it.cat==='boxes'&&it.box)notes.push(st.boxDrink);if(it.custom&&st.name)notes.push('«'+st.name+'»');
+      const unit=calc()/st.qty;const key=id+'|'+notes.join('|');
+      const ex=S.cart.find(c=>c.key===key);if(ex)ex.qty+=st.qty;else S.cart.push({key,id,name:it.name,notes:notes.join('، '),unit,qty:st.qty,box:it.cat==='boxes'});
+      closeSheet();updCart(true);toast('انضاف '+it.name+' للسلة 🐝');
+    };
+  };
+  const keep=()=>{const c=$('#cust');if(c)st.name=c.value};
+  r();
+}
+
+function updCart(b){
+  const n=S.cart.reduce((a,c)=>a+c.qty,0),t=S.cart.reduce((a,c)=>a+c.qty*c.unit,0);
+  $('#cCnt').textContent=ar(n);$('#cTot').textContent=sar(t);$('#cartbar').classList.toggle('show',n>0);
+  if(b){$('#cCnt').classList.remove('bump');void $('#cCnt').offsetWidth;$('#cCnt').classList.add('bump')}
+}
+$('#openCart').onclick=()=>cartStep(1);
+
+/* ---------- checkout ---------- */
+const CO={name:'',phone:'',area:'',when:'now',date:'',time:'',receipt:false};
+function minBoxDate(){return new Date(Date.now()+24*3600e3)}
+function cartStep(step){
+  const hasBox=S.cart.some(c=>c.box); if(hasBox)CO.when='later';
+  const sub=S.cart.reduce((a,c)=>a+c.qty*c.unit,0),del=S.mode==='delivery'?15:0;
+  const steps=`<div class="steps"><i class="${step>=1?'on':''}"></i><i class="${step>=2?'on':''}"></i><i class="${step>=3?'on':''}"></i></div>`;
+  if(!S.cart.length){closeSheet();return}
+  if(step===1){
+    openSheet(`<div class="pad" style="padding-top:18px">${steps}<h3 style="color:var(--brown);margin:10px 0 4px">سلتك</h3>
+    ${S.cart.map((c,i)=>{const it=ITEMS.find(x=>x.id===c.id);return `<div class="cline"><div class="pic">${it.art}</div><div class="inf"><b>${c.name}</b><small>${c.notes||'—'}</small><div style="font-size:13px;color:var(--green-d);font-weight:600;margin-top:2px">${sar(c.unit*c.qty)}</div></div><div class="qty"><button data-i="${i}" data-d="1">+</button><b>${ar(c.qty)}</b><button data-i="${i}" data-d="-1">−</button></div></div>`}).join('')}
+    <div class="sum"><div><span>المجموع</span><span>${sar(sub)}</span></div>${del?`<div><span>التوصيل</span><span>${sar(del)}</span></div>`:''}<div class="tot"><span>الإجمالي</span><span>${sar(sub+del)}</span></div></div>
+    </div><div class="sheet-foot"><button class="btn full" id="n1">متابعة</button></div>`);
+    $$('#sheetBody [data-d]').forEach(b=>b.onclick=()=>{const c=S.cart[b.dataset.i];c.qty+= +b.dataset.d;if(c.qty<1)S.cart.splice(b.dataset.i,1);updCart();cartStep(1)});
+    $('#n1').onclick=()=>cartStep(2);
+  }
+  if(step===2){
+    const mn=minBoxDate();
+    openSheet(`<div class="pad" style="padding-top:18px">${steps}<h3 style="color:var(--brown);margin:10px 0 4px">بياناتك وموعد ${S.mode==='pickup'?'الاستلام':'التوصيل'}</h3>
+    <div class="row2"><div class="field"><label>الاسم</label><input id="oName" value="${CO.name}" placeholder="الاسم"></div><div class="field"><label>الجوال</label><input id="oPhone" value="${CO.phone}" inputmode="tel" placeholder="05xxxxxxxx"></div></div>
+    ${S.mode==='delivery'?`<div class="field"><label>الحي</label><input id="oArea" value="${CO.area}" placeholder="مثال: العزيزية"></div>`:''}
+    <div class="opt"><h4>متى تبين طلبك؟</h4><div class="chips"><button class="chip ${CO.when==='now'?'on':''}" data-w="now" ${hasBox?'disabled':''}>بأقرب وقت</button><button class="chip ${CO.when==='later'?'on':''}" data-w="later">موعد محدد</button></div></div>
+    ${hasBox?`<div class="notice" style="margin-top:12px"><svg viewBox="0 0 24 24" fill="none" stroke="#c8862a" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div>سلتك فيها بوكس احتفال، فأقرب موعد متاح هو <b>${DAYS[mn.getDay()]} ${ar(mn.getDate())} ${MONTHS[mn.getMonth()]}</b> بعد الساعة ${ar(mn.getHours())}:${ar(String(mn.getMinutes()).padStart(2,'0'))}</div></div>`:''}
+    ${CO.when==='later'?`<div class="row2"><div class="field"><label>اليوم</label><input type="date" id="oDate" min="${iso(hasBox?mn:new Date())}" value="${CO.date}"></div><div class="field"><label>الساعة</label><input type="time" id="oTime" value="${CO.time}"></div></div>`:''}
+    <div class="err" id="oErr"></div>
+    </div><div class="sheet-foot"><button class="btn" style="flex:none;background:var(--cream2);color:var(--brown)" id="b2">رجوع</button><button class="btn full" id="n2">متابعة للدفع</button></div>`);
+    const keep=()=>{CO.name=$('#oName').value;CO.phone=$('#oPhone').value;if($('#oArea'))CO.area=$('#oArea').value;if($('#oDate')){CO.date=$('#oDate').value;CO.time=$('#oTime').value}};
+    $$('#sheetBody [data-w]').forEach(b=>b.onclick=()=>{keep();CO.when=b.dataset.w;cartStep(2)});
+    $('#b2').onclick=()=>{keep();cartStep(1)};
+    $('#n2').onclick=()=>{keep();const e=$('#oErr');let m='';
+      if(!CO.name.trim())m='اكتبي الاسم';else if(!/^05\d{8}$/.test(CO.phone.trim()))m='رقم الجوال لازم يبدأ بـ 05 ويكون ١٠ أرقام';
+      else if(S.mode==='delivery'&&!CO.area.trim())m='اكتبي الحي للتوصيل';
+      else if(CO.when==='later'){if(!CO.date||!CO.time)m='حددي اليوم والساعة';else{const dt=new Date(CO.date+'T'+CO.time);if(hasBox&&dt<mn)m='بوكسات الاحتفالات تحتاج ٢٤ ساعة على الأقل، اختاري موعد أبعد';else if(dt<new Date())m='الموعد المختار فات'}}
+      if(m){e.textContent=m;e.classList.add('on')}else cartStep(3)};
+  }
+  if(step===3){
+    openSheet(`<div class="pad" style="padding-top:18px">${steps}<h3 style="color:var(--brown);margin:10px 0 4px">الدفع</h3>
+    <div class="sum"><div><span>الإجمالي المطلوب</span><b style="color:var(--green-d)">${sar(sub+del)}</b></div></div>
+    <div class="bank"><b style="font-size:14px;color:var(--brown)">تحويل بنكي</b><div style="font-size:12.5px;color:var(--muted);margin-top:3px">حوّلي المبلغ وارفعي صورة الإيصال لتأكيد طلبك</div>
+    <div class="iban"><span>${IBAN}</span><button id="cp">نسخ</button></div>
+    <label class="upload ${CO.receipt?'ok':''}" id="up"><input type="file" accept="image/*,.pdf" id="rf">${CO.receipt?'✓ تم إرفاق الإيصال':'📎 ارفعي صورة إيصال التحويل'}</label></div>
+    <div class="err" id="pErr">لازم ترفعين إيصال التحويل</div>
+    </div><div class="sheet-foot"><button class="btn" style="flex:none;background:var(--cream2);color:var(--brown)" id="b3">رجوع</button><button class="btn honey" id="n3"><span>تأكيد الطلب</span><span>${sar(sub+del)}</span></button></div>`);
+    $('#cp').onclick=()=>{try{navigator.clipboard.writeText(IBAN.replace(/ /g,'')).then(()=>toast('تم نسخ الآيبان'),()=>toast('انسخيه يدويًا'))}catch(e){toast('انسخيه يدويًا')}};
+    $('#rf').onchange=e=>{if(e.target.files.length){CO.receipt=true;$('#up').classList.add('ok');$('#up').lastChild.textContent='✓ تم إرفاق الإيصال: '+e.target.files[0].name}};
+    $('#b3').onclick=()=>cartStep(2);
+    $('#n3').onclick=()=>{if(!CO.receipt){$('#pErr').classList.add('on');return}placeOrder(sub+del,hasBox)};
+  }
+}
+function placeOrder(total,hasBox){
+  const no='SH-'+(1044+S.orders.filter(o=>!o.seedless).length);
+  const due=CO.when==='later'?new Date(CO.date+'T'+CO.time):null;
+  S.orders.unshift({no,name:CO.name,mode:S.mode==='pickup'?'استلام':'توصيل · '+CO.area,items:S.cart.map(c=>c.name+' ×'+ar(c.qty)).join('، '),total,status:0,time:new Date().toTimeString().slice(0,5),boxDue:hasBox?due:null,due,fresh:true});
+  S.cart=[];updCart();CO.receipt=false;
+  const whenTxt=due?`${DAYS[due.getDay()]} ${ar(due.getDate())} ${MONTHS[due.getMonth()]} · ${ar(CO.time)}`:'بأقرب وقت';
+  openSheet(`<div class="done"><div class="seal"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#5b8365" stroke-width="2.4" stroke-linecap="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+  <h3>وصلنا طلبك يا ${CO.name} 🍯</h3><div class="code">${no}</div>
+  <p style="font-size:13.5px;color:var(--muted)">موعد ${S.mode==='pickup'?'الاستلام':'التوصيل'}: <b style="color:var(--brown)">${whenTxt}</b></p>
+  <div class="track"><span class="fill" id="tf"></span>${['استلمنا طلبك','تأكيد الدفع','قيد التحضير','جاهز'].map((t,i)=>`<div id="tk${i}"><span>${i+1}</span>${t}</div>`).join('')}</div>
+  <p style="font-size:12px;color:var(--muted);margin-top:10px">تقدرين تتابعين حالة طلبك من هالصفحة، وطلبك ظهر الحين في <a href="#owner" style="color:var(--gold)" onclick="closeSheet()">لوحة شهد</a></p></div>
+  <div class="sheet-foot"><button class="btn full" onclick="closeSheet()">تمام</button></div>`);
+  [0,1,2].forEach(i=>setTimeout(()=>{$('#tk'+i)&&$('#tk'+i).classList.add('on');$('#tf')&&($('#tf').style.width=(i*28)+'%')},400+i*1300));
+}
+
+/* ---------- catering ---------- */
+$('#pkgs').innerHTML=PKGS.map(p=>`<button class="pkg" data-p="${p.id}">${p.pop?'<span class="pop">الأكثر حجزًا</span>':''}<span class="tick">✓</span><h4>${p.name}</h4><div style="font-size:12.5px;color:var(--muted)">${p.guests} · ${ar(p.hours)} ساعات</div><div class="pp">${p.price.toLocaleString('en')} <small>ر.س</small></div><ul>${p.feats.map(f=>`<li>${f}</li>`).join('')}</ul></button>`).join('');
+$$('.pkg').forEach(b=>b.onclick=()=>{S.pkg=b.dataset.p;$$('.pkg').forEach(x=>x.classList.toggle('on',x===b));updB()});
+$('#extras').innerHTML=EXTRAS.map(e=>`<label class="extra" data-e="${e.id}"><input type="checkbox">${e.name}<b>+${e.price}</b></label>`).join('');
+$$('.extra').forEach(l=>l.querySelector('input').onchange=ev=>{ev.target.checked?S.extras.add(l.dataset.e):S.extras.delete(l.dataset.e);l.classList.toggle('on',ev.target.checked);updB()});
+let calM=new Date(now.getFullYear(),now.getMonth(),1);
+const minCat=new Date(now.getFullYear(),now.getMonth(),now.getDate()+2);
+const maxM=new Date(now.getFullYear(),now.getMonth()+2,1);
+function dayState(d){
+  if(d<minCat)return 'off';
+  const b=(S.bookings[iso(d)]||[]).length;
+  return b>=3?'full':b===2?'few':'ok';
+}
+function renderCal(){
+  $('#calTitle').textContent=MONTHS[calM.getMonth()]+' '+ar(calM.getFullYear());
+  $('#calPrev').disabled=calM<=new Date(now.getFullYear(),now.getMonth(),1);
+  $('#calNext').disabled=calM>=maxM;
+  const first=calM.getDay(),dim=new Date(calM.getFullYear(),calM.getMonth()+1,0).getDate();
+  let h=['ح','ن','ث','ر','خ','ج','س'].map(d=>`<div class="dn">${d}</div>`).join('');
+  for(let i=0;i<first;i++)h+='<div></div>';
+  for(let d=1;d<=dim;d++){const dt=new Date(calM.getFullYear(),calM.getMonth(),d),st=dayState(dt),k=iso(dt);
+    h+=`<button class="day ${st} ${k===iso(now)?'today':''} ${S.day===k?'sel':''}" data-d="${k}" ${st==='off'||st==='full'?'disabled':''}>${ar(d)}<i></i></button>`}
+  $('#cal').innerHTML=h;
+  $$('.day[data-d]').forEach(b=>b.onclick=()=>{S.day=b.dataset.d;S.slot=null;renderCal();renderSlots();updB()});
+}
+$('#calPrev').onclick=()=>{calM=new Date(calM.getFullYear(),calM.getMonth()-1,1);renderCal()};
+$('#calNext').onclick=()=>{calM=new Date(calM.getFullYear(),calM.getMonth()+1,1);renderCal()};
+function renderSlots(){
+  if(!S.day){return}
+  const d=new Date(S.day+'T00:00'),taken=(S.bookings[S.day]||[]).map(b=>b.slot);
+  $('#slots').innerHTML=`<b style="color:var(--brown);font-size:15px">${DAYS[d.getDay()]} ${ar(d.getDate())} ${MONTHS[d.getMonth()]}</b>`+
+   SLOTS.map(s=>`<button class="slot ${S.slot===s.id?'on':''}" data-s="${s.id}" ${taken.includes(s.id)?'disabled':''}><span>${s.name}<br><small>${s.time}</small></span><span class="st">${taken.includes(s.id)?'محجوزة':'متاحة'}</span></button>`).join('');
+  $$('.slot').forEach(b=>b.onclick=()=>{S.slot=b.dataset.s;renderSlots();updB()});
+}
+function catTotal(){const p=PKGS.find(x=>x.id===S.pkg);return (p?p.price:0)+[...S.extras].reduce((a,e)=>a+EXTRAS.find(x=>x.id===e).price,0)}
+function updB(){
+  const p=PKGS.find(x=>x.id===S.pkg),sl=SLOTS.find(s=>s.id===S.slot);
+  if(!p&&!S.day){$('#bInfo').textContent='اختاري الباقة واليوم عشان يطلع لك الملخص';$('#bGo').disabled=true;return}
+  const d=S.day?new Date(S.day+'T00:00'):null,t=catTotal();
+  $('#bInfo').innerHTML=`${p?p.name:'— اختاري باقة'} · ${d?DAYS[d.getDay()]+' '+ar(d.getDate())+' '+MONTHS[d.getMonth()]:'— اختاري يوم'}${sl?' · '+sl.name:''}<br><b>${sar(t)}</b> &nbsp;العربون ٥٠٪: <b style="font-size:15px">${sar(Math.round(t/2))}</b>`;
+  $('#bGo').disabled=!(p&&S.day&&S.slot);
+}
+$('#bGo').onclick=()=>{
+  const n=$('#cName').value.trim(),ph=$('#cPhone').value.trim(),loc=$('#cLoc').value.trim();
+  if(!n||!/^05\d{8}$/.test(ph)||!loc){toast('كمّلي الاسم والجوال والموقع');($('#cName').value?$('#cPhone').value?$('#cLoc'):$('#cPhone'):$('#cName')).focus();return}
+  catPay();
+};
+function catPay(){
+  const t=catTotal(),dep=Math.round(t/2),p=PKGS.find(x=>x.id===S.pkg),sl=SLOTS.find(s=>s.id===S.slot),d=new Date(S.day+'T00:00');
+  openSheet(`<div class="pad" style="padding-top:22px"><h3 style="color:var(--brown)">تأكيد حجز الكيترنق</h3>
+  <div class="sum"><div><span>الباقة</span><span>${p.name}</span></div><div><span>الموعد</span><span>${DAYS[d.getDay()]} ${ar(d.getDate())} ${MONTHS[d.getMonth()]} · ${sl.time}</span></div><div><span>المناسبة</span><span>${$('#cType').value} · ${ar($('#cGuests').value)} ضيف</span></div>${S.extras.size?`<div><span>الإضافات</span><span>${[...S.extras].map(e=>EXTRAS.find(x=>x.id===e).name).join('، ')}</span></div>`:''}<div><span>الإجمالي</span><span>${sar(t)}</span></div><div class="tot"><span>العربون المطلوب الحين</span><span>${sar(dep)}</span></div></div>
+  <div class="bank"><b style="font-size:14px;color:var(--brown)">تحويل العربون</b><div style="font-size:12.5px;color:var(--muted);margin-top:3px">الموعد ينقفل باسمك أول ما يوصلنا الإيصال. الباقي يُدفع يوم المناسبة.</div>
+  <div class="iban"><span>${IBAN}</span><button id="cp2">نسخ</button></div>
+  <label class="upload" id="up2"><input type="file" accept="image/*,.pdf" id="rf2">📎 ارفعي صورة إيصال العربون</label></div>
+  <div class="err" id="cErr">لازم ترفعين إيصال العربون</div></div>
+  <div class="sheet-foot"><button class="btn honey" id="cOk"><span>تأكيد الحجز</span><span>${sar(dep)}</span></button></div>`);
+  let ok=false;
+  $('#cp2').onclick=()=>{try{navigator.clipboard.writeText(IBAN.replace(/ /g,'')).then(()=>toast('تم نسخ الآيبان'),()=>toast('انسخيه يدويًا'))}catch(e){toast('انسخيه يدويًا')}};
+  $('#rf2').onchange=e=>{if(e.target.files.length){ok=true;$('#up2').classList.add('ok');$('#up2').lastChild.textContent='✓ تم إرفاق الإيصال'}};
+  $('#cOk').onclick=()=>{if(!ok){$('#cErr').classList.add('on');return}
+    const code='CT-'+Math.floor(2000+Math.random()*7000);
+    (S.bookings[S.day]=S.bookings[S.day]||[]).push({slot:S.slot,name:$('#cName').value.trim(),type:$('#cType').value,pkg:p.name,fresh:true,code,total:t});
+    openSheet(`<div class="done"><div class="seal"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#5b8365" stroke-width="2.4" stroke-linecap="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+    <h3>انحجز موعدك 🐝</h3><div class="code">${code}</div>
+    <p style="font-size:14px;color:var(--muted);line-height:1.9">${p.name} · ${DAYS[d.getDay()]} ${ar(d.getDate())} ${MONTHS[d.getMonth()]}<br>${sl.name} (${sl.time})<br>بنتواصل معك قبل المناسبة بيومين لتأكيد التفاصيل</p></div>
+    <div class="sheet-foot"><button class="btn full" onclick="closeSheet()">تمام</button></div>`);
+    S.day=null;S.slot=null;renderCal();$('#slots').innerHTML='<div class="ph">اختاري يوم من التقويم<br>وتطلع لك الفترات المتاحة</div>';updB();
+  };
+}
+renderCal();
+
+/* ---------- owner ---------- */
+const STAT=['جديد','قيد التحضير','جاهز','تم التسليم'];
+function renderOwner(){
+  $('#ownDate').textContent=DAYS[now.getDay()]+' '+ar(now.getDate())+' '+MONTHS[now.getMonth()]+' '+ar(now.getFullYear());
+  const today=S.orders.filter(o=>o.time!=='أمس');
+  $('#kSales').innerHTML=today.reduce((a,o)=>a+o.total,0).toLocaleString('en')+' <span>ر.س</span>';
+  $('#kOrders').textContent=ar(today.length);
+  $('#kBoxes').textContent=ar(S.orders.filter(o=>o.boxDue).length);
+  const mk=iso(now).slice(0,7);
+  $('#kCat').textContent=ar(Object.entries(S.bookings).filter(([k])=>k.startsWith(mk)).reduce((a,[,v])=>a+v.length,0));
+  $('#ordList').innerHTML=S.orders.map((o,i)=>`<div class="ord ${o.fresh?'new':''}"><div class="t"><b>${o.no} · ${o.name}</b><span>${o.time==='أمس'?'أمس':ar(o.time)}</span></div>
+   <div class="its">${o.items}<br>${o.mode}${o.due?' · موعد: '+DAYS[o.due.getDay()]+' '+ar(o.due.getDate())+' '+MONTHS[o.due.getMonth()]:''}${o.boxDue&&!o.due?' · استلام البوكس: '+DAYS[o.boxDue.getDay()]+' '+ar(o.boxDue.getDate()):''}</div>
+   <div class="acts"><span class="pill s${o.status}">${STAT[o.status]}</span>${o.boxDue?'<span class="pill box">بوكس احتفال</span>':''}<span style="font-size:13px;font-weight:700;color:var(--green-d)">${sar(o.total)}</span>${o.status<3?`<button class="nx" data-i="${i}">← ${STAT[o.status+1]}</button>`:''}</div></div>`).join('');
+  $$('.nx').forEach(b=>b.onclick=()=>{const o=S.orders[b.dataset.i];o.status++;o.fresh=false;renderOwner();toast('الطلب '+o.no+': '+STAT[o.status])});
+  // mini calendar
+  const m=new Date(now.getFullYear(),now.getMonth(),1),dim=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
+  $('#mcalT').textContent=MONTHS[m.getMonth()];
+  let h=['ح','ن','ث','ر','خ','ج','س'].map(d=>`<div class="dn">${d}</div>`).join('');for(let i=0;i<m.getDay();i++)h+='<div class="dn"></div>';
+  for(let d=1;d<=dim;d++){const dt=new Date(m.getFullYear(),m.getMonth(),d),n=(S.bookings[iso(dt)]||[]).length;h+=`<div class="${dt<new Date(now.getFullYear(),now.getMonth(),now.getDate())?'x':n>=2?'b2':n?'b1':''}">${ar(d)}</div>`}
+  $('#mcal').innerHTML=h;
+  const up=Object.entries(S.bookings).sort(([a],[b])=>a<b?-1:1).flatMap(([k,v])=>v.map(b=>({k,...b}))).filter(b=>b.fresh).concat(
+    Object.entries(S.bookings).sort(([a],[b])=>a<b?-1:1).flatMap(([k,v])=>v.map(b=>({k,...b}))).filter(b=>!b.fresh)).slice(0,6);
+  $('#bkList').innerHTML=up.map(b=>{const d=new Date(b.k+'T00:00'),sl=SLOTS.find(s=>s.id===b.slot);return `<div class="bk ${b.fresh?'new':''}"><div class="dt"><b>${ar(d.getDate())}</b><small>${MONTHS[d.getMonth()]}</small></div><div class="inf"><b>${b.name} · ${b.type}</b><br>${b.pkg} · ${sl.name}${b.fresh?' · <span style="color:var(--honey-d);font-weight:600">حجز جديد</span>':''}</div></div>`}).join('');
+}
+
+/* start view from hash */
+const h0=location.hash.slice(1);if(['catering','owner'].includes(h0))show(h0);
+</script>
+</body>
+</html>
