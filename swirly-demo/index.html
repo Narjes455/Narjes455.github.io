@@ -245,6 +245,35 @@ body.adm #admin{display:block}body.adm{overflow:hidden}
 .pad button{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:24px;font-weight:700;font-family:"Baloo Bhaijaan 2"}
 .pad button:active{background:rgba(255,255,255,.3)}
 #pin .back{background:none;color:#fff;opacity:.7;margin-top:16px;font-size:13px}
+
+/* ---------- account / birthday ---------- */
+.acc{position:relative;z-index:1;margin-top:10px;background:var(--maroon);color:#fff;border-radius:99px;padding:8px 16px;font-weight:700;font-size:13px}
+.bday{display:none;position:relative;z-index:2;max-width:620px;margin:12px auto 0;background:linear-gradient(135deg,#7B2532,#A3473B);color:#fff;border-radius:20px;padding:14px 16px;text-align:center;font-weight:700;line-height:1.7}
+.bday.on{display:block}
+.f .hint{font-size:12px;color:var(--muted);margin-top:4px}
+.f .err{font-size:12px;color:#B3261E;margin-top:4px;min-height:0}
+.f input[readonly]{background:#F6EEE5;color:var(--muted)}
+.otp{display:flex;gap:10px;justify-content:center;direction:ltr;margin:16px 0}
+.otp input{width:54px;height:60px;text-align:center;font-size:26px;font-weight:800;border-radius:14px;border:1.5px solid var(--line);background:#fff;font-family:"Baloo Bhaijaan 2";color:var(--brown)}
+.otp input:focus{outline:none;border-color:var(--caramel)}
+.lock{font-size:12px;color:var(--muted);background:#FFF6E8;border-radius:12px;padding:8px 10px;margin-top:12px;line-height:1.6}
+.codeRow{display:flex;gap:8px}
+.codeRow input{flex:1;text-transform:uppercase;direction:ltr;text-align:right}
+.codeRow button{background:var(--brown);color:#fff;border-radius:14px;padding:0 16px;font-weight:800}
+.disc{display:flex;justify-content:space-between;color:#3E8E5A;font-weight:800;font-size:14px;margin-bottom:6px}
+.tot s{color:var(--muted);font-size:14px;margin-inline-end:6px}
+.cset{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#fff;border-radius:18px;padding:14px;border:1px solid var(--line);margin-bottom:12px}
+.cset label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px}
+.cset input{width:100%;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);font-family:"Baloo Bhaijaan 2";font-size:18px;font-weight:800;color:var(--maroon)}
+.bh{font-family:"Baloo Bhaijaan 2";font-size:17px;color:var(--maroon);margin:14px 0 8px}
+.crow{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 14px;border:1px solid var(--line);margin-bottom:8px}
+.crow .av{width:44px;height:44px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:20px;flex:none}
+.crow.today .av{background:var(--maroon)}
+.crow .nm{flex:1;font-weight:800;font-size:15px}
+.crow .nm small{display:block;font-weight:500;color:var(--muted);font-size:12px;line-height:1.6}
+.wa{background:#25A35A;color:#fff;border-radius:99px;padding:9px 14px;font-weight:800;font-size:13px;text-decoration:none;white-space:nowrap}
+.sent{font-size:12px;font-weight:800;color:#3E8E5A;text-align:center;line-height:1.5}
+.sent code{display:block;background:#E8F3EC;border-radius:8px;padding:2px 6px;font-size:12px}
 </style>
 </head>
 <body>
@@ -277,9 +306,11 @@ body.adm #admin{display:block}body.adm{overflow:hidden}
  <h1>Swirly</h1>
  <div class="sub">سينابون يذوب بالفم… اطلبه ونوصلك 🤎</div>
  <div class="pills"><span>🚗 توصيل</span><span>🛍️ استلام</span></div>
+ <button class="acc" id="accBtn">👤 سجّل دخولك</button>
 </div>
 
 <div class="wrap">
+ <div class="bday" id="bday"></div>
  <div class="feat" id="builder">
   <span class="ftag">✦ كوّن بوكسك بنفسك</span>
   <h2>بوكس على كيفك</h2>
@@ -317,7 +348,7 @@ body.adm #admin{display:block}body.adm{overflow:hidden}
  <div class="wrap">
   <div class="store"><div><b id="stTxt">المتجر مفتوح</b><small>إذا قفلته، العملاء يشوفون إن المتجر مغلق وما يقدرون يطلبون</small></div><button class="sw on" id="stSw"></button></div>
   <div class="kpis" id="kpis"></div>
-  <div class="atabs" id="atabs"><button class="on" data-t="o">الطلبات</button><button data-t="m">المنيو</button><button data-t="r">التقارير</button></div>
+  <div class="atabs" id="atabs"><button class="on" data-t="o">الطلبات</button><button data-t="m">المنيو</button><button data-t="c">العملاء 🎂</button><button data-t="r">التقارير</button></div>
   <div id="pane"></div>
  </div>
 </div>
@@ -424,22 +455,25 @@ function showCart(){
  $("#dTitle").textContent="سلتك";
  if(!cart.length){$("#db").innerHTML=`<p style="text-align:center;color:var(--muted);padding:40px 0">السلة فاضية</p>`;$("#df").innerHTML="";return}
  $("#db").innerHTML=cart.map((c,i)=>`<div class="ci"><div class="th" style="${c.imgs.length==1?"display:block":""}">${c.imgs.map(k=>`<img src="${IMG[k]}">`).join("")}</div><div class="nm">${c.n}${c.desc?`<small>${c.desc}</small>`:""}<small>${c.p} ر.س</small></div><div class="qty"><button data-i="${i}" data-d="1">+</button><span>${c.q}</span><button data-i="${i}" data-d="-1">−</button></div></div>`).join("");
- $("#df").innerHTML=`<div class="tot"><span>الإجمالي</span><span class="price">${total()} ر.س</span></div><button class="full" id="go">متابعة الطلب</button>`;$("#go").onclick=showForm;
+ $("#df").innerHTML=`<div class="tot"><span>الإجمالي</span><span class="price">${total()} ر.س</span></div><button class="full" id="go">متابعة الطلب</button>`;$("#go").onclick=()=>USER?showForm():showLogin(showForm);
 }
 $("#db").onclick=e=>{const b=e.target.closest(".qty button");if(!b)return;const c=cart[+b.dataset.i];c.q+=+b.dataset.d;if(c.q<1)cart.splice(+b.dataset.i,1);upd();showCart();if(!cart.length)closeS()};
 function showForm(){
  $("#dTitle").textContent="بيانات الطلب";
  $("#db").innerHTML=`<form class="f" id="frm"><label>طريقة الاستلام</label><div class="seg"><button type="button" data-m="pick" class="${mode=="pick"?"on":""}">🛍️ استلام</button><button type="button" data-m="del" class="${mode=="del"?"on":""}">🚗 توصيل</button></div>
- <label>الاسم</label><input id="nm" placeholder="اسمك"><label>رقم الجوال</label><input id="ph" inputmode="tel" placeholder="05xxxxxxxx" dir="ltr" style="text-align:right">
+ <label>الاسم</label><input id="nm" value="${USER.name}" readonly><label>رقم الجوال</label><input id="ph" value="${USER.phone}" readonly dir="ltr" style="text-align:right">
  <div id="addr" style="${mode=="del"?"":"display:none"}"><label>الحي / العنوان</label><input id="ad" placeholder="اسم الحي"></div>
  <label>الوقت</label><select id="tm"><option>بأقرب وقت</option><option>العصر (٤–٦)</option><option>المغرب (٦–٨)</option><option>بكرة</option></select>
- <label>ملاحظات</label><textarea id="nt" rows="2" placeholder="صوص زيادة، بطاقة إهداء…"></textarea></form>`;
- $("#df").innerHTML=`<div class="tot"><span>الإجمالي</span><span class="price">${total()} ر.س</span></div><button class="full" id="send">تأكيد الطلب</button>`;
+ <label>ملاحظات</label><textarea id="nt" rows="2" placeholder="صوص زيادة، بطاقة إهداء…"></textarea>
+ <label>كود الخصم</label><div class="codeRow"><input id="cd" placeholder="مثال: BD-XXXX" value="${APPLIED?APPLIED.code:""}"><button type="button" id="cdBtn">تطبيق</button></div><div class="err" id="cdErr"></div></form>`;
+ drawTot();
+ $("#cdBtn").onclick=applyCode;
  $("#frm").onclick=e=>{const b=e.target.closest(".seg button");if(!b)return;mode=b.dataset.m;document.querySelectorAll(".seg button").forEach(x=>x.classList.toggle("on",x==b));$("#addr").style.display=mode=="del"?"":"none"};
- $("#send").onclick=()=>{if(!OPEN){toast("المتجر مغلق حالياً");return}if(!$("#nm").value.trim()||!$("#ph").value.trim()){toast("اكتب الاسم ورقم الجوال");return}done()};
+ $("#send").onclick=()=>{if(!OPEN){toast("المتجر مغلق حالياً");return}done()};
 }
 function done(){
- const o=newOrder({name:$("#nm").value.trim(),phone:$("#ph").value.trim(),mode,addr:($("#ad")||{}).value||"",time:$("#tm").value,note:$("#nt").value.trim(),items:cart.map(c=>({n:c.n,q:c.q,p:c.p,desc:c.desc||"",imgs:c.imgs}))},true);
+ const o=newOrder({name:$("#nm").value.trim(),phone:$("#ph").value.trim(),mode,addr:($("#ad")||{}).value||"",time:$("#tm").value,note:$("#nt").value.trim(),items:cart.map(c=>({n:c.n,q:c.q,p:c.p,desc:c.desc||"",imgs:c.imgs})),disc:APPLIED?{code:APPLIED.code,pct:APPLIED.pct,amt:discAmt()}:null},true);
+ if(APPLIED){CODES[APPLIED.code].used=o.num;APPLIED=null}
  myOrder=o;$("#dTitle").textContent="تم الطلب";
  $("#db").innerHTML=`<div class="done"><div class="ok">✓</div><h3>شكراً ${o.name}!</h3><div class="num">${o.num}</div><p>وصلنا طلبك وبنبدأ نجهزه 🤎</p><div class="steps" id="trk"><span>استلمنا</span><span>بالفرن</span><span>جاهز</span></div><p style="font-size:12px">جرّب: افتح «لوحة الإدارة» من أسفل الصفحة وغيّر حالة الطلب — بتتحدث هنا</p></div>`;
  $("#df").innerHTML=`<button class="full" id="again">رجوع للمنيو</button>`;$("#again").onclick=()=>{cart=[];upd();closeS()};
@@ -448,12 +482,95 @@ function done(){
 let myOrder=null;
 function track(){const t=$("#trk");if(!t||!myOrder)return;const lv={new:0,oven:1,ready:2,done:2}[myOrder.status];t.querySelectorAll("span").forEach((s,i)=>s.classList.toggle("on",i<=lv))}
 
+
+/* ===== accounts + birthday discount ===== */
+let USER=null,APPLIED=null,BD_PCT=10,BD_DAYS=7;
+const CUSTOMERS=[],CODES={};
+const today=new Date();today.setHours(0,0,0,0);
+const ymd=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function nextBday(dob){const b=new Date(dob);let n=new Date(today.getFullYear(),b.getMonth(),b.getDate());if(n<today)n=new Date(today.getFullYear()+1,b.getMonth(),b.getDate());return n}
+const daysTo=dob=>Math.round((nextBday(dob)-today)/864e5);
+const ageOn=dob=>{const b=new Date(dob),n=nextBday(dob);return n.getFullYear()-b.getFullYear()};
+(function seedC(){const mk=(name,phone,addDays,yrs)=>{const d=new Date(today);d.setDate(d.getDate()+addDays);d.setFullYear(today.getFullYear()-yrs);CUSTOMERS.push({name,phone,dob:ymd(d),since:"منذ "+(1+CUSTOMERS.length)+" أسابيع"})};
+ mk("ريم الحربي","0551234567",0,24);mk("عبدالله السهلي","0569876543",0,31);mk("نوف المطيري","0501112233",3,19);mk("سارة الجهني","0543334455",6,27);mk("خالد العوفي","0587776655",21,35);mk("منيرة الرحيلي","0532221100",48,22)})();
+function isBday(u){return u&&daysTo(u.dob)===0}
+function drawAcc(){
+ $("#accBtn").textContent=USER?"👤 أهلاً "+USER.name.split(" ")[0]:"👤 سجّل دخولك";
+ const b=$("#bday");if(isBday(USER)){b.classList.add("on");b.innerHTML=`🎂 كل عام وأنت بخير يا ${USER.name.split(" ")[0]}!<br><span style="font-weight:500;font-size:14px">بيوصلك كود خصم ${BD_PCT}% بمناسبة يوم ميلادك 🤎</span>`}else b.classList.remove("on");
+}
+$("#accBtn").onclick=()=>{if(USER){toast("مسجّل باسم "+USER.name);return}$("#ov").classList.add("on");$("#sheetC").classList.add("on");showLogin(()=>closeS())};
+const AR=/^[؀-ۿa-zA-Z]{2,}(\s+[؀-ۿa-zA-Z]{2,})+$/;
+function showLogin(after){
+ $("#dTitle").textContent="تسجيل الدخول";
+ const mx=ymd(new Date(today.getFullYear()-10,today.getMonth(),today.getDate()));
+ $("#db").innerHTML=`<form class="f" id="lf" novalidate>
+  <label>الاسم الكامل</label><input id="lnm" placeholder="الاسم الأول واسم العائلة"><div class="err" id="e1"></div>
+  <label>رقم الجوال</label><input id="lph" inputmode="numeric" maxlength="10" placeholder="05xxxxxxxx" dir="ltr" style="text-align:right"><div class="err" id="e2"></div>
+  <label>تاريخ الميلاد</label><input id="ldob" type="date" max="${mx}" min="1930-01-01"><div class="err" id="e3"></div>
+  <div class="lock">🔒 الاسم وتاريخ الميلاد يتسجلون مرة وحدة وما يتعدلون بعدها، وكل رقم جوال له حساب واحد بس.</div></form>`;
+ $("#df").innerHTML=`<button class="full" id="lgo">إرسال رمز التحقق</button>`;
+ $("#lgo").onclick=()=>{
+  const nm=$("#lnm").value.trim().replace(/\s+/g," "),ph=$("#lph").value.trim(),dob=$("#ldob").value;let ok=true;
+  const ex=CUSTOMERS.find(c=>c.phone==ph);
+  $("#e1").textContent=$("#e2").textContent=$("#e3").textContent="";
+  if(!/^05\d{8}$/.test(ph)){$("#e2").textContent="رقم الجوال لازم يبدأ بـ 05 ويكون 10 أرقام";ok=false}
+  if(!ex){
+   if(!AR.test(nm)){$("#e1").textContent="اكتب الاسم الأول واسم العائلة (حروف فقط)";ok=false}
+   if(!dob){$("#e3").textContent="تاريخ الميلاد مطلوب";ok=false}
+   else{const a=(today-new Date(dob))/(365.25*864e5);if(a<10||a>95){$("#e3").textContent="تأكد من تاريخ الميلاد";ok=false}}
+  }
+  if(!ok)return;
+  showOtp(ph,ex||{name:nm,phone:ph,dob,since:"جديد"},!ex,after);
+ };
+}
+function showOtp(ph,u,isNew,after){
+ $("#dTitle").textContent="رمز التحقق";
+ $("#db").innerHTML=`<div style="text-align:center;padding-top:10px"><p>أرسلنا رمز من 4 أرقام إلى<br><b dir="ltr">${ph}</b></p>${!isNew?`<p class="hint" style="color:var(--muted);font-size:13px;margin-top:6px">هذا الرقم مسجّل مسبقاً باسم ${u.name} — بندخلك على نفس الحساب</p>`:""}
+ <div class="otp" id="otp">${"<input inputmode='numeric' maxlength='1'>".repeat(4)}</div><p style="font-size:12px;color:var(--muted)">للديمو: الرمز 1234</p><div class="err" id="oe" style="color:#B3261E;font-size:13px"></div></div>`;
+ $("#df").innerHTML=`<button class="full" id="ogo">تحقق</button>`;
+ const ins=[...document.querySelectorAll("#otp input")];ins[0].focus();
+ ins.forEach((x,i)=>x.oninput=()=>{x.value=x.value.replace(/\D/g,"");if(x.value&&ins[i+1])ins[i+1].focus()});
+ $("#ogo").onclick=()=>{if(ins.map(x=>x.value).join("")!="1234"){$("#oe").textContent="الرمز غير صحيح";return}
+  if(isNew)CUSTOMERS.unshift(u);USER=u;drawAcc();renderAdmin();toast("أهلاً "+u.name.split(" ")[0]+" 🤎");after()};
+}
+const discAmt=()=>APPLIED?Math.round(total()*APPLIED.pct)/100:0;
+function drawTot(){const d=discAmt();
+ $("#df").innerHTML=`${APPLIED?`<div class="disc"><span>🎂 خصم ${APPLIED.pct}% (${APPLIED.code})</span><span>−${d} ر.س</span></div>`:""}<div class="tot"><span>الإجمالي</span><span class="price">${APPLIED?`<s>${total()}</s> `:""}${+(total()-d).toFixed(2)} ر.س</span></div><button class="full" id="send">تأكيد الطلب</button>`;
+ $("#send").onclick=()=>{if(!OPEN){toast("المتجر مغلق حالياً");return}done()};
+}
+function applyCode(){const c=$("#cd").value.trim().toUpperCase(),k=CODES[c],e=$("#cdErr");e.style.color="#B3261E";
+ if(!c){APPLIED=null;e.textContent="";drawTot();return}
+ if(!k)e.textContent="الكود غير صحيح";
+ else if(k.phone!=USER.phone)e.textContent="هذا الكود خاص بعميل ثاني";
+ else if(k.used)e.textContent="الكود مستخدم من قبل";
+ else if(new Date()>k.exp)e.textContent="انتهت صلاحية الكود";
+ else{APPLIED={code:c,pct:k.pct};e.style.color="#3E8E5A";e.textContent="تم تطبيق الخصم ✓";drawTot();return}
+ APPLIED=null;drawTot();
+}
+function makeCode(u){const ex=Object.entries(CODES).find(([k,v])=>v.phone==u.phone&&v.year==today.getFullYear());if(ex)return ex[0];
+ let c;do{c="BD-"+Math.random().toString(36).slice(2,6).toUpperCase()}while(CODES[c]);
+ const exp=new Date(today);exp.setDate(exp.getDate()+BD_DAYS);exp.setHours(23,59);CODES[c]={phone:u.phone,pct:BD_PCT,exp,used:null,year:today.getFullYear(),sent:new Date()};return c}
+function waMsg(u,c){return `كل عام وأنت بخير يا ${u.name.split(" ")[0]} 🎂🤎\nبمناسبة يوم ميلادك، لك خصم ${BD_PCT}% من Swirly على طلبك.\nكود الخصم: ${c}\nصالح لمدة ${BD_DAYS} أيام — اطلب من الرابط:\nnarjes455.github.io/swirly-demo`}
+function custPane(){
+ const up=CUSTOMERS.map(u=>({u,d:daysTo(u.dob)})).sort((a,b)=>a.d-b.d);
+ const row=({u,d})=>{const c=Object.entries(CODES).find(([k,v])=>v.phone==u.phone&&v.year==today.getFullYear());
+  const right=d===0?(c?`<div class="sent">✓ تم الإرسال<code>${c[0]}</code>${c[1].used?"استُخدم بطلب "+c[1].used:"لم يُستخدم بعد"}</div>`:`<a class="wa" target="_blank" rel="noopener" data-p="${u.phone}" href="#">أرسل التهنئة</a>`):`<span class="sent" style="color:var(--muted)">بعد ${d} ${d<=10?"أيام":"يوم"}</span>`;
+  return `<div class="crow ${d===0?"today":""}"><div class="av">${d===0?"🎂":"🎁"}</div><div class="nm">${u.name}<small dir="ltr" style="text-align:right">${u.phone}</small><small>${new Date(u.dob).toLocaleDateString("ar-SA-u-ca-gregory",{day:"numeric",month:"long"})} · يكمل ${ageOn(u.dob)} سنة</small></div>${right}</div>`};
+ const td=up.filter(x=>x.d===0),wk=up.filter(x=>x.d>0&&x.d<=7);
+ const usedN=Object.values(CODES).filter(v=>v.used).length,sentN=Object.keys(CODES).length;
+ return `<div class="cset"><div><label>نسبة خصم الميلاد %</label><input id="bdp" type="number" min="1" max="50" value="${BD_PCT}"></div><div><label>صلاحية الكود (أيام)</label><input id="bdd" type="number" min="1" max="30" value="${BD_DAYS}"></div></div>
+ <div class="kpis" style="grid-template-columns:repeat(3,1fr)"><div class="kpi"><small>العملاء المسجّلين</small><b>${CUSTOMERS.length}</b></div><div class="kpi"><small>تهاني مرسلة</small><b>${sentN}</b></div><div class="kpi"><small>أكواد مستخدمة</small><b>${usedN}</b></div></div>
+ <div class="bh">🎂 أعياد ميلاد اليوم</div>${td.length?td.map(row).join(""):`<div class="emptyo">ما فيه أعياد ميلاد اليوم</div>`}
+ <div class="bh">🎁 خلال الأسبوع الجاي</div>${wk.length?wk.map(row).join(""):`<div class="emptyo">لا يوجد</div>`}
+ <div class="gnote" style="margin-top:14px">💡 زر «أرسل التهنئة» يفتح المحادثة مع العميل ورسالة التهنئة مكتوبة جاهزة فيها كود خاص فيه — يشتغل لرقمه بس، مرة وحدة، وخلال المدة اللي تحددينها.</div>`;
+}
+
 /* ===== admin ===== */
 const ST={new:{t:"جديد",c:"#C8873F",nx:"ابدأ الخَبز 🔥"},oven:{t:"بالفرن",c:"#B5482F",nx:"جاهز ✓"},ready:{t:"جاهز",c:"#3E8E5A",nx:"تم التسليم"},done:{t:"تم التسليم",c:"#9A8576"}};
 const FLOW=["new","oven","ready","done"];
 let ORDERS=[],seq=1040,atab="o",ofil="active";
 function hm(d){return d.toLocaleTimeString("ar-SA",{hour:"numeric",minute:"2-digit"})}
-function newOrder(o,fresh){o.num="SW-"+(++seq);o.status=o.status||"new";o.at=o.at||new Date();o.total=o.items.reduce((a,i)=>a+i.p*i.q,0);o.fresh=!!fresh;ORDERS.unshift(o);renderAdmin();return o}
+function newOrder(o,fresh){o.num="SW-"+(++seq);o.status=o.status||"new";o.at=o.at||new Date();o.total=o.items.reduce((a,i)=>a+i.p*i.q,0)-(o.disc?o.disc.amt:0);o.fresh=!!fresh;ORDERS.unshift(o);renderAdmin();return o}
 (function seed(){const now=Date.now(),m=60000;
  const S=[
   {name:"ريم",phone:"0551234567",mode:"del",addr:"حي العزيزية",time:"بأقرب وقت",items:[{n:"بوكس Swirly للجمعات",q:1,p:60,desc:"أوريو ×4، لوتس ×4، كلاسيك ×4",flv:{oreo:4,lotus:4,classic:4}}],status:"done",at:new Date(now-150*m)},
@@ -480,8 +597,9 @@ function renderAdmin(){
   <div class="olist">${L.length?L.map(o=>{const s=ST[o.status];return `<div class="ord ${o.fresh&&o.status=="new"?"new":""}" style="--c:${s.c}"><div class="r1"><span class="num">${o.num}</span><span class="st">${s.t}</span></div>
    <div class="who">${o.name} · <span dir="ltr">${o.phone}</span> · ${hm(o.at)}<br>${o.mode=="del"?"🚗 توصيل"+(o.addr?" — "+o.addr:""):"🛍️ استلام"} · ${o.time}</div>
    <ul>${o.items.map(i=>`<li><div>${i.q}× ${i.n}${i.desc?`<small>${i.desc}</small>`:""}</div><span>${i.p*i.q}</span></li>`).join("")}</ul>
-   ${o.note?`<div class="note">📝 ${o.note}</div>`:""}
+   ${o.note?`<div class="note">📝 ${o.note}</div>`:""}${o.disc?`<div class="note" style="background:#E8F3EC;color:#245C38">🎂 خصم ميلاد ${o.disc.pct}% (${o.disc.code}) −${o.disc.amt} ر.س</div>`:""}
    <div class="r3"><span class="tt">${o.total} ر.س</span>${s.nx?`<button class="nx ${o.status=="ready"?"g":""}" data-n="${o.num}">${s.nx}</button>`:""}</div></div>`}).join(""):`<div class="emptyo">ما فيه طلبات هنا</div>`}</div>`;
+ }else if(atab=="c"){P.innerHTML=custPane();
  }else if(atab=="m"){
   P.innerHTML=`<div class="gnote">📊 الأسعار والأصناف تتعدّل من ملف Google Sheets — وأي تعديل يظهر بالموقع مباشرة. ومن هنا تقدر توقف أي نكهة لو خلصت.</div>
   ${ITEMS.map(it=>`<div class="mrow"><img src="${IMG[it.id]}"><div class="nm">سينابون ${it.n}<small>${it.p} ر.س</small></div><span class="lbl">${it.out?"نفدت":"متوفر"}</span><button class="sw ${it.out?"":"on"}" data-it="${it.id}"></button></div>`).join("")}
@@ -496,7 +614,9 @@ function renderAdmin(){
  }
 }
 $("#atabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;atab=b.dataset.t;document.querySelectorAll("#atabs button").forEach(x=>x.classList.toggle("on",x==b));renderAdmin()};
+$("#pane").onchange=e=>{if(e.target.id=="bdp")BD_PCT=Math.max(1,Math.min(50,+e.target.value||10));if(e.target.id=="bdd")BD_DAYS=Math.max(1,Math.min(30,+e.target.value||7));drawAcc()};
 $("#pane").onclick=e=>{
+ const w=e.target.closest(".wa");if(w){const u=CUSTOMERS.find(x=>x.phone==w.dataset.p);const c=makeCode(u);w.href="https://wa.me/966"+u.phone.slice(1)+"?text="+encodeURIComponent(waMsg(u,c));setTimeout(()=>{renderAdmin();toast("انشأ الكود "+c)},300);return}
  const f=e.target.closest(".ofil button");if(f){ofil=f.dataset.f;renderAdmin();return}
  const n=e.target.closest(".nx");if(n){const o=ORDERS.find(x=>x.num==n.dataset.n);o.status=FLOW[FLOW.indexOf(o.status)+1];o.fresh=false;renderAdmin();track();toast(o.num+" ← "+ST[o.status].t);return}
  const s=e.target.closest(".sw[data-it]");if(s){const it=ITEMS.find(x=>x.id==s.dataset.it);it.out=!it.out;renderAdmin();renderMenu(document.querySelector(".chip.on").dataset.c);renderFlv();fill=fill.filter(x=>x!=it.id);renderSlots();toast(`سينابون ${it.n}: ${it.out?"نفدت":"رجعت متوفرة"}`)}
