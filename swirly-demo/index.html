@@ -78,10 +78,10 @@ button{font-family:inherit;cursor:pointer;border:0}
 .bt .n{font-family:"Baloo Bhaijaan 2";font-weight:800;font-size:26px;line-height:1}
 .bt .l{font-weight:700;font-size:12px;margin-top:3px}
 .bt .p{font-size:12px;opacity:.8}
-.box{background:#F1DDC6;border-radius:18px;padding:12px;box-shadow:inset 0 0 0 5px #E6C9AA;position:relative;max-width:360px;margin:6px auto 0}
+.box{background:#F1DDC6;border-radius:18px;padding:12px;box-shadow:inset 0 0 0 5px #E6C9AA;position:relative;width:100%;max-width:360px;margin:6px auto 0;overflow:hidden}
 .lid{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--brown);color:#fff;font-family:"Baloo Bhaijaan 2";font-weight:800;padding:0 14px;border-radius:9px;font-size:15px;white-space:nowrap}
 .slots{display:grid;gap:7px}
-.slot{aspect-ratio:1;border-radius:50%;background:#E8CFB4;box-shadow:inset 0 3px 7px rgba(90,46,34,.22);overflow:hidden;cursor:pointer;position:relative}
+.slot{min-width:0;aspect-ratio:1;border-radius:50%;background:#E8CFB4;box-shadow:inset 0 3px 7px rgba(90,46,34,.22);overflow:hidden;cursor:pointer;position:relative}
 .slot img{width:100%;height:100%;object-fit:cover;animation:pop .35s cubic-bezier(.3,1.6,.6,1)}
 .slot.empty::after{content:"+";position:absolute;inset:0;display:grid;place-items:center;color:#C4A285;font-weight:700}
 @keyframes pop{from{transform:scale(.3) rotate(-90deg)}}
@@ -415,7 +415,7 @@ $("#flv").onclick=e=>{const f=e.target.closest(".fl");if(!f||fill.length>=box.si
 $("#slots").onclick=e=>{const s=e.target.closest(".slot");if(!s||s.dataset.i===undefined)return;fill.splice(+s.dataset.i,1);renderSlots()};
 $("#mix").onclick=()=>{fill=[];const av=ITEMS.filter(x=>!x.out);for(let i=0;i<box.size;i++)fill.push(av[i%av.length].id);fill.sort(()=>Math.random()-.5);renderSlots()};
 $("#clr").onclick=()=>{fill=[];renderSlots()};
-function renderBox(){renderTabs();$("#lid").textContent=box.n;$("#slots").style.gridTemplateColumns=`repeat(${box.cols},1fr)`;$("#slots").style.gap=box.size==24?"4px":"7px";renderSlots()}
+function renderBox(){renderTabs();$("#lid").textContent=box.n;$("#slots").style.gridTemplateColumns=`repeat(${box.cols},minmax(0,1fr))`;$("#slots").style.gap=box.size==24?"4px":"7px";renderSlots()}
 function renderSlots(){
  let h="";for(let i=0;i<box.size;i++)h+=fill[i]?`<div class="slot" data-i="${i}"><img src="${IMG[fill[i]]}"></div>`:`<div class="slot empty"></div>`;
  $("#slots").innerHTML=h;const left=box.size-fill.length;
@@ -428,11 +428,11 @@ $("#addBox").onclick=()=>{const c={};fill.forEach(f=>c[f]=(c[f]||0)+1);
 renderBox();
 
 /* ===== menu ===== */
-const dotsHTML=(b,cls)=>`<div class="${cls}" style="grid-template-columns:repeat(${b.cols},1fr)">${(cls=="dots"?"<span></span>":"<i></i>").repeat(b.size)}</div>`;
+const dotsHTML=(b,cls)=>`<div class="${cls}" style="grid-template-columns:repeat(${b.cols},minmax(0,1fr))">${(cls=="dots"?"<span></span>":"<i></i>").repeat(b.size)}</div>`;
 function renderMenu(c){
  let h="";
  if(c!="box")h+=ITEMS.map((it,i)=>`<div class="card ${it.out?"out":""}" style="animation-delay:${i*50}ms">${it.b?`<span class="badge">${it.b}</span>`:""}<div class="ph"><img src="${IMG[it.id]}" alt=""></div><h3>سينابون ${it.n}</h3><div class="d">${it.d}</div><div class="row"><span class="price">${it.p} <small>ر.س</small></span>${it.out?`<span class="soldt">نفدت</span>`:`<button class="add" data-r="${it.id}">+</button>`}</div></div>`).join("");
- if(c!="roll")h+=BOXES.map((b,i)=>`<div class="card" style="animation-delay:${(i+6)*50}ms">${b.note?`<span class="badge">${b.note}</span>`:""}<div class="ph bx" style="grid-template-columns:repeat(${b.cols},1fr);padding:${b.size==24?"12%":"14%"}">${"<i></i>".repeat(b.size)}</div><h3>${b.n}</h3><div class="d">${b.size} حبة — اختر نكهاتها</div><div class="row"><span class="price">${b.p} <small>ر.س</small></span><button class="add" data-b="${b.id}">+</button></div></div>`).join("");
+ if(c!="roll")h+=BOXES.map((b,i)=>`<div class="card" style="animation-delay:${(i+6)*50}ms">${b.note?`<span class="badge">${b.note}</span>`:""}<div class="ph bx" style="grid-template-columns:repeat(${b.cols},minmax(0,1fr));padding:${b.size==24?"12%":"14%"}">${"<i></i>".repeat(b.size)}</div><h3>${b.n}</h3><div class="d">${b.size} حبة — اختر نكهاتها</div><div class="row"><span class="price">${b.p} <small>ر.س</small></span><button class="add" data-b="${b.id}">+</button></div></div>`).join("");
  $("#grid").innerHTML=h;
 }
 renderMenu("all");
