@@ -140,7 +140,7 @@
   }
   /** كريمة مخفوقة ثلاثية الأبعاد: حبل كريمة ملفوف حلزونياً من كرات صغيرة مظلّلة */
   const creamSVG = (() => {
-    const id = ++UID, W = 240, H = 200, cx = 120, base = 150, turns = 2.7, N = 260, pts = [];
+    const id = ++UID, W = 240, H = 200, cx = 120, base = 150, turns = 2.7, N = 560, pts = [];
     for (let i = 0; i <= N; i++) {
       const t = i / N, ang = t * turns * Math.PI * 2 + .6;
       const R = 92 * Math.pow(1 - t, .85) + 2;            // نصف قطر اللفّة
@@ -150,18 +150,20 @@
     }
     pts.sort((a, b) => (a.d - b.d) || (a.t - b.t));        // الخلف أولاً ثم الأمام
     const g = 'ck' + id, sh = 'ckS' + id, gr = 'ckG' + id;
+    // لكل نقطة: ظل ناعم على اللفّة اللي تحتها، ثم جسم الكريمة، ثم لمعة
     const balls = pts.map((p, i) => {
-      const dark = .5 + p.d * .5;                          // الجزء الخلفي أغمق شوي
-      return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.r.toFixed(1)}" fill="url(#${g})" opacity="1" style="filter:brightness(${(.9 + dark * .12).toFixed(3)})"/>`;
+      const lit = (.93 + (p.d + 1) * .045).toFixed(3);
+      return `<circle cx="${p.x.toFixed(1)}" cy="${(p.y + p.r * .32).toFixed(1)}" r="${(p.r * 1.04).toFixed(1)}" fill="rgba(140,110,70,.10)"/>` +
+        `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.r.toFixed(1)}" fill="url(#${g})" style="filter:brightness(${lit})"/>`;
     }).join('');
-    // أخاديد فوهة النجمة: خطوط قصيرة على الكرات الأمامية
-    const ridges = pts.filter((p, i) => p.d > .35 && i % 5 === 0).map(p => `<path d="M${(p.x - p.r * .55).toFixed(1)} ${(p.y - p.r * .55).toFixed(1)} Q${(p.x - p.r * .2).toFixed(1)} ${p.y.toFixed(1)} ${(p.x - p.r * .45).toFixed(1)} ${(p.y + p.r * .6).toFixed(1)}" stroke="#E9DCC6" stroke-width="2" fill="none" opacity=".4" stroke-linecap="round"/>`).join('');
+    const gloss = pts.filter((p, i) => i % 4 === 0 && p.d > -.2).map(p => `<ellipse cx="${(p.x - p.r * .22).toFixed(1)}" cy="${(p.y - p.r * .5).toFixed(1)}" rx="${(p.r * .42).toFixed(1)}" ry="${(p.r * .2).toFixed(1)}" fill="#fff" opacity=".55"/>`).join('');
+    const ridges = '';
     return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="overflow:visible"><defs>
-      <radialGradient id="${g}" cx=".36" cy=".3" r=".78"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#FFFCF6"/><stop offset=".8" stop-color="#F1E6D4"/><stop offset="1" stop-color="#D9C7A9"/></radialGradient>
+      <radialGradient id="${g}" cx=".4" cy=".32" r=".72"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#FFFBF4"/><stop offset=".85" stop-color="#F0E4D0"/><stop offset="1" stop-color="#DCCAAE"/></radialGradient>
       <radialGradient id="${sh}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="rgba(90,70,40,.35)"/><stop offset="1" stop-color="rgba(90,70,40,0)"/></radialGradient>
-      <filter id="${gr}" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="1" seed="3" result="n"/><feColorMatrix in="n" values="0 0 0 0 .55  0 0 0 0 .48  0 0 0 0 .38  0 0 0 .07 0" result="k"/><feComposite in="k" in2="SourceGraphic" operator="in" result="k2"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="k2"/></feMerge></filter></defs>
+      <filter id="${gr}" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="1" seed="3" result="n"/><feColorMatrix in="n" values="0 0 0 0 .55  0 0 0 0 .48  0 0 0 0 .38  0 0 0 .07 0" result="k"/><feComposite in="k" in2="SourceGraphic" operator="in" result="k2"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="k2"/></feMerge></filter><filter id="${gr}b"><feGaussianBlur stdDeviation="1.6"/></filter></defs>
       <ellipse cx="${cx}" cy="${base + 10}" rx="116" ry="14" fill="url(#${sh})"/>
-      <g filter="url(#${gr})">${balls}${ridges}</g></svg>`;
+      <g filter="url(#${gr})">${balls}</g><g filter="url(#${gr}b)">${gloss}</g></svg>`;
   })();
 
   /**
