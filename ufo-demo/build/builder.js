@@ -138,15 +138,33 @@
     else body = dish(`<g transform="translate(34 30) scale(1.1)">${garnish(name) || `<circle cx="15" cy="18" r="10" fill="${c}"/>`}</g>`);
     return `<svg viewBox="0 0 100 100" class="bj">${body}</svg>`;
   }
-  const creamSVG = (() => { const g = 'cr' + (++UID), sh = 'cs' + UID; return `<svg viewBox="0 0 120 100" preserveAspectRatio="xMidYMax meet"><defs>
-    <radialGradient id="${g}" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#FFF9EF"/><stop offset="1" stop-color="#EFE2CC"/></radialGradient>
-    <linearGradient id="${sh}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#D9C6A6" stop-opacity=".55"/></linearGradient></defs>
-    <path d="M6 98 C2 86 10 76 24 76 C30 70 46 68 60 70 C74 68 90 70 96 76 C110 76 118 86 114 98 Z" fill="url(#${g})"/><path d="M6 98 C2 86 10 76 24 76 C30 70 46 68 60 70 C74 68 90 70 96 76 C110 76 118 86 114 98 Z" fill="url(#${sh})"/>
-    <path d="M18 80 C14 68 24 60 36 60 C44 54 76 54 84 60 C96 60 106 68 102 80 C88 86 32 86 18 80 Z" fill="url(#${g})"/><path d="M18 80 C32 88 88 88 102 80" stroke="#D9C6A6" stroke-width="2" fill="none" opacity=".8"/>
-    <path d="M32 62 C28 50 38 44 48 44 C54 38 68 38 74 44 C84 44 92 52 88 62 C76 68 44 68 32 62 Z" fill="url(#${g})"/><path d="M32 62 C44 69 76 69 88 62" stroke="#D9C6A6" stroke-width="2" fill="none" opacity=".8"/>
-    <path d="M46 46 C44 34 52 26 60 26 C64 18 62 10 56 4 C72 6 78 20 72 30 C80 34 78 44 74 46 C66 51 54 51 46 46 Z" fill="url(#${g})"/><path d="M46 46 C56 52 66 52 74 46" stroke="#D9C6A6" stroke-width="1.8" fill="none" opacity=".8"/>
-    <path d="M24 90 Q40 80 58 84 M28 72 Q44 64 60 66 M42 54 Q52 48 62 50 M56 34 Q60 26 62 18" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" opacity=".9"/>
-    <path d="M6 98 C2 86 10 76 24 76 C30 70 46 68 60 70 C74 68 90 70 96 76 C110 76 118 86 114 98 Z M18 80 C14 68 24 60 36 60 C44 54 76 54 84 60 C96 60 106 68 102 80 M32 62 C28 50 38 44 48 44 C54 38 68 38 74 44 C84 44 92 52 88 62 M46 46 C44 34 52 26 60 26 C64 18 62 10 56 4 C72 6 78 20 72 30 C80 34 78 44 74 46" fill="none" stroke="rgba(46,36,51,.35)" stroke-width="1.4"/></svg>`; })();
+  const creamSVG = (() => {
+    const id = ++UID, sh = 'cs' + id, fl = 'cf' + id;
+    // طبقات الكريمة من تحت لفوق: [المسار، يسار، يمين، أعلى، أسفل]
+    const tiers = [
+      ['M4 98 C0 86 10 76 22 75 C30 69 46 67 60 69 C74 67 90 69 98 75 C110 76 120 86 116 98 C96 101 24 101 4 98Z', 4, 116, 67, 99],
+      ['M16 80 C12 68 22 59 34 59 C42 53 76 53 86 59 C98 59 108 68 104 80 C90 87 30 87 16 80Z', 14, 106, 53, 86],
+      ['M30 62 C26 50 36 43 47 43 C54 37 68 37 75 43 C86 43 94 51 90 62 C78 69 42 69 30 62Z', 28, 92, 37, 68],
+      ['M44 46 C42 34 50 26 58 25 C62 17 60 9 54 3 C71 5 78 19 73 29 C81 33 80 43 76 46 C67 52 53 52 44 46Z', 42, 80, 3, 51]
+    ];
+    const ridges = (x0, x1, y0, y1, k) => Array.from({ length: Math.round((x1 - x0) / 5) }, (_, i) => {
+      const x = x0 + i * 5 + 2, tilt = 6 + k * 2;
+      return `<path d="M${x} ${y1 + 2} Q${x + tilt * .4} ${(y0 + y1) / 2} ${x + tilt} ${y0 - 2}" stroke="${i % 2 ? '#FFFFFF' : '#EADFCD'}" stroke-width="${i % 2 ? 3.2 : 2.2}" fill="none" opacity="${i % 2 ? .7 : .38}" stroke-linecap="round"/>`;
+    }).join('');
+    return `<svg viewBox="0 0 120 104" preserveAspectRatio="xMidYMax meet"><defs>
+      <linearGradient id="${sh}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".0"/><stop offset=".55" stop-color="#EFE3CF" stop-opacity=".15"/><stop offset="1" stop-color="#D8C3A2" stop-opacity=".75"/></linearGradient>
+      <radialGradient id="${sh}r" cx=".35" cy=".25" r=".9"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#FFFBF3"/><stop offset="1" stop-color="#F1E5D1"/></radialGradient>
+      <filter id="${fl}" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" result="d"/><feGaussianBlur in="d" stdDeviation=".35"/></filter>
+      ${tiers.map((t, k) => `<clipPath id="${sh}c${k}"><path d="${t[0]}"/></clipPath>`).join('')}</defs>
+      <ellipse cx="60" cy="100" rx="58" ry="5" fill="rgba(120,100,70,.25)"/>
+      <g filter="url(#${fl})">
+      ${tiers.map((t, k) => `<path d="${t[0]}" fill="url(#${sh}r)"/>
+        <g clip-path="url(#${sh}c${k})">${ridges(t[1], t[2], t[3], t[4], k)}<path d="${t[0]}" fill="url(#${sh})"/>
+          <ellipse cx="${(t[1] + t[2]) / 2 - 10}" cy="${t[3] + 6}" rx="${(t[2] - t[1]) / 4}" ry="3" fill="#fff" opacity=".85"/></g>
+        <path d="${t[0]}" fill="none" stroke="rgba(170,145,110,.28)" stroke-width=".9"/>`).join('')}
+      <path d="M58 10 Q64 14 63 22" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".95"/>
+      </g></svg>`;
+  })();
 
   /**
    * UFOBuilder.mount(el, product, {onAdd(opts, qty), addLabel, logo, soldOut})
