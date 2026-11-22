@@ -172,3 +172,28 @@
 .b-froth.hide{display:none}
 
 .b-tops.oncream{left:28%;right:28%;height:44px}
+
+/* ===== مشروب واقعي ===== */
+.b-fill{inset:-4% -6% -4% -6%!important}
+.b-cup{background:rgba(255,255,255,.28)}
+.b-cup::after{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
+  background:linear-gradient(90deg,rgba(30,20,40,.26),rgba(30,20,40,.06) 16%,transparent 30%,transparent 70%,rgba(30,20,40,.08) 84%,rgba(30,20,40,.3)),
+             linear-gradient(180deg,rgba(255,255,255,.18),transparent 22%,transparent 85%,rgba(0,0,0,.12))}
+.b-layer{box-shadow:none!important}
+.b-layer.l-top::before{background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.12) 55%,transparent)!important;height:45%!important;filter:blur(2px);opacity:1!important}
+.b-layer.surface::after{filter:brightness(1.18) blur(1px)!important;box-shadow:none!important}
+.b-logo{width:40%!important;left:30%!important;top:auto!important;bottom:9%;opacity:.88!important}
+.b-bubbles i{width:3px!important;height:3px!important;border:0!important;background:rgba(255,255,255,.55)!important}
+.b-fruits span{opacity:.88!important;filter:saturate(1.15) drop-shadow(0 1px 1px rgba(0,0,0,.15))!important}
+.b-ice-layer span{width:36px!important;height:33px!important;border-radius:10px 13px 9px 12px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.8),rgba(255,255,255,.18) 42%,rgba(205,228,246,.28) 68%,rgba(255,255,255,.62))!important;
+  border:1px solid rgba(255,255,255,.85)!important;
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.95),inset -4px -5px 7px rgba(100,140,185,.35),0 1px 3px rgba(0,0,0,.12)!important;
+  -webkit-backdrop-filter:blur(1.5px) saturate(1.25);backdrop-filter:blur(1.5px) saturate(1.25)}
+.b-over::after{display:none}
+.b-dew{position:absolute;inset:0;z-index:3;pointer-events:none;clip-path:polygon(0 0,100% 0,86% 100%,14% 100%)}
+.b-dew i{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95) 0 25%,rgba(255,255,255,.25) 45%,rgba(255,255,255,.05) 70%);box-shadow:1px 2px 1px rgba(0,0,0,.08)}
+.b-rim{position:absolute;left:-1px;right:-1px;top:-5px;height:11px;border-radius:50%;border:2px solid rgba(46,36,51,.45);background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.1));z-index:3;pointer-events:none}
+.b-straw{border-width:1.5px!important;border-color:rgba(46,36,51,.5)!important}
+.b-shadow{background:radial-gradient(ellipse,rgba(46,36,51,.28),transparent 70%)!important}
+@media(max-width:860px){.b-mid .b-ice-layer span{width:16px!important;height:15px!important;border-radius:5px!important}.b-dew i{transform:scale(.5)}.b-rim{top:-3px;height:6px}}
