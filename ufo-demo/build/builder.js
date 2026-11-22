@@ -137,7 +137,7 @@
         <div class="b-grid">
           <div class="b-col b-left">${leftHTML}</div>
           <div class="b-mid">
-            <div class="b-cupwrap"><div class="b-straw"></div><div class="b-cup"><div class="b-fill"></div><div class="b-over"><div class="b-ice-layer"></div><div class="b-cream">${creamSVG}</div>${cfg.logo ? `<img class="b-logo" src="${esc(cfg.logo)}" alt="">` : ''}</div><div class="b-empty">كوبك فاضي…<br>ابدأ بالاختيار ✦</div></div><svg class="b-outline" viewBox="0 0 200 270" preserveAspectRatio="none"><polygon points="1,1 199,1 172,269 28,269" fill="none" stroke="#2E2433" stroke-width="4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg><div class="b-shadow"></div></div>
+            <div class="b-cupwrap"><div class="b-straw"></div><div class="b-cup"><div class="b-fill"></div><div class="b-fx"></div><div class="b-over"><div class="b-fruits"></div><div class="b-bubbles">${Array.from({ length: 9 }, (_, k) => `<i style="left:${10 + k * 9}%;animation-delay:${(k * 0.53) % 3}s;animation-duration:${2.6 + (k % 3) * .7}s"></i>`).join('')}</div><div class="b-ice-layer"></div><div class="b-cream">${creamSVG}</div>${cfg.logo ? `<img class="b-logo" src="${esc(cfg.logo)}" alt="">` : ''}</div><div class="b-empty">كوبك فاضي…<br>ابدأ بالاختيار ✦</div></div><svg class="b-outline" viewBox="0 0 200 270" preserveAspectRatio="none"><polygon points="1,1 199,1 172,269 28,269" fill="none" stroke="#2E2433" stroke-width="4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg><div class="b-shadow"></div><div class="b-sticker">يمّ! 😍</div></div>
             <div class="b-say"></div>
             <div class="b-price"><span>${money(p.price)}</span><small class="b-sum"></small></div>
             <div class="b-row"><button class="b-btn b-reset">ابدأ من جديد</button></div>
@@ -167,10 +167,10 @@
         return L;
       }
       function drawCup() {
-        const L = layers(), keep = {};
+        const L = layers(), keep = {}, pours = [];
         L.forEach((l, i) => {
           let d = fill.querySelector(`[data-k="${l.key}"]`);
-          if (!d) { d = document.createElement('div'); d.dataset.k = l.key; d.className = 'b-layer ' + l.cls; d.style.height = '0%'; fill.appendChild(d); d.getBoundingClientRect(); }
+          if (!d) { d = document.createElement('div'); d.dataset.k = l.key; d.className = 'b-layer ' + l.cls; d.style.height = '0%'; fill.appendChild(d); d.getBoundingClientRect(); pours.push({ color: l.color, at: L.slice(0, i + 1).reduce((a, x) => a + x.h, 0) }); }
           const below = i > 0 ? L[i - 1].color : l.color;
           d.style.setProperty('--c', l.color); d.style.setProperty('--below', below);
           d.style.background = l.cls === 'l-milk' && i > 0
@@ -180,6 +180,25 @@
           d.style.order = i; d.style.height = l.h + '%'; keep[l.key] = 1;
         });
         [...fill.children].forEach(d => { if (!keep[d.dataset.k]) { d.style.height = '0%'; setTimeout(() => d.remove(), 450); } });
+        pours.forEach((p, k) => setTimeout(() => pour(p.color, p.at), k * 120));
+        // قطع الفواكه داخل الكوب
+        const fr = $('.b-fruits'), fk = {}; let acc = 0;
+        L.forEach(l => {
+          if (l.cls === 'l-syrup') {
+            const [gi, ci] = l.key.slice(1).split('-').map(Number), c = G[gi].choices[ci], art = garnish(c.name);
+            if (art) for (let k = 0; k < 3; k++) {
+              const key = l.key + '-' + k; fk[key] = 1;
+              let e = fr.querySelector(`[data-k="${key}"]`);
+              if (!e) { e = document.createElement('span'); e.dataset.k = key; e.innerHTML = `<svg viewBox="0 0 30 36">${art}</svg>`; e.style.animationDelay = (250 + k * 140) + 'ms'; fr.appendChild(e); }
+              e.style.left = (26 + ((k * 23 + ci * 13) % 48)) + '%'; e.style.bottom = (acc + l.h * .35 + (k % 2) * 6) + '%';
+              e.style.setProperty('--r', ((k * 47 + ci * 31) % 70 - 35) + 'deg');
+            }
+          }
+          acc += l.h;
+        });
+        [...fr.children].forEach(e => { if (!fk[e.dataset.k]) e.remove(); });
+        $('.b-bubbles').classList.toggle('on', L.length > 0);
+        $('.b-bubbles').style.height = (100 - (100 - L.reduce((a, l) => a + l.h, 0))) + '%';
         // الثلج
         const iceG = by('ice')[0]; let cubes = 0;
         if (iceG && sel[iceG.i].length) { const c = iceG.choices[sel[iceG.i][0]]; cubes = /بدون|no/i.test(c.name) ? 0 : Math.min(7, 3 + sel[iceG.i][0] * 2); }
@@ -190,6 +209,35 @@
         const ex = by('extra').some(g => sel[g.i].length);
         $('.b-cream').classList.toggle('on', ex && L.length > 0); $('.b-cream').style.bottom = (100 - fillTop - 3) + '%';
         $('.b-empty').style.opacity = L.length || cubes ? 0 : 1;
+      }
+      function pour(color, at) {
+        const fx = $('.b-fx'), st = document.createElement('div');
+        st.className = 'b-stream'; st.style.background = `linear-gradient(90deg, ${shade(color, -.15)}, ${shade(color, .3)} 45%, ${color})`;
+        st.style.height = (100 - at + 4) + '%'; fx.appendChild(st);
+        for (let k = 0; k < 7; k++) { const d = document.createElement('i'); d.className = 'b-drop'; d.style.background = color; d.style.bottom = at + '%'; d.style.setProperty('--dx', ((k - 3) * 14) + 'px'); d.style.setProperty('--dy', (-18 - (k % 3) * 10) + 'px'); d.style.animationDelay = (260 + k * 25) + 'ms'; fx.appendChild(d); setTimeout(() => d.remove(), 1200); }
+        el.querySelector('.b-cupwrap').animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-2deg) scale(1.02)' }, { transform: 'rotate(1.5deg)' }, { transform: 'none' }], { duration: 700, delay: 200 });
+        setTimeout(() => st.classList.add('out'), 650); setTimeout(() => st.remove(), 1100);
+      }
+      let wasDone = false;
+      function drinkName() {
+        const fl = by('base').flatMap(g => sel[g.i].map(ci => g.choices[ci].name));
+        const mk = by('milk').flatMap(g => sel[g.i].map(ci => g.choices[ci].name));
+        const tp = by('top').filter(g => topState[g.i] === 'poured').flatMap(g => sel[g.i].map(ci => g.choices[ci].name));
+        let n = (tp[0] || p.name);
+        if (fl.length) n += ' ب' + fl.join(' و');
+        if (mk.length) n += ' وحليب ' + mk[0].replace(/^حليب\s*/, '');
+        return n;
+      }
+      function celebrate() {
+        const wrap = el.querySelector('.b-cupwrap'); wrap.classList.add('done');
+        const box = el.querySelector('.builder'), cols = ['#F67599', '#FBD01E', '#FF751F', '#E1523D', '#8CACCF', '#fff'];
+        for (let k = 0; k < 46; k++) {
+          const c = document.createElement('i'); c.className = 'b-conf';
+          c.style.background = cols[k % cols.length]; c.style.left = (5 + (k * 37) % 90) + '%';
+          c.style.setProperty('--x', ((k * 53) % 120 - 60) + 'px'); c.style.setProperty('--rot', (k * 67 % 720) + 'deg');
+          c.style.animationDelay = (k % 12) * 40 + 'ms'; c.style.borderRadius = k % 3 ? '2px' : '50%';
+          box.appendChild(c); setTimeout(() => c.remove(), 2600);
+        }
       }
       function say() {
         const parts = [];
@@ -203,8 +251,13 @@
         else if (needMilk) hint = 'خلّها كريمية… اختر ' + needMilk.name;
         else if (top && topState[top.i] === 'none') hint = 'خذ المخفقة واخفق ' + top.name;
         else if (top && topState[top.i] === 'whisked') hint = 'الحين صبّها فوق الحليب ✦';
-        else hint = 'شوف هالطبقات! جاهز؟';
+        else hint = '✦ ' + drinkName() + ' ✦';
         $('.b-say').textContent = hint;
+        const done = !needBase && !needMilk && !top && layers().length > 0 && !G.some(g => g.required && !sel[g.i].length);
+        $('.b-say').classList.toggle('done', done);
+        if (done && !wasDone) setTimeout(celebrate, 700);
+        if (!done) el.querySelector('.b-cupwrap').classList.remove('done');
+        wasDone = done;
       }
       function sync() {
         $$('[data-g][data-c]').forEach(b => b.classList.toggle('on', sel[b.dataset.g].includes(+b.dataset.c)));
