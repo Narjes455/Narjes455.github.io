@@ -227,7 +227,7 @@
         by('top').forEach(g => { if (topState[g.i] === 'poured' && sel[g.i].length) L.push({ key: 't' + g.i, h: 22, color: g.choices[sel[g.i][0]].color || DEF_COL.top, cls: 'l-top' }); });
         by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci]; if (extraKind(c.name) === 'shot') L.push({ key: 'x' + g.i + '-' + ci, h: 11, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL.shot, cls: 'l-top' }); }));
         // الكوب يتعبّى: الحليب ياخذ المساحة الباقية (ويترك مكان للماتشا لين تنصب)
-        const T = by('extra').some(g => sel[g.i].some(ci => ['cream', 'sprinkles', 'crumble', 'honey', 'garnish'].includes(extraKind(g.choices[ci].name)))) ? (by('extra').some(g => sel[g.i].some(ci => extraKind(g.choices[ci].name) === 'cream')) ? 74 : 90) : 94;
+        const T = by('extra').some(g => sel[g.i].some(ci => ['cream', 'sprinkles', 'crumble', 'honey', 'garnish'].includes(extraKind(g.choices[ci].name)))) ? (by('extra').some(g => sel[g.i].some(ci => extraKind(g.choices[ci].name) === 'cream')) ? 68 : 90) : 94;
         const bases = L.filter(l => l.cls === 'l-syrup'), bsum = bases.reduce((a, l) => a + l.h, 0);
         if (bsum > 30) bases.forEach(l => l.h = l.h * 30 / bsum);
         const milk = L.find(l => l.cls === 'l-milk');
@@ -282,7 +282,7 @@
         const EX = []; by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci], k = extraKind(c.name); EX.push({ k, name: c.name, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL[k], key: g.i + '-' + ci }); }));
         const has = k => EX.filter(x => x.k === k), surf = 100 - fillTop, live = L.length > 0;
         const cream = has('cream').length > 0 && live;
-        const cb = surf - 4; $('.b-cream').classList.toggle('on', cream); $('.b-cream').style.bottom = cb + '%';
+        const cb = surf - 3; $('.b-cream').classList.toggle('on', cream); $('.b-cream').style.bottom = cb + '%';
         // صوص ينساب على جدار الكوب
         const dz = $('.b-drizzle'), dk = has('drizzle').map(x => x.key + x.color).join('|') + '@' + Math.round(surf);
         if (dz.dataset.k !== dk) {
@@ -294,7 +294,7 @@
         if (bb.dataset.k !== bk) { bb.dataset.k = bk; bb.innerHTML = live ? has('boba').flatMap(x => Array.from({ length: 14 }, (_, i) => `<i style="background:radial-gradient(circle at 35% 30%, ${shade(x.color, .45)}, ${x.color} 55%, ${shade(x.color, -.35)});left:${18 + (i * 23) % 62}%;bottom:${3 + (i % 3) * 5 + (i * 7) % 4}%;animation-delay:${i * 50}ms"></i>`)).join('') : ''; }
         // رشّات فوق المشروب أو الكريمة
         const tp = $('.b-tops'), tops = EX.filter(x => ['sprinkles', 'crumble', 'honey', 'garnish'].includes(x.k)), tk = tops.map(x => x.key).join('|') + (live ? 1 : 0);
-        tp.style.bottom = (cream ? cb + 12 : surf - 2) + '%'; tp.classList.toggle('oncream', cream);
+        tp.style.bottom = (cream ? cb + 17 : surf - 2) + '%'; tp.classList.toggle('oncream', cream);
         if (tp.dataset.k !== tk) {
           tp.dataset.k = tk;
           tp.innerHTML = !live ? '' : tops.map(x => {
