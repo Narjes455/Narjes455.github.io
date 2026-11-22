@@ -199,7 +199,7 @@
         <div class="b-grid">
           <div class="b-col b-left">${leftHTML}</div>
           <div class="b-mid">
-            <div class="b-cupwrap"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="bm${UID + 1}" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.014 0.05" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation="0.7"/></filter></svg><div class="b-straw"></div><div class="b-cup"><div class="b-fill" style="filter:url(#bm${++UID})"></div><div class="b-fx"></div><div class="b-over"><div class="b-fruits"></div><div class="b-bubbles">${Array.from({ length: 9 }, (_, k) => `<i style="left:${10 + k * 9}%;animation-delay:${(k * 0.53) % 3}s;animation-duration:${2.6 + (k % 3) * .7}s"></i>`).join('')}</div><div class="b-ice-layer"></div><div class="b-boba"></div><div class="b-drizzle"></div>${cfg.logo ? `<img class="b-logo" src="${esc(cfg.logo)}" alt="">` : ''}</div><div class="b-empty">كوبك فاضي…<br>ابدأ بالاختيار ✦</div></div><div class="b-dew">${Array.from({ length: 34 }, (_, k) => `<i style="left:${6 + (k * 37) % 86}%;top:${4 + (k * 53) % 90}%;width:${3 + (k % 4) * 1.6}px;height:${4 + (k % 4) * 2.2}px"></i>`).join('')}</div><svg class="b-outline" viewBox="0 0 200 270" preserveAspectRatio="none"><polygon points="1,1 199,1 172,269 28,269" fill="none" stroke="rgba(46,36,51,.55)" stroke-width="2.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><path d="M3 3 L28 266" stroke="rgba(255,255,255,.7)" stroke-width="3" vector-effect="non-scaling-stroke"/><path d="M197 3 L172 266" stroke="rgba(255,255,255,.35)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg><div class="b-rim"></div><div class="b-cream">${creamSVG}</div><div class="b-tops"></div><div class="b-shadow"></div><div class="b-sticker">يمّ! 😍</div></div>
+            <div class="b-cupwrap"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="bm${UID + 1}" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.014 0.05" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation="0.7"/></filter></svg><div class="b-straw"></div><div class="b-cup"><div class="b-fill" style="filter:url(#bm${++UID})"></div><div class="b-fx"></div><div class="b-over"><div class="b-fruits"></div><div class="b-bubbles">${Array.from({ length: 9 }, (_, k) => `<i style="left:${10 + k * 9}%;animation-delay:${(k * 0.53) % 3}s;animation-duration:${2.6 + (k % 3) * .7}s"></i>`).join('')}</div><div class="b-ice-layer"></div><div class="b-boba"></div><div class="b-drizzle"></div><div class="b-cream">${creamSVG}</div><div class="b-tops"></div>${cfg.logo ? `<img class="b-logo" src="${esc(cfg.logo)}" alt="">` : ''}</div><div class="b-empty">كوبك فاضي…<br>ابدأ بالاختيار ✦</div></div><div class="b-dew">${Array.from({ length: 34 }, (_, k) => `<i style="left:${6 + (k * 37) % 86}%;top:${4 + (k * 53) % 90}%;width:${3 + (k % 4) * 1.6}px;height:${4 + (k % 4) * 2.2}px"></i>`).join('')}</div><svg class="b-outline" viewBox="0 0 200 270" preserveAspectRatio="none"><polygon points="1,1 199,1 172,269 28,269" fill="none" stroke="rgba(46,36,51,.55)" stroke-width="2.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><path d="M3 3 L28 266" stroke="rgba(255,255,255,.7)" stroke-width="3" vector-effect="non-scaling-stroke"/><path d="M197 3 L172 266" stroke="rgba(255,255,255,.35)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg><div class="b-rim"></div><div class="b-shadow"></div><div class="b-sticker">يمّ! 😍</div></div>
             <div class="b-say"></div>
             <div class="b-price"><span>${money(p.price)}</span><small class="b-sum"></small></div>
             <div class="b-row"><button class="b-btn b-reset">ابدأ من جديد</button></div>
@@ -227,7 +227,7 @@
         by('top').forEach(g => { if (topState[g.i] === 'poured' && sel[g.i].length) L.push({ key: 't' + g.i, h: 22, color: g.choices[sel[g.i][0]].color || DEF_COL.top, cls: 'l-top' }); });
         by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci]; if (extraKind(c.name) === 'shot') L.push({ key: 'x' + g.i + '-' + ci, h: 11, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL.shot, cls: 'l-top' }); }));
         // الكوب يتعبّى: الحليب ياخذ المساحة الباقية (ويترك مكان للماتشا لين تنصب)
-        const T = by('extra').some(g => sel[g.i].some(ci => ['cream', 'sprinkles', 'crumble', 'honey', 'garnish'].includes(extraKind(g.choices[ci].name)))) ? 90 : 94;
+        const T = by('extra').some(g => sel[g.i].some(ci => ['cream', 'sprinkles', 'crumble', 'honey', 'garnish'].includes(extraKind(g.choices[ci].name)))) ? (by('extra').some(g => sel[g.i].some(ci => extraKind(g.choices[ci].name) === 'cream')) ? 74 : 90) : 94;
         const bases = L.filter(l => l.cls === 'l-syrup'), bsum = bases.reduce((a, l) => a + l.h, 0);
         if (bsum > 30) bases.forEach(l => l.h = l.h * 30 / bsum);
         const milk = L.find(l => l.cls === 'l-milk');
@@ -282,7 +282,7 @@
         const EX = []; by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci], k = extraKind(c.name); EX.push({ k, name: c.name, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL[k], key: g.i + '-' + ci }); }));
         const has = k => EX.filter(x => x.k === k), surf = 100 - fillTop, live = L.length > 0;
         const cream = has('cream').length > 0 && live;
-        const cb = 91; $('.b-cream').classList.toggle('on', cream); el.querySelector('.b-cupwrap').classList.toggle('creamy', cream); $('.b-cream').style.bottom = cb + '%';
+        const cb = surf - 4; $('.b-cream').classList.toggle('on', cream); $('.b-cream').style.bottom = cb + '%';
         // صوص ينساب على جدار الكوب
         const dz = $('.b-drizzle'), dk = has('drizzle').map(x => x.key + x.color).join('|') + '@' + Math.round(surf);
         if (dz.dataset.k !== dk) {
@@ -294,7 +294,7 @@
         if (bb.dataset.k !== bk) { bb.dataset.k = bk; bb.innerHTML = live ? has('boba').flatMap(x => Array.from({ length: 14 }, (_, i) => `<i style="background:radial-gradient(circle at 35% 30%, ${shade(x.color, .45)}, ${x.color} 55%, ${shade(x.color, -.35)});left:${18 + (i * 23) % 62}%;bottom:${3 + (i % 3) * 5 + (i * 7) % 4}%;animation-delay:${i * 50}ms"></i>`)).join('') : ''; }
         // رشّات فوق المشروب أو الكريمة
         const tp = $('.b-tops'), tops = EX.filter(x => ['sprinkles', 'crumble', 'honey', 'garnish'].includes(x.k)), tk = tops.map(x => x.key).join('|') + (live ? 1 : 0);
-        tp.style.bottom = (cream ? cb + 16 : surf - 2) + '%'; tp.classList.toggle('oncream', cream);
+        tp.style.bottom = (cream ? cb + 12 : surf - 2) + '%'; tp.classList.toggle('oncream', cream);
         if (tp.dataset.k !== tk) {
           tp.dataset.k = tk;
           tp.innerHTML = !live ? '' : tops.map(x => {
