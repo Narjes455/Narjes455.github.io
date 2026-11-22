@@ -37,12 +37,14 @@
 .b-btn[disabled]{opacity:.45;cursor:not-allowed}
 .b-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .b-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
-.b-whisk{position:relative;height:110px;display:grid;place-items:end center;margin-top:6px}
-.b-bowl{width:130px}
+.b-whisk{position:relative;height:128px;display:grid;place-items:end center;margin-top:6px;cursor:grab;touch-action:none;user-select:none}
+.b-whisk.drag{cursor:grabbing}
+.b-bowl{width:150px}
 .b-bowl svg{width:100%;display:block}
-.b-wk{position:absolute;width:44px;top:-6px;right:calc(50% - 64px);transform:rotate(22deg);transform-origin:50% 90%;transition:.3s}
-.whisking .b-wk{right:calc(50% - 22px);top:-20px;animation:wk .18s linear infinite}
-@keyframes wk{0%{transform:rotate(-14deg) translateX(-6px)}50%{transform:rotate(14deg) translateX(6px)}100%{transform:rotate(-14deg) translateX(-6px)}}
+.b-wk{position:absolute;width:44px;top:-22px;right:calc(50% - 74px);transform:rotate(24deg);transform-origin:50% 85%;transition:right .35s,top .35s,transform .35s;pointer-events:none;z-index:2}
+.whisking .b-wk{right:calc(50% - 22px);top:-38px;transform:none;animation:wkz .17s ease-in-out infinite alternate}
+.whisking.drag .b-wk{animation:none;transform:translateX(var(--wx,0)) rotate(calc(var(--wx,0px) / 4px * 1deg));transition:none}
+@keyframes wkz{from{transform:translateX(-24px) rotate(-7deg)}to{transform:translateX(24px) rotate(7deg)}}
 .whisking .b-bowl{animation:shake .2s linear infinite}
 @keyframes shake{50%{transform:translateX(2px)}}
 .b-ice{display:flex;align-items:center;gap:8px}
@@ -151,3 +153,18 @@
 .b-tops em svg{width:100%;height:100%}
 @keyframes sprinkle{from{transform:translateY(-140px) rotate(0);opacity:0}}
 @media(max-width:860px){.b-mid .b-boba i{width:7px;height:7px}.b-mid .b-tops b{width:5px;height:2px}.b-mid .b-tops u{width:4px;height:3px}.b-mid .b-tops em{width:14px;height:17px}.b-mid .b-tops{height:16px}}
+
+/* ===== خفق واقعي ===== */
+.b-bowl .froth{opacity:var(--froth,0);transition:opacity .12s}
+.b-bowl .clumps{opacity:calc(1 - var(--froth,0));transition:opacity .12s}
+.whisking .b-bowl{animation:shake .12s linear infinite}
+.b-splash{position:absolute;inset:0;pointer-events:none}
+.b-splash i{position:absolute;top:58px;width:5px;height:5px;border-radius:50%;animation:wspl .55s ease-out forwards}
+@keyframes wspl{from{transform:none;opacity:1}to{transform:translate(var(--dx),-28px) scale(.5);opacity:0}}
+.b-froth{margin:8px auto 0;max-width:230px;text-align:center}
+.b-froth .bar{height:12px;background:#fff;border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.b-froth .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7FA84A,#CDE89E);transition:width .12s}
+.b-froth span{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-top:4px}
+.b-froth.full .bar{background:#DDF1D9}
+.b-froth.full span{color:#3E7A2A}
+.b-froth.hide{display:none}

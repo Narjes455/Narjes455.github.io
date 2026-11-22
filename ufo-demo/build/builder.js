@@ -45,20 +45,26 @@
   }
   /** برطمان صوص زجاجي */
   function syrupJar(color, name) {
-    const g = 'l' + (++UID), gl = 'gl' + UID, top = shade(color, .25), bot = shade(color, -.28);
-    return `<svg viewBox="0 0 100 104" class="bj"><defs>
-      <linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset=".55" stop-color="${color}"/><stop offset="1" stop-color="${bot}"/></linearGradient>
-      <linearGradient id="${gl}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".25" stop-color="#fff" stop-opacity=".05"/><stop offset=".8" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient></defs>
-      <ellipse cx="44" cy="98" rx="30" ry="4" fill="rgba(46,36,51,.18)"/>
-      <path d="M16 30 Q14 26 18 24 H70 Q74 26 72 30 L74 86 Q74 96 64 96 H24 Q14 96 14 86Z" fill="rgba(255,255,255,.35)"/>
-      <path d="M17 44 Q44 38 71 44 L72.5 86 Q72.5 94 64 94 H24 Q15.5 94 15.5 86Z" fill="url(#${g})"/>
-      <ellipse cx="44" cy="44" rx="27" ry="4.5" fill="${top}" opacity=".9"/>
-      <path d="M17 44 Q20 52 22 46 Q24 58 27 46" fill="${color}" opacity=".85"/>
-      <path d="M16 30 Q14 26 18 24 H70 Q74 26 72 30 L74 86 Q74 96 64 96 H24 Q14 96 14 86Z" fill="url(#${gl})" stroke="rgba(46,36,51,.75)" stroke-width="2"/>
-      <rect x="14" y="16" width="60" height="10" rx="3" fill="#E9E2D6" stroke="rgba(46,36,51,.75)" stroke-width="2"/>
-      <path d="M72 40 Q90 42 88 60 Q86 74 72 72" fill="none" stroke="rgba(46,36,51,.55)" stroke-width="3.5"/>
-      <rect x="21" y="34" width="5" height="52" rx="2.5" fill="#fff" opacity=".5"/>
-      <g transform="translate(58 2) scale(1.15)">${garnish(name)}</g></svg>`;
+    const id = ++UID, g = 'l' + id, cl = 'cl' + id, top = shade(color, .3), bot = shade(color, -.32), art = garnish(name);
+    const surf = 'M17 46 Q24 40 31 45 Q38 50 45 44 Q52 39 59 45 Q66 50 72 44';
+    return `<svg viewBox="0 0 100 106" class="bj"><defs>
+      <linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset=".45" stop-color="${color}"/><stop offset="1" stop-color="${bot}"/></linearGradient>
+      <clipPath id="${cl}"><path d="${surf} L72.5 86 Q72.5 95 64 95 H24 Q15.5 95 15.5 86Z"/></clipPath></defs>
+      <ellipse cx="44" cy="100" rx="31" ry="4" fill="rgba(46,36,51,.2)"/>
+      <path d="M15 28 Q14 24 18 23 H70 Q74 24 73 28 L74 87 Q74 97 64 97 H24 Q14 97 14 87Z" fill="rgba(255,255,255,.4)"/>
+      <path d="${surf} L72.5 86 Q72.5 95 64 95 H24 Q15.5 95 15.5 86Z" fill="url(#${g})"/>
+      <g clip-path="url(#${cl})">
+        ${art ? [[18, 54, .62, -20], [40, 62, .7, 15], [54, 48, .55, 35], [24, 74, .5, 60]].map(([x, y, sc, r]) => `<g transform="translate(${x} ${y}) rotate(${r} 15 18) scale(${sc})" opacity=".92">${art}</g>`).join('') : ''}
+        ${Array.from({ length: 14 }, (_, k) => `<circle cx="${20 + (k * 37) % 50}" cy="${52 + (k * 23) % 40}" r="${.8 + (k % 3) * .6}" fill="${k % 2 ? shade(color, -.45) : '#fff'}" opacity="${k % 2 ? .55 : .35}"/>`).join('')}
+        <path d="M18 60 Q30 54 44 62 T70 58" stroke="${top}" stroke-width="3" fill="none" opacity=".5"/>
+      </g>
+      <path d="${surf}" stroke="${shade(color, .45)}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M58 22 Q60 30 61 44" stroke="#C9A061" stroke-width="5" stroke-linecap="round"/><ellipse cx="57" cy="18" rx="6" ry="4" fill="#D9B27A" transform="rotate(-15 57 18)"/>
+      <path d="M68 23 Q72 23 72 30 L73 52 Q73 58 70 58 Q67 58 67.5 52 L68 34 Q66 26 68 23Z" fill="${color}"/><path d="M70 30 L70.5 50" stroke="#fff" stroke-width="1.3" opacity=".6" stroke-linecap="round"/><circle cx="70" cy="60" r="2.6" fill="${color}"/>
+      <path d="M15 28 Q14 24 18 23 H70 Q74 24 73 28 L74 87 Q74 97 64 97 H24 Q14 97 14 87Z" fill="none" stroke="rgba(46,36,51,.75)" stroke-width="2"/>
+      <path d="M20 32 Q19 60 21 88" stroke="#fff" stroke-width="4.5" opacity=".55" stroke-linecap="round" fill="none"/><path d="M27 34 L27 44" stroke="#fff" stroke-width="2" opacity=".45" stroke-linecap="round"/>
+      <path d="M73 38 Q91 40 89 60 Q87 76 73 74" fill="none" stroke="rgba(46,36,51,.55)" stroke-width="3.5"/>
+      ${art ? `<g transform="translate(1 1) scale(1.25)">${art}</g>` : ''}</svg>`;
   }
   /** قارورة حليب زجاجية */
   function milkBottle(color, name) {
@@ -76,26 +82,37 @@
   function jar(color, kind, name) { return kind === 'milk' ? milkBottle(color, name) : syrupJar(color, name); }
   const photo = (url, name) => `<span class="b-photo"><img src="${esc(url)}" alt="${esc(name)}" loading="lazy"></span>`;
 
-  /** وعاء الماتشا (شاوان) */
+  /** وعاء الماتشا (شاوان) — الرغوة تتحكم فيها --froth من 0 إلى 1 */
   const bowl = (color, state) => {
-    const g = 'w' + (++UID), m = 'mt' + UID;
-    const surf = state === 'empty' ? '#EFE6D6' : state === 'whisked' ? shade(color, .25) : shade(color, -.05);
-    return `<svg viewBox="0 0 140 84" class="bowl ${state}"><defs>
+    const id = ++UID, g = 'w' + id, m = 'mt' + id, f = 'fr' + id, cl = 'bc' + id;
+    if (state === 'empty') return `<svg viewBox="0 0 140 84" class="bowl"><defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3A3540"/><stop offset=".4" stop-color="#6A6370"/><stop offset="1" stop-color="#2E2A33"/></linearGradient></defs><ellipse cx="70" cy="80" rx="40" ry="4" fill="rgba(46,36,51,.2)"/><path d="M10 24 Q12 74 70 76 Q128 74 130 24Z" fill="url(#${g})"/><ellipse cx="70" cy="24" rx="60" ry="13" fill="#E8DCC4"/><ellipse cx="70" cy="25" rx="54" ry="10" fill="#EFE6D6"/><path d="M28 26 Q60 34 104 26" stroke="${shade(color, .1)}" stroke-width="3" opacity=".5" fill="none"/></svg>`;
+    return `<svg viewBox="0 0 140 84" class="bowl"><defs>
       <linearGradient id="${g}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3A3540"/><stop offset=".4" stop-color="#6A6370"/><stop offset="1" stop-color="#2E2A33"/></linearGradient>
-      <radialGradient id="${m}" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="${state === 'whisked' ? shade(color, .45) : surf}"/><stop offset="1" stop-color="${shade(color, -.2)}"/></radialGradient></defs>
+      <radialGradient id="${m}" cx=".5" cy=".45" r=".65"><stop offset="0" stop-color="${shade(color, -.12)}"/><stop offset="1" stop-color="${shade(color, -.4)}"/></radialGradient>
+      <radialGradient id="${f}" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="${shade(color, .62)}"/><stop offset=".6" stop-color="${shade(color, .42)}"/><stop offset="1" stop-color="${shade(color, .15)}"/></radialGradient>
+      <clipPath id="${cl}"><ellipse cx="70" cy="25" rx="54" ry="10"/></clipPath></defs>
       <ellipse cx="70" cy="80" rx="40" ry="4" fill="rgba(46,36,51,.2)"/>
       <path d="M10 24 Q12 74 70 76 Q128 74 130 24Z" fill="url(#${g})"/>
       <path d="M10 24 Q20 40 30 30 Q40 46 52 32 Q62 44 74 30 Q86 46 98 32 Q110 42 130 24" fill="#E8DCC4" opacity=".9"/>
       <ellipse cx="70" cy="24" rx="60" ry="13" fill="#E8DCC4"/>
-      <ellipse cx="70" cy="25" rx="54" ry="10" fill="${state === 'empty' ? '#EFE6D6' : `url(#${m})`}"/>
-      ${state === 'whisked' ? Array.from({ length: 18 }, (_, k) => `<circle cx="${30 + (k * 37) % 80}" cy="${19 + (k * 13) % 12}" r="${0.8 + (k % 3) * .7}" fill="#fff" opacity=".6"/>`).join('') : state === 'powder' ? `<ellipse cx="70" cy="24" rx="20" ry="4.5" fill="${shade(color, -.25)}" opacity=".7"/>` : ''}
+      <g clip-path="url(#${cl})">
+        <ellipse cx="70" cy="25" rx="54" ry="10" fill="url(#${m})"/>
+        <g class="clumps">${Array.from({ length: 12 }, (_, k) => `<circle cx="${30 + (k * 41) % 80}" cy="${19 + (k * 7) % 12}" r="${1.4 + (k % 3)}" fill="${shade(color, -.5)}" opacity=".8"/><circle cx="${31 + (k * 41) % 80}" cy="${18 + (k * 7) % 12}" r="${.8 + (k % 2)}" fill="${shade(color, .25)}" opacity=".7"/>`).join('')}</g>
+        <g class="froth">
+          <ellipse cx="70" cy="25" rx="56" ry="11" fill="url(#${f})"/>
+          ${Array.from({ length: 70 }, (_, k) => `<circle cx="${18 + (k * 53) % 104}" cy="${16 + (k * 17) % 18}" r="${.5 + (k % 4) * .35}" fill="#fff" opacity="${.35 + (k % 3) * .15}"/>`).join('')}
+          ${Array.from({ length: 8 }, (_, k) => `<circle cx="${34 + (k * 29) % 72}" cy="${20 + (k * 5) % 9}" r="${1.6 + (k % 2)}" fill="none" stroke="#fff" stroke-width=".6" opacity=".7"/>`).join('')}
+          <path d="M40 24 Q50 20 58 25 T76 24 T96 25" stroke="${shade(color, .7)}" stroke-width="1.4" fill="none" opacity=".7"/>
+        </g>
+      </g>
       <path d="M22 34 Q24 60 52 68" stroke="#fff" stroke-width="3" opacity=".18" fill="none" stroke-linecap="round"/></svg>`;
   };
-  /** مخفقة خيزران (تشاسن) */
-  const whisk = (() => { const g = 'bb' + (++UID); return `<svg viewBox="0 0 60 130" class="whisk"><defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B98A4E"/><stop offset=".5" stop-color="#E8C98E"/><stop offset="1" stop-color="#A67A40"/></linearGradient></defs>
-    <rect x="23" y="2" width="14" height="52" rx="6" fill="url(#${g})"/><path d="M23 20 h14 M23 36 h14" stroke="#8C6533" stroke-width="1.4"/>
-    ${Array.from({ length: 13 }, (_, k) => { const d = (k - 6) * 3.2; return `<path d="M30 52 Q${30 + d * 1.8} 92 ${30 + d} 126" fill="none" stroke="${k % 2 ? '#E2C48C' : '#C9A061'}" stroke-width="1.8"/>`; }).join('')}
-    <ellipse cx="30" cy="96" rx="9" ry="16" fill="none" stroke="#C9A061" stroke-width="1.4" opacity=".8"/></svg>`; })();
+  /** مخفقة خيزران (تشاسن) واقعية */
+  const whisk = (() => { const g = 'bb' + (++UID); return `<svg viewBox="0 0 60 140" class="whisk"><defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#A77B42"/><stop offset=".45" stop-color="#EBCF98"/><stop offset="1" stop-color="#9A6E38"/></linearGradient></defs>
+    <rect x="23" y="2" width="14" height="56" rx="6.5" fill="url(#${g})"/><path d="M23 22 h14 M23 40 h14" stroke="#7E5A2B" stroke-width="1.6"/><rect x="25" y="4" width="3" height="52" rx="1.5" fill="#fff" opacity=".35"/>
+    ${Array.from({ length: 17 }, (_, k) => { const d = (k - 8); return `<path d="M${30 + d * .35} 56 C${30 + d * 2.6} 74, ${30 + d * 2.9} 112, ${30 + d * 1.1} 134" fill="none" stroke="${k % 2 ? '#E4C892' : '#C49B5C'}" stroke-width="1.5" stroke-linecap="round"/>`; }).join('')}
+    ${Array.from({ length: 7 }, (_, k) => { const d = (k - 3); return `<path d="M${30 + d * .4} 60 C${30 + d * 1.2} 80, ${30 + d * 1.3} 104, ${30 + d * .6} 118" fill="none" stroke="#B88F52" stroke-width="1.3"/>`; }).join('')}
+    <path d="M30 134 C22 132 16 124 16 112" stroke="#C49B5C" stroke-width="1" fill="none" opacity=".6"/></svg>`; })();
   /** مغرفة ثلج */
   const scoop = (() => { const g = 'sc' + (++UID); return `<svg viewBox="0 0 110 64" class="bj"><defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F7FA"/><stop offset=".5" stop-color="#B9C3CE"/><stop offset="1" stop-color="#8A96A3"/></linearGradient></defs>
     <path d="M6 32 Q6 6 38 6 L60 8 Q68 32 60 56 L38 58 Q6 58 6 32Z" fill="url(#${g})" stroke="rgba(46,36,51,.6)" stroke-width="1.6"/>
@@ -133,6 +150,7 @@
       const by = r => G.filter(g => g.role === r);
       const sel = {}; G.forEach(g => sel[g.i] = []);
       const topState = {}; // gi → 'none' | 'whisking' | 'whisked' | 'poured'
+      const froth = {};
       by('top').forEach(g => { topState[g.i] = 'none'; if (g.choices.length === 1 || g.required) sel[g.i] = [0]; });
       // اختيارات مبدئية للمجموعات الإلزامية الأحادية (غير الماتشا)
       G.forEach(g => { if (g.required && g.type !== 'multi' && g.role !== 'top' && g.role !== 'base' && g.choices.length) sel[g.i] = [0]; });
@@ -146,7 +164,7 @@
       const rightHTML = [
         ...by('milk').map(g => groupBox(g, `<div class="b-tiles">${g.choices.map((c, ci) => tile(g, c, ci, 'milk')).join('')}</div>`)),
         ...by('top').map(g => groupBox(g, `${g.choices.length > 1 ? `<div class="b-chips">${g.choices.map((c, ci) => `<button class="b-btn b-chip" data-g="${g.i}" data-c="${ci}">${c.img ? `<img class="b-chimg" src="${esc(c.img)}" alt="">` : ''}${esc(c.name)}${Number(c.price) ? ` <small>+${Number(c.price)}</small>` : ''}<i>✓</i></button>`).join('')}</div>` : ''}
-          <div class="b-whisk" data-top="${g.i}"><div class="b-bowl"></div><div class="b-wk">${whisk}</div></div>
+          <div class="b-whisk" data-top="${g.i}"><div class="b-bowl"></div><div class="b-wk">${whisk}</div><div class="b-splash"></div></div><div class="b-froth"><div class="bar"><i></i></div><span>حرّك المخفقة يمين ويسار ✦ أو اضغط «اخفقها»</span></div>
           <div class="b-row"><button class="b-btn b-act" data-act="whisk" data-g="${g.i}">اخفقها أول</button><button class="b-btn b-act" data-act="pour" data-g="${g.i}">صبّها</button></div>`)),
         ...by('ice').map(g => groupBox(g, `<div class="b-ice">${scoop}<div class="b-chips">${g.choices.map((c, ci) => `<button class="b-btn b-chip" data-g="${g.i}" data-c="${ci}">${c.img ? `<img class="b-chimg" src="${esc(c.img)}" alt="">` : ''}${esc(c.name)}${Number(c.price) ? ` <small>+${Number(c.price)}</small>` : ''}<i>✓</i></button>`).join('')}</div></div>`)),
         ...by('extra').map(g => groupBox(g, `<div class="b-tiles">${g.choices.map((c, ci) => `<button class="b-tile" data-g="${g.i}" data-c="${ci}">${c.img ? photo(c.img, c.name) : extraArt(c.name, c.color)}<span class="b-btn">${esc(c.name)}${Number(c.price) ? ` <small>+${Number(c.price)}</small>` : ''}<i>✓</i></span></button>`).join('')}</div>`, g.type === 'multi' && maxOf(g) < g.choices.length ? `اختر لين ${maxOf(g)}` : ''))
@@ -182,9 +200,19 @@
         const L = [];
         by('base').forEach(g => sel[g.i].forEach(ci => L.push({ key: 'b' + g.i + '-' + ci, h: 13, color: g.choices[ci].color || DEF_COL.base, cls: 'l-syrup' })));
         by('milk').forEach(g => sel[g.i].forEach(ci => L.push({ key: 'm' + g.i + '-' + ci, h: by('top').some(t => topState[t.i] === 'poured') ? 40 : 52, color: g.choices[ci].color || DEF_COL.milk, cls: 'l-milk' })));
-        by('top').forEach(g => { if (topState[g.i] === 'poured' && sel[g.i].length) L.push({ key: 't' + g.i, h: 24, color: g.choices[sel[g.i][0]].color || DEF_COL.top, cls: 'l-top' }); });
+        by('top').forEach(g => { if (topState[g.i] === 'poured' && sel[g.i].length) L.push({ key: 't' + g.i, h: 22, color: g.choices[sel[g.i][0]].color || DEF_COL.top, cls: 'l-top' }); });
         by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci]; if (extraKind(c.name) === 'shot') L.push({ key: 'x' + g.i + '-' + ci, h: 11, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL.shot, cls: 'l-top' }); }));
-        const cap = by('extra').some(g => sel[g.i].length) ? 76 : 88, tot = L.reduce((a, l) => a + l.h, 0); if (tot > cap) L.forEach(l => l.h = l.h * cap / tot);
+        // الكوب يتعبّى: الحليب ياخذ المساحة الباقية (ويترك مكان للماتشا لين تنصب)
+        const T = by('extra').some(g => sel[g.i].some(ci => ['cream', 'sprinkles', 'crumble', 'honey', 'garnish'].includes(extraKind(g.choices[ci].name)))) ? 84 : 94;
+        const bases = L.filter(l => l.cls === 'l-syrup'), bsum = bases.reduce((a, l) => a + l.h, 0);
+        if (bsum > 30) bases.forEach(l => l.h = l.h * 30 / bsum);
+        const milk = L.find(l => l.cls === 'l-milk');
+        if (milk) {
+          const topRoom = by('top').length && !by('top').some(t => topState[t.i] === 'poured') ? 22 : 0;
+          const others = L.filter(l => l !== milk).reduce((a, l) => a + l.h, 0);
+          milk.h = Math.max(18, T - others - topRoom);
+        }
+        const tot = L.reduce((a, l) => a + l.h, 0); if (tot > T) L.forEach(l => l.h = l.h * T / tot);
         return L;
       }
       function drawCup() {
@@ -303,11 +331,53 @@
         if (!done) el.querySelector('.b-cupwrap').classList.remove('done');
         wasDone = done;
       }
+      function setFroth(gi) {
+        const w = el.querySelector(`[data-top="${gi}"]`); if (!w) return;
+        const v = Math.max(0, Math.min(1, froth[gi] || 0));
+        w.style.setProperty('--froth', v);
+        const bar = w.parentNode.querySelector('.b-froth'); if (bar) { bar.querySelector('i').style.width = Math.round(v * 100) + '%'; bar.classList.toggle('full', v >= 1); bar.classList.toggle('hide', topState[gi] === 'poured'); }
+      }
+      function splash(gi) {
+        const sp = el.querySelector(`[data-top="${gi}"] .b-splash`); if (!sp) return;
+        const g = G[gi], c = sel[gi].length ? (g.choices[sel[gi][0]].color || DEF_COL.top) : DEF_COL.top;
+        const d = document.createElement('i'); d.style.background = shade(c, .3); d.style.left = (40 + Math.random() * 20) + '%';
+        d.style.setProperty('--dx', (Math.random() * 40 - 20) + 'px'); sp.appendChild(d); setTimeout(() => d.remove(), 600);
+      }
+      function whiskTo(gi, v) {
+        froth[gi] = Math.min(1, v); setFroth(gi);
+        if (froth[gi] >= 1 && topState[gi] !== 'whisked') { topState[gi] = 'whisked'; el.querySelector(`[data-top="${gi}"]`).classList.remove('whisking', 'drag'); sync(); }
+      }
+      function autoWhisk(gi) {
+        if (topState[gi] !== 'none') return;
+        topState[gi] = 'whisking'; sync();
+        const t0 = performance.now(), dur = 2200, start = froth[gi] || 0;
+        const step = now => { if (topState[gi] !== 'whisking') return; const p = (now - t0) / dur; if (Math.random() < .35) splash(gi); whiskTo(gi, start + (1 - start) * p); if (p < 1) requestAnimationFrame(step); };
+        requestAnimationFrame(step);
+      }
+      // الخفق بالسحب: حرّك المخفقة يمين ويسار
+      el.querySelectorAll('.b-whisk').forEach(w => {
+        const gi = +w.dataset.top; let lastX = null;
+        const wk = w.querySelector('.b-wk');
+        w.addEventListener('pointerdown', e => { if (topState[gi] !== 'none' && topState[gi] !== 'whisking') return; if (!sel[gi].length) return; lastX = e.clientX; w.setPointerCapture(e.pointerId); topState[gi] = 'whisking'; w.classList.add('whisking', 'drag'); });
+        w.addEventListener('pointermove', e => {
+          if (lastX == null || topState[gi] !== 'whisking') return;
+          const r = w.getBoundingClientRect(), x = Math.max(-40, Math.min(40, e.clientX - r.left - r.width / 2));
+          wk.style.setProperty('--wx', x + 'px');
+          const dist = Math.abs(e.clientX - lastX); lastX = e.clientX;
+          if (dist > 2 && Math.random() < .3) splash(gi);
+          whiskTo(gi, (froth[gi] || 0) + dist / 900);
+        });
+        const end = () => { if (lastX == null) return; lastX = null; w.classList.remove('drag'); wk.style.removeProperty('--wx'); if (topState[gi] === 'whisking' && (froth[gi] || 0) < 1) { topState[gi] = 'none'; w.classList.remove('whisking'); sync(); } };
+        w.addEventListener('pointerup', end); w.addEventListener('pointercancel', end);
+      });
       function sync() {
         $$('[data-g][data-c]').forEach(b => b.classList.toggle('on', sel[b.dataset.g].includes(+b.dataset.c)));
         by('top').forEach(g => {
           const st = topState[g.i], c = sel[g.i].length ? g.choices[sel[g.i][0]] : null, w = el.querySelector(`[data-top="${g.i}"]`);
-          w.querySelector('.b-bowl').innerHTML = bowl(c ? (c.color || DEF_COL.top) : '#ddd', st === 'poured' ? 'empty' : st === 'whisked' ? 'whisked' : 'powder');
+          const bw0 = w.querySelector('.b-bowl'), bkey = (c ? c.color : '') + (st === 'poured' ? 'e' : 'f');
+          if (bw0.dataset.k !== bkey) { bw0.dataset.k = bkey; bw0.innerHTML = bowl(c ? (c.color || DEF_COL.top) : '#bbb', st === 'poured' ? 'empty' : 'f'); }
+          if (st === 'whisked') froth[g.i] = 1;
+          setFroth(g.i);
           w.classList.toggle('whisking', st === 'whisking');
           const bw = el.querySelector(`[data-act="whisk"][data-g="${g.i}"]`), bp = el.querySelector(`[data-act="pour"][data-g="${g.i}"]`);
           bw.disabled = !c || st !== 'none'; bw.classList.toggle('on', st === 'whisked' || st === 'poured');
@@ -321,7 +391,7 @@
       el.addEventListener('click', e => {
         const t = e.target.closest('button'); if (!t || t.disabled) return;
         if (t.dataset.q) { qty = Math.max(1, Math.min(20, qty + +t.dataset.q)); $('.b-q').textContent = qty; sync(); return; }
-        if (t.classList.contains('b-reset')) { G.forEach(g => sel[g.i] = []); by('top').forEach(g => { topState[g.i] = 'none'; if (g.choices.length === 1 || g.required) sel[g.i] = [0]; }); sync(); return; }
+        if (t.classList.contains('b-reset')) { G.forEach(g => { sel[g.i] = []; froth[g.i] = 0; }); by('top').forEach(g => { topState[g.i] = 'none'; if (g.choices.length === 1 || g.required) sel[g.i] = [0]; }); sync(); return; }
         if (t.classList.contains('b-add')) {
           const miss = G.find(g => g.required && (!sel[g.i].length || (g.role === 'top' && topState[g.i] !== 'poured')));
           if (miss) { $('.b-err').textContent = miss.role === 'top' ? 'باقي تخفق ' + miss.name + ' وتصبّها' : 'اختر ' + miss.name; $('.b-err').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
@@ -332,13 +402,13 @@
         }
         if (t.dataset.act) {
           const gi = +t.dataset.g;
-          if (t.dataset.act === 'whisk') { topState[gi] = 'whisking'; sync(); setTimeout(() => { topState[gi] = 'whisked'; sync(); }, 1300); }
+          if (t.dataset.act === 'whisk') autoWhisk(gi);
           else { topState[gi] = 'poured'; sync(); }
           return;
         }
         if (t.dataset.g != null && t.dataset.c != null) {
           const g = G[+t.dataset.g], ci = +t.dataset.c, a = sel[g.i], has = a.indexOf(ci);
-          if (g.role === 'top' && topState[g.i] !== 'none') { topState[g.i] = 'none'; }
+          if (g.role === 'top') { if (topState[g.i] !== 'none') topState[g.i] = 'none'; froth[g.i] = 0; }
           if (g.type === 'multi') {
             if (has >= 0) a.splice(has, 1);
             else if (a.length >= maxOf(g)) { $('.b-say').textContent = 'تقدر تختار لين ' + maxOf(g) + ' بس'; t.animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'none' }], { duration: 250 }); return; }
