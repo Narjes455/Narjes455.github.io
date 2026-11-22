@@ -16,7 +16,7 @@ const P={id:'demo',name:'ماتشا على مزاجك',price:18,options:[
       { name: 'الحليب', type: 'single', required: true, role: 'milk', choices: [['كامل الدسم', '#FFF8EC', 0], ['شوفان', '#F3E3C3', 2], ['جوز الهند', '#FFFDF7', 2], ['لوز', '#F1E2CF', 2]].map(([n, c, pr]) => ({ name: n, price: pr, color: c })) },
       { name: 'الماتشا', type: 'single', required: true, role: 'top', choices: [{ name: 'ماتشا كلاسيك', price: 0, color: '#8DB255' }, { name: 'سيريمونيال', price: 4, color: '#6E9A3A' }] },
       { name: 'الثلج', type: 'single', required: true, role: 'ice', choices: [{ name: 'ثلج عادي', price: 0 }, { name: 'ثلج كثير', price: 0 }, { name: 'بدون ثلج', price: 0 }] },
-      { name: 'إضافات', type: 'multi', required: false, role: 'extra', choices: [{ name: 'كريمة مخفوقة', price: 3, color: '#FFFFFF' }] }
+      { name: 'إضافات', type: 'multi', required: false, role: 'extra', choices: [{ name: 'كريمة مخفوقة', price: 3, color: '#FFFFFF' }, { name: 'صوص كراميل', price: 2, color: '#C9761E' }, { name: 'صوص شوكولاتة', price: 2, color: '#5A2E14' }, { name: 'لوتس كرامبل', price: 3, color: '#C98A4B' }, { name: 'سبرنكلز', price: 1, color: '#F67599' }, { name: 'لؤلؤ بوبا', price: 4, color: '#3B2416' }] }
 ]};
 UFOBuilder.mount(document.getElementById('m'),P,{title:P.name,subtitle:'اختر، اخفق، صبّ… وكوبك يتكوّن قدامك ✦',logo:'logo.webp',onAdd:(o,q)=>{const t=document.getElementById('toast');t.textContent='انضاف '+q+' للسلة ✦ (ديمو)';t.className='on';setTimeout(()=>t.className='',2500)}});
 </script></body></html>

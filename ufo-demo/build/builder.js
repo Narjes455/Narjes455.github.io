@@ -101,6 +101,26 @@
     <path d="M6 32 Q6 6 38 6 L60 8 Q68 32 60 56 L38 58 Q6 58 6 32Z" fill="url(#${g})" stroke="rgba(46,36,51,.6)" stroke-width="1.6"/>
     <rect x="62" y="26" width="44" height="12" rx="6" fill="url(#${g})" stroke="rgba(46,36,51,.6)" stroke-width="1.6"/>
     ${[[16, 16], [30, 24], [18, 34], [36, 12], [42, 32]].map(([x, y], k) => `<g transform="rotate(${k * 17 - 20} ${x + 7} ${y + 7})"><rect x="${x}" y="${y}" width="14" height="14" rx="3.5" fill="rgba(235,245,255,.85)" stroke="rgba(150,180,210,.9)" stroke-width="1"/><path d="M${x + 2} ${y + 3} h7" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>`).join('')}</svg>`; })();
+  /** نوع الإضافة حسب اسمها */
+  const extraKind = n => /كريم|cream|ويب/i.test(n) ? 'cream' : /صوص|سيرب|syrup|sauce|كراميل|شوكول|نوتيلا|درزل/i.test(n) ? 'drizzle'
+    : /سبرنك|ملون|sprink/i.test(n) ? 'sprinkles' : /بوبا|لؤلؤ|boba|pearl|تابيوكا/i.test(n) ? 'boba'
+    : /لوتس|كرمبل|كرامبل|بسكوت|بسكويت|crumb|lotus|oreo|أوريو/i.test(n) ? 'crumble' : /عسل|honey/i.test(n) ? 'honey' : /شوت|إسبريسو|اسبريسو|espresso|قهوة/i.test(n) ? 'shot' : 'garnish';
+  const EXTRA_COL = { cream: '#FFFDF8', drizzle: '#C9761E', sprinkles: '#F67599', boba: '#3B2416', crumble: '#C98A4B', honey: '#F2A900', shot: '#4A2A18', garnish: '#F67599' };
+  function extraArt(name, color) {
+    const k = extraKind(name), c = color && color !== '#FFFFFF' ? color : EXTRA_COL[k], id = 'e' + (++UID);
+    const shadow = `<ellipse cx="50" cy="94" rx="30" ry="4" fill="rgba(46,36,51,.18)"/>`;
+    const dish = (inner) => `${shadow}<path d="M14 58 Q16 90 50 92 Q84 90 86 58Z" fill="#fff" stroke="rgba(46,36,51,.7)" stroke-width="2"/><ellipse cx="50" cy="58" rx="36" ry="9" fill="#F3EDE4" stroke="rgba(46,36,51,.7)" stroke-width="2"/>${inner}<path d="M22 66 Q26 84 44 88" stroke="#fff" stroke-width="3" opacity=".6" fill="none" stroke-linecap="round"/>`;
+    let body = '';
+    if (k === 'cream') body = `${shadow}<path d="M18 86 Q14 70 26 66 Q22 52 38 50 Q38 34 52 36 Q60 22 66 38 Q82 38 78 52 Q90 56 84 70 Q90 84 80 86Z" fill="#FFFDF8" stroke="rgba(46,36,51,.45)" stroke-width="2"/><path d="M28 70 Q46 62 72 70 M36 54 Q50 48 66 54" stroke="#E9DFD0" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="58" cy="30" r="7" fill="#E0182D"/><path d="M58 23 Q60 14 66 12" stroke="#3E7A2A" stroke-width="2" fill="none"/><circle cx="55" cy="28" r="2" fill="#fff" opacity=".6"/>`;
+    else if (k === 'drizzle') body = `${shadow}<defs><linearGradient id="${id}" x1="0" x2="1"><stop offset="0" stop-color="${shade(c, -.2)}"/><stop offset=".4" stop-color="${shade(c, .25)}"/><stop offset="1" stop-color="${shade(c, -.25)}"/></linearGradient></defs><path d="M34 34 H66 V84 Q66 92 58 92 H42 Q34 92 34 84Z" fill="url(#${id})" stroke="rgba(46,36,51,.7)" stroke-width="2"/><path d="M40 34 L44 20 H56 L60 34Z" fill="#F3EDE4" stroke="rgba(46,36,51,.7)" stroke-width="2"/><path d="M47 20 L49 8 H51 L53 20Z" fill="#E1523D"/><rect x="38" y="52" width="24" height="16" rx="3" fill="#fff" opacity=".85"/><path d="M34 40 Q30 50 32 58" stroke="${shade(c, .1)}" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="61" r="3" fill="${c}"/><rect x="38" y="38" width="4" height="44" rx="2" fill="#fff" opacity=".4"/>`;
+    else if (k === 'sprinkles') body = dish(Array.from({ length: 22 }, (_, i) => `<rect x="${22 + (i * 37) % 54}" y="${48 + (i * 13) % 13}" width="9" height="3.2" rx="1.6" fill="${['#F67599', '#FBD01E', '#8CACCF', '#FF751F', '#7BC47F', '#fff'][i % 6]}" transform="rotate(${(i * 53) % 180} ${26 + (i * 37) % 54} ${50 + (i * 13) % 13})"/>`).join(''));
+    else if (k === 'boba') body = dish(Array.from({ length: 16 }, (_, i) => `<circle cx="${24 + (i * 29) % 52}" cy="${50 + (i * 11) % 14}" r="6" fill="${c}"/><circle cx="${22 + (i * 29) % 52}" cy="${48 + (i * 11) % 14}" r="1.8" fill="#fff" opacity=".55"/>`).join(''));
+    else if (k === 'crumble') body = dish(Array.from({ length: 18 }, (_, i) => `<path d="M${22 + (i * 31) % 54} ${50 + (i * 7) % 13} l5 -2 l3 4 l-4 4 l-5 -1z" fill="${i % 3 ? c : shade(c, -.25)}"/>`).join('') + `<g transform="rotate(-14 66 42)"><rect x="52" y="32" width="28" height="18" rx="3" fill="${c}" stroke="${shade(c, -.3)}"/><rect x="55" y="35" width="22" height="12" rx="2" fill="none" stroke="${shade(c, -.3)}" stroke-dasharray="2 2"/></g>`);
+    else if (k === 'honey') body = `${shadow}<path d="M24 46 Q24 90 50 92 Q76 90 76 46Z" fill="#F2A900" opacity=".9" stroke="rgba(46,36,51,.7)" stroke-width="2"/><ellipse cx="50" cy="46" rx="26" ry="7" fill="#FFC93C" stroke="rgba(46,36,51,.7)" stroke-width="2"/><path d="M62 6 L46 52" stroke="#B98A4E" stroke-width="5" stroke-linecap="round"/>${[0, 1, 2].map(i => `<ellipse cx="${46 - i * 1.5}" cy="${52 - i * 6}" rx="8" ry="2.6" fill="#D9A05B" transform="rotate(-20 ${46 - i * 1.5} ${52 - i * 6})"/>`).join('')}`;
+    else if (k === 'shot') body = `${shadow}<path d="M30 40 H70 L66 88 Q50 94 34 88Z" fill="rgba(255,255,255,.45)" stroke="rgba(46,36,51,.7)" stroke-width="2"/><path d="M31.5 52 H68.5 L66 86 Q50 91 34 86Z" fill="${c}"/><ellipse cx="50" cy="52" rx="18.5" ry="3.6" fill="#C98A4B"/><path d="M42 30 Q38 22 44 16 M56 30 Q52 22 58 14" stroke="#cbb" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".7"/>`;
+    else body = dish(`<g transform="translate(34 30) scale(1.1)">${garnish(name) || `<circle cx="15" cy="18" r="10" fill="${c}"/>`}</g>`);
+    return `<svg viewBox="0 0 100 100" class="bj">${body}</svg>`;
+  }
   const creamSVG = `<svg viewBox="0 0 120 50" preserveAspectRatio="none"><path d="M6 48 Q4 34 18 32 Q14 20 30 20 Q32 8 48 12 Q56 0 70 10 Q86 6 88 20 Q104 20 100 32 Q116 34 114 48Z" fill="#FFFDF8" stroke="rgba(46,36,51,.35)" stroke-width="1.5"/><path d="M22 36 Q40 28 60 34 Q80 40 98 34 M34 24 Q50 18 66 24 Q78 28 86 24" stroke="#EDE3D4" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>`;
 
   /**
@@ -129,7 +149,7 @@
           <div class="b-whisk" data-top="${g.i}"><div class="b-bowl"></div><div class="b-wk">${whisk}</div></div>
           <div class="b-row"><button class="b-btn b-act" data-act="whisk" data-g="${g.i}">اخفقها أول</button><button class="b-btn b-act" data-act="pour" data-g="${g.i}">صبّها</button></div>`)),
         ...by('ice').map(g => groupBox(g, `<div class="b-ice">${scoop}<div class="b-chips">${g.choices.map((c, ci) => `<button class="b-btn b-chip" data-g="${g.i}" data-c="${ci}">${c.img ? `<img class="b-chimg" src="${esc(c.img)}" alt="">` : ''}${esc(c.name)}${Number(c.price) ? ` <small>+${Number(c.price)}</small>` : ''}<i>✓</i></button>`).join('')}</div></div>`)),
-        ...by('extra').map(g => groupBox(g, `<div class="b-chips">${g.choices.map((c, ci) => `<button class="b-btn b-chip" data-g="${g.i}" data-c="${ci}">${c.img ? `<img class="b-chimg" src="${esc(c.img)}" alt="">` : ''}${esc(c.name)}${Number(c.price) ? ` <small>+${Number(c.price)}</small>` : ''}<i>✓</i></button>`).join('')}</div>`, g.type === 'multi' && maxOf(g) < g.choices.length ? `اختر لين ${maxOf(g)}` : ''))
+        ...by('extra').map(g => groupBox(g, `<div class="b-tiles">${g.choices.map((c, ci) => `<button class="b-tile" data-g="${g.i}" data-c="${ci}">${c.img ? photo(c.img, c.name) : extraArt(c.name, c.color)}<span class="b-btn">${esc(c.name)}${Number(c.price) ? ` <small>+${Number(c.price)}</small>` : ''}<i>✓</i></span></button>`).join('')}</div>`, g.type === 'multi' && maxOf(g) < g.choices.length ? `اختر لين ${maxOf(g)}` : ''))
       ].join('');
 
       el.innerHTML = `<div class="builder">
@@ -137,7 +157,7 @@
         <div class="b-grid">
           <div class="b-col b-left">${leftHTML}</div>
           <div class="b-mid">
-            <div class="b-cupwrap"><div class="b-straw"></div><div class="b-cup"><div class="b-fill"></div><div class="b-fx"></div><div class="b-over"><div class="b-fruits"></div><div class="b-bubbles">${Array.from({ length: 9 }, (_, k) => `<i style="left:${10 + k * 9}%;animation-delay:${(k * 0.53) % 3}s;animation-duration:${2.6 + (k % 3) * .7}s"></i>`).join('')}</div><div class="b-ice-layer"></div><div class="b-cream">${creamSVG}</div>${cfg.logo ? `<img class="b-logo" src="${esc(cfg.logo)}" alt="">` : ''}</div><div class="b-empty">كوبك فاضي…<br>ابدأ بالاختيار ✦</div></div><svg class="b-outline" viewBox="0 0 200 270" preserveAspectRatio="none"><polygon points="1,1 199,1 172,269 28,269" fill="none" stroke="#2E2433" stroke-width="4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg><div class="b-shadow"></div><div class="b-sticker">يمّ! 😍</div></div>
+            <div class="b-cupwrap"><div class="b-straw"></div><div class="b-cup"><div class="b-fill"></div><div class="b-fx"></div><div class="b-over"><div class="b-fruits"></div><div class="b-bubbles">${Array.from({ length: 9 }, (_, k) => `<i style="left:${10 + k * 9}%;animation-delay:${(k * 0.53) % 3}s;animation-duration:${2.6 + (k % 3) * .7}s"></i>`).join('')}</div><div class="b-ice-layer"></div><div class="b-boba"></div><div class="b-drizzle"></div><div class="b-cream">${creamSVG}</div><div class="b-tops"></div>${cfg.logo ? `<img class="b-logo" src="${esc(cfg.logo)}" alt="">` : ''}</div><div class="b-empty">كوبك فاضي…<br>ابدأ بالاختيار ✦</div></div><svg class="b-outline" viewBox="0 0 200 270" preserveAspectRatio="none"><polygon points="1,1 199,1 172,269 28,269" fill="none" stroke="#2E2433" stroke-width="4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg><div class="b-shadow"></div><div class="b-sticker">يمّ! 😍</div></div>
             <div class="b-say"></div>
             <div class="b-price"><span>${money(p.price)}</span><small class="b-sum"></small></div>
             <div class="b-row"><button class="b-btn b-reset">ابدأ من جديد</button></div>
@@ -163,6 +183,7 @@
         by('base').forEach(g => sel[g.i].forEach(ci => L.push({ key: 'b' + g.i + '-' + ci, h: 13, color: g.choices[ci].color || DEF_COL.base, cls: 'l-syrup' })));
         by('milk').forEach(g => sel[g.i].forEach(ci => L.push({ key: 'm' + g.i + '-' + ci, h: by('top').some(t => topState[t.i] === 'poured') ? 40 : 52, color: g.choices[ci].color || DEF_COL.milk, cls: 'l-milk' })));
         by('top').forEach(g => { if (topState[g.i] === 'poured' && sel[g.i].length) L.push({ key: 't' + g.i, h: 24, color: g.choices[sel[g.i][0]].color || DEF_COL.top, cls: 'l-top' }); });
+        by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci]; if (extraKind(c.name) === 'shot') L.push({ key: 'x' + g.i + '-' + ci, h: 11, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL.shot, cls: 'l-top' }); }));
         const cap = by('extra').some(g => sel[g.i].length) ? 76 : 88, tot = L.reduce((a, l) => a + l.h, 0); if (tot > cap) L.forEach(l => l.h = l.h * cap / tot);
         return L;
       }
@@ -206,8 +227,31 @@
         if (ic.children.length !== cubes) ic.innerHTML = Array.from({ length: cubes }, (_, k) => `<span style="left:${12 + (k * 23) % 64}%;bottom:${Math.max(8, 100 - fillTop - 6 - (k % 3) * 9)}%;transform:rotate(${(k * 37) % 50 - 25}deg);animation-delay:${k * 70}ms"></span>`).join('');
         else [...ic.children].forEach((s, k) => s.style.bottom = Math.max(8, 100 - fillTop - 6 - (k % 3) * 9) + '%');
         // الكريمة/الإضافات
-        const ex = by('extra').some(g => sel[g.i].length);
-        $('.b-cream').classList.toggle('on', ex && L.length > 0); $('.b-cream').style.bottom = (100 - fillTop - 3) + '%';
+        const EX = []; by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci], k = extraKind(c.name); EX.push({ k, name: c.name, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL[k], key: g.i + '-' + ci }); }));
+        const has = k => EX.filter(x => x.k === k), surf = 100 - fillTop, live = L.length > 0;
+        const cream = has('cream').length > 0 && live;
+        $('.b-cream').classList.toggle('on', cream); $('.b-cream').style.bottom = (surf - 3) + '%';
+        // صوص ينساب على جدار الكوب
+        const dz = $('.b-drizzle'), dk = has('drizzle').map(x => x.key + x.color).join('|') + '@' + Math.round(surf);
+        if (dz.dataset.k !== dk) {
+          dz.dataset.k = dk;
+          dz.innerHTML = live ? has('drizzle').map((x, i) => `<svg viewBox="0 0 200 270" preserveAspectRatio="none"><path class="dzp" d="M${12 + i * 6} 6 Q${30 + i * 8} 30 ${20 + i * 6} 60 T${34 + i * 6} ${120 + i * 14} T${40 + i * 5} ${300 - surf * 2.2} M${188 - i * 6} 6 Q${170 - i * 8} 34 ${180 - i * 6} 70 T${166 - i * 6} ${130 + i * 12} T${158 - i * 5} ${290 - surf * 2.2} M${80 + i * 14} 4 Q${92 + i * 14} 22 ${84 + i * 14} 44" stroke="${x.color}" stroke-width="7" fill="none" stroke-linecap="round" opacity=".9"/><path d="M${12 + i * 6} 6 Q${30 + i * 8} 30 ${20 + i * 6} 60" stroke="#fff" stroke-width="1.6" fill="none" opacity=".45"/></svg>`).join('') : '';
+        }
+        // حبات بوبا في القاع
+        const bb = $('.b-boba'), bk = has('boba').map(x => x.key + x.color).join('|') + (live ? 1 : 0);
+        if (bb.dataset.k !== bk) { bb.dataset.k = bk; bb.innerHTML = live ? has('boba').flatMap(x => Array.from({ length: 14 }, (_, i) => `<i style="background:radial-gradient(circle at 35% 30%, ${shade(x.color, .45)}, ${x.color} 55%, ${shade(x.color, -.35)});left:${18 + (i * 23) % 62}%;bottom:${3 + (i % 3) * 5 + (i * 7) % 4}%;animation-delay:${i * 50}ms"></i>`)).join('') : ''; }
+        // رشّات فوق المشروب أو الكريمة
+        const tp = $('.b-tops'), tops = EX.filter(x => ['sprinkles', 'crumble', 'honey', 'garnish'].includes(x.k)), tk = tops.map(x => x.key).join('|') + (live ? 1 : 0);
+        tp.style.bottom = (surf + (cream ? 6 : -2)) + '%';
+        if (tp.dataset.k !== tk) {
+          tp.dataset.k = tk;
+          tp.innerHTML = !live ? '' : tops.map(x => {
+            if (x.k === 'sprinkles') return Array.from({ length: 16 }, (_, i) => `<b style="left:${16 + (i * 41) % 68}%;bottom:${(i * 13) % 14}px;background:${['#F67599', '#FBD01E', '#8CACCF', '#FF751F', '#7BC47F', '#fff'][i % 6]};--r:${(i * 61) % 180}deg;animation-delay:${i * 30}ms"></b>`).join('');
+            if (x.k === 'crumble') return Array.from({ length: 14 }, (_, i) => `<u style="left:${16 + (i * 43) % 68}%;bottom:${(i * 11) % 12}px;background:${i % 3 ? x.color : shade(x.color, -.25)};animation-delay:${i * 30}ms"></u>`).join('');
+            if (x.k === 'honey') return `<s style="background:linear-gradient(90deg,transparent,${x.color},transparent)"></s>`;
+            const art = garnish(x.name); return art ? [30, 62].map((l, i) => `<em style="left:${l}%;--r:${i ? 18 : -14}deg"><svg viewBox="0 0 30 36">${art}</svg></em>`).join('') : '';
+          }).join('');
+        }
         $('.b-empty').style.opacity = L.length || cubes ? 0 : 1;
       }
       function pour(color, at) {
