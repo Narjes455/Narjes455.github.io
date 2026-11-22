@@ -138,32 +138,30 @@
     else body = dish(`<g transform="translate(34 30) scale(1.1)">${garnish(name) || `<circle cx="15" cy="18" r="10" fill="${c}"/>`}</g>`);
     return `<svg viewBox="0 0 100 100" class="bj">${body}</svg>`;
   }
+  /** كريمة مخفوقة ثلاثية الأبعاد: حبل كريمة ملفوف حلزونياً من كرات صغيرة مظلّلة */
   const creamSVG = (() => {
-    const id = ++UID, sh = 'cs' + id, fl = 'cf' + id;
-    // طبقات الكريمة من تحت لفوق: [المسار، يسار، يمين، أعلى، أسفل]
-    const tiers = [
-      ['M4 98 C0 86 10 76 22 75 C30 69 46 67 60 69 C74 67 90 69 98 75 C110 76 120 86 116 98 C96 101 24 101 4 98Z', 4, 116, 67, 99],
-      ['M16 80 C12 68 22 59 34 59 C42 53 76 53 86 59 C98 59 108 68 104 80 C90 87 30 87 16 80Z', 14, 106, 53, 86],
-      ['M30 62 C26 50 36 43 47 43 C54 37 68 37 75 43 C86 43 94 51 90 62 C78 69 42 69 30 62Z', 28, 92, 37, 68],
-      ['M44 46 C42 34 50 26 58 25 C62 17 60 9 54 3 C71 5 78 19 73 29 C81 33 80 43 76 46 C67 52 53 52 44 46Z', 42, 80, 3, 51]
-    ];
-    const ridges = (x0, x1, y0, y1, k) => Array.from({ length: Math.round((x1 - x0) / 5) }, (_, i) => {
-      const x = x0 + i * 5 + 2, tilt = 6 + k * 2;
-      return `<path d="M${x} ${y1 + 2} Q${x + tilt * .4} ${(y0 + y1) / 2} ${x + tilt} ${y0 - 2}" stroke="${i % 2 ? '#FFFFFF' : '#EADFCD'}" stroke-width="${i % 2 ? 3.2 : 2.2}" fill="none" opacity="${i % 2 ? .7 : .38}" stroke-linecap="round"/>`;
+    const id = ++UID, W = 240, H = 200, cx = 120, base = 150, turns = 2.7, N = 260, pts = [];
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, ang = t * turns * Math.PI * 2 + .6;
+      const R = 92 * Math.pow(1 - t, .85) + 2;            // نصف قطر اللفّة
+      const y = base - t * 108 - Math.pow(t, 4) * 26;      // الارتفاع
+      const r = 36 * (1 - t * .72) + 4;                    // سماكة حبل الكريمة
+      pts.push({ x: cx + Math.cos(ang) * R, y: y + Math.sin(ang) * R * .22, r, d: Math.sin(ang), t });
+    }
+    pts.sort((a, b) => (a.d - b.d) || (a.t - b.t));        // الخلف أولاً ثم الأمام
+    const g = 'ck' + id, sh = 'ckS' + id, gr = 'ckG' + id;
+    const balls = pts.map((p, i) => {
+      const dark = .5 + p.d * .5;                          // الجزء الخلفي أغمق شوي
+      return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.r.toFixed(1)}" fill="url(#${g})" opacity="1" style="filter:brightness(${(.9 + dark * .12).toFixed(3)})"/>`;
     }).join('');
-    return `<svg viewBox="0 0 120 104" preserveAspectRatio="none"><defs>
-      <linearGradient id="${sh}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".0"/><stop offset=".55" stop-color="#EFE3CF" stop-opacity=".15"/><stop offset="1" stop-color="#D8C3A2" stop-opacity=".75"/></linearGradient>
-      <radialGradient id="${sh}r" cx=".35" cy=".25" r=".9"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#FFFBF3"/><stop offset="1" stop-color="#F1E5D1"/></radialGradient>
-      <filter id="${fl}" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" result="d"/><feGaussianBlur in="d" stdDeviation=".35"/></filter>
-      ${tiers.map((t, k) => `<clipPath id="${sh}c${k}"><path d="${t[0]}"/></clipPath>`).join('')}</defs>
-      <ellipse cx="60" cy="100" rx="58" ry="5" fill="rgba(120,100,70,.25)"/>
-      <g filter="url(#${fl})">
-      ${tiers.map((t, k) => `<path d="${t[0]}" fill="url(#${sh}r)"/>
-        <g clip-path="url(#${sh}c${k})">${ridges(t[1], t[2], t[3], t[4], k)}<path d="${t[0]}" fill="url(#${sh})"/>
-          <ellipse cx="${(t[1] + t[2]) / 2 - 10}" cy="${t[3] + 6}" rx="${(t[2] - t[1]) / 4}" ry="3" fill="#fff" opacity=".85"/></g>
-        <path d="${t[0]}" fill="none" stroke="rgba(170,145,110,.28)" stroke-width=".9"/>`).join('')}
-      <path d="M58 10 Q64 14 63 22" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".95"/>
-      </g></svg>`;
+    // أخاديد فوهة النجمة: خطوط قصيرة على الكرات الأمامية
+    const ridges = pts.filter((p, i) => p.d > .35 && i % 5 === 0).map(p => `<path d="M${(p.x - p.r * .55).toFixed(1)} ${(p.y - p.r * .55).toFixed(1)} Q${(p.x - p.r * .2).toFixed(1)} ${p.y.toFixed(1)} ${(p.x - p.r * .45).toFixed(1)} ${(p.y + p.r * .6).toFixed(1)}" stroke="#E9DCC6" stroke-width="2" fill="none" opacity=".4" stroke-linecap="round"/>`).join('');
+    return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="overflow:visible"><defs>
+      <radialGradient id="${g}" cx=".36" cy=".3" r=".78"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#FFFCF6"/><stop offset=".8" stop-color="#F1E6D4"/><stop offset="1" stop-color="#D9C7A9"/></radialGradient>
+      <radialGradient id="${sh}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="rgba(90,70,40,.35)"/><stop offset="1" stop-color="rgba(90,70,40,0)"/></radialGradient>
+      <filter id="${gr}" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="1" seed="3" result="n"/><feColorMatrix in="n" values="0 0 0 0 .55  0 0 0 0 .48  0 0 0 0 .38  0 0 0 .07 0" result="k"/><feComposite in="k" in2="SourceGraphic" operator="in" result="k2"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="k2"/></feMerge></filter></defs>
+      <ellipse cx="${cx}" cy="${base + 10}" rx="116" ry="14" fill="url(#${sh})"/>
+      <g filter="url(#${gr})">${balls}${ridges}</g></svg>`;
   })();
 
   /**
@@ -296,7 +294,7 @@
         if (bb.dataset.k !== bk) { bb.dataset.k = bk; bb.innerHTML = live ? has('boba').flatMap(x => Array.from({ length: 14 }, (_, i) => `<i style="background:radial-gradient(circle at 35% 30%, ${shade(x.color, .45)}, ${x.color} 55%, ${shade(x.color, -.35)});left:${18 + (i * 23) % 62}%;bottom:${3 + (i % 3) * 5 + (i * 7) % 4}%;animation-delay:${i * 50}ms"></i>`)).join('') : ''; }
         // رشّات فوق المشروب أو الكريمة
         const tp = $('.b-tops'), tops = EX.filter(x => ['sprinkles', 'crumble', 'honey', 'garnish'].includes(x.k)), tk = tops.map(x => x.key).join('|') + (live ? 1 : 0);
-        tp.style.bottom = (cream ? cb + 22 : surf - 2) + '%'; tp.classList.toggle('oncream', cream);
+        tp.style.bottom = (cream ? cb + 16 : surf - 2) + '%'; tp.classList.toggle('oncream', cream);
         if (tp.dataset.k !== tk) {
           tp.dataset.k = tk;
           tp.innerHTML = !live ? '' : tops.map(x => {
