@@ -151,7 +151,7 @@
       const x = x0 + i * 5 + 2, tilt = 6 + k * 2;
       return `<path d="M${x} ${y1 + 2} Q${x + tilt * .4} ${(y0 + y1) / 2} ${x + tilt} ${y0 - 2}" stroke="${i % 2 ? '#FFFFFF' : '#EADFCD'}" stroke-width="${i % 2 ? 3.2 : 2.2}" fill="none" opacity="${i % 2 ? .7 : .38}" stroke-linecap="round"/>`;
     }).join('');
-    return `<svg viewBox="0 0 120 104" preserveAspectRatio="xMidYMax meet"><defs>
+    return `<svg viewBox="0 0 120 104" preserveAspectRatio="none"><defs>
       <linearGradient id="${sh}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".0"/><stop offset=".55" stop-color="#EFE3CF" stop-opacity=".15"/><stop offset="1" stop-color="#D8C3A2" stop-opacity=".75"/></linearGradient>
       <radialGradient id="${sh}r" cx=".35" cy=".25" r=".9"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#FFFBF3"/><stop offset="1" stop-color="#F1E5D1"/></radialGradient>
       <filter id="${fl}" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" result="d"/><feGaussianBlur in="d" stdDeviation=".35"/></filter>
@@ -229,7 +229,7 @@
         by('top').forEach(g => { if (topState[g.i] === 'poured' && sel[g.i].length) L.push({ key: 't' + g.i, h: 22, color: g.choices[sel[g.i][0]].color || DEF_COL.top, cls: 'l-top' }); });
         by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci]; if (extraKind(c.name) === 'shot') L.push({ key: 'x' + g.i + '-' + ci, h: 11, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL.shot, cls: 'l-top' }); }));
         // الكوب يتعبّى: الحليب ياخذ المساحة الباقية (ويترك مكان للماتشا لين تنصب)
-        const T = by('extra').some(g => sel[g.i].some(ci => ['cream', 'sprinkles', 'crumble', 'honey', 'garnish'].includes(extraKind(g.choices[ci].name)))) ? 84 : 94;
+        const T = by('extra').some(g => sel[g.i].some(ci => ['cream', 'sprinkles', 'crumble', 'honey', 'garnish'].includes(extraKind(g.choices[ci].name)))) ? 90 : 94;
         const bases = L.filter(l => l.cls === 'l-syrup'), bsum = bases.reduce((a, l) => a + l.h, 0);
         if (bsum > 30) bases.forEach(l => l.h = l.h * 30 / bsum);
         const milk = L.find(l => l.cls === 'l-milk');
@@ -284,7 +284,7 @@
         const EX = []; by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci], k = extraKind(c.name); EX.push({ k, name: c.name, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL[k], key: g.i + '-' + ci }); }));
         const has = k => EX.filter(x => x.k === k), surf = 100 - fillTop, live = L.length > 0;
         const cream = has('cream').length > 0 && live;
-        $('.b-cream').classList.toggle('on', cream); $('.b-cream').style.bottom = (surf - 4) + '%';
+        const cb = 91; $('.b-cream').classList.toggle('on', cream); el.querySelector('.b-cupwrap').classList.toggle('creamy', cream); $('.b-cream').style.bottom = cb + '%';
         // صوص ينساب على جدار الكوب
         const dz = $('.b-drizzle'), dk = has('drizzle').map(x => x.key + x.color).join('|') + '@' + Math.round(surf);
         if (dz.dataset.k !== dk) {
@@ -296,7 +296,7 @@
         if (bb.dataset.k !== bk) { bb.dataset.k = bk; bb.innerHTML = live ? has('boba').flatMap(x => Array.from({ length: 14 }, (_, i) => `<i style="background:radial-gradient(circle at 35% 30%, ${shade(x.color, .45)}, ${x.color} 55%, ${shade(x.color, -.35)});left:${18 + (i * 23) % 62}%;bottom:${3 + (i % 3) * 5 + (i * 7) % 4}%;animation-delay:${i * 50}ms"></i>`)).join('') : ''; }
         // رشّات فوق المشروب أو الكريمة
         const tp = $('.b-tops'), tops = EX.filter(x => ['sprinkles', 'crumble', 'honey', 'garnish'].includes(x.k)), tk = tops.map(x => x.key).join('|') + (live ? 1 : 0);
-        tp.style.bottom = (surf + (cream ? 9 : -2)) + '%'; tp.classList.toggle('oncream', cream);
+        tp.style.bottom = (cream ? cb + 22 : surf - 2) + '%'; tp.classList.toggle('oncream', cream);
         if (tp.dataset.k !== tk) {
           tp.dataset.k = tk;
           tp.innerHTML = !live ? '' : tops.map(x => {
