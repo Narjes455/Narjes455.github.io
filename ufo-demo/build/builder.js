@@ -138,7 +138,15 @@
     else body = dish(`<g transform="translate(34 30) scale(1.1)">${garnish(name) || `<circle cx="15" cy="18" r="10" fill="${c}"/>`}</g>`);
     return `<svg viewBox="0 0 100 100" class="bj">${body}</svg>`;
   }
-  const creamSVG = `<svg viewBox="0 0 120 50" preserveAspectRatio="none"><path d="M6 48 Q4 34 18 32 Q14 20 30 20 Q32 8 48 12 Q56 0 70 10 Q86 6 88 20 Q104 20 100 32 Q116 34 114 48Z" fill="#FFFDF8" stroke="rgba(46,36,51,.35)" stroke-width="1.5"/><path d="M22 36 Q40 28 60 34 Q80 40 98 34 M34 24 Q50 18 66 24 Q78 28 86 24" stroke="#EDE3D4" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>`;
+  const creamSVG = (() => { const g = 'cr' + (++UID), sh = 'cs' + UID; return `<svg viewBox="0 0 120 100" preserveAspectRatio="xMidYMax meet"><defs>
+    <radialGradient id="${g}" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#FFF9EF"/><stop offset="1" stop-color="#EFE2CC"/></radialGradient>
+    <linearGradient id="${sh}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#D9C6A6" stop-opacity=".55"/></linearGradient></defs>
+    <path d="M6 98 C2 86 10 76 24 76 C30 70 46 68 60 70 C74 68 90 70 96 76 C110 76 118 86 114 98 Z" fill="url(#${g})"/><path d="M6 98 C2 86 10 76 24 76 C30 70 46 68 60 70 C74 68 90 70 96 76 C110 76 118 86 114 98 Z" fill="url(#${sh})"/>
+    <path d="M18 80 C14 68 24 60 36 60 C44 54 76 54 84 60 C96 60 106 68 102 80 C88 86 32 86 18 80 Z" fill="url(#${g})"/><path d="M18 80 C32 88 88 88 102 80" stroke="#D9C6A6" stroke-width="2" fill="none" opacity=".8"/>
+    <path d="M32 62 C28 50 38 44 48 44 C54 38 68 38 74 44 C84 44 92 52 88 62 C76 68 44 68 32 62 Z" fill="url(#${g})"/><path d="M32 62 C44 69 76 69 88 62" stroke="#D9C6A6" stroke-width="2" fill="none" opacity=".8"/>
+    <path d="M46 46 C44 34 52 26 60 26 C64 18 62 10 56 4 C72 6 78 20 72 30 C80 34 78 44 74 46 C66 51 54 51 46 46 Z" fill="url(#${g})"/><path d="M46 46 C56 52 66 52 74 46" stroke="#D9C6A6" stroke-width="1.8" fill="none" opacity=".8"/>
+    <path d="M24 90 Q40 80 58 84 M28 72 Q44 64 60 66 M42 54 Q52 48 62 50 M56 34 Q60 26 62 18" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" opacity=".9"/>
+    <path d="M6 98 C2 86 10 76 24 76 C30 70 46 68 60 70 C74 68 90 70 96 76 C110 76 118 86 114 98 Z M18 80 C14 68 24 60 36 60 C44 54 76 54 84 60 C96 60 106 68 102 80 M32 62 C28 50 38 44 48 44 C54 38 68 38 74 44 C84 44 92 52 88 62 M46 46 C44 34 52 26 60 26 C64 18 62 10 56 4 C72 6 78 20 72 30 C80 34 78 44 74 46" fill="none" stroke="rgba(46,36,51,.35)" stroke-width="1.4"/></svg>`; })();
 
   /**
    * UFOBuilder.mount(el, product, {onAdd(opts, qty), addLabel, logo, soldOut})
@@ -175,7 +183,7 @@
         <div class="b-grid">
           <div class="b-col b-left">${leftHTML}</div>
           <div class="b-mid">
-            <div class="b-cupwrap"><div class="b-straw"></div><div class="b-cup"><div class="b-fill"></div><div class="b-fx"></div><div class="b-over"><div class="b-fruits"></div><div class="b-bubbles">${Array.from({ length: 9 }, (_, k) => `<i style="left:${10 + k * 9}%;animation-delay:${(k * 0.53) % 3}s;animation-duration:${2.6 + (k % 3) * .7}s"></i>`).join('')}</div><div class="b-ice-layer"></div><div class="b-boba"></div><div class="b-drizzle"></div><div class="b-cream">${creamSVG}</div><div class="b-tops"></div>${cfg.logo ? `<img class="b-logo" src="${esc(cfg.logo)}" alt="">` : ''}</div><div class="b-empty">كوبك فاضي…<br>ابدأ بالاختيار ✦</div></div><svg class="b-outline" viewBox="0 0 200 270" preserveAspectRatio="none"><polygon points="1,1 199,1 172,269 28,269" fill="none" stroke="#2E2433" stroke-width="4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg><div class="b-shadow"></div><div class="b-sticker">يمّ! 😍</div></div>
+            <div class="b-cupwrap"><div class="b-straw"></div><div class="b-cup"><div class="b-fill"></div><div class="b-fx"></div><div class="b-over"><div class="b-fruits"></div><div class="b-bubbles">${Array.from({ length: 9 }, (_, k) => `<i style="left:${10 + k * 9}%;animation-delay:${(k * 0.53) % 3}s;animation-duration:${2.6 + (k % 3) * .7}s"></i>`).join('')}</div><div class="b-ice-layer"></div><div class="b-boba"></div><div class="b-drizzle"></div>${cfg.logo ? `<img class="b-logo" src="${esc(cfg.logo)}" alt="">` : ''}</div><div class="b-empty">كوبك فاضي…<br>ابدأ بالاختيار ✦</div></div><svg class="b-outline" viewBox="0 0 200 270" preserveAspectRatio="none"><polygon points="1,1 199,1 172,269 28,269" fill="none" stroke="#2E2433" stroke-width="4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg><div class="b-cream">${creamSVG}</div><div class="b-tops"></div><div class="b-shadow"></div><div class="b-sticker">يمّ! 😍</div></div>
             <div class="b-say"></div>
             <div class="b-price"><span>${money(p.price)}</span><small class="b-sum"></small></div>
             <div class="b-row"><button class="b-btn b-reset">ابدأ من جديد</button></div>
@@ -258,7 +266,7 @@
         const EX = []; by('extra').forEach(g => sel[g.i].forEach(ci => { const c = g.choices[ci], k = extraKind(c.name); EX.push({ k, name: c.name, color: c.color && c.color !== '#FFFFFF' ? c.color : EXTRA_COL[k], key: g.i + '-' + ci }); }));
         const has = k => EX.filter(x => x.k === k), surf = 100 - fillTop, live = L.length > 0;
         const cream = has('cream').length > 0 && live;
-        $('.b-cream').classList.toggle('on', cream); $('.b-cream').style.bottom = (surf - 3) + '%';
+        $('.b-cream').classList.toggle('on', cream); $('.b-cream').style.bottom = (surf - 4) + '%';
         // صوص ينساب على جدار الكوب
         const dz = $('.b-drizzle'), dk = has('drizzle').map(x => x.key + x.color).join('|') + '@' + Math.round(surf);
         if (dz.dataset.k !== dk) {
@@ -270,7 +278,7 @@
         if (bb.dataset.k !== bk) { bb.dataset.k = bk; bb.innerHTML = live ? has('boba').flatMap(x => Array.from({ length: 14 }, (_, i) => `<i style="background:radial-gradient(circle at 35% 30%, ${shade(x.color, .45)}, ${x.color} 55%, ${shade(x.color, -.35)});left:${18 + (i * 23) % 62}%;bottom:${3 + (i % 3) * 5 + (i * 7) % 4}%;animation-delay:${i * 50}ms"></i>`)).join('') : ''; }
         // رشّات فوق المشروب أو الكريمة
         const tp = $('.b-tops'), tops = EX.filter(x => ['sprinkles', 'crumble', 'honey', 'garnish'].includes(x.k)), tk = tops.map(x => x.key).join('|') + (live ? 1 : 0);
-        tp.style.bottom = (surf + (cream ? 6 : -2)) + '%';
+        tp.style.bottom = (surf + (cream ? 9 : -2)) + '%'; tp.classList.toggle('oncream', cream);
         if (tp.dataset.k !== tk) {
           tp.dataset.k = tk;
           tp.innerHTML = !live ? '' : tops.map(x => {
