@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ديمو نظام الطلبات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: ودود وواضح، كأن صاحب المحل يجرّب متجره قبل ما يطلبه
+IDEA: صالة عرض: كوفي وهمي "حَبّة" فيه كل ميزة شغّالة، والعميل يختار اللي يناسبه
+PICTURE: النظام نفسه شغّال: منيو، سلة، لوحة صاحب المحل، بطاقة ولاء
+COLOUR and TYPE: إسبريسو غامق + أبيض + مشمشي حاد؛ Readex Pro
+LAYOUT: شريط علوي، تبويبات، محتوى عمود واحد ينقسم على الشاشات العريضة
+*/
+:root{color-scheme:light dark;--bg:light-dark(#fbf8f5,#17110d);--card:light-dark(#fff,#221912);--ink:light-dark(#2a1c14,#f3ebe4);--mute:light-dark(#7b6a5e,#b4a397);--line:light-dark(#ece3da,#3a2d24);--dk:#3b2418;--acc:#ff7a45;--soft:light-dark(#fff0e8,#3a2216);--ok:#2f8f5b}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Readex Pro",Tahoma,sans-serif;overflow-x:clip}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:8px 14px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.top{background:var(--dk);color:#fff;padding:18px max(5vw,16px) 0}
+.ribbon{display:inline-block;background:var(--acc);color:#2a1206;font-size:13px;font-weight:600;padding:3px 12px;border-radius:99px}
+.top h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:10px 0 4px;text-wrap:balance}
+.top p{margin:0 0 16px;color:#e7d6c9;max-width:60ch}
+.tabs{display:flex;gap:6px;overflow-x:auto}
+.tabs button{flex:none;background:transparent;color:#e7d6c9;border:0;border-radius:12px 12px 0 0;padding:10px 16px}
+.tabs button[aria-selected=true]{background:var(--bg);color:var(--ink);font-weight:600}
+.band{padding:clamp(20px,3vw,40px) max(5vw,16px);max-width:1240px;margin:auto}
+.view{display:none}.view.on{display:block}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.cats button.on{background:var(--dk);color:#fff;border-color:var(--dk)}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;text-align:start;display:flex;flex-direction:column;gap:4px}
+.item svg{width:100%;height:96px;border-radius:12px;background:var(--soft)}
+.item b{font-size:16px}.item small{color:var(--mute);font-size:13px}
+.price{font-weight:700;white-space:nowrap}
+.box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px}
+.box h2,.box h3{margin:0 0 10px;font-size:20px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}
+.row:last-child{border:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
+.chips label{border:1px solid var(--line);border-radius:99px;padding:8px 14px;cursor:pointer;min-height:40px;display:flex;align-items:center;gap:6px}
+.chips input{accent-color:var(--acc)}
+.chips label:has(input:checked){background:var(--soft);border-color:var(--acc)}
+.cta{background:var(--acc);border:0;color:#2a1206;font-weight:700;width:100%}
+.muted{color:var(--mute);font-size:14px}
+select,input[type=text],input[type=file]{width:100%;min-height:44px;font-size:16px;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--bg)}
+.modal{position:fixed;inset:0;background:#0008;display:none;place-items:center;padding:16px;z-index:9}
+.modal.on{display:grid}
+.modal .box{width:min(460px,100%);max-height:90vh;overflow:auto}
+.wa{background:#e7f8ee;color:#123;border-radius:14px;padding:12px;font-size:14px;white-space:pre-line;border-inline-start:4px solid #25d366}
+.orders{display:grid;gap:12px}
+.ord{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:6px}
+.st{display:inline-block;font-size:13px;padding:2px 10px;border-radius:99px;background:var(--soft)}
+.st.ready{background:#dff3e7;color:#1d5c3a}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.kpi b{display:block;font-size:clamp(24px,4vw,32px);line-height:1.1}
+.stamps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}
+.stamp{aspect-ratio:1;border-radius:50%;border:2px dashed var(--acc);display:grid;place-items:center;font-weight:700}
+.stamp.f{background:var(--acc);color:#2a1206;border-style:solid;animation:pop .35s}
+@keyframes pop{from{transform:scale(.4)}to{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.stamp.f{animation:none}}
+.feat{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.feat label{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;gap:10px;cursor:pointer}
+.feat label:has(input:checked){border-color:var(--acc);background:var(--soft)}
+.feat input{accent-color:var(--acc);width:20px;height:20px;flex:none;margin-top:3px}
+.feat small{display:block;color:var(--mute);font-size:14px}
+.q{display:grid;gap:8px}
+.note{font-size:13px;color:var(--mute);margin-top:18px}
+#intro{position:fixed;inset:0;z-index:20;background:radial-gradient(120% 80% at 50% 30%,#5a3523,#1c0f09 70%);color:#fff;display:grid;place-items:center;text-align:center;padding:24px;transition:opacity .7s,transform .7s}
+#intro.out{opacity:0;transform:scale(1.06);pointer-events:none}
+#intro svg{width:min(240px,60vw);height:auto;overflow:visible}
+.fill{animation:fill 2.2s .3s cubic-bezier(.5,0,.3,1) both}
+@keyframes fill{from{transform:translateY(120px)}to{transform:translateY(0)}}
+.wave{animation:wave 1.6s linear infinite}
+@keyframes wave{from{transform:translateX(0)}to{transform:translateX(-80px)}}
+.steam{stroke-dasharray:90;stroke-dashoffset:90;animation:steam 2.4s 2s ease-in-out infinite}
+.steam:nth-of-type(2){animation-delay:2.4s}.steam:nth-of-type(3){animation-delay:2.8s}
+@keyframes steam{0%{stroke-dashoffset:90;opacity:0}40%{opacity:.9}100%{stroke-dashoffset:-90;opacity:0}}
+.logo{font-size:clamp(52px,12vw,92px);font-weight:700;line-height:1;margin:12px 0 0;letter-spacing:0;opacity:0;animation:rise .8s 2.3s both}
+.tag{opacity:0;animation:rise .8s 2.8s both;color:#ffd6c2;font-size:clamp(17px,3vw,22px);margin:10px 0 4px}
+.sub{opacity:0;animation:rise .8s 3.2s both;color:#d9c4b6;max-width:38ch;margin:0 auto 18px}
+#intro .go{opacity:0;animation:rise .8s 3.6s both;background:var(--acc);color:#2a1206;border:0;font-weight:700;padding:12px 30px;font-size:18px;border-radius:99px;box-shadow:0 0 0 0 #ff7a4580;animation:rise .8s 3.6s both,pulse 2s 4.4s infinite}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pulse{70%{box-shadow:0 0 0 16px #ff7a4500}100%{box-shadow:0 0 0 0 #ff7a4500}}
+.beans span{position:absolute;width:14px;height:20px;border-radius:50%;background:#7a4a2c;opacity:.5;animation:fall linear infinite}
+.beans span::after{content:"";position:absolute;inset:3px 6px;border-inline-start:2px solid #3b2418;border-radius:50%}
+@keyframes fall{from{transform:translateY(-10vh) rotate(0)}to{transform:translateY(110vh) rotate(540deg)}}
+.skip{position:absolute;top:16px;left:16px;background:transparent;color:#d9c4b6;border:1px solid #ffffff40;font-size:14px}
+.toast{position:fixed;top:14px;left:50%;z-index:15;width:min(380px,calc(100% - 24px));transform:translate(-50%,-140%);transition:transform .5s cubic-bezier(.2,1.4,.4,1);background:#fffffff2;color:#111;border-radius:18px;padding:12px 14px;box-shadow:0 12px 40px #0004;display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.toast.on{transform:translate(-50%,0)}
+.toast i{flex:none;width:38px;height:38px;border-radius:10px;background:#25d366;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700}
+@media(prefers-reduced-motion:reduce){#intro *{animation:none!important;opacity:1!important;transform:none!important;stroke-dashoffset:0!important}.beans{display:none}}
+footer{background:var(--dk);color:#e7d6c9;padding:22px max(5vw,16px);font-size:14px}
+footer a{color:#ffb38f}
+</style>
+</head>
+<body>
+<div id="intro">
+  <div class="beans" id="beans" aria-hidden="true"></div>
+  <button class="skip" id="skip">تخطي</button>
+  <div>
+    <svg viewBox="0 0 200 210" aria-hidden="true">
+      <path class="steam" d="M78 60c-10-14 10-22 0-38" fill="none" stroke="#ffd6c2" stroke-width="5" stroke-linecap="round"/>
+      <path class="steam" d="M100 56c-10-14 10-22 0-38" fill="none" stroke="#ffd6c2" stroke-width="5" stroke-linecap="round"/>
+      <path class="steam" d="M122 60c-10-14 10-22 0-38" fill="none" stroke="#ffd6c2" stroke-width="5" stroke-linecap="round"/>
+      <defs><clipPath id="cupC"><path d="M44 74h112l-12 116H56z"/></clipPath></defs>
+      <ellipse cx="100" cy="198" rx="64" ry="8" fill="#0006"/>
+      <path d="M44 74h112l-12 116H56z" fill="#ffffff14" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
+      <g clip-path="url(#cupC)"><g class="fill">
+        <g class="wave"><path d="M0 96q20-10 40 0t40 0 40 0 40 0 40 0 40 0V220H0z" fill="#c98b5e"/></g>
+        <rect x="0" y="110" width="240" height="110" fill="#8a5432"/>
+        <rect x="0" y="150" width="240" height="70" fill="#5e351f"/>
+      </g></g>
+      <path d="M156 96c26 0 26 44-4 46" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+      <rect x="38" y="66" width="124" height="12" rx="6" fill="#ff7a45"/>
+    </svg>
+    <p class="logo">حَبّة</p>
+    <p class="tag">محلّك يستاهل موقع يطلب منه زبونك بضغطة</p>
+    <p class="sub">هذا كوفي وهمي بنيته عشان تجرّب كل شي بنفسك: اطلب، تابع الطلب، واختر اللي يناسبك</p>
+    <button class="go" id="go">ابدأ التجربة</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"><i>W</i><div id="tmsg"></div></div>
+<header class="top">
+  <span class="ribbon">ديمو تجريبي</span>
+  <h1>جرّب نظام الطلبات بنفسك</h1>
+  <p>هذا كوفي وهمي اسمه «حَبّة». اطلب كأنك زبون، بعدها افتح لوحة صاحب المحل وشوف طلبك يوصل. وفي الأخير اختر الميزات اللي يحتاجها محلّك.</p>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-v="shop" aria-selected="true">واجهة الزبون</button>
+    <button role="tab" data-v="owner" aria-selected="false">لوحة صاحب المحل <span id="badge"></span></button>
+    <button role="tab" data-v="loyal" aria-selected="false">بطاقة الولاء</button>
+    <button role="tab" data-v="quiz" aria-selected="false">اقترح لي مشروب</button>
+    <button role="tab" data-v="pick" aria-selected="false">اختر ميزاتك</button>
+  </nav>
+</header>
+
+<main class="band">
+  <section class="view on" id="shop">
+    <div class="grid">
+      <div>
+        <div class="cats" id="cats"></div>
+        <div class="menu" id="menu"></div>
+      </div>
+      <aside class="box" id="cartBox">
+        <h2>السلة</h2>
+        <div id="cart"><p class="muted">السلة فاضية، اختر مشروب من المنيو.</p></div>
+        <div id="checkout" hidden>
+          <div class="chips" id="mode">
+            <label><input type="radio" name="mode" value="pick" checked> استلام من المحل</label>
+            <label><input type="radio" name="mode" value="del"> توصيل</label>
+          </div>
+          <div id="zoneWrap" hidden>
+            <label class="muted" for="zone">الحي</label>
+            <select id="zone"></select>
+          </div>
+          <label class="muted" for="slot">وقت الاستلام أو التوصيل</label>
+          <select id="slot"></select>
+          <div class="chips" id="pay">
+            <label><input type="radio" name="pay" value="تحويل بنكي" checked> تحويل بنكي</label>
+            <label><input type="radio" name="pay" value="كاش عند الاستلام"> كاش</label>
+          </div>
+          <div id="rcpt">
+            <label class="muted" for="file">إرفاق إيصال التحويل</label>
+            <input type="file" id="file" accept="image/*">
+          </div>
+          <label class="muted" for="nm">الاسم</label>
+          <input type="text" id="nm" value="ريم">
+          <div class="row" style="margin-top:10px"><span>الإجمالي</span><span class="price" id="total"></span></div>
+          <button class="cta" id="send">أرسل الطلب</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="view" id="owner">
+    <div class="kpis">
+      <div class="kpi"><span class="muted">طلبات اليوم</span><b id="k1">0</b></div>
+      <div class="kpi"><span class="muted">مبيعات اليوم</span><b id="k2">0 ر.س</b></div>
+      <div class="kpi"><span class="muted">قيد التحضير</span><b id="k3">0</b></div>
+      <div class="kpi"><span class="muted">الأكثر طلبًا</span><b id="k4" style="font-size:20px">—</b></div>
+    </div>
+    <div class="orders" id="orders"></div>
+    <p class="note">في النسخة الحقيقية: الطلبات تنحفظ في Google Sheets، ويوصلك إشعار واتساب وتنبيه صوتي مع كل طلب جديد.</p>
+  </section>
+
+  <section class="view" id="loyal">
+    <div class="box" style="max-width:520px">
+      <h2>بطاقة «حَبّة» للولاء</h2>
+      <p class="muted">كل طلب ياخذ ختم، والختم العاشر مشروب مجاني. الأختام تنضاف تلقائيًا مع كل طلب ترسله من الواجهة.</p>
+      <div class="stamps" id="stamps"></div>
+      <p id="lmsg"></p>
+      <button id="addStamp">أضف ختم للتجربة</button>
+    </div>
+  </section>
+
+  <section class="view" id="quiz">
+    <div class="box q" style="max-width:520px" id="qbox"></div>
+  </section>
+
+  <section class="view" id="pick">
+    <h2 style="margin-top:0">وش يحتاج محلّك؟</h2>
+    <p class="muted">علّم على الميزات اللي تفيدك، وأرسلها لي بضغطة، وأجهّز لك عرض سعر على مقاس محلّك وبهويتك.</p>
+    <div class="feat" id="feats"></div>
+    <div class="box" style="margin-top:18px">
+      <label class="muted" for="shopName">اسم محلّك</label>
+      <input type="text" id="shopName" placeholder="مثال: كوفي ...">
+      <p class="muted" id="cnt" style="margin:10px 0">ما اخترت ميزات للحين.</p>
+      <a id="waLink" class="cta" style="display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:12px;text-decoration:none" href="#" target="_blank" rel="noopener">أرسل اختياراتي على واتساب</a>
+      <p class="muted" style="margin:8px 0 0">أو تواصل على الرقم 0556211944</p>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal"><div class="box" id="mbox"></div></div>
+
+<footer>ديمو تجريبي من تصميم نرجس العمري. المنيو والأسعار أمثلة فقط · <a href="https://narjes455.github.io/" target="_blank" rel="noopener">ملف أعمالي</a></footer>
+
+<script>
+{
+const $=s=>document.querySelector(s),esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cup=(c1,c2)=>`<svg viewBox="0 0 160 96" aria-hidden="true"><ellipse cx="80" cy="86" rx="40" ry="5" fill="#0002"/><path d="M52 26h56l-7 58H59z" fill="${c1}"/><path d="M52 26h56l-2 14H54z" fill="${c2}"/><rect x="48" y="20" width="64" height="8" rx="4" fill="#3b2418"/><path d="M60 30l3 50" stroke="#fff6" stroke-width="3" stroke-linecap="round"/></svg>`;
+const items=[
+ {id:1,c:'قهوة',n:'لاتيه',d:'إسبريسو مع حليب مبخّر',p:16,i:cup('#c99b74','#f3e2d2')},
+ {id:2,c:'قهوة',n:'سبانش لاتيه',d:'حليب مكثّف محلّى',p:18,i:cup('#b9825a','#f6dcc2')},
+ {id:3,c:'قهوة',n:'V60',d:'محصول اليوم، مقطّر',p:19,i:cup('#7a4a2c','#a0673f')},
+ {id:4,c:'ماتشا',n:'ماتشا لاتيه',d:'ماتشا سيريمونيال',p:20,i:cup('#8fb35a','#e5f0cf')},
+ {id:5,c:'ماتشا',n:'ماتشا فراولة',d:'طبقة فراولة طازجة',p:22,i:cup('#f08aa0','#b9d690')},
+ {id:6,c:'حلا',n:'كوكيز',d:'شوكولاتة بلجيكية',p:12,i:`<svg viewBox="0 0 160 96" aria-hidden="true"><ellipse cx="80" cy="84" rx="42" ry="6" fill="#0002"/><circle cx="80" cy="52" r="32" fill="#d39a5b"/><circle cx="80" cy="48" r="32" fill="#e4b072"/>${[[68,40],[92,44],[78,60],[96,62],[64,58]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#4a2a16"/>`).join('')}</svg>`},
+ {id:7,c:'حلا',n:'سينامون رول',d:'بصوص الجبن',p:15,i:`<svg viewBox="0 0 160 96" aria-hidden="true"><ellipse cx="80" cy="84" rx="42" ry="6" fill="#0002"/><circle cx="80" cy="50" r="32" fill="#c98950"/><path d="M80 50m-6 0a6 6 0 1 1 12 0a12 12 0 1 1-24 0a18 18 0 1 1 36 0a24 24 0 1 1-48 0" fill="none" stroke="#8a5428" stroke-width="4"/></svg>`}
+];
+const zones=[['العزيزية',10],['قباء',12],['العوالي',15],['الخالدية',15]];
+const opts={milk:['حليب عادي','حليب شوفان (+3)','حليب لوز (+3)'],sweet:['بدون سكر','خفيف','وسط','زيادة'],add:['شوت إضافي (+4)','صوص كراميل (+2)','كريمة (+2)']};
+let cat='الكل',cart=[],orders=[],stamps=3,seq=1040;
+const S={orders:[]};
+function money(n){return n+' ر.س'}
+
+function tabs(v){document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v==v));document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==v));if(v=='owner')renderOrders()}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>tabs(b.dataset.v));
+
+function renderMenu(){
+ const cs=['الكل',...new Set(items.map(i=>i.c))];
+ $('#cats').innerHTML=cs.map(c=>`<button class="${c==cat?'on':''}" data-c="${c}">${c}</button>`).join('');
+ $('#menu').innerHTML=items.filter(i=>cat=='الكل'||i.c==cat).map(i=>`<button class="item" data-id="${i.id}">${i.i}<b>${i.n}</b><small>${i.d}</small><span class="price">${money(i.p)}</span></button>`).join('');
+}
+$('#cats').onclick=e=>{const b=e.target.closest('button');if(b){cat=b.dataset.c;renderMenu()}};
+$('#menu').onclick=e=>{const b=e.target.closest('.item');if(b)openItem(+b.dataset.id)};
+
+function chips(name,arr,type,first){return `<div class="chips">${arr.map((a,k)=>`<label><input type="${type}" name="${name}" value="${k}" ${type=='radio'&&k==first?'checked':''}> ${a}</label>`).join('')}</div>`}
+function openItem(id){
+ const it=items.find(i=>i.id==id),drink=it.c!='حلا';
+ $('#mbox').innerHTML=`${it.i}<h3 style="margin-top:10px">${it.n}</h3><p class="muted">${it.d}</p>${drink?`<b>نوع الحليب</b>${chips('milk',opts.milk,'radio',0)}<b>السكر</b>${chips('sweet',opts.sweet,'radio',2)}<b>إضافات</b>${chips('add',opts.add,'checkbox')}`:''}<div style="display:flex;gap:10px"><button class="cta" id="addC">أضف للسلة · ${money(it.p)}</button><button id="closeM">إلغاء</button></div>`;
+ $('#modal').classList.add('on');
+ $('#closeM').onclick=close;
+ $('#addC').onclick=()=>{
+  let p=it.p,ex=[];
+  if(drink){const m=+document.querySelector('[name=milk]:checked').value,s=+document.querySelector('[name=sweet]:checked').value;
+   if(m>0){p+=3;ex.push(opts.milk[m].replace(/ \(.+\)/,''))}ex.push('سكر '+opts.sweet[s]);
+   document.querySelectorAll('[name=add]:checked').forEach(a=>{const k=+a.value;p+=[4,2,2][k];ex.push(opts.add[k].replace(/ \(.+\)/,''))})}
+  cart.push({n:it.n,p,ex:ex.join('، ')});close();renderCart();
+ };
+}
+function close(){$('#modal').classList.remove('on')}
+$('#modal').onclick=e=>{if(e.target.id=='modal')close()};
+
+function fee(){return document.querySelector('[name=mode]:checked').value=='del'?zones[+$('#zone').value][1]:0}
+function renderCart(){
+ if(!cart.length){$('#cart').innerHTML='<p class="muted">السلة فاضية، اختر مشروب من المنيو.</p>';$('#checkout').hidden=true;return}
+ $('#cart').innerHTML=cart.map((c,k)=>`<div class="row"><div><b>${c.n}</b><br><small class="muted">${c.ex||''}</small></div><div style="display:flex;gap:6px;align-items:center"><span class="price">${money(c.p)}</span><button data-k="${k}" aria-label="حذف" style="min-height:36px;padding:2px 10px">×</button></div></div>`).join('')+(fee()?`<div class="row"><span>رسوم التوصيل</span><span class="price">${money(fee())}</span></div>`:'');
+ $('#checkout').hidden=false;
+ $('#total').textContent=money(cart.reduce((a,c)=>a+c.p,0)+fee());
+}
+$('#cart').onclick=e=>{const b=e.target.closest('button[data-k]');if(b){cart.splice(+b.dataset.k,1);renderCart()}};
+$('#zone').innerHTML=zones.map((z,k)=>`<option value="${k}">${z[0]} · ${money(z[1])}</option>`).join('');
+$('#slot').innerHTML=['بأسرع وقت','بعد 30 دقيقة','4:00 م','5:00 م','6:00 م','8:00 م'].map(s=>`<option>${s}</option>`).join('');
+$('#mode').onchange=()=>{$('#zoneWrap').hidden=document.querySelector('[name=mode]:checked').value=='pick';renderCart()};
+$('#zone').onchange=renderCart;
+$('#pay').onchange=()=>{$('#rcpt').hidden=document.querySelector('[name=pay]:checked').value!='تحويل بنكي'};
+
+function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[0,.18].forEach(t=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.15,a.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t+.15);o.start(a.currentTime+t);o.stop(a.currentTime+t+.16)})}catch(e){}}
+
+$('#send').onclick=()=>{
+ const name=$('#nm').value.trim()||'زبون',del=document.querySelector('[name=mode]:checked').value=='del';
+ const o={no:++seq,name,items:cart.slice(),total:cart.reduce((a,c)=>a+c.p,0)+fee(),mode:del?'توصيل · '+zones[+$('#zone').value][0]:'استلام',slot:$('#slot').value,pay:document.querySelector('[name=pay]:checked').value,st:0};
+ orders.unshift(o);cart=[];renderCart();stamps=Math.min(10,stamps+1);renderStamps();beep();badge();
+ setTimeout(()=>{$('#tmsg').innerHTML=`<b>واتساب · حَبّة</b><br>طلب جديد #${o.no} من ${esc(o.name)} · ${money(o.total)}`;$('#toast').classList.add('on');setTimeout(()=>$('#toast').classList.remove('on'),4000)},900);
+ $('#mbox').innerHTML=`<h3>تم استلام طلبك 🎉</h3><p>رقم الطلب <b>#${o.no}</b> · ${esc(o.slot)}</p><p class="muted">هذي الرسالة اللي توصل صاحب المحل على واتساب:</p><div class="wa">طلب جديد #${o.no}
+الاسم: ${esc(o.name)}
+${o.items.map(i=>'• '+esc(i.n)+(i.ex?' ('+esc(i.ex)+')':'')).join('\n')}
+${esc(o.mode)} · ${esc(o.slot)}
+الدفع: ${esc(o.pay)}
+الإجمالي: ${money(o.total)}</div><p class="muted">وانضاف لك ختم في بطاقة الولاء.</p><div style="display:flex;gap:10px"><button class="cta" id="goOwner">شوف الطلب في لوحة المحل</button><button id="closeM">تمام</button></div>`;
+ $('#modal').classList.add('on');$('#closeM').onclick=close;$('#goOwner').onclick=()=>{close();tabs('owner')};
+};
+
+const stName=['جديد','قيد التحضير','جاهز للاستلام','تم التسليم'];
+function badge(){const n=orders.filter(o=>o.st==0).length;$('#badge').textContent=n?`(${n})`:''}
+function renderOrders(){
+ $('#orders').innerHTML=orders.length?orders.map((o,k)=>`<div class="ord"><div class="row" style="border:0"><b>#${o.no} · ${esc(o.name)}</b><span class="st ${o.st>=2?'ready':''}">${stName[o.st]}</span></div><div class="muted">${o.items.map(i=>esc(i.n)).join('، ')} · ${esc(o.mode)} · ${esc(o.slot)} · ${esc(o.pay)}</div><div class="row" style="border:0"><span class="price">${money(o.total)}</span>${o.st<3?`<button data-k="${k}">${['ابدأ التحضير','جاهز','سلّمت الطلب'][o.st]}</button>`:''}</div></div>`).join(''):'<div class="box muted">ما فيه طلبات للحين. روح لواجهة الزبون وأرسل طلب تجريبي، وشوفه يوصل هنا.</div>';
+ const done=orders;$('#k1').textContent=done.length;$('#k2').textContent=money(done.reduce((a,o)=>a+o.total,0));$('#k3').textContent=orders.filter(o=>o.st==1).length;
+ const cnt={};done.forEach(o=>o.items.forEach(i=>cnt[i.n]=(cnt[i.n]||0)+1));const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];$('#k4').textContent=top?top[0]:'—';
+}
+$('#orders').onclick=e=>{const b=e.target.closest('button[data-k]');if(b){orders[+b.dataset.k].st++;renderOrders();badge()}};
+
+function renderStamps(){$('#stamps').innerHTML=Array.from({length:10},(_,k)=>`<div class="stamp ${k<stamps?'f':''}">${k==9?'🎁':k<stamps?'✓':k+1}</div>`).join('');$('#lmsg').textContent=stamps>=10?'مبروك! مشروبك القادم علينا.':`باقي ${10-stamps} أختام على المشروب المجاني.`}
+$('#addStamp').onclick=()=>{stamps=stamps>=10?0:stamps+1;renderStamps()};
+
+const qs=[['وش مزاجك الحين؟',['أبي طاقة','أبي شي هادي','أبي شي حالي']],['حار ولا بارد؟',['حار','بارد']],['تحب الحليب؟',['إيه','لا، قهوة صافية']]];
+let qa=[];
+function renderQuiz(){
+ if(qa.length<qs.length){const [q,a]=qs[qa.length];$('#qbox').innerHTML=`<p class="muted">سؤال ${qa.length+1} من ${qs.length}</p><h2>${q}</h2>${a.map((x,k)=>`<button data-k="${k}">${x}</button>`).join('')}`;return}
+ const pick=qa[2]==1?items[2]:qa[0]==2?items[4]:qa[0]==1?items[3]:items[1];
+ $('#qbox').innerHTML=`<p class="muted">نقترح لك</p>${pick.i}<h2>${pick.n}</h2><p class="muted">${pick.d} · ${qa[1]==1?'بارد':'حار'}</p><button class="cta" id="qadd">اطلبه الحين</button><button id="qre">أعد الاختبار</button>`;
+ $('#qadd').onclick=()=>{tabs('shop');openItem(pick.id)};$('#qre').onclick=()=>{qa=[];renderQuiz()};
+}
+$('#qbox').onclick=e=>{const b=e.target.closest('button[data-k]');if(b){qa.push(+b.dataset.k);renderQuiz()}};
+
+const feats=[
+ ['منيو إلكتروني','أصناف وصور وأسعار، تعدّلها متى ما تبي'],
+ ['خيارات المشروب','نوع الحليب، السكر، والإضافات بأسعارها'],
+ ['طلب مسبق ووقت استلام','الزبون يحدد وقت يجي ياخذ طلبه'],
+ ['توصيل حسب الحي','رسوم مختلفة لكل حي تنحسب تلقائيًا'],
+ ['إرفاق إيصال التحويل','الزبون يرفع صورة التحويل مع الطلب'],
+ ['إشعار واتساب لكل طلب','يوصلك الطلب كامل على جوالك'],
+ ['لوحة صاحب المحل','تتابع الطلب من جديد لين التسليم'],
+ ['شاشة تحضير بتنبيه صوتي','للباريستا داخل المحل'],
+ ['ربط Google Sheets','كل الطلبات والمبيعات في جدول'],
+ ['بطاقة ولاء بالأختام','مشروب مجاني بعد عدد طلبات'],
+ ['اختبار يقترح مشروب','تجربة ممتعة تزيد الطلبات'],
+ ['كوب مناسبات بصورة الزبون','للمواليد والتخرج والمناسبات'],
+ ['حجوزات كيترنق ومناسبات','تقويم وعرض سعر للطلبات الكبيرة'],
+ ['انترو متحرك بهويتك','أول ما يفتح الزبون الموقع'],
+ ['دومين باسم محلّك','مثل order.اسم-محلك.com'],
+ ['كتيب تعليمات PDF','يشرح لك ولموظفينك طريقة الاستخدام']
+];
+$('#feats').innerHTML=feats.map((f,k)=>`<label><input type="checkbox" value="${k}"><span><b>${f[0]}</b><small>${f[1]}</small></span></label>`).join('');
+function upd(){
+ const sel=[...document.querySelectorAll('#feats input:checked')].map(i=>feats[+i.value][0]);
+ $('#cnt').textContent=sel.length?`اخترت ${sel.length} ميزات.`:'ما اخترت ميزات للحين.';
+ const shop=$('#shopName').value.trim();
+ const msg=`السلام عليكم نرجس، شفت الديمو التجريبي${shop?' ومحلّي اسمه '+shop:''}.\nأبي الميزات هذي:\n${sel.map(s=>'• '+s).join('\n')||'• (ما حددت، أبي أستشيرك)'}`;
+ $('#waLink').href='https://wa.me/966556211944?text='+encodeURIComponent(msg);
+}
+$('#feats').onchange=upd;$('#shopName').oninput=upd;
+
+$('#beans').innerHTML=Array.from({length:14},(_,k)=>`<span style="left:${(k*37)%100}%;animation-duration:${6+k%5}s;animation-delay:-${k*0.7}s"></span>`).join('');
+const endIntro=()=>{$('#intro').classList.add('out');setTimeout(()=>$('#intro').remove(),800)};
+$('#go').onclick=endIntro;$('#skip').onclick=endIntro;
+renderMenu();renderCart();renderStamps();renderQuiz();renderOrders();upd();
+}
+</script>
+</body>
+</html>
